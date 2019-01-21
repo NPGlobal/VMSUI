@@ -1,0 +1,21 @@
+<div class="container" style="margin-left: 0px;">
+  <h2>Producer Details</h2>
+  <br>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="personal">Personal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="technical">Technical</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="staff">Staff</a>
+    </li>
+  </ul>
+</div>
+<div class="tab-content">
+  <div class="tab-pane active">
+    <router-outlet></router-outlet>
+  </div>
+</div>
