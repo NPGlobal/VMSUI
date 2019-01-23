@@ -1,0 +1,130 @@
+<form class="form-inline" [formGroup]="personalDetailsForm" (ngSubmit)="SavePersonalDetails()" novalidate>
+  <div class="main-div">
+    <div class="detail-page">
+
+      <!-- Actual Quantity -->
+
+      <div class="col" formGroupName="Address">
+        <div class="content-heading">
+          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+          </a>Actual Quantity
+        </div>
+        <div class="slider" [ngClass]="{
+                closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
+            }">
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">DP Business</label>
+              <span>
+                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">DP Quantity</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">JW Business</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">JW Quantity</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Proposed Quantity -->
+
+      <div class="col" formGroupName="Address">
+        <div class="content-heading">
+          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+          </a>Proposed Quantity
+        </div>
+        <div class="slider" [ngClass]="{
+                  closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
+              }">
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">DP Business</label>
+              <span>
+                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">DP Quantity</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">JW Business</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">JW Quantity</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Production Sell Through -->
+      <div class="col" formGroupName="Address">
+        <div class="content-heading">
+          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+          </a>Calculated Fields
+        </div>
+        <div class="slider" [ngClass]="{
+                    closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
+                }">
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">Year on Year(%)</label>
+              <span>
+                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">Product Sell Through</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
+    <hr>
+
+    <!-- End of Detail Page -->
+
+    <div class="col-md-12 page-footer">
+      <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
+      <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
+    </div>
+  </div>
+</form>

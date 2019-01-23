@@ -22,4 +22,9 @@ export class Vendor {
     EnterpriseNature: string;
     Partner1Name: string;
     Partner2Name: string;
+    Customer1Name: string;
+    Customer2Name: string;
+    Customer3Name: string;
+    Customer4Name: string;
+    Customer5Name: string;
 }

@@ -1,308 +1,359 @@
 <form class="form-inline" [formGroup]="personalDetailsForm" (ngSubmit)="SavePersonalDetails()" novalidate>
-  <div class="main-div">
-      <!-- Vendor Details -->
-      <div class="detail-page">
-          <div class="col clearfix" formGroupName="PersonalDetails">
-              <div class="content-heading">
-                  <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('PersonalDetails'))"
-                      class="glyphicon-expand">
-                      <span>{{personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
-                  </a>Personal Information
-              </div>
-              <div class="slider" [ngClass]="{
+    <div class="main-div">
+        <!-- Vendor Details -->
+        <div class="detail-page">
+            <div class="col clearfix" formGroupName="PersonalDetails">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('PersonalDetails'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Personal Information
+                </div>
+                <div class="slider" [ngClass]="{
                   closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
               }">
-                  <div class="col-md-8">
-                      <div class="col-md-12 form-group">
-                          <div class="col-md-6">
-                              <label class="text">Vendor Code</label>
-                              <span>
-                                  <input type="text" name="Code" formControlName="Code" class="form-control input-sm" />
-                              </span>
-                          </div>
-                          <div class="col-md-6">
-                              <label class="text">Vendor Name</label>
-                              <span>
-                                  <input type="text" name="Name" formControlName="Name" class="form-control input-sm"
-                                      value="" />
-                              </span>
-                          </div>
-                      </div>
-                      <div class="col-md-12 form-group">
-                          <div class="col-md-6">
-                              <label class="text">Master Vendor Name
-                                  <span>(Parent/sister company)</span>
-                              </label>
-                              <span><input type="text" name="MasterVendorName" formControlName="MasterVendorName"
-                                      class="form-control input-sm" value="" /></span>
-                          </div>
-                          <div class="col-md-6">
-                              <label class="text">PAN No.</label>
-                              <span><input type="text" name="PanNo" formControlName="PANNo" class="form-control input-sm" /></span>
-                          </div>
-                      </div>
-                      <div class="col-md-12 form-group">
-                          <div class="col-md-6">
-                              <label class="text">GST Registration No.</label>
-                              <span><input type="text" name="GSTIN" formControlName="GSTIN" class="form-control input-sm" /></span>
-                          </div>
-                          <div class="col-md-6">
-                              <label class="text">TIN No. <span>(Incase GST not applicable)</span></label>
-                              <span><input type="text" formControlName="TINNo" name="TINNo" class="form-control input-sm" /></span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-md-4" style="padding-left:0px;">
+                    <div class="col-md-8">
+                        <div class="col-md-12 form-group">
+                            <div class="col-md-6">
+                                <label class="text">Vendor Code</label>
+                                <span>
+                                    <input type="text" name="Code" formControlName="Code" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text">Vendor Name</label>
+                                <span>
+                                    <input type="text" name="Name" formControlName="Name" class="form-control input-sm"
+                                        value="" />
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <div class="col-md-6">
+                                <label class="text">Master Vendor Name
+                                    <span>(Parent/sister company)</span>
+                                </label>
+                                <span><input type="text" name="MasterVendorName" formControlName="MasterVendorName"
+                                        class="form-control input-sm" value="" /></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text">PAN No.</label>
+                                <span><input type="text" name="PanNo" formControlName="PANNo" class="form-control input-sm" /></span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <div class="col-md-6">
+                                <label class="text">GST Registration No.</label>
+                                <span><input type="text" name="GSTIN" formControlName="GSTIN" class="form-control input-sm" /></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text">TIN No. <span>(Incase GST not applicable)</span></label>
+                                <span><input type="text" formControlName="TINNo" name="TINNo" class="form-control input-sm" /></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-left:0px;">
 
-                      <div class="col-md-12 form-group">
-                          <div class="col-md-4" style="padding-left:0px;">
-                              <label class="text">Vendor Type</label>
-                          </div>
+                        <div class="col-md-12 form-group">
+                            <div class="col-md-4" style="padding-left:0px;">
+                                <label class="text">Vendor Type</label>
+                            </div>
 
-                          <div class="col-md-2">
-                              <label class="radio-inline">
-                                  <input id="radio" value="DP" type="radio" formControlName="VendorType" name="VendorType">
-                                  <span style="margin-left:5px;">DP</span>
-                              </label>
-                          </div>
+                            <div class="col-md-2">
+                                <label class="radio-inline">
+                                    <input value="DP" type="radio" formControlName="VendorType">
+                                    <span style="margin-left:5px;">DP</span>
+                                </label>
+                            </div>
 
-                          <div class="col-md-1">
-                              <label class="radio-inline">
-                                  <input id="radio" value="JW" type="radio" formControlName="VendorType" name="VendorType">
-                                  <span style="margin-left:5px;">JW</span>
-                              </label>
-                          </div>
+                            <div class="col-md-1">
+                                <label class="radio-inline">
+                                    <input value="JW" type="radio" formControlName="VendorType">
+                                    <span style="margin-left:5px;">JW</span>
+                                </label>
+                            </div>
 
-                      </div>
+                        </div>
 
-                      <div *ngIf="VendorType=='JW'">
-                          <div class="col-md-12 form-group">
-                              <div class="col-md-5" style="padding:0px;">
-                                  <label class="text">PH/FO</label>
-                                  <span>
-                                      <select class="form-control input-sm" formControlName="PHList" name="list1"
-                                          size="8" id="list1" multiple="multiple">
-                                          <option value="NWHSTR">Home Projects</option>
-                                          <option value="NWH">National Warehouse</option>
-                                          <option value="BM12">PH Mumbai</option>
-                                          <option value="AH08">PH-Ahmedabad</option>
-                                          <option value="AM09">PH-Amroha</option>
-                                          <option value="BA13">PH-Bangalore</option>
-                                          <option value="BJ10">PH-Bijnor</option>
-                                          <option value="CN15">PH-Chennai</option>
-                                          <option value="DL11">PH-Delhi-A</option>
-                                          <option value="DL16">PH-Delhi-B</option>
-                                          <option value="DMPH">PH-Dummy</option>
-                                          <option value="AP14">PH-Hyderabad</option>
-                                          <option value="CH07">PH-Indore</option>
-                                          <option value="JA02">PH-Jaipur</option>
-                                          <option value="JD03">PH-Jodhpur</option>
-                                      </select>
-                                  </span>
-                              </div>
-                              <div class="col-md-1" style="padding-left:5px;">
+                        <div *ngIf="personalDetailsForm.get('PersonalDetails').controls.VendorType.value==='JW'">
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-5" style="padding:0px;">
+                                    <label class="text">PH/FO</label>
+                                    <span>
+                                        <select class="form-control input-sm" formControlName="PHList" size="8"
+                                            multiple="multiple">
+                                            <option value="NWHSTR">Home Projects</option>
+                                            <option value="NWH">National Warehouse</option>
+                                            <option value="BM12">PH Mumbai</option>
+                                            <option value="AH08">PH-Ahmedabad</option>
+                                            <option value="AM09">PH-Amroha</option>
+                                            <option value="BA13">PH-Bangalore</option>
+                                            <option value="BJ10">PH-Bijnor</option>
+                                            <option value="CN15">PH-Chennai</option>
+                                            <option value="DL11">PH-Delhi-A</option>
+                                            <option value="DL16">PH-Delhi-B</option>
+                                            <option value="DMPH">PH-Dummy</option>
+                                            <option value="AP14">PH-Hyderabad</option>
+                                            <option value="CH07">PH-Indore</option>
+                                            <option value="JA02">PH-Jaipur</option>
+                                            <option value="JD03">PH-Jodhpur</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div class="col-md-1" style="padding-left:5px;">
 
-                                  <input type="button" id="btnAdd" style="margin-bottom: 5px;" value=">" (click)="MoveLeftToRight($event)">
-                                  <input type="button" id="btnRemove" disabled="disabled" value="<" (click)="MoveRightToLeft($event)">
+                                    <input type="button" style="margin-bottom: 5px;" value=">" (click)="MoveToSelectedPHList()">
+                                    <input type="button" disabled="disabled" value="<" (click)="MoveToPHList()">
 
-                                  <!-- <button id="btnAdd" style="margin-bottom: 5px;">></button>
+                                    <!-- <button id="btnAdd" style="margin-bottom: 5px;">></button>
                               <button id="btnRemove" disabled="disabled"><</button> -->
-                              </div>
-                              <div class="col-md-5" style="padding-left:8px;padding-right: 0px">
-                                  <label class="text">Selected PH</label>
-                                  <span>
-                                      <select class="form-control input-sm" name="list2" size="8" id="list2" multiple="multiple">
+                                </div>
+                                <div class="col-md-5" style="padding-left:8px;padding-right: 0px">
+                                    <label class="text">Selected PH</label>
+                                    <span>
+                                        <select class="form-control input-sm" name="list2" size="8" id="list2" multiple="multiple">
 
-                                      </select>
-                                  </span>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <hr>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
 
-          <!-- Vendor Address -->
+            <!-- Vendor Address -->
 
-          <div class="col" formGroupName="Address">
-              <div class="content-heading">
-                  <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
-                      <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
-                  </a>Address
-              </div>
-              <div class="slider" [ngClass]="{
+            <div class="col" formGroupName="Address">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Address
+                </div>
+                <div class="slider" [ngClass]="{
                   closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
               }">
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-4">
-                          <label class="text">Address of Registered Office</label>
-                          <span>
-                              <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
-                          </span>
-                      </div>
-                      <div class="col-md-6">
-                          <label class="text">Factory Address/s
-                              <span>(Kindly mention addressess of all the factories)</span>
-                          </label>
-                          <span>
-                              <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm"
-                                  value="" />
-                          </span>
-                      </div>
-                  </div>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">Address of Registered Office</label>
+                            <span>
+                                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text">Factory Address/s
+                                <span>(Kindly mention addressess of all the factories)</span>
+                            </label>
+                            <span>
+                                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm"
+                                    value="" />
+                            </span>
+                        </div>
+                    </div>
 
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-4">
-                          <label class="text">City</label>
-                          <span>
-                              <input type="text" formControlName="City" name="CityName" class="form-control input-sm"
-                                  value="" />
-                          </span>
-                      </div>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">City</label>
+                            <span>
+                                <input type="text" formControlName="City" name="CityName" class="form-control input-sm"
+                                    value="" />
+                            </span>
+                        </div>
 
-                      <div class="col-md-4">
-                          <label class="text">State</label>
-                          <span>
-                              <select formControlName="State" class="form-control input-sm">
-                                  <option>Select</option>
-                                  <option value="DL">Delhi</option>
-                                  <option value="WB">West bangal</option>
-                                  <option value="PB">Punjab</option>
-                              </select>
-                          </span>
-                      </div>
+                        <div class="col-md-4">
+                            <label class="text">State</label>
+                            <span>
+                                <select formControlName="State" class="form-control input-sm">
+                                    <option>Select</option>
+                                    <option value="DL">Delhi</option>
+                                    <option value="WB">West bangal</option>
+                                    <option value="PB">Punjab</option>
+                                </select>
+                            </span>
+                        </div>
 
-                      <div class="col-md-4">
-                          <label class="text">PIN No.</label>
-                          <span>
-                              <input type="text" formControlName="PIN" name="PIN" class="form-control input-sm" />
-                          </span>
-                      </div>
+                        <div class="col-md-4">
+                            <label class="text">PIN No.</label>
+                            <span>
+                                <input type="text" formControlName="PIN" name="PIN" class="form-control input-sm" />
+                            </span>
+                        </div>
 
-                  </div>
-              </div>
-          </div>
-          <hr>
+                    </div>
+                </div>
+            </div>
+            <hr>
 
-          <!-- Contact -->
+            <!-- Contact -->
 
-          <div class="col" formGroupName="Contact">
-              <div class="content-heading">
-                  <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Contact'))" class="glyphicon-expand">
-                      <span>{{personalDetailsForm.get('Contact').controls.IsExpanded.value ? '-' : '+'}}</span>
-                  </a>Contact
-              </div>
-              <div class="slider" [ngClass]="{
+            <div class="col" formGroupName="Contact">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Contact'))" class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('Contact').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Contact
+                </div>
+                <div class="slider" [ngClass]="{
                   closed: !personalDetailsForm.get('Contact').controls.IsExpanded.value
               }">
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-6">
-                          <label class="text">Contact Person
-                              <span>(For receiving notification/SMS from Fabindia)</span>
-                          </label>
-                          <span>
-                              <input type="text" formControlName="ContactPersonName" name="ContactPerson" class="form-control input-sm" />
-                          </span>
-                      </div>
-                  </div>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-6">
+                            <label class="text">Contact Person
+                                <span>(For receiving notification/SMS from Fabindia)</span>
+                            </label>
+                            <span>
+                                <input type="text" formControlName="ContactPersonName" name="ContactPerson" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
 
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-4">
-                          <label class="text">Office Contact No.</label>
-                          <span>
-                              <input type="text" formControlName="OfficeContact" name="OfficeContact" class="form-control input-sm" />
-                          </span>
-                      </div>
-                      <div class="col-md-4">
-                          <label class="text">Contact Person's Mobile. No.</label>
-                          <span>
-                              <input type="text" formControlName="ContactPersonMobile" name="ContactMobile" class="form-control input-sm"
-                                  value="" />
-                          </span>
-                      </div>
-                      <div class="col-md-4">
-                          <label class="text">Fax No. <span>(If any)</span></label>
-                          <span>
-                              <input type="text" formControlName="FAXNo" name="FaxNo" class="form-control input-sm" />
-                          </span>
-                      </div>
-                  </div>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">Office Contact No.</label>
+                            <span>
+                                <input type="text" formControlName="OfficeContact" name="OfficeContact" class="form-control input-sm" />
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Contact Person's Mobile. No.</label>
+                            <span>
+                                <input type="text" formControlName="ContactPersonMobile" name="ContactMobile" class="form-control input-sm"
+                                    value="" />
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Fax No. <span>(If any)</span></label>
+                            <span>
+                                <input type="text" formControlName="FAXNo" name="FaxNo" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
 
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-4">
-                          <label class="text">E-mail ID</label>
-                          <span><input type="text" name="emailID" formControlName="EmailId" class="form-control input-sm" /></span>
-                      </div>
-                      <div class="col-md-4">
-                          <label class="text">Website Address <span>(If any)</span></label>
-                          <span><input type="text" formControlName="WebSite" name="webSite" class="form-control input-sm"
-                                  value="" /></span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <hr>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">E-mail ID</label>
+                            <span><input type="text" name="emailID" formControlName="EmailId" class="form-control input-sm" /></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Website Address <span>(If any)</span></label>
+                            <span><input type="text" formControlName="WebSite" name="webSite" class="form-control input-sm"
+                                    value="" /></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
 
-          <!-- Other Registration Detail -->
+            <!-- Other Registration Detail -->
 
-          <div class="col" formGroupName="OtherRegDetails">
-              <div class="content-heading">
-                  <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('OtherRegDetails'))" class="glyphicon-expand">
-                      <span>{{personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
-                  </a>Other Registration Detail
-              </div>
-              <div class="slider" [ngClass]="{
+            <div class="col" formGroupName="OtherRegDetails">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('OtherRegDetails'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Other Registration Detail
+                </div>
+                <div class="slider" [ngClass]="{
                   closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value
               }">
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-4">
-                          <label class="text">Associated With Fabindia Since</label>
-                          <span>
-                              <select formControlName="AssociatedSinceYear" class="form-control input-sm">
-                                  <option value="0">Select</option>
-                                  <option value="2017">2017</option>
-                                  <option value="2016">2016</option>
-                                  <option value="2015">2015</option>
-                              </select>
-                          </span>
-                      </div>
-                      <div class="col-md-4">
-                          <label class="text">Nature Of Enterprise</label>
-                          <span>
-                              <select formControlName="EnterpriseNature" class="form-control input-sm">
-                                  <option value="">Select</option>
-                                  <option value="Manufacturer">Manufacturer</option>
-                                  <option value="NGO">NGO</option>
-                                  <option value="Cooperative">Cooperative</option>
-                              </select>
-                          </span>
-                      </div>
-                  </div>
-                  <div class="col-md-12 form-group">
-                      <div class="col-md-4">
-                          <label class="text">Name Of Partner/Proprietor/etc 1</label>
-                          <span>
-                              <input formControlName="Partner1Name" name="Partener1Name" type="text" class="form-control input-sm" />
-                          </span>
-                      </div>
-                      <div class="col-md-4">
-                          <label class="text">Name Of Partner/Proprietor/etc 2</label>
-                          <span>
-                              <input formControlName="Partner2Name" name="Partener2Name" type="text" class="form-control input-sm" />
-                          </span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <hr>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">Associated With Fabindia Since</label>
+                            <span>
+                                <select formControlName="AssociatedSinceYear" class="form-control input-sm">
+                                    <option value="0">Select</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Nature Of Enterprise</label>
+                            <span>
+                                <select formControlName="EnterpriseNature" class="form-control input-sm">
+                                    <option value="">Select</option>
+                                    <option value="Manufacturer">Manufacturer</option>
+                                    <option value="NGO">NGO</option>
+                                    <option value="Cooperative">Cooperative</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">Name Of Partner/Proprietor/etc 1</label>
+                            <span>
+                                <input formControlName="Partner1Name" name="Partener1Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Name Of Partner/Proprietor/etc 2</label>
+                            <span>
+                                <input formControlName="Partner2Name" name="Partener2Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
 
-      <!-- End of Detail Page -->
+            <!-- Top 5 Customers Name -->
+            <div class="col" formGroupName="CustomerDetails">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('CustomerDetails'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Top 5 Customers
+                </div>
+                <div class="slider" [ngClass]="{
+                  closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value
+              }">
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">Customer1</label>
+                            <span>
+                                <input formControlName="Customer1Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Customer2</label>
+                            <span>
+                                <input formControlName="Customer2Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Customer3</label>
+                            <span>
+                                <input formControlName="Customer3Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+                            <label class="text">Customer4</label>
+                            <span>
+                                <input formControlName="Customer4Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text">Customer5</label>
+                            <span>
+                                <input formControlName="Customer5Name" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-      <div class="col-md-12 page-footer">
-          <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
-          <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
-      </div>
-  </div>
+        </div>
+        <hr>
+
+        <!-- End of Detail Page -->
+
+        <div class="col-md-12 page-footer">
+            <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
+        </div>
+    </div>
 </form>

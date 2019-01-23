@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 
@@ -56,6 +56,7 @@ export class PersonalDetailsComponent implements OnInit {
         GSTIN: [this.vendor.GSTIN],
         TINNo: [this.vendor.TINNo],
         VendorType: [this.vendor.VendorType],
+        PHList: new FormControl(null),
         IsExpanded: true
       }),
       Address: this._fb.group({
@@ -81,12 +82,24 @@ export class PersonalDetailsComponent implements OnInit {
         Partner1Name: [this.vendor.Partner1Name],
         Partner2Name: [this.vendor.Partner2Name],
         IsExpanded: false
+      }),
+      CustomerDetails: this._fb.group({
+        Customer1Name: [this.vendor.Customer1Name],
+        Customer2Name: [this.vendor.Customer2Name],
+        Customer3Name: [this.vendor.Customer3Name],
+        Customer4Name: [this.vendor.Customer4Name],
+        Customer5Name: [this.vendor.Customer5Name],
+        IsExpanded: false
       })
     });
   }
 
   ToggleContainer(formGroup: FormGroup) {
     formGroup.controls.IsExpanded.patchValue(!formGroup.controls.IsExpanded.value);
+  }
+
+  MoveToSelectedPHList() {
+    console.log(this.personalDetailsForm);
   }
 
   MoveLeftToRight() {
@@ -119,4 +132,4 @@ function movePh($btn1, $btn2, $fromSel, $toSel) {
     $btn1.attr('disabled', 'disabled');
   if ($toSel.find('option').length > 0)
     $btn2.removeAttr('disabled');
- }
+}

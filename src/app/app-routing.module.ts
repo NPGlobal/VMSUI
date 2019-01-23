@@ -6,6 +6,8 @@ import { PersonalDetailsComponent } from './Components/personal-details/personal
 import { StaffDetailsComponent } from './Components/staff-details/staff-details.component';
 import { TechnicalDetailsComponent } from './Components/technical-details/technical-details.component';
 import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
+import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
+import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
 
 const routes: Routes = [
   {
@@ -13,12 +15,14 @@ const routes: Routes = [
     component: VendorListComponent
   },
   {
-    path: 'add',
+    path: 'vendor/add',
     component: AddVendorComponent,
     children: [
       { path: 'personal', component: PersonalDetailsComponent },
       { path: 'staff', component: StaffDetailsComponent },
-      { path: 'technical', component: TechnicalDetailsComponent }
+      { path: 'technical', component: TechnicalDetailsComponent },
+      { path: 'production', component: ProductionDetailsComponent },
+      { path: 'business', component: BusinessDetailsComponent }
     ]
   },
   {
@@ -27,7 +31,9 @@ const routes: Routes = [
     children: [
       { path: 'personal', component: PersonalDetailsComponent },
       { path: 'staff', component: StaffDetailsComponent },
-      { path: 'technical', component: TechnicalDetailsComponent }
+      { path: 'technical', component: TechnicalDetailsComponent },
+      { path: 'production', component: ProductionDetailsComponent },
+      { path: 'business', component: BusinessDetailsComponent }
     ]
   },
   {

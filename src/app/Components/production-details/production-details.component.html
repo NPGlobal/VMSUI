@@ -1,0 +1,132 @@
+<form class="form-inline" [formGroup]="personalDetailsForm" (ngSubmit)="SavePersonalDetails()" novalidate>
+  <div class="main-div">
+    <!-- Product Type Details -->
+    <div class="detail-page">
+      <div class="col clearfix" formGroupName="PersonalDetails">
+        <div class="content-heading">
+          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('PersonalDetails'))" class="glyphicon-expand">
+            <span>{{personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+          </a>Product Type Details
+        </div>
+        <div class="slider" [ngClass]="{
+                closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
+            }">
+          <div class="col-md-8">
+            <div class="col-md-12 form-group">
+              <div class="col-md-6">
+                <label class="text">Division Code</label>
+                <span>
+                  <input type="text" name="Code" formControlName="Code" class="form-control input-sm" />
+                </span>
+              </div>
+              <div class="col-md-6">
+                <label class="text">Department Name</label>
+                <span>
+                  <input type="text" name="Name" formControlName="Name" class="form-control input-sm" value="" />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Vendor Address -->
+
+      <div class="col" formGroupName="Address">
+        <div class="content-heading">
+          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+          </a>Production Unit(s)
+        </div>
+        <div class="slider" [ngClass]="{
+                closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
+            }">
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">Approved Production Units</label>
+              <span>
+                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">Sub Contracting Unit Name</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <div class="col-md-6">
+              <label class="text">Sub Contracting Unit Address</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+            <div class="col-md-6">
+              <label class="text">Nature of Sub Contracting Unit</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Capacity Allocated To FabIndia -->
+
+      <div class="col" formGroupName="Address">
+        <div class="content-heading">
+          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+          </a>Capacity Allocated
+        </div>
+        <div class="slider" [ngClass]="{
+                closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
+            }">
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">Monthly Capacity</label>
+              <span>
+                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">Minimal Capacity</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">Lean Months</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+            <div class="col-md-4">
+              <label class="text">Lean Capacity</label>
+              <span>
+                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+    </div>
+    <hr>
+
+    <!-- End of Detail Page -->
+
+    <div class="col-md-12 page-footer">
+      <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
+      <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
+    </div>
+  </div>
+</form>

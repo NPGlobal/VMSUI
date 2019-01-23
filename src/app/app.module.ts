@@ -14,6 +14,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Vendor } from './Models/vendor';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
+import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
+import { DocumentComponent } from './Components/document/document.component';
 
 
 @NgModule({
@@ -25,7 +28,10 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     StaffDetailsComponent,
     TechnicalDetailsComponent,
     AddVendorComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    BusinessDetailsComponent,
+    ProductionDetailsComponent,
+    DocumentComponent
   ],
   imports: [
     BrowserModule,
