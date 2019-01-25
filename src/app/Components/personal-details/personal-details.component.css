@@ -7,13 +7,3 @@
 	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 } */
 
-.slider.closed {
-	max-height: 0;
-}
-
-.slider {
-	padding: 0 18px;
-	max-height: 500px;
-	overflow: hidden;
-	transition: max-height 0.2s ease-out;
-}
