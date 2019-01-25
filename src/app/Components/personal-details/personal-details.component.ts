@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 
@@ -15,13 +15,23 @@ export class PersonalDetailsComponent implements OnInit {
 
   vendor: Vendor;
   personalDetailsForm: FormGroup;
-
+  //addressForm:FormGroup;
   Code: string;
   vendorType = 'DP';
+  display = 'none';
+  AddressType = 'office';
+
+
+
+  addressForm: FormArray;
 
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder) { }
+  submitted = false;
+
+
+
 
   ngOnInit() {
 
@@ -29,6 +39,62 @@ export class PersonalDetailsComponent implements OnInit {
       this.Code = (data.get('code'));
     });
     this.Editvendor(this.Code);
+    console.log(this.personalDetailsForm);
+    // this.personalDetailsForm = this._fb.group({
+
+    //   addressForm: this._fb.array([this.createAddress()])
+    // });
+
+    // this.addressForm = this._fb.group({
+    //   nameInAddress: ['', Validators.required],
+    //   AddressLine1: ['', Validators.required],
+    //   City:['', [Validators.required,Validators.minLength(3)]],
+    //   AddressLine2:'',
+    //   State:'',
+    //   PIN:'',
+    //   AddressType:'factory'
+
+    // });
+  }
+
+  createAddress(): FormGroup {
+    return this._fb.group({
+      nameInAddress: ['', Validators.required],
+      AddressLine1: ['', Validators.required],
+      City: ['', [Validators.required, Validators.minLength(3)]],
+      AddressLine2: '',
+      State: '',
+      PIN: '',
+      AddressType: 'factory'
+
+    });
+  }
+
+  addItem(): void {
+    this.addressForm = this.personalDetailsForm.get('addressForm') as FormArray;
+    this.addressForm.push(this.createAddress());
+  }
+
+  get f() { return this.addressForm.controls; }
+
+  OnSubmit() {
+    this.submitted = true;
+    if (this.addressForm.invalid) {
+
+      return;
+    }
+    console.log(JSON.stringify(this.addressForm.value));
+    alert(JSON.stringify(this.addressForm.value));
+    //console.log(JSON.stringify(this.addressForm));
+    alert('SUCCESS!! :-)')
+  }
+
+  openModalDialog() {
+    this.display = 'block'; //Set block css
+  }
+
+  closeModalDialog() {
+    this.display = 'none'; //set none css after close dialog
   }
 
   Editvendor(Code: string) {
@@ -59,12 +125,26 @@ export class PersonalDetailsComponent implements OnInit {
         PHList: new FormControl(null),
         IsExpanded: true
       }),
+      // Address: this._fb.group({
+      //   RegisOffAddr: [this.vendor.RegisOffAddr],
+      //   FactoryAddr: [this.vendor.FactoryAddr],
+      //   City: [this.vendor.City],
+      //   State: [this.vendor.State],
+      //   PIN: [this.vendor.PIN],
+      //   IsExpanded: false
+      // }),
+
+      //added by Shubhi
       Address: this._fb.group({
-        RegisOffAddr: [this.vendor.RegisOffAddr],
-        FactoryAddr: [this.vendor.FactoryAddr],
-        City: [this.vendor.City],
-        State: [this.vendor.State],
-        PIN: [this.vendor.PIN],
+        addressForm: this._fb.array([{
+          nameInAddress: [this.vendor.nameInAddress],
+          PIN: [this.vendor.PIN],
+          State: [this.vendor.State],
+          AddressLine1: [this.vendor.AddressLine1],
+          AddressLine2: [this.vendor.AddressLine2],
+          City: [this.vendor.City],
+          AddressType: [this.vendor.AddressType]
+        }]),
         IsExpanded: false
       }),
       Contact: this._fb.group({
@@ -118,6 +198,8 @@ export class PersonalDetailsComponent implements OnInit {
   }
   SavePersonalDetails() {
     //alert('Click');
+    // console.log(this.personalDetailsForm);
+    // alert(this.personalDetailsForm.value);
   }
 }
 

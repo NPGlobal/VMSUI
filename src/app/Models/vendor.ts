@@ -7,8 +7,12 @@ export class Vendor {
     GSTIN: string;
     TINNo: string;
     VendorType: string;
-    RegisOffAddr: string;
-    FactoryAddr: string;
+   // RegisOffAddr: string;
+    //FactoryAddr: string;
+    nameInAddress:string;
+    AddressLine1:string;
+    AddressLine2:string;
+    AddressType:string;
     City: string;
     State: string;
     PIN: string;
@@ -27,4 +31,5 @@ export class Vendor {
     Customer3Name: string;
     Customer4Name: string;
     Customer5Name: string;
+
 }
