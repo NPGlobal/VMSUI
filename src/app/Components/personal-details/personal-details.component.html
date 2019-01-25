@@ -9,11 +9,12 @@
                     <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('PersonalDetails'))"
                         class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Personal Information
+                    </a>Personal Details
+
                 </div>
                 <div class="slider" [ngClass]="{
-                  closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
-              }">
+                      closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
+                  }">
                     <div class="col-md-8">
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
@@ -128,16 +129,16 @@
 
             <!-- Vendor Address -->
 
-            <div class="col" formGroupName="Address">
-                <div class="content-heading">
-                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+            <!-- <div class="col" formGroupName="Address"> -->
+            <!-- <div class="content-heading"> -->
+            <!-- <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Address
-                </div>
-                <div class="slider" [ngClass]="{
+                    </a>Address -->
+            <!-- </div> -->
+            <!-- <div class="slider" [ngClass]="{
                   closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
-              }">
-                    <div class="col-md-12 form-group">
+              }"> -->
+            <!-- <div class="col-md-12 form-group"> 
                         <div class="col-md-4">
                             <label class="text">Address of Registered Office</label>
                             <span>
@@ -183,9 +184,180 @@
                             </span>
                         </div>
 
+                    </div>  -->
+
+            <div class="col" formGroupName="Address">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Address
+                </div>
+                <div class="slider" [ngClass]="{
+                      closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
+                  }">
+
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-4">
+
+                            <span>
+                                <button type="button" class="btn btn-info btn-sm" (click)="openModalDialog()">Add new
+                                    address</button>
+                                <div class="" [ngStyle]="{'display':display}"></div>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+                        <!-- modal-dialog -->
+                        <div class="modal-dialog" role="document">
+                            <!-- modal-content -->
+                            <div class="modal-content">
+                                <!-- modal-header -->
+                                <div class="modal-header">
+                                    <h6 class="modal-title">Add New Address</h6>
+                                    <button class="close" aria-label="Close" (click)="closeModalDialog()"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <!-- <h4 class="modal-title">Add New Address</h4> -->
+                                </div>
+                                <!-- modal-body -->
+                                <div class="modal-body">
+                                    <!-- <form [formGroup]="addressForm" (ngSubmit) = "OnSubmit(addressForm.value)" > -->
+
+                                    <div formArrayName="addressForm">
+                                        <div *ngFor="let item of addressForm.controls; let i = index;">
+                                            <!-- <div [formGroupName]="i"> -->
+                                                <div class="col-md-12 form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="text">Name</label>
+                                                        <span>
+                                                            <input formControlName="nameInAddress" type="text" class="form-control input-sm"
+                                                                [ngClass]="{ 'is-invalid': (f.nameInAddress.touched || submitted) && f.nameInAddress.errors }" />
+                                                            <div *ngIf="f.nameInAddress.errors" class="invalid-feedback">
+                                                                <p *ngIf="f.nameInAddress.errors.required">Name is
+                                                                    required</p>
+                                                            </div>
+                                                            <!-- <p>name is {{personalDetailsForm.get('Address').controls.nameInAddress.value}}</p> -->
+                                                            <!-- <p>name is {{addressForm.controls.nameInAddress.value}}</p> -->
+                                                            <!-- <div *ngIf="f.nameInAddress.errors.required">First Name is required</div> -->
+                                                            <!-- <div 
+                                                        *ngIf="nameInAddress.invalid && nameInAddress.dirty"> (2)
+                                                     Field is invalid
+                                                   </div>     -->
+
+                                                            <!-- <div *ngIf="isFieldValid('nameInAddress')">"Please inform your name"</div> -->
+
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="text">Pincode</label>
+                                                        <span>
+                                                            <input formControlName="PIN" type="text" class="form-control input-sm" />
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="text">State</label>
+                                                        <span>
+                                                            <select formControlName="State" class="form-control input-sm">
+                                                                <option>Select</option>
+                                                                <option value="DL">Delhi</option>
+                                                                <option value="WB">West bangal</option>
+                                                                <option value="PB">Punjab</option>
+                                                            </select>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="text">Address Line 1</label>
+                                                        <span>
+                                                            <input formControlName="AddressLine1" type="text" class="form-control input-sm"
+                                                                [ngClass]="{ 'is-invalid': (f.AddressLine1.touched || submitted) && f.AddressLine1.errors }" />
+                                                            <div *ngIf="f.AddressLine1.errors" class="invalid-feedback">
+                                                                <p *ngIf="f.AddressLine1.errors.required">Address is
+                                                                    required</p>
+                                                            </div>
+                                                        </span>
+
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="text">Address Line 2</label>
+                                                        <span>
+                                                            <input formControlName="AddressLine2" type="text" class="form-control input-sm" />
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="text">City/District</label>
+                                                        <span>
+                                                            <!-- <input formControlName="City" type="text" class="form-control input-sm"  [ngClass]="{ 'is-invalid': submitted && f.City.errors }" /> -->
+                                                            <input formControlName="City" type="text" class="form-control input-sm"
+                                                                [ngClass]="{ 'is-invalid': (f.City.touched || submitted) && f.City.errors }" />
+                                                            <!-- <input formControlName="City" type="text" class="form-control input-sm" ngClass="{
+                                                                'has-error': !f.City.valid && f.City.touched,
+                                                                'has-feedback': !f.City.valid && f.City.touched
+                                                            }"> -->
+                                                            <!-- <div *ngIf="submitted && addressForm.controls.City.errors" class="invalid-feedback"> -->
+                                                            <div *ngIf="f.City.errors" class="invalid-feedback">
+                                                                <p *ngIf="f.City.errors">min length is 3</p>
+                                                                <p *ngIf="f.City.errors.required">City is required</p>
+
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 form-group">
+                                                    <div class="col-md-4">
+                                                        <label class="text">Address Type</label>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label class="radio-inline">
+                                                            <input value="factory" type="radio" formControlName="AddressType">
+                                                            <span style="margin-left:5px;">factory</span>
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label class="radio-inline">
+                                                            <input value="Office" type="radio" formControlName="AddressType">
+                                                            <span style="margin-left:5px;">Office</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            <!-- </div> -->
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                    <div class="col-md-12 form-group page-footer">
+                                        <!-- <button type="button" class="mr-3 btn btn-primary" (click)="alertData(personalDetailsForm.value)">Save</button> -->
+                                        <!-- <button type="submit" class="mr-3 btn btn-primary" (click)="alertData(addressForm.value)">Save</button> -->
+                                        <button type="submit" class="mr-3 btn btn-primary">Save</button>
+                                        <button type="button" class="btn" (click)="closeModalDialog()">Cancel</button>
+                                    </div>
+                                    <div>
+                                        <!-- <p>Name Is  - {{nameInAddress}} and State is - {{State}}</p> -->
+                                    </div>
+                                    <!-- </form> -->
+                                </div>
+
+                                <!-- modal-footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" (click)="closeModalDialog()">Close</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <hr>
+
+            <!-- added by Shubhi -->
+
+            <!-- modal -->
+
+            <!-- </div> -->
+            <!-- </div> -->
             <hr>
 
             <!-- Contact -->
