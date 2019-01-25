@@ -2,6 +2,8 @@
     <div class="main-div">
         <!-- Vendor Details -->
         <div class="detail-page">
+
+            <!-- Personal Information -->
             <div class="col clearfix" formGroupName="PersonalDetails">
                 <div class="content-heading">
                     <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('PersonalDetails'))"
@@ -17,14 +19,13 @@
                             <div class="col-md-6">
                                 <label class="text">Vendor Code</label>
                                 <span>
-                                    <input type="text" name="Code" formControlName="Code" class="form-control input-sm" />
+                                    <input type="text" formControlName="Code" class="form-control input-sm" value="" />
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">Vendor Name</label>
                                 <span>
-                                    <input type="text" name="Name" formControlName="Name" class="form-control input-sm"
-                                        value="" />
+                                    <input type="text" formControlName="Name" class="form-control input-sm" value="" />
                                 </span>
                             </div>
                         </div>
@@ -33,22 +34,24 @@
                                 <label class="text">Master Vendor Name
                                     <span>(Parent/sister company)</span>
                                 </label>
-                                <span><input type="text" name="MasterVendorName" formControlName="MasterVendorName"
-                                        class="form-control input-sm" value="" /></span>
+                                <span>
+                                    <input type="text" formControlName="MasterVendorName" class="form-control input-sm"
+                                        value="" />
+                                </span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">PAN No.</label>
-                                <span><input type="text" name="PanNo" formControlName="PANNo" class="form-control input-sm" /></span>
+                                <span><input type="text" formControlName="PANNo" class="form-control input-sm" /></span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
                                 <label class="text">GST Registration No.</label>
-                                <span><input type="text" name="GSTIN" formControlName="GSTIN" class="form-control input-sm" /></span>
+                                <span><input type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">TIN No. <span>(Incase GST not applicable)</span></label>
-                                <span><input type="text" formControlName="TINNo" name="TINNo" class="form-control input-sm" /></span>
+                                <span><input type="text" formControlName="TINNo" class="form-control input-sm" /></span>
                             </div>
                         </div>
                     </div>
@@ -352,7 +355,7 @@
         <!-- End of Detail Page -->
 
         <div class="col-md-12 page-footer">
-            <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
             <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
         </div>
     </div>

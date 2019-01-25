@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 
@@ -49,13 +49,13 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
-        Code: [this.vendor.Code],
-        Name: [this.vendor.Name],
+        Code: [this.vendor.Code, Validators.required],
+        Name: [this.vendor.Name, Validators.required],
         MasterVendorName: [this.vendor.MasterVendorName],
-        PANNo: [this.vendor.PANNo],
-        GSTIN: [this.vendor.GSTIN],
+        PANNo: [this.vendor.PANNo, Validators.required],
+        GSTIN: [this.vendor.GSTIN, Validators.required],
         TINNo: [this.vendor.TINNo],
-        VendorType: [this.vendor.VendorType],
+        VendorType: [this.vendor.VendorType, Validators.required],
         PHList: new FormControl(null),
         IsExpanded: true
       }),
@@ -77,8 +77,8 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: false
       }),
       OtherRegDetails: this._fb.group({
-        AssociatedSinceYear: [this.vendor.AssociatedSinceYear],
-        EnterpriseNature: [this.vendor.EnterpriseNature],
+        AssociatedSinceYear: [this.vendor.AssociatedSinceYear, Validators.required],
+        EnterpriseNature: [this.vendor.EnterpriseNature, Validators.required],
         Partner1Name: [this.vendor.Partner1Name],
         Partner2Name: [this.vendor.Partner2Name],
         IsExpanded: false
@@ -99,7 +99,7 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   MoveToSelectedPHList() {
-    console.log(this.personalDetailsForm);
+    console.log(this.personalDetailsForm.get('PersonalDetails.PHList').value);
   }
 
   MoveLeftToRight() {
@@ -117,7 +117,7 @@ export class PersonalDetailsComponent implements OnInit {
     movePh($btn1, $btn2, $fromSel, $toSel);
   }
   SavePersonalDetails() {
-    //alert('Click');
+    console.log(this.personalDetailsForm.value);
   }
 }
 
