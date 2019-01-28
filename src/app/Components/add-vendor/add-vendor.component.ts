@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Vendor } from 'src/app/Models/vendor';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-add-vendor',
@@ -8,12 +8,10 @@ import { Vendor } from 'src/app/Models/vendor';
 })
 export class AddVendorComponent implements OnInit {
 
-  producer: Vendor;
-  constructor() { }
+  vendorForm: FormGroup;
+  constructor(private _fb: FormBuilder) { }
 
   ngOnInit() {
-    this.producer = new Vendor;
   }
-
 
 }
