@@ -17,6 +17,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
 import { DocumentComponent } from './Components/document/document.component';
+import { VendorRegistrationComponent } from './Components/vendor-registration/vendor-registration.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { DocumentComponent } from './Components/document/document.component';
     PageNotFoundComponent,
     BusinessDetailsComponent,
     ProductionDetailsComponent,
-    DocumentComponent
+    DocumentComponent,
+    VendorRegistrationComponent
   ],
   imports: [
     BrowserModule,

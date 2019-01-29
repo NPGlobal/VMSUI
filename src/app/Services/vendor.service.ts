@@ -19,4 +19,9 @@ export class VendorService {
     const apiUrl = this.origin + 'v1/Vendor/GetVendorByCode/' + code;
     return this._http.get<any>(apiUrl);
   }
+
+  GetPHList(): Observable<any> {
+    const apiUrl = this.origin + 'api/OrgUnit/GetPHList';
+    return this._http.get<any>(apiUrl);
+  }
 }
