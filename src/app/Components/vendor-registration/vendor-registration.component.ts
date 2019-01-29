@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
+import { Vendor } from 'src/app/Models/vendor';
 
 @Component({
   selector: 'app-vendor-registration',
@@ -13,6 +14,8 @@ export class VendorRegistrationComponent implements OnInit {
   AllPHList: OrgUnit[];
   PHList: OrgUnit[];
   SelectedPHList: OrgUnit[] = [];
+  submitted = false;
+
   constructor(private _fb: FormBuilder, private _vendorService: VendorService) {
   }
 
@@ -22,42 +25,78 @@ export class VendorRegistrationComponent implements OnInit {
       this.PHList = PHList.Table;
     });
     this.RegistrationForm = this._fb.group({
-      Code: [''],
+      Code: ['', [Validators.required, Validators.maxLength(6)]],
       Name: [''],
-      VendorType: [''],
-      GSTIN: [''],
-      PANNo: [''],
+      VendorType: ['DP'],
+      IsRCM: ['False'],
+      IsProvisional: [''],
+      MasterVendorName: [''],
+      GSTIN: ['', [Validators.required, Validators.minLength(15), Validators.maxLength(15)]],
+      PANNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
-      SelectedPHList: [''],
+      SelectedPHList: ['', Validators.required],
       PHListCSV: ''
     });
   }
 
   SaveVendorPrimaryInfo() {
-    console.log(this.RegistrationForm.value);
+    const vendor = new Vendor();
+    vendor.Name = this.RegistrationForm.get('Name').value;
+    vendor.PANNo = this.RegistrationForm.get('PANNo').value;
+    vendor.GSTIN = this.RegistrationForm.get('GSTIN').value;
+    vendor.IsProvisional = this.RegistrationForm.get('IsProvisional').value;
+    vendor.IsRCM = this.RegistrationForm.get('IsRCM').value;
+    vendor.Code = this.RegistrationForm.get('Code').value;
+    vendor.VendorType = this.RegistrationForm.get('VendorType').value;
+    vendor.SelectedPHListCSV = this.RegistrationForm.get('SelectedPHList').value.join();
+    console.log(vendor);
+    this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
+      status = data;
+    });
   }
   MoveToSelectedPHList() {
     const values = this.RegistrationForm.get('PHList').value as Array<string>;
 
-    for (let i = 0; i < this.AllPHList.length; i++) {
-      if (values.includes(this.AllPHList[i].OrgUnitCode)) {
-        this.SelectedPHList.push(this.AllPHList[i]);
+    for (let i = 0; i < this.PHList.length; i++) {
+      if (values.includes(this.PHList[i].OrgUnitCode)) {
+        this.SelectedPHList.push(this.PHList[i]);
       }
     }
 
-    for (let i = 0; i < this.AllPHList.length; i++) {
-      if (values.includes(this.PHList[i].OrgUnitCode)) {
-        this.PHList = this.PHList.map(function (element) {
-          if (element !== this.PHList[i]) {
-            return element;
+    this.DeleteFromArray(values, 'PH');
+  }
+  MoveToPHList() {
+    const values = this.RegistrationForm.get('SelectedPHList').value as Array<string>;
+
+    for (let i = 0; i < this.SelectedPHList.length; i++) {
+      if (values.includes(this.SelectedPHList[i].OrgUnitCode)) {
+        this.PHList.push(this.SelectedPHList[i]);
+      }
+    }
+
+    this.DeleteFromArray(values, 'SelectedPH');
+  }
+
+  DeleteFromArray(stringArr: string[], type: string) {
+
+    for (let i = 0; i < stringArr.length; ++i) {
+      if (type === 'PH') {
+        this.PHList = this.PHList.filter(function (value) {
+          if (value.OrgUnitCode !== stringArr[i]) {
+            return value;
+          }
+        });
+      } else {
+        this.SelectedPHList = this.SelectedPHList.filter(function (value) {
+          if (value.OrgUnitCode !== stringArr[i]) {
+            return value;
           }
         });
       }
     }
   }
-  MoveToPHList() {
 
-  }
+
 
 
 }

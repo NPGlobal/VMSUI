@@ -27,4 +27,7 @@ export class Vendor {
     Customer3Name: string;
     Customer4Name: string;
     Customer5Name: string;
+    SelectedPHListCSV: string;
+    IsProvisional: Boolean;
+    IsRCM: Boolean;
 }
