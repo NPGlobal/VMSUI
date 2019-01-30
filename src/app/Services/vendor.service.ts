@@ -8,7 +8,8 @@ import { Vendor } from '../Models/vendor';
 })
 export class VendorService {
 
-  origin = 'http://172.16.7.60/VMSApi/';
+  // origin = 'http://172.16.7.60/VMSApi/';
+  origin = 'http://172.16.7.68/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number): Observable<any> {
@@ -30,4 +31,5 @@ export class VendorService {
     const apiUrl = this.origin + 'api/Vendor/SaveVendorPrimaryData';
     return this._http.post<any>(apiUrl, vendor);
   }
+
 }

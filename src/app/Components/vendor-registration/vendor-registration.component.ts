@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { Vendor } from 'src/app/Models/vendor';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vendor-registration',
@@ -15,8 +16,14 @@ export class VendorRegistrationComponent implements OnInit {
   PHList: OrgUnit[];
   SelectedPHList: OrgUnit[] = [];
   submitted = false;
+  dismiss = false;
 
-  constructor(private _fb: FormBuilder, private _vendorService: VendorService) {
+  @ViewChild('modalCloseButton')
+  modalCloseButton: ElementRef;
+
+  constructor(private _fb: FormBuilder,
+    private _vendorService: VendorService,
+    private _router: Router) {
   }
 
   ngOnInit() {
@@ -29,17 +36,19 @@ export class VendorRegistrationComponent implements OnInit {
       Name: [''],
       VendorType: ['DP'],
       IsRCM: ['False'],
-      IsProvisional: [''],
+      IsProvisional: [false],
       MasterVendorName: [''],
       GSTIN: ['', [Validators.required, Validators.minLength(15), Validators.maxLength(15)]],
       PANNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
-      SelectedPHList: ['', Validators.required],
+      SelectedPHList: null,
       PHListCSV: ''
     });
   }
 
   SaveVendorPrimaryInfo() {
+    const el = this.modalCloseButton.nativeElement as HTMLElement;
+    let statusObj: any;
     const vendor = new Vendor();
     vendor.Name = this.RegistrationForm.get('Name').value;
     vendor.PANNo = this.RegistrationForm.get('PANNo').value;
@@ -49,9 +58,12 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.Code = this.RegistrationForm.get('Code').value;
     vendor.VendorType = this.RegistrationForm.get('VendorType').value;
     vendor.SelectedPHListCSV = this.RegistrationForm.get('SelectedPHList').value.join();
-    console.log(vendor);
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
-      status = data;
+      statusObj = data;
+      if (statusObj.Status === 0) {
+        el.click();
+        this._router.navigate(['vendor/' + vendor.Code + '/personal']);
+      }
     });
   }
   MoveToSelectedPHList() {
@@ -96,6 +108,15 @@ export class VendorRegistrationComponent implements OnInit {
     }
   }
 
+  SetPHListValidation() {
+    if (this.RegistrationForm.get('VendorType').value === 'JW') {
+      this.RegistrationForm.get('SelectedPHList').setValidators([Validators.required]);
+      this.RegistrationForm.get('SelectedPHList').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+    } else {
+      this.RegistrationForm.get('SelectedPHList').setValidators(null);
+      this.RegistrationForm.get('SelectedPHList').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+    }
+  }
 
 
 

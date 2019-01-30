@@ -28,21 +28,19 @@ export class PersonalDetailsComponent implements OnInit {
     this._route.parent.paramMap.subscribe((data) => {
       this.Code = (data.get('code'));
     });
-    this.Editvendor(this.Code);
+    if (this.Code === null) {
+      this.vendor = new Vendor();
+      this.InitializeFormControls();
+    } else {
+      this.Editvendor(this.Code);
+    }
   }
 
   Editvendor(Code: string) {
-    if (Code === null) {
-      this.vendor = new Vendor();
+    this._vendorService.GetVendorByCode(Code).subscribe((data) => {
+      this.vendor = data.Vendor[0];
       this.InitializeFormControls();
-
-    } else {
-      this._vendorService.GetVendorByCode(Code).subscribe((data) => {
-        this.vendor = data.Vendor[0];
-        this.InitializeFormControls();
-      });
-    }
-
+    });
   }
 
   InitializeFormControls() {
@@ -102,34 +100,35 @@ export class PersonalDetailsComponent implements OnInit {
     console.log(this.personalDetailsForm);
   }
 
-  MoveLeftToRight() {
-    var $btn1 = $('#btnAdd');
-    var $btn2 = $('#btnRemove');
-    var $fromSel = $('#list1');
-    var $toSel = $('#list2');
-    movePh($btn1, $btn2, $fromSel, $toSel);
-  }
-  MoveRightToLeft() {
-    var $btn1 = $('#btnRemove');
-    var $btn2 = $('#btnAdd');
-    var $fromSel = $('#list2');
-    var $toSel = $('#list1');
-    movePh($btn1, $btn2, $fromSel, $toSel);
-  }
-  SavePersonalDetails() {
-    //alert('Click');
-  }
-}
+  //   MoveLeftToRight() {
+  //     var $btn1 = $('#btnAdd');
+  //     var $btn2 = $('#btnRemove');
+  //     var $fromSel = $('#list1');
+  //     var $toSel = $('#list2');
+  //     movePh($btn1, $btn2, $fromSel, $toSel);
+  //   }
+  //   MoveRightToLeft() {
+  //     var $btn1 = $('#btnRemove');
+  //     var $btn2 = $('#btnAdd');
+  //     var $fromSel = $('#list2');
+  //     var $toSel = $('#list1');
+  //     movePh($btn1, $btn2, $fromSel, $toSel);
+  //   }
+  //   SavePersonalDetails() {
+  //     //alert('Click');
+  //   }
+  // }
 
-function movePh($btn1, $btn2, $fromSel, $toSel) {
-  if ($fromSel.find('option').length == 0)
-    alert('No item found to move.');
-  else if ($fromSel.find('option:selected').length == 0)
-    alert('Please select atleast one item for move.');
+  // function movePh($btn1, $btn2, $fromSel, $toSel) {
+  //   if ($fromSel.find('option').length == 0)
+  //     alert('No item found to move.');
+  //   else if ($fromSel.find('option:selected').length == 0)
+  //     alert('Please select atleast one item for move.');
 
-  $fromSel.find('option:selected').appendTo($toSel);
-  if ($fromSel.find('option').length == 0)
-    $btn1.attr('disabled', 'disabled');
-  if ($toSel.find('option').length > 0)
-    $btn2.removeAttr('disabled');
+  //   $fromSel.find('option:selected').appendTo($toSel);
+  //   if ($fromSel.find('option').length == 0)
+  //     $btn1.attr('disabled', 'disabled');
+  //   if ($toSel.find('option').length > 0)
+  //     $btn2.removeAttr('disabled');
+  // }
 }
