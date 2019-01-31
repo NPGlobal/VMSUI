@@ -15,6 +15,7 @@ export class VendorRegistrationComponent implements OnInit {
   AllPHList: OrgUnit[];
   PHList: OrgUnit[];
   SelectedPHList: OrgUnit[] = [];
+  CodeExists: boolean;
 
   HasPHSelected: boolean;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
@@ -47,6 +48,7 @@ export class VendorRegistrationComponent implements OnInit {
     });
 
     this.HasPHSelected = true;
+    this.CodeExists = false;
   }
 
   SaveVendorPrimaryInfo() {
@@ -61,12 +63,17 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.Code = this.RegistrationForm.get('Code').value;
     vendor.VendorType = this.RegistrationForm.get('VendorType').value;
     vendor.SelectedPHListCSV = (this.RegistrationForm.get('VendorType').value === 'DP') ? '10' :
-      this.RegistrationForm.get('SelectedPHList').value.join();
+      this.SelectedPHList.map(function (element) {
+        return element.OrgUnitCode;
+      }).join();
+
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
       statusObj = data;
       if (statusObj.Status === 0) {
         el.click();
         this._router.navigate(['vendor/' + vendor.Code + '/personal']);
+      } else if (statusObj.Status === 2) {
+        this.CodeExists = true;
       }
     });
   }

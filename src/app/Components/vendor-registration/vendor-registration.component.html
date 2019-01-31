@@ -23,13 +23,16 @@
                   <div class="col-sm-4">
                     <input formControlName="Code" type="text" class="form-control input-sm" />
 
-                    <span *ngIf="RegistrationForm.get('Code').invalid && 
+                    <span *ngIf="CodeExists || RegistrationForm.get('Code').invalid && 
                     (RegistrationForm.get('Code').dirty || RegistrationForm.get('Code').touched)"
                       class="alert-danger">
-                      <span *ngIf="RegistrationForm.get('Code').errors.required">
+                      <span *ngIf="CodeExists">
+                        Code already exists.
+                      </span>
+                      <span *ngIf="!CodeExists && RegistrationForm.get('Code').errors.required">
                         Code is required.
                       </span>
-                      <span *ngIf="RegistrationForm.get('Code').errors.maxlength">
+                      <span *ngIf="!CodeExists && RegistrationForm.get('Code').errors.maxlength">
                         Code must be 6 characters.
                       </span>
                     </span>

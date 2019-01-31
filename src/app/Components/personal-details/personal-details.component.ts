@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
+import { OrgUnit } from 'src/app/Models/OrgUnit';
 
 declare var $: any;
 
@@ -19,6 +20,10 @@ export class PersonalDetailsComponent implements OnInit {
   Code: string;
   vendorType = 'DP';
 
+  AllPHList: OrgUnit[];
+  PHList: OrgUnit[] = [];
+  SelectedPHList: OrgUnit[] = [];
+
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder) { }
@@ -28,6 +33,11 @@ export class PersonalDetailsComponent implements OnInit {
     this._route.parent.paramMap.subscribe((data) => {
       this.Code = (data.get('code'));
     });
+
+    this._vendorService.GetPHList().subscribe(PHList => {
+      this.AllPHList = PHList.Table;
+    });
+
     if (this.Code === null) {
       this.vendor = new Vendor();
       this.InitializeFormControls();
@@ -39,8 +49,22 @@ export class PersonalDetailsComponent implements OnInit {
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((data) => {
       this.vendor = data.Vendor[0];
+      this.FillPHLists();
       this.InitializeFormControls();
     });
+  }
+
+  FillPHLists() {
+    if (this.vendor.SelectedPHListCSV) {
+      const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
+      for (let i = 0; i < this.AllPHList.length; ++i) {
+        if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
+          this.SelectedPHList.push(this.AllPHList[i]);
+        } else {
+          this.PHList.push(this.AllPHList[i]);
+        }
+      }
+    }
   }
 
   InitializeFormControls() {
@@ -58,15 +82,13 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: true
       }),
       Address: this._fb.group({
-        addressForm: this._fb.array([{
-          nameInAddress: [this.vendor.nameInAddress],
-          PIN: [this.vendor.PIN],
-          State: [this.vendor.State],
-          AddressLine1: [this.vendor.AddressLine1],
-          AddressLine2: [this.vendor.AddressLine2],
-          City: [this.vendor.City],
-          AddressType: [this.vendor.AddressType]
-        }]),
+        nameInAddress: [this.vendor.nameInAddress],
+        PIN: [this.vendor.PIN],
+        State: [this.vendor.State],
+        AddressLine1: [this.vendor.AddressLine1],
+        AddressLine2: [this.vendor.AddressLine2],
+        City: [this.vendor.City],
+        AddressType: [this.vendor.AddressType],
         IsExpanded: false
       }),
       Contact: this._fb.group({
@@ -101,6 +123,5 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   MoveToSelectedPHList() {
-    console.log(this.personalDetailsForm);
   }
 }
