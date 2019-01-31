@@ -15,8 +15,9 @@ export class VendorRegistrationComponent implements OnInit {
   AllPHList: OrgUnit[];
   PHList: OrgUnit[];
   SelectedPHList: OrgUnit[] = [];
-  submitted = false;
-  dismiss = false;
+
+  HasPHSelected: boolean;
+  AlphanumericPattern = '^[a-zA-Z0-9]*$';
 
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
@@ -35,15 +36,17 @@ export class VendorRegistrationComponent implements OnInit {
       Code: ['', [Validators.required, Validators.maxLength(6)]],
       Name: [''],
       VendorType: ['DP'],
-      IsRCM: ['False'],
+      IsRCM: [false],
       IsProvisional: [false],
       MasterVendorName: [''],
-      GSTIN: ['', [Validators.required, Validators.minLength(15), Validators.maxLength(15)]],
-      PANNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+      GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
+      PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       SelectedPHList: null,
       PHListCSV: ''
     });
+
+    this.HasPHSelected = true;
   }
 
   SaveVendorPrimaryInfo() {
@@ -57,7 +60,8 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.IsRCM = this.RegistrationForm.get('IsRCM').value;
     vendor.Code = this.RegistrationForm.get('Code').value;
     vendor.VendorType = this.RegistrationForm.get('VendorType').value;
-    vendor.SelectedPHListCSV = this.RegistrationForm.get('SelectedPHList').value.join();
+    vendor.SelectedPHListCSV = (this.RegistrationForm.get('VendorType').value === 'DP') ? '10' :
+      this.RegistrationForm.get('SelectedPHList').value.join();
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
       statusObj = data;
       if (statusObj.Status === 0) {
@@ -66,6 +70,7 @@ export class VendorRegistrationComponent implements OnInit {
       }
     });
   }
+
   MoveToSelectedPHList() {
     const values = this.RegistrationForm.get('PHList').value as Array<string>;
 
@@ -76,7 +81,9 @@ export class VendorRegistrationComponent implements OnInit {
     }
 
     this.DeleteFromArray(values, 'PH');
+    this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
   }
+
   MoveToPHList() {
     const values = this.RegistrationForm.get('SelectedPHList').value as Array<string>;
 
@@ -87,6 +94,7 @@ export class VendorRegistrationComponent implements OnInit {
     }
 
     this.DeleteFromArray(values, 'SelectedPH');
+    this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -109,15 +117,10 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SetPHListValidation() {
-    if (this.RegistrationForm.get('VendorType').value === 'JW') {
-      this.RegistrationForm.get('SelectedPHList').setValidators([Validators.required]);
-      this.RegistrationForm.get('SelectedPHList').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+    if (this.RegistrationForm.get('VendorType').value === 'DP') {
+      this.HasPHSelected = true;
     } else {
-      this.RegistrationForm.get('SelectedPHList').setValidators(null);
-      this.RegistrationForm.get('SelectedPHList').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+      this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
     }
   }
-
-
-
 }

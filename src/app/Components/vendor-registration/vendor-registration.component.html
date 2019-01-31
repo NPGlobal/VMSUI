@@ -52,6 +52,9 @@
                       <span *ngIf="RegistrationForm.get('PANNo').errors.required">
                         PAN is required.
                       </span>
+                      <span *ngIf="RegistrationForm.get('PANNo').errors.pattern">
+                        No special characters allowed.
+                      </span>
                       <span *ngIf="RegistrationForm.get('PANNo').errors.maxlength || RegistrationForm.get('PANNo').errors.minlength">
                         PAN must be 10 characters.
                       </span>
@@ -66,6 +69,9 @@
 
                       <span *ngIf="RegistrationForm.get('GSTIN').errors.required">
                         GSTIN is required.
+                      </span>
+                      <span *ngIf="RegistrationForm.get('GSTIN').errors.pattern">
+                        No special characters allowed.
                       </span>
                       <span *ngIf="RegistrationForm.get('GSTIN').errors.maxlength || RegistrationForm.get('GSTIN').errors.minlength">
                         GSTIN must be 15 characters.
@@ -140,12 +146,10 @@
                       <select formControlName="SelectedPHList" class="form-control input-sm" size="8" multiple="multiple">
                         <option *ngFor="let PH of SelectedPHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
                       </select>
-                      <span *ngIf="RegistrationForm.get('SelectedPHList').invalid &&
-                                   (RegistrationForm.get('SelectedPHList').dirty ||
-                                   RegistrationForm.get('SelectedPHList').touched)"
+                      <span *ngIf="!HasPHSelected"
                         class="alert-danger">
 
-                        <span *ngIf="RegistrationForm.get('SelectedPHList').errors.required">
+                        <span *ngIf="!HasPHSelected">
                           PH is required.
                         </span>
                       </span>
@@ -160,7 +164,7 @@
 
         <!-- Modal footer -->
         <div class="modal-footer col-md-12  page-footer">
-          <button type="submit" [disabled]="!RegistrationForm.valid" class="mr-3 btn btn-danger">Register</button>
+          <button type="submit" [disabled]="(!RegistrationForm.valid || !HasPHSelected)" class="mr-3 btn btn-danger">Register</button>
           <button #modalCloseButton type="button" class="btn" data-dismiss="modal">Cancel</button>
         </div>
       </form>
