@@ -19,4 +19,11 @@ export class VendorService {
     const apiUrl = this.origin + 'v1/Vendor/GetVendorByCode/' + code;
     return this._http.get<any>(apiUrl);
   }
+
+  //Added by Shubhi
+  SaveStaffInfo(staffForm: any): Observable<any> {
+    const apiUrl = this.origin+'SaveVendorStaff';
+    return this._http.post<any>(apiUrl,staffForm);
+  }
+
 }
