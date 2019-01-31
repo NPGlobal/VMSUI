@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
+import { splitAtColon } from '@angular/compiler/src/util';
 
 declare var $: any;
 
@@ -15,7 +16,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   vendor: Vendor;
   personalDetailsForm: FormGroup;
-
+  SelectedPHList: any[];
   Code: string;
   vendorType = 'DP';
 
@@ -94,6 +95,8 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: false
       })
     });
+    this.SelectedPHList = this.vendor.SelectedPHListCSV.split(',');
+
   }
 
   ToggleContainer(formGroup: FormGroup) {

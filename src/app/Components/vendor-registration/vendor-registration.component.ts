@@ -33,10 +33,10 @@ export class VendorRegistrationComponent implements OnInit {
       this.PHList = PHList.Table;
     });
     this.RegistrationForm = this._fb.group({
-      Code: ['', [Validators.required, Validators.maxLength(6)]],
+      Code: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
       Name: [''],
       VendorType: ['DP'],
-      IsRCM: [false],
+      IsRCM: ['false'],
       IsProvisional: [false],
       MasterVendorName: [''],
       GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
@@ -47,6 +47,40 @@ export class VendorRegistrationComponent implements OnInit {
     });
 
     this.HasPHSelected = true;
+  }
+
+  dismiss() {
+    this.RegistrationForm = this._fb.group({
+      Code: ['', [Validators.required, Validators.maxLength(6)]],
+      Name: [''],
+      VendorType: ['DP'],
+      IsRCM: ['false'],
+      IsProvisional: [false],
+      MasterVendorName: [''],
+      GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
+      PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
+      PHList: [''],
+      SelectedPHList: null,
+      PHListCSV: ''
+    });
+    this.PHList = this.AllPHList;
+    this.SelectedPHList = [];
+  }
+
+  NoPHLeft() {
+    if (this.PHList.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  NoSelectedPH() {
+    if (this.SelectedPHList.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   SaveVendorPrimaryInfo() {
