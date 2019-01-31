@@ -58,11 +58,15 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: true
       }),
       Address: this._fb.group({
-        RegisOffAddr: [this.vendor.RegisOffAddr],
-        FactoryAddr: [this.vendor.FactoryAddr],
-        City: [this.vendor.City],
-        State: [this.vendor.State],
-        PIN: [this.vendor.PIN],
+        addressForm: this._fb.array([{
+          nameInAddress: [this.vendor.nameInAddress],
+          PIN: [this.vendor.PIN],
+          State: [this.vendor.State],
+          AddressLine1: [this.vendor.AddressLine1],
+          AddressLine2: [this.vendor.AddressLine2],
+          City: [this.vendor.City],
+          AddressType: [this.vendor.AddressType]
+        }]),
         IsExpanded: false
       }),
       Contact: this._fb.group({
@@ -99,36 +103,4 @@ export class PersonalDetailsComponent implements OnInit {
   MoveToSelectedPHList() {
     console.log(this.personalDetailsForm);
   }
-
-  //   MoveLeftToRight() {
-  //     var $btn1 = $('#btnAdd');
-  //     var $btn2 = $('#btnRemove');
-  //     var $fromSel = $('#list1');
-  //     var $toSel = $('#list2');
-  //     movePh($btn1, $btn2, $fromSel, $toSel);
-  //   }
-  //   MoveRightToLeft() {
-  //     var $btn1 = $('#btnRemove');
-  //     var $btn2 = $('#btnAdd');
-  //     var $fromSel = $('#list2');
-  //     var $toSel = $('#list1');
-  //     movePh($btn1, $btn2, $fromSel, $toSel);
-  //   }
-  //   SavePersonalDetails() {
-  //     //alert('Click');
-  //   }
-  // }
-
-  // function movePh($btn1, $btn2, $fromSel, $toSel) {
-  //   if ($fromSel.find('option').length == 0)
-  //     alert('No item found to move.');
-  //   else if ($fromSel.find('option:selected').length == 0)
-  //     alert('Please select atleast one item for move.');
-
-  //   $fromSel.find('option:selected').appendTo($toSel);
-  //   if ($fromSel.find('option').length == 0)
-  //     $btn1.attr('disabled', 'disabled');
-  //   if ($toSel.find('option').length > 0)
-  //     $btn2.removeAttr('disabled');
-  // }
 }
