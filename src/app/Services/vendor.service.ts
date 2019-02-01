@@ -32,10 +32,10 @@ export class VendorService {
     return this._http.post<any>(apiUrl, vendor);
   }
 
-  //Added by Shubhi
+  // Added by Shubhi
   SaveStaffInfo(staffForm: any): Observable<any> {
-    const apiUrl = this.origin+'SaveVendorStaff';
-    return this._http.post<any>(apiUrl,staffForm);
+    const apiUrl = this.origin + 'SaveVendorStaff';
+    return this._http.post<any>(apiUrl, staffForm);
   }
 
 }

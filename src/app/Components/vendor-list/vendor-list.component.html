@@ -1,4 +1,4 @@
-<div class="top-margin container" style="margin-left: 0px;">
+<div class="top-margin container" style="margin-left: 0px; max-width: 100%;">
   <div class="float-left">
     <h2>Producers</h2>
   </div>
@@ -38,7 +38,7 @@
         <button class="page-link" (click)="GetVendors(1)">First</button>
       </li>
       <li class="page-item" *ngIf="pager.currentPage !== 1">
-        <a class="page-link" (click)="GetVendors(pager.currentPage - 1)">Prev</a>
+        <button class="page-link" (click)="GetVendors(pager.currentPage - 1)">Prev</button>
       </li>
 
       <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
@@ -46,10 +46,10 @@
       </li>
 
       <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <a class="page-link" (click)="GetVendors(pager.currentPage + 1)">Next</a>
+        <button class="page-link" (click)="GetVendors(pager.currentPage + 1)">Next</button>
       </li>
       <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <a class="page-link" (click)="GetVendors(pager.totalPages)">Last</a>
+        <button class="page-link" (click)="GetVendors(pager.totalPages)">Last</button>
       </li>
     </ul>
   </nav>
