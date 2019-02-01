@@ -36,6 +36,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     this._vendorService.GetPHList().subscribe(PHList => {
       this.AllPHList = PHList.Table;
+      this.FillPHLists();
     });
 
     if (this.Code === null) {
@@ -49,7 +50,6 @@ export class PersonalDetailsComponent implements OnInit {
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((data) => {
       this.vendor = data.Vendor[0];
-      this.FillPHLists();
       this.InitializeFormControls();
     });
   }

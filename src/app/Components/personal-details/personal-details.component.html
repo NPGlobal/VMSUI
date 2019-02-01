@@ -33,13 +33,8 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <div class="masterVendorLabelDiv">Master Vendor Name
-                                </div>
-                                <small>(Parent/sister company)</small>
-                                <span>
-                                    <input type="text" formControlName="MasterVendorName" class="form-control input-sm"
-                                        value="" />
-                                </span>
+                                <label class="text">GST Registration No.</label>
+                                <span><input disabled type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">PAN No.</label>
@@ -48,8 +43,13 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <label class="text">GST Registration No.</label>
-                                <span><input disabled type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
+                                <div class="masterVendorLabelDiv">Master Vendor Name
+                                </div>
+                                <small>(Parent/sister company)</small>
+                                <span>
+                                    <input type="text" formControlName="MasterVendorName" class="form-control input-sm"
+                                        value="" />
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -91,14 +91,16 @@
                                 </div>
                                 <div class="col-md-1" style="padding-left:5px;">
 
-                                    <input type="button" disabled="disabled" style="margin-bottom: 5px;" value=">" (click)="MoveToSelectedPHList()">
+                                    <input type="button" disabled="disabled" style="margin-bottom: 5px;" value=">"
+                                        (click)="MoveToSelectedPHList()">
                                     <input type="button" disabled="disabled" value="<" (click)="MoveToPHList()">
 
                                 </div>
                                 <div class="col-md-5" style="padding-left:8px;padding-right: 0px">
                                     <label class="text">Selected PH</label>
                                     <span>
-                                        <select disabled class="form-control input-sm" name="list2" size="8" id="list2" multiple="multiple">
+                                        <select disabled class="form-control input-sm" name="list2" size="8" id="list2"
+                                            multiple="multiple">
                                             <option *ngFor="let PH of SelectedPHList" [value]="PH.OrgUnitCode">{{
                                                 PH.OrgUnitName }}</option>
                                         </select>
