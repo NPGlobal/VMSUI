@@ -21,17 +21,20 @@
               </label>
               
               <span>
-                <select formControlName="dept" class="form-control input-sm" (change)="BindDesignation($event)"
+                <select formControlName="dept" class="form-control input-sm" (change)="GetVendorDesignation($event)"
+                
                   [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.dept.touched || submitted) && staffDetailsForm.controls.dept.errors }">
 
                   <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
                     <p *ngIf="staffDetailsForm.controls.dept.errors.required">Department is required</p>
                   </div> -->
                   <option value="">Select</option>
-                  <option value="cu">Cutting</option>
-                  <option value="fi">Finishing</option>
-                  <option value="pa">Packing</option>
-                </select>
+                  <option *ngFor="let option of deptList" value={{option.DeptCode}}>
+                    {{option.DeptName}}
+                  </option>
+                  <!-- <option value="CU">Cutting</option>
+                  <option value="pro">Production</option> -->
+                  </select>
               </span>
             </div>
             <div class="col-md-4">
@@ -44,9 +47,12 @@
               <span>
                 <select formControlName="designation" class="form-control input-sm" [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.designation.touched || submitted) && staffDetailsForm.controls.designation.errors }">
                   <option value="">Select</option>
-                  <option value="gm">General Manager</option>
+                  <option *ngFor="let option of designationList" value={{option.VendorConfigID}}>
+                    {{option.Designation}}
+                  </option>
+                  <!-- <option value="gm">General Manager</option>
                   <option value="in">Incharge</option>
-                  <option value="he">Helper</option>
+                  <option value="he">Helper</option> -->
                 </select>
               </span>
             </div>

@@ -32,10 +32,29 @@ export class VendorService {
     return this._http.post<any>(apiUrl, vendor);
   }
 
-  //Added by Shubhi
-  SaveStaffInfo(staffForm: any): Observable<any> {
-    const apiUrl = this.origin+'SaveVendorStaff';
-    return this._http.post<any>(apiUrl,staffForm);
+  // Added by Shubhi
+  SaveStaffInfo(VendorStaff: any): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/SaveVendorStaffInfo';
+    return this._http.post<any>(apiUrl, VendorStaff);
   }
 
+  GetVendorsDeptStaff(companycode: string, deptcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + type;
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetVendorDesignation(companycode: string, deptcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + type;
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetVendorDeptTech(companycode: string, deptcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetVendorTechSpec(companycode: string, deptcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
+    return this._http.get<any>(apiUrl);
+  }
 }
