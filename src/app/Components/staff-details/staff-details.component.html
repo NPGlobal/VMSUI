@@ -22,6 +22,7 @@
               
               <span>
                 <select formControlName="dept" class="form-control input-sm" (change)="GetVendorDesignation($event)"
+                
                   [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.dept.touched || submitted) && staffDetailsForm.controls.dept.errors }">
 
                   <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
@@ -31,7 +32,9 @@
                   <option *ngFor="let option of deptList" value={{option.DeptCode}}>
                     {{option.DeptName}}
                   </option>
-                </select>
+                  <!-- <option value="CU">Cutting</option>
+                  <option value="pro">Production</option> -->
+                  </select>
               </span>
             </div>
             <div class="col-md-4">
