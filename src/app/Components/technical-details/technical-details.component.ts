@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { VendorTech } from 'src/app/Models/VendorTech';
+import { VendorService } from 'src/app/Services/vendor.service';
+import { HttpClient } from '@angular/common/http';
+import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
 
 @Component({
@@ -7,39 +13,94 @@ declare var $: any;
   styleUrls: ['./technical-details.component.css']
 })
 export class TechnicalDetailsComponent implements OnInit {
-
-  constructor() { }
+  Code: string;
+  VendorTech: VendorTech;
+  techDetailsForm: FormGroup;
+  personalDetailsForm: FormGroup;
+  deptList: any[];
+  techSpecList: any[];
+  status = true;
+  submitted = false;
+  constructor(private _vendorService: VendorService,
+    private _route: ActivatedRoute,
+    private _fb: FormBuilder) { }
 
   ngOnInit() {
-   // collapseAll();
-    $('.glyphicon-expand').click(function(){
-      toggelDiv($(this));
+    this.GetVendorDepartments();
+
+    this._route.parent.paramMap.subscribe((data) => {
+      this.Code = (data.get('code'));
     });
-    // setPlaceHolder();
+
+    this.techDetailsForm = this._fb.group({
+      dept: ['', Validators.required],
+      techSpec: ['', Validators.required],
+      techLineNo: ['', Validators.required],
+      efficiency: ['', Validators.required],
+      unitCount: ['', Validators.required],
+      status: true,
+      remarks: '',
+      IsExpanded: true
+
+
+    });
+  }
+  GetVendorDepartments() {
+    this._vendorService.GetVendorDeptTech('10', '-1', 'Department').subscribe((data) => {
+      this.deptList = data;
+    });
+  }
+  GetVendorTechSpec() {
+
+    // console.log(this.techDetailsForm.get('dept').value);
+    this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, 'TechSpec').subscribe((data) => {
+      this.techSpecList = data;
+    });
   }
 
+  InitializeFormControls() {
+
+    this.techDetailsForm = this._fb.group({
+      dept: [this.VendorTech.dept],
+      designation: [this.VendorTech.techSpec],
+      techLineNo: [this.VendorTech.TechLineNo],
+      efficiency: [this.VendorTech.Efficiency],
+      unitCount: [this.VendorTech.UnitCount],
+      status: [this.VendorTech.Status],
+      remarks: [this.VendorTech.Remarks],
+      IsExpanded: true
+    });
+  }
+
+  ToggleContainer(formGroup: FormGroup) {
+    formGroup.controls.IsExpanded.patchValue(!formGroup.controls.IsExpanded.value);
+  }
+
+  SaveTechDetails() {
+    this.submitted = true;
+    // alert(1);
+    if (this.techDetailsForm.invalid) {
+      alert('Something Went Wrong!!!');
+      return;
+    }
+    // console.log(JSON.stringify(this.addressForm));
+    this.VendorTech = new VendorTech();
+    this.VendorTech.VendorTechDetailsID = 0;
+    this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techLineNo').value;
+    // this.VendorTech.VendorCode = this.personalDetailsForm.get('code').value;
+    this.VendorTech.VendorCode = this.Code;
+    this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value;
+    this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
+    this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
+    this.VendorTech.Status = this.techDetailsForm.get('status').value;
+    this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
+    this.VendorTech.CreatedBy = 999999;
+    console.log(JSON.stringify(this.VendorTech));
+    alert(JSON.stringify(this.VendorTech));
+    // this._vendorService.SavetechInfo(this.Vendortech).subscribe();
+    alert('SUCCESS!! :-)');
+  }
+  // alert(1);
+  // alert(JSON.stringify(this.techDetailsForm.value));
 }
 
-function toggelDiv(obj) {
-  var $span=$(obj).find('span');
-  var $objD=$(obj).closest('div.content-heading').next('div.mycontainer');
-  var t=$span.text();
-
-  if(t=='+')
-    $span.text('-');
-  else
-    $span.text('+');
-  $objD.slideToggle()
-}
-
-// function setPlaceHolder(){
-//   $('.main-div').find('input[type="text"]').each(function(){
-//     var $txt=$(this);
-//     if($txt.length>0){
-//       var $lab=$txt.closest('span').prev('label.text');
-//       if($lab.length>0){
-//         $txt.attr('placeholder',$lab.text().trim());
-//       }
-//     }
-//   });
-// }

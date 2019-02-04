@@ -3,4 +3,11 @@
 #ashu .col{padding:0px;}
 #ashu .col-md-12,.col-md-6{padding-left:0px;}
 
+.error-label{
+    color:red;
+    font-size: 90%;
+    font-weight: 400;
+
+}
+
 
