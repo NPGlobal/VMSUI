@@ -34,11 +34,6 @@ export class PersonalDetailsComponent implements OnInit {
       this.Code = (data.get('code'));
     });
 
-    this._vendorService.GetPHList().subscribe(PHList => {
-      this.AllPHList = PHList.Table;
-      this.FillPHLists();
-    });
-
     if (this.Code === null) {
       this.vendor = new Vendor();
       this.InitializeFormControls();

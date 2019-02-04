@@ -42,18 +42,16 @@ export class StaffDetailsComponent implements OnInit {
       status: true,
       remarks: '',
       IsExpanded: true
-
-
     });
   }
+
   GetVendorDepartments() {
     this._vendorService.GetVendorsDeptStaff('10', '-1', 'Department').subscribe((data) => {
       this.deptList = data;
     });
   }
-  GetVendorDesignation() {
 
-    // console.log(this.staffDetailsForm.get('dept').value);
+  GetVendorDesignation() {
     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, 'Designation').subscribe((data) => {
       this.designationList = data;
     });
@@ -80,16 +78,16 @@ export class StaffDetailsComponent implements OnInit {
 
   SaveStaffDetails() {
     this.submitted = true;
-    // alert(1);
+    let statusObj: any;
+
     if (this.staffDetailsForm.invalid) {
       alert('Something Went Wrong!!!');
       return;
     }
-    // console.log(JSON.stringify(this.addressForm));
+
     this.VendorStaff = new VendorStaff();
     this.VendorStaff.VendorStaffDetailsID = 0;
     this.VendorStaff.VendorStaffConfigID = 1;
-    // this.VendorStaff.VendorCode = this.personalDetailsForm.get('code').value;
     this.VendorStaff.VendorCode = this.Code;
     this.VendorStaff.ContactName = this.staffDetailsForm.get('name').value;
     this.VendorStaff.ContactEmail = this.staffDetailsForm.get('email').value;
@@ -98,12 +96,19 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff.Status = this.staffDetailsForm.get('status').value;
     this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value;
     this.VendorStaff.CreatedBy = 999999;
-    console.log(JSON.stringify(this.VendorStaff));
-    alert(JSON.stringify(this.VendorStaff));
-    this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe();
-    alert('SUCCESS!! :-)');
+
+    this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
+      statusObj = data;
+
+      if (statusObj.Status) {
+        alert('Saved successfully.');
+        this.VendorStaff = new VendorStaff();
+        this.staffDetailsForm.reset();
+        this.InitializeFormControls();
+      } else {
+        alert('Error occured while saving.');
+      }
+    });
   }
-  // alert(1);
-  // alert(JSON.stringify(this.staffDetailsForm.value));
 }
 
