@@ -47,7 +47,7 @@
               <span>
                 <select formControlName="techSpec" class="form-control input-sm" [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techSpec.touched || submitted) && techDetailsForm.controls.techSpec.errors }">
                   <option value="">Select</option>
-                  <option *ngFor="let option of techSpecList" value={{option.VenorConfigID}}>
+                  <option *ngFor="let option of techSpecList" value={{option.VendorConfigID}}>
                     {{option.TechSpec}}
                   </option>
                   <!-- <option value="gm">General Manager</option>
