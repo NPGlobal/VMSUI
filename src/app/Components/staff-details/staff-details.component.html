@@ -79,13 +79,14 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-lg-12 col-md-12">
+                    <label class="text">Name <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" name="name" formControlName="name" class="form-control input-sm" placeholder="Name" 
+                    <input type="text" name="name" formControlName="name" class="form-control input-sm" 
                     [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors }">
                   </span>
-                  <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors}"
+                  <!-- <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors}"
                       *ngIf="(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors">
-                        &nbsp;(Name is required)</label>
+                        &nbsp;(Name is required)</label> -->
                 </div>
               </div>
             </div>
@@ -93,19 +94,21 @@
             <div class="form-group col-lg-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
+                    <label class="text">Email</label>
                   <span>
-                    <input type="text" name="email" formControlName="email" class="form-control input-sm" placeholder="Email" [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors }" />
+                    <input type="text" name="email" formControlName="email" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors }" />
                   </span>
-                  <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors}"
+                  <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors}"
                   *ngIf="(staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors">
-                    &nbsp;(Please enter a valid email)</label>
+                  Please enter a valid email</span>
                 </div>
                 <div class="col-lg-6 col-md-6">
+                    <label class="text">Phone</label>
                     <span><input type="text" name="phone" formControlName="phone" 
-                    class="form-control input-sm" placeholder="Phone" [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors }" /></span>
-                    <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors}"
+                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors }" /></span>
+                    <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors}"
                     *ngIf="(staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors">
-                      &nbsp;(Please enter a valid phone)</label>
+                     Please enter a valid phone</span>
                 </div>
               </div>
             </div>
@@ -113,8 +116,9 @@
               <div class="row">
                   <div class="col-lg-12 col-md-12">
                     <span>
+                        <label class="text">Remarks</label>
                       <input type="text" name="remarks" formControlName="remarks" 
-                      class="form-control input-sm" placeholder="Remarks" /></span>
+                      class="form-control input-sm" /></span>
                   </div>
               </div>
             </div>
@@ -122,18 +126,18 @@
             <div class="form-group col-lg-12">
               <div class="row">
                   <div class="col-lg-6 col-md-6">
-                      <label class="text">
-                          <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm" placeholder="Priority"
-                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors }" /></span>
-                          <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors}"
+                      <label class="text">Priority <span class="error-label">*</span></label>
+                          <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm"
+                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
+                          <!-- <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors}"
                               *ngIf="(staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors">
-                               &nbsp;(Priority is required)</label>
-                      </label>
+                               &nbsp;(Priority is required)</label> -->
+                     
                   </div>
                   <div class="col-lg-3 col-md-3">
-                      
+                   
                         <span><input type="checkbox" name="status" formControlName="status" /></span>
-                        <label class="text" style="margin-left: 5px;font-size: 13px;">Active</label>
+                        <label class="text" style="margin-left: 5px;font-size: 13px; margin-top:43%">Active</label>
                   </div>
               </div>
             </div>
@@ -154,7 +158,9 @@
       </div>
     </div>
   </div>
-
+<style type="text/css">
+input[type="text"],select{margin-bottom:0px !important;}
+</style>
 <!-- <div id="ashu" >
       <div class="col-md-66">
         <div class="content-heading">Cutting Department</div>

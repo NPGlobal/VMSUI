@@ -81,13 +81,12 @@ export class StaffDetailsComponent implements OnInit {
     let statusObj: any;
 
     if (this.staffDetailsForm.invalid) {
-      alert('Something Went Wrong!!!');
+     // alert('Something Went Wrong!!!');
       return;
     }
-
     this.VendorStaff = new VendorStaff();
     this.VendorStaff.VendorStaffDetailsID = 0;
-    this.VendorStaff.VendorStaffConfigID = 1;
+    this.VendorStaff.VendorStaffConfigID = this.staffDetailsForm.get('designation').value;
     this.VendorStaff.VendorCode = this.Code;
     this.VendorStaff.ContactName = this.staffDetailsForm.get('name').value;
     this.VendorStaff.ContactEmail = this.staffDetailsForm.get('email').value;
@@ -100,7 +99,7 @@ export class StaffDetailsComponent implements OnInit {
     this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
       statusObj = data;
 
-      if (statusObj.Status) {
+      if (statusObj.Status = true) {
         alert('Saved successfully.');
         this.VendorStaff = new VendorStaff();
         this.staffDetailsForm.reset();
