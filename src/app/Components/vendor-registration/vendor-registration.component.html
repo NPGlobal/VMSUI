@@ -1,0 +1,174 @@
+<!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h6 class="modal-title">Vendor Registration</h6>
+        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <form class="form-horizontal" [formGroup]="RegistrationForm" novalidate (ngSubmit)="SaveVendorPrimaryInfo()">
+        <div class="modal-body">
+
+          <div class="container">
+            <div class="row">
+              <div class=" form-group-sm col-sm-12">
+                <div class="row">
+                  <label for="Code" class="col-sm-2 control-label">Vendor Code</label>
+                  <div class="col-sm-4">
+                    <input formControlName="Code" type="text" class="form-control input-sm" />
+
+                    <span *ngIf="CodeExists || RegistrationForm.get('Code').invalid && 
+                    (RegistrationForm.get('Code').dirty || RegistrationForm.get('Code').touched)"
+                      class="alert-danger">
+                      <span *ngIf="CodeExists">
+                        Code already exists.
+                      </span>
+                      <span *ngIf="!CodeExists && RegistrationForm.get('Code').errors.required">
+                        Code is required.
+                      </span>
+                      <span *ngIf="!CodeExists && RegistrationForm.get('Code').errors.maxlength">
+                        Code cannot exceed 6 characters.
+                      </span>
+                    </span>
+                  </div>
+                  <label for="Name" class="col-sm-2 ">Vendor Name</label>
+                  <div class="col-sm-4">
+                    <input formControlName="Name" type="text" class="form-control input-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group-sm col-sm-12">
+                <div class="row">
+                  <label for="PANNo" class="col-sm-2 ">PAN No.</label>
+                  <div class="col-sm-4">
+                    <input formControlName="PANNo" type="text" class="form-control input-sm">
+                    <span *ngIf="RegistrationForm.get('PANNo').invalid && 
+                    (RegistrationForm.get('PANNo').dirty || RegistrationForm.get('PANNo').touched)"
+                      class="alert-danger">
+
+                      <span *ngIf="RegistrationForm.get('PANNo').errors.required">
+                        PAN is required.
+                      </span>
+                      <span *ngIf="RegistrationForm.get('PANNo').errors.pattern">
+                        No special characters allowed.
+                      </span>
+                      <span *ngIf="RegistrationForm.get('PANNo').errors.maxlength || RegistrationForm.get('PANNo').errors.minlength">
+                        PAN must be 10 characters.
+                      </span>
+                    </span>
+                  </div>
+                  <label for="GSTIN" class="col-sm-2 ">GST Registration No.</label>
+                  <div class="col-sm-4">
+                    <input formControlName="GSTIN" type="text" class="form-control input-sm">
+                    <span *ngIf="RegistrationForm.get('GSTIN').invalid && 
+                    (RegistrationForm.get('GSTIN').dirty || RegistrationForm.get('GSTIN').touched)"
+                      class="alert-danger">
+
+                      <span *ngIf="RegistrationForm.get('GSTIN').errors.required">
+                        GSTIN is required.
+                      </span>
+                      <span *ngIf="RegistrationForm.get('GSTIN').errors.pattern">
+                        No special characters allowed.
+                      </span>
+                      <span *ngIf="RegistrationForm.get('GSTIN').errors.maxlength || RegistrationForm.get('GSTIN').errors.minlength">
+                        GSTIN must be 15 characters.
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class=" form-group-sm col-sm-12">
+                <div class="row">
+                  <label class="col-sm-4 ">Reverse Charge Mechanism Applied</label>
+                  <div class="col-sm-1">
+                    <label class="radio-inline">
+                      <input value="true" type="radio" formControlName="IsRCM">
+                      <span style="margin-left:5px;">Yes</span>
+                    </label>
+                  </div>
+                  <div class="col-sm-1">
+                    <label class="radio-inline">
+                      <input value="false" type="radio" formControlName="IsRCM">
+                      <span style="margin-left:5px;">No</span>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        &nbsp;&nbsp;
+                        <input value="True" type="checkbox" formControlName="IsProvisional">
+                        Provisional
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class=" form-group-sm col-sm-12">
+                <div class="row">
+                  <label class="col-sm-4 ">Vendor Type</label>
+                  <div class="col-sm-1">
+                    <label class="radio-inline">
+                      <input value="DP" type="radio" formControlName="VendorType" (change)="SetPHListValidation($event)">
+                      <span style="margin-left:5px;">DP</span>
+                    </label>
+                  </div>
+                  <div class="col-sm-1">
+                    <label class="radio-inline">
+                      <input value="JW" type="radio" formControlName="VendorType" (change)="SetPHListValidation($event)">
+                      <span style="margin-left:5px;">JW</span>
+                    </label>
+                  </div>
+                  <div class="col-sm-6"></div>
+                </div>
+              </div>
+              <div *ngIf="RegistrationForm.controls.VendorType.value==='JW'" class="form-group-sm col-sm-12">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <label>PH/FO</label>
+                    <span>
+                      <select formControlName="PHList" class="form-control input-sm" size="8" multiple="multiple">
+                        <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
+                      </select>
+                    </span>
+                  </div>
+                  <div class="col-sm-1" style="padding-left:25px;">
+
+                    <input type="button" [disabled]="NoPHLeft()" style="margin-top: 70px;" value=">" (click)="MoveToSelectedPHList()">
+                    <br />
+                    <input type="button" [disabled]="NoSelectedPH()" style="margin-top: 10px;" value="<" (click)="MoveToPHList()">
+
+                  </div>
+                  <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
+                    <label class="text">Selected PH</label>
+                    <span>
+                      <select formControlName="SelectedPHList" class="form-control input-sm" size="8" multiple="multiple">
+                        <option *ngFor="let PH of SelectedPHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
+                      </select>
+                      <span *ngIf="!HasPHSelected" class="alert-danger">
+
+                        <span *ngIf="!HasPHSelected">
+                          PH is required.
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="col-sm-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer col-md-12  page-footer">
+          <button type="submit" [disabled]="(!RegistrationForm.valid || !HasPHSelected)" class="mr-3 btn btn-danger">Register</button>
+          <button #modalCloseButton type="button" class="btn" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

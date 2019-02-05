@@ -4,12 +4,12 @@
     <div class="detail-page">
       <div class="col clearfix" formGroupName="PersonalDetails">
         <div class="content-heading">
-          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('PersonalDetails'))" class="glyphicon-expand">
-            <span>{{personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+          <a href="javascript:void(0)" (click)="ToggleContainer()" class="glyphicon-expand">
+            <span>+</span>
           </a>Product Type Details
         </div>
         <div class="slider" [ngClass]="{
-                closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
+                closed: False
             }">
           <div class="col-md-8">
             <div class="col-md-12 form-group">
