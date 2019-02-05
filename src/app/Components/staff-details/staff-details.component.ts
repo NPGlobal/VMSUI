@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { VendorStaff } from 'src/app/Models/VendorStaff';
+
+import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
-import { HttpClient } from '@angular/common/http';
-import { Vendor } from 'src/app/Models/vendor';
-declare var $: any;
+import { VendorStaff } from 'src/app/Models/VendorStaff';
 
 @Component({
   selector: 'app-staff-details',
@@ -13,25 +12,30 @@ declare var $: any;
   styleUrls: ['./staff-details.component.css']
 })
 export class StaffDetailsComponent implements OnInit {
-  Code: string;
-  VendorStaff: VendorStaff;
+  vendorcode: string;
+
+  vendorstaffList: VendorStaff[]; // For added Staff List
+  VendorStaff: VendorStaff; // For form value save and update
+  totalItems: number;
+  currentPage = 1;
+  pageSize = 20;
+  pager: any = {};
+  pagedItems: any[];
   staffDetailsForm: FormGroup;
-  personalDetailsForm: FormGroup;
   deptList: any[];
   designationList: any[];
   status = true;
   submitted = false;
-  constructor(private _vendorService: VendorService,
-    private _route: ActivatedRoute,
-    private _fb: FormBuilder) { }
+
+  constructor(
+      private _vendorService: VendorService,
+      private _route: ActivatedRoute,
+      private _fb: FormBuilder,
+      private _pager: PagerService
+    ) {
+      }
 
   ngOnInit() {
-    this.GetVendorDepartments();
-
-    this._route.parent.paramMap.subscribe((data) => {
-      this.Code = (data.get('code'));
-    });
-
     this.staffDetailsForm = this._fb.group({
       dept: ['', Validators.required],
       designation: ['', Validators.required],
@@ -43,7 +47,27 @@ export class StaffDetailsComponent implements OnInit {
       remarks: '',
       IsExpanded: true
     });
+
+    this._route.parent.paramMap.subscribe((data) => {
+      this.vendorcode = (data.get('code'));
+      this.GetVendorStaffs(this.currentPage);
+    });
+    this.GetVendorDepartments();
   }
+
+  GetVendorStaffs(index: number) {
+    this.currentPage = index;
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+      this.vendorstaffList = data.Vendors,
+      this.totalItems = data.VendorsCount[0].TotalVendors;
+      this.GetVendorsStaffList();
+    });
+  }
+  GetVendorsStaffList() {
+    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.pagedItems = this.vendorstaffList;
+  }
+
 
   GetVendorDepartments() {
     this._vendorService.GetVendorsDeptStaff('10', '-1', 'Department').subscribe((data) => {
@@ -58,7 +82,6 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   InitializeFormControls() {
-
     this.staffDetailsForm = this._fb.group({
       dept: [this.VendorStaff.dept],
       designation: [this.VendorStaff.designation],
@@ -72,10 +95,6 @@ export class StaffDetailsComponent implements OnInit {
     });
   }
 
-  ToggleContainer(formGroup: FormGroup) {
-    formGroup.controls.IsExpanded.patchValue(!formGroup.controls.IsExpanded.value);
-  }
-
   SaveStaffDetails() {
     this.submitted = true;
     let statusObj: any;
@@ -87,7 +106,7 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff = new VendorStaff();
     this.VendorStaff.VendorStaffDetailsID = 0;
     this.VendorStaff.VendorStaffConfigID = this.staffDetailsForm.get('designation').value;
-    this.VendorStaff.VendorCode = this.Code;
+    this.VendorStaff.VendorCode = this.vendorcode;
     this.VendorStaff.ContactName = this.staffDetailsForm.get('name').value;
     this.VendorStaff.ContactEmail = this.staffDetailsForm.get('email').value;
     this.VendorStaff.ContactPhone = this.staffDetailsForm.get('phone').value;

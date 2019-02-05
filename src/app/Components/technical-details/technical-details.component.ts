@@ -14,7 +14,8 @@ declare var $: any;
   styleUrls: ['./technical-details.component.css']
 })
 export class TechnicalDetailsComponent implements OnInit {
-  Code: string;
+  vendortechList: VendorTech[]; // For added Staff List
+  vendorcode: string;
   VendorTech: VendorTech;
   techDetailsForm: FormGroup;
   personalDetailsForm: FormGroup;
@@ -29,13 +30,17 @@ export class TechnicalDetailsComponent implements OnInit {
   pagedItems: any[];
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
-    private _fb: FormBuilder) { }
+    private _fb: FormBuilder,
+    private _pager: PagerService
+    ) {
+      }
 
   ngOnInit() {
     this.GetVendorDepartments();
 
     this._route.parent.paramMap.subscribe((data) => {
-      this.Code = (data.get('code'));
+      this.vendorcode = (data.get('code'));
+      this.GetVendorTech(this.currentPage);
     });
 
     this.techDetailsForm = this._fb.group({
@@ -51,6 +56,19 @@ export class TechnicalDetailsComponent implements OnInit {
 
     });
   }
+  GetVendorTech(index: number) {
+    this.currentPage = index;
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+      this.vendortechList = data.Vendors,
+      this.totalItems = data.VendorsCount[0].TotalVendors;
+      this.GetVendorsStaffList();
+    });
+  }
+  GetVendorsStaffList() {
+    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.pagedItems = this.vendortechList;
+  }
+
   GetVendorDepartments() {
     this._vendorService.GetVendorDeptTech('10', '-1', 'Department').subscribe((data) => {
       this.deptList = data;
@@ -95,7 +113,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.VendorTechDetailsID = 0;
     this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
     // this.VendorTech.VendorCode = this.personalDetailsForm.get('code').value;
-    this.VendorTech.VendorCode = this.Code;
+    this.VendorTech.VendorCode = this. vendorcode; // For added Staff List;
     this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value;
     this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
     this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
