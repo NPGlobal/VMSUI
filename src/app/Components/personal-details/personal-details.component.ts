@@ -17,7 +17,7 @@ export class PersonalDetailsComponent implements OnInit {
   vendor: Vendor;
   personalDetailsForm: FormGroup;
 
-  Code: string;
+  VendorCode: string;
   vendorType = 'DP';
 
   AllPHList: OrgUnit[];
@@ -31,14 +31,19 @@ export class PersonalDetailsComponent implements OnInit {
   ngOnInit() {
 
     this._route.parent.paramMap.subscribe((data) => {
-      this.Code = (data.get('code'));
+      this.VendorCode = (data.get('code'));
     });
 
-    if (this.Code === null) {
+    this._vendorService.GetPHList().subscribe(PHList => {
+      this.AllPHList = PHList.Table;
+      this.FillPHLists();
+    });
+
+    if (this.VendorCode === null) {
       this.vendor = new Vendor();
       this.InitializeFormControls();
     } else {
-      this.Editvendor(this.Code);
+      this.Editvendor(this.VendorCode);
     }
   }
 
@@ -66,8 +71,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
-        Code: [this.vendor.Code],
-        Name: [this.vendor.Name],
+        Code: [this.vendor.VendorCode],
+        Name: [this.vendor.VendorCode],
         MasterVendorName: [this.vendor.MasterVendorName],
         PANNo: [this.vendor.PANNo],
         GSTIN: [this.vendor.GSTIN],
