@@ -18,14 +18,14 @@ declare var $: any;
 export class StaffDetailsComponent implements OnInit {
   vendorcode: string;
 
-  vendorstaffList: VendorStaff[]; //For added Staff List
+  vendorstaffList: VendorStaff[]; // For added Staff List
   VendorStaff: VendorStaff; // For form value save and update
   totalItems: number;
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
-  
+
   staffDetailsForm: FormGroup;
   deptList: any[];
   designationList: any[];
@@ -33,14 +33,13 @@ export class StaffDetailsComponent implements OnInit {
   submitted = false;
 
   constructor(
-      private _vendorService: VendorService,
-      private _route: ActivatedRoute,
-      private _fb: FormBuilder,
-      private _pager: PagerService
-    ) 
-    { 
+    private _vendorService: VendorService,
+    private _route: ActivatedRoute,
+    private _fb: FormBuilder,
+    private _pager: PagerService
+  ) {
 
-    }
+  }
 
   ngOnInit() {
     this.staffDetailsForm = this._fb.group({
@@ -64,9 +63,9 @@ export class StaffDetailsComponent implements OnInit {
 
   GetVendorStaffs(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode,this.currentPage, this.pageSize).subscribe(data => {
-      this.vendorstaffList = data.Vendors,
-      this.totalItems = data.VendorsCount[0].TotalVendors;
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+      this.vendorstaffList = data.VendorStaff;
+      this.totalItems = data.VendorStaffCount[0].TotalVendors;
       this.GetVendorsStaffList();
     });
   }
@@ -107,7 +106,7 @@ export class StaffDetailsComponent implements OnInit {
     let statusObj: any;
 
     if (this.staffDetailsForm.invalid) {
-     // alert('Something Went Wrong!!!');
+      // alert('Something Went Wrong!!!');
       return;
     }
     this.VendorStaff = new VendorStaff();
