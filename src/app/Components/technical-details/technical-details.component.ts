@@ -97,7 +97,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.CreatedBy = 999999;
     console.log(JSON.stringify(this.VendorTech));
     alert(JSON.stringify(this.VendorTech));
-    // this._vendorService.SavetechInfo(this.Vendortech).subscribe();
+    this._vendorService.SaveTechInfo(this.VendorTech).subscribe();
     alert('SUCCESS!! :-)');
   }
   // alert(1);
