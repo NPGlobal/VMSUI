@@ -36,7 +36,7 @@ export class TechnicalDetailsComponent implements OnInit {
       dept: ['', Validators.required],
       techSpec: ['', Validators.required],
       techLineNo: ['', Validators.required],
-      efficiency: ['', Validators.required],
+      efficiency: '',
       unitCount: ['', Validators.required],
       status: true,
       remarks: '',
@@ -78,15 +78,16 @@ export class TechnicalDetailsComponent implements OnInit {
 
   SaveTechDetails() {
     this.submitted = true;
+    let statusObj: any;
     // alert(1);
     if (this.techDetailsForm.invalid) {
-      alert('Something Went Wrong!!!');
+     // alert('Something Went Wrong!!!');
       return;
     }
     // console.log(JSON.stringify(this.addressForm));
     this.VendorTech = new VendorTech();
     this.VendorTech.VendorTechDetailsID = 0;
-    this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techLineNo').value;
+    this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
     // this.VendorTech.VendorCode = this.personalDetailsForm.get('code').value;
     this.VendorTech.VendorCode = this.Code;
     this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value;
@@ -95,12 +96,19 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.Status = this.techDetailsForm.get('status').value;
     this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
     this.VendorTech.CreatedBy = 999999;
-    console.log(JSON.stringify(this.VendorTech));
-    alert(JSON.stringify(this.VendorTech));
-    this._vendorService.SaveTechInfo(this.VendorTech).subscribe();
-    alert('SUCCESS!! :-)');
-  }
-  // alert(1);
-  // alert(JSON.stringify(this.techDetailsForm.value));
-}
+    // console.log(JSON.stringify(this.VendorTech));
+     alert(JSON.stringify(this.VendorTech));
+    this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
+      statusObj = data;
 
+      if (statusObj.Status = true) {
+        alert('Saved successfully.');
+        this.VendorTech = new VendorTech();
+        this.techDetailsForm.reset();
+        this.InitializeFormControls();
+      } else {
+        alert('Error occured while saving.');
+      }
+    });
+  }
+}
