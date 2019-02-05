@@ -81,7 +81,7 @@ export class StaffDetailsComponent implements OnInit {
     let statusObj: any;
 
     if (this.staffDetailsForm.invalid) {
-      alert('Something Went Wrong!!!');
+     // alert('Something Went Wrong!!!');
       return;
     }
 
