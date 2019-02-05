@@ -1,7 +1,7 @@
 export class Vendor {
     RowNumber: number;
-    Code: string;
-    Name: string;
+    VendorCode: string;
+    VendorName: string;
     MasterVendorName: string;
     PANNo: string;
     GSTIN: string;

@@ -16,18 +16,18 @@
     <thead>
       <tr>
         <th scope="col">Serial</th>
-        <th scope="col">Code</th>
-        <th scope="col">Name</th>
+        <th scope="col">VendorCode</th>
+        <th scope="col">VendorName</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let vendor of pagedItems;index as i;">
         <th scope="row">{{vendor.RowNumber}}</th>
-        <td>{{vendor.Code}}</td>
-        <td>{{vendor.Name}}</td>
+        <td>{{vendor.VendorCode}}</td>
+        <td>{{vendor.VendorName}}</td>
         <td>
-          <a title="Edit" [routerLink]="['/vendor', vendor.Code, 'personal']"><i class="fa fa-edit"></i></a>
+          <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit"></i></a>
         </td>
       </tr>
     </tbody>
