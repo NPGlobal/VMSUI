@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { VendorTech } from 'src/app/Models/VendorTech';
 import { VendorService } from 'src/app/Services/vendor.service';
+import { PagerService } from 'src/app/Services/pager.service';
 import { HttpClient } from '@angular/common/http';
 import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
@@ -21,6 +22,11 @@ export class TechnicalDetailsComponent implements OnInit {
   techSpecList: any[];
   status = true;
   submitted = false;
+  totalItems: number;
+  currentPage = 1;
+  pageSize = 20;
+  pager: any = {};
+  pagedItems: any[];
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder) { }
