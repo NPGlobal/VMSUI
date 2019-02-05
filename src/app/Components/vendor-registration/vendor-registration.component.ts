@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { Vendor } from 'src/app/Models/vendor';
@@ -16,6 +16,7 @@ export class VendorRegistrationComponent implements OnInit {
   PHList: OrgUnit[];
   SelectedPHList: OrgUnit[] = [];
   CodeExists: boolean;
+  borderStyle: string;
 
   HasPHSelected: boolean;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
@@ -28,14 +29,45 @@ export class VendorRegistrationComponent implements OnInit {
     private _router: Router) {
   }
 
+  ValidationMessages = {
+    'VendorCode': {
+      'required': 'Vendor Code is Required',
+      'maxlength': 'Code should not exceed 6 characters',
+      'pattern': 'Cannot contains special characters',
+      'CodeExist': 'Code Already Exists'
+    },
+    'VendorType': {
+      'required': 'Vendor Type is Required'
+    },
+    'GSTIN': {
+      'required': 'GST No. is Required',
+      'minlength': 'Invalid GST No.',
+      'maxlength': 'Invalid GST No.',
+      'pattern': 'Cannot contains special characters'
+    },
+    'PANNo': {
+      'required': 'PAN No. is Required',
+      'minlength': 'Invalid PAN number',
+      'maxlength': 'Invalid PAN number',
+      'pattern': 'Cannot contains special characters'
+    }
+  };
+
+  formErrors = {
+    'VendorCode': '',
+    'VendorType': '',
+    'GSTIN': '',
+    'PANNo': ''
+  };
+
   ngOnInit() {
     this._vendorService.GetPHList().subscribe(PHList => {
       this.AllPHList = PHList.Table;
       this.PHList = PHList.Table;
     });
     this.RegistrationForm = this._fb.group({
-      Code: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
-      Name: [''],
+      VendorCode: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
+      VendorName: [''],
       VendorType: ['DP'],
       IsRCM: ['false'],
       IsProvisional: [false],
@@ -49,12 +81,43 @@ export class VendorRegistrationComponent implements OnInit {
 
     this.HasPHSelected = true;
     this.CodeExists = false;
+    this.RegistrationForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.RegistrationForm);
+    });
   }
+
+
+  logValidationErrors(group: FormGroup = this.RegistrationForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
+      } else {
+        this.formErrors[key] = '';
+        if (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty)) {
+          const messages = this.ValidationMessages[key];
+          for (const errorkey in abstractControl.errors) {
+            if (errorkey) {
+              this.formErrors[key] += messages[errorkey] + ' ';
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // CodeExistValidation(): { [key: string]: boolean } | null {
+  //   if (this.CodeExists === true) {
+  //     return { 'CodeExist': true };
+  //   }
+  //   return null;
+  // }
 
   dismiss() {
     this.RegistrationForm = this._fb.group({
-      Code: ['', [Validators.required, Validators.maxLength(6)]],
-      Name: [''],
+      VendorCode: ['', [Validators.required, Validators.maxLength(6)]],
+      VendorName: [''],
       VendorType: ['DP'],
       IsRCM: ['false'],
       IsProvisional: [false],
@@ -89,12 +152,12 @@ export class VendorRegistrationComponent implements OnInit {
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let statusObj: any;
     const vendor = new Vendor();
-    vendor.Name = this.RegistrationForm.get('Name').value;
+    vendor.VendorName = this.RegistrationForm.get('VendorName').value;
     vendor.PANNo = this.RegistrationForm.get('PANNo').value;
     vendor.GSTIN = this.RegistrationForm.get('GSTIN').value;
     vendor.IsProvisional = this.RegistrationForm.get('IsProvisional').value;
     vendor.IsRCM = this.RegistrationForm.get('IsRCM').value;
-    vendor.Code = this.RegistrationForm.get('Code').value;
+    vendor.VendorCode = this.RegistrationForm.get('VendorCode').value;
     vendor.VendorType = this.RegistrationForm.get('VendorType').value;
     vendor.SelectedPHListCSV = (this.RegistrationForm.get('VendorType').value === 'DP') ? '10' :
       this.SelectedPHList.map(function (element) {
@@ -105,7 +168,7 @@ export class VendorRegistrationComponent implements OnInit {
       statusObj = data;
       if (statusObj.Status === 0) {
         el.click();
-        this._router.navigate(['vendor/' + vendor.Code + '/personal']);
+        this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
       } else if (statusObj.Status === 2) {
         this.CodeExists = true;
       }
@@ -164,4 +227,5 @@ export class VendorRegistrationComponent implements OnInit {
       this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
     }
   }
+
 }
