@@ -60,4 +60,14 @@ export class VendorService {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
+
+  GetVendorStaffByVendorCode(vcode:string, pageIndex: number, Limit: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetVendorStaffList/10/'  + vcode + '/'+ pageIndex + '/' + Limit;
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetVendorTechByVendorCode(vcode:string, pageIndex: number, Limit: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorTech/GetVendorTechList/10/'  + vcode + '/'+ pageIndex + '/' + Limit;
+    return this._http.get<any>(apiUrl);
+  }
 }
