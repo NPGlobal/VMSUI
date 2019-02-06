@@ -84,7 +84,7 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
-      alert('h!');
+        alert('h!');
       }
     });
   }

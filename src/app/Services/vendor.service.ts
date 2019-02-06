@@ -10,7 +10,7 @@ export class VendorService {
 
   // origin = 'http://172.16.7.60/VMSApi/';
   origin = 'http://172.16.7.68/';
-  //origin = 'https://localhost:44372/';
+  // origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number): Observable<any> {
@@ -75,7 +75,7 @@ export class VendorService {
 
   SaveVendorPersonalDetails(PersonalDetails: any): Observable<any> {
     const apiUrl = this.origin + 'api/Vendor/SaveVendorPersonalDetails';
-    return this._http.post<any>(apiUrl , PersonalDetails);
+    return this._http.post<any>(apiUrl, PersonalDetails);
   }
 
 }

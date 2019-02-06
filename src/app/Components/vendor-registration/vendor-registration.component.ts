@@ -71,10 +71,19 @@ export class VendorRegistrationComponent implements OnInit {
       this.MasterVendorList = Data.Vendors.filter(x => x.Status === 'A');
     });
 
+    this.InitializeFormControls();
+
+    this.HasPHSelected = true;
+    this.CodeExists = false;
+    this.RegistrationForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.RegistrationForm);
+    });
+  }
+
+  InitializeFormControls() {
     this.RegistrationForm = this._fb.group({
       VendorCode: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
       VendorName: [''],
-      VendorType: ['DP'],
       IsRCM: ['false'],
       IsProvisional: [false],
       MasterVendorName: [''],
@@ -83,13 +92,9 @@ export class VendorRegistrationComponent implements OnInit {
       PHList: [''],
       SelectedPHList: null,
       PHListCSV: '',
-      Ref_VendorCode: ''
-    });
-
-    this.HasPHSelected = true;
-    this.CodeExists = false;
-    this.RegistrationForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.RegistrationForm);
+      Ref_VendorCode: '-1',
+      IsJWVendor: [false],
+      IsDirectVendor: [false]
     });
   }
 
@@ -122,19 +127,7 @@ export class VendorRegistrationComponent implements OnInit {
   // }
 
   dismiss() {
-    this.RegistrationForm = this._fb.group({
-      VendorCode: ['', [Validators.required, Validators.maxLength(6)]],
-      VendorName: [''],
-      VendorType: ['DP'],
-      IsRCM: ['false'],
-      IsProvisional: [false],
-      MasterVendorName: [''],
-      GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
-      PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
-      PHList: [''],
-      SelectedPHList: null,
-      PHListCSV: ''
-    });
+    this.InitializeFormControls();
     this.PHList = this.AllPHList;
     this.SelectedPHList = [];
   }
@@ -228,7 +221,7 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SetPHListValidation() {
-    if (this.RegistrationForm.get('VendorType').value === 'DP') {
+    if (this.RegistrationForm.get('IsJWVendor').value) {
       this.HasPHSelected = true;
     } else {
       this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;

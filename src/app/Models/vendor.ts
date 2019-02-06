@@ -33,4 +33,6 @@ export class Vendor {
     IsProvisional: Boolean;
     IsRCM: Boolean;
     Ref_VendorCode: string;
+    IsJWVendor: boolean;
+    IsDirectVendor: boolean;
 }
