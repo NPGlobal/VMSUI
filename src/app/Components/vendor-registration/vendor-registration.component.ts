@@ -17,6 +17,7 @@ export class VendorRegistrationComponent implements OnInit {
   SelectedPHList: OrgUnit[] = [];
   CodeExists: boolean;
   borderStyle: string;
+  MasterVendorList: Vendor[] = [];
 
   HasPHSelected: boolean;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
@@ -65,6 +66,11 @@ export class VendorRegistrationComponent implements OnInit {
       this.AllPHList = PHList.Table;
       this.PHList = PHList.Table;
     });
+
+    this._vendorService.GetVendors(-1, -1).subscribe((Data) => {
+      this.MasterVendorList = Data.Vendors.filter(x => x.Status === 'A');
+    });
+
     this.RegistrationForm = this._fb.group({
       VendorCode: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
       VendorName: [''],
@@ -76,7 +82,8 @@ export class VendorRegistrationComponent implements OnInit {
       PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       SelectedPHList: null,
-      PHListCSV: ''
+      PHListCSV: '',
+      Ref_VendorCode: ''
     });
 
     this.HasPHSelected = true;

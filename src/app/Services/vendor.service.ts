@@ -9,8 +9,8 @@ import { Vendor } from '../Models/vendor';
 export class VendorService {
 
   // origin = 'http://172.16.7.60/VMSApi/';
-  // origin = 'http://172.16.7.68/';
-  origin = 'https://localhost:44372/';
+  origin = 'http://172.16.7.68/';
+  //origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number): Observable<any> {
@@ -38,6 +38,7 @@ export class VendorService {
     const apiUrl = this.origin + 'api/VendorStaff/SaveVendorStaffInfo';
     return this._http.post<any>(apiUrl, VendorStaff);
   }
+
   SaveTechInfo(VendorTech: any): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/SaveVendorTechInfo';
     return this._http.post<any>(apiUrl, VendorTech);
@@ -71,4 +72,10 @@ export class VendorService {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorTechList/10/' + vcode + '/' + pageIndex + '/' + Limit;
     return this._http.get<any>(apiUrl);
   }
+
+  SaveVendorPersonalDetails(PersonalDetails: any): Observable<any> {
+    const apiUrl = this.origin + 'api/Vendor/SaveVendorPersonalDetails';
+    return this._http.post<any>(apiUrl , PersonalDetails);
+  }
+
 }

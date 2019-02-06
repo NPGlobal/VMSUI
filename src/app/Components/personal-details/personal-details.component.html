@@ -43,13 +43,17 @@
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="masterVendorLabelDiv">Master Vendor Name
                                 </div>
                                 <small>(Parent/sister company)</small>
+                                <br>
                                 <span>
-                                    <input type="text" formControlName="MasterVendorName" class="form-control input-sm"
-                                        value="" />
+                                    <select type="text" class="form-control" formControlName="Ref_VendorCode">
+                                        <option value="-1">Select</option>
+                                        <option *ngFor="let item of MasterVendorList" value="{{item.VendorCode}}">{{item.VendorName
+                                            + '(' + item.VendorCode + ')'}}</option>
+                                    </select>
                                 </span>
                             </div>
                         </div>
@@ -218,18 +222,15 @@
                             <label class="text">Associated With Fabindia Since</label>
                             <span>
                                 <select formControlName="AssociatedSinceYear" class="form-control input-sm">
-                                    <option value="0">Select</option>
-                                    <option value="2017">2017</option>
-                                    <option value="2016">2016</option>
-                                    <option value="2015">2015</option>
+                                    <option *ngFor="let Year of YearList" value="{{Year}}">{{Year}}</option>
                                 </select>
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Nature Of Enterprise</label>
                             <span>
-                                <select formControlName="EnterpriseNature" class="form-control input-sm">
-                                    <option value="">Select</option>
+                                <select formControlName="VendorCompanyType" class="form-control input-sm">
+                                    <option selected="selected" value="-1">Select</option>
                                     <option value="Manufacturer">Manufacturer</option>
                                     <option value="NGO">NGO</option>
                                     <option value="Cooperative">Cooperative</option>
@@ -241,13 +242,13 @@
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
                             <span>
-                                <input formControlName="Partner1Name" name="Partener1Name" type="text" class="form-control input-sm" />
+                                <input formControlName="PersonTopRanker1" name="PersonTopRanker1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 2</label>
                             <span>
-                                <input formControlName="Partner2Name" name="Partener2Name" type="text" class="form-control input-sm" />
+                                <input formControlName="PersonTopRanker2" name="PersonTopRanker2" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
@@ -271,19 +272,19 @@
                         <div class="col-md-4">
                             <label class="text">Customer1</label>
                             <span>
-                                <input formControlName="Customer1Name" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Customer2</label>
                             <span>
-                                <input formControlName="Customer2Name" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer2" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Customer3</label>
                             <span>
-                                <input formControlName="Customer3Name" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
@@ -291,13 +292,13 @@
                         <div class="col-md-4">
                             <label class="text">Customer4</label>
                             <span>
-                                <input formControlName="Customer4Name" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer4" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Customer5</label>
                             <span>
-                                <input formControlName="Customer5Name" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer5" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
