@@ -133,9 +133,12 @@
                     <div class="col-md-12 form-group">
                         <div class="col-md-4">
                             <span>
-                                <button type="button" class="btn btn-info btn-sm" (click)="openModalDialog()">Add new
-                                    address</button>
-                                <div class="" [ngStyle]="{'display':display}"></div>
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"
+                                    data-backdrop="static" data-keyboard="false">
+                                    <i class="fa fa-plus"></i>
+                                    <span title="Add new" class="py-4">Add new
+                                        address</span>
+                                </button>
                             </span>
                         </div>
                     </div>
@@ -229,11 +232,9 @@
                         <div class="col-md-4">
                             <label class="text">Nature Of Enterprise</label>
                             <span>
-                                <select formControlName="VendorCompanyType" class="form-control input-sm">
-                                    <option selected="selected" value="-1">Select</option>
-                                    <option value="Manufacturer">Manufacturer</option>
-                                    <option value="NGO">NGO</option>
-                                    <option value="Cooperative">Cooperative</option>
+                                <select formControlName="VendorType_MDDCode" class="form-control input-sm">
+                                    <option selected value="">Select</option>
+                                    <option *ngFor="let VendorType of VendorTypeList" value="{{VendorType.MDDCode}}">{{VendorType.MDDName}}</option>
                                 </select>
                             </span>
                         </div>
@@ -316,3 +317,6 @@
         </div>
     </div>
 </form>
+
+<app-address-form [VendorCode]="VendorCode"
+[AddressCode]="AddressCode"></app-address-form>

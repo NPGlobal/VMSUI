@@ -21,7 +21,7 @@ export class Vendor {
     EmailId: string;
     Website: string;
     AssociatedSinceYear: number;
-    VendorCompanyType: string;
+    VendorType_MDDCode: string;
     PersonTopRanker1: string;
     PersonTopRanker2: string;
     OtherCustomer1: string;

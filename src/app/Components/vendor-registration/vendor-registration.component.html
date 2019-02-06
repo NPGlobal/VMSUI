@@ -89,7 +89,7 @@
             <label>Vendor Type</label>
             <div class="col-md-2">
               <label class="radio-inline">
-                <input type="checkbox" formControlName="IsDirectVendor">
+                <input type="checkbox" formControlName="IsDirectVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">DP</span>
               </label>
             </div>

@@ -94,7 +94,7 @@ export class VendorRegistrationComponent implements OnInit {
       PHListCSV: '',
       Ref_VendorCode: '-1',
       IsJWVendor: [false],
-      IsDirectVendor: [false]
+      IsDirectVendor: [true]
     });
   }
 
@@ -150,7 +150,7 @@ export class VendorRegistrationComponent implements OnInit {
 
   SaveVendorPrimaryInfo() {
     const el = this.modalCloseButton.nativeElement as HTMLElement;
-    let statusObj: any;
+    // let statusObj: any;
     const vendor = new Vendor();
     vendor.VendorName = this.RegistrationForm.get('VendorName').value;
     vendor.PANNo = this.RegistrationForm.get('PANNo').value;
@@ -158,21 +158,23 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.IsProvisional = this.RegistrationForm.get('IsProvisional').value;
     vendor.IsRCM = this.RegistrationForm.get('IsRCM').value;
     vendor.VendorCode = this.RegistrationForm.get('VendorCode').value;
-    vendor.VendorType = this.RegistrationForm.get('VendorType').value;
+    vendor.IsDirectVendor = this.RegistrationForm.get('IsDirectVendor').value;
+    vendor.IsJWVendor = this.RegistrationForm.get('IsJWVendor').value;
     vendor.SelectedPHListCSV = (this.RegistrationForm.get('VendorType').value === 'DP') ? '10' :
       this.SelectedPHList.map(function (element) {
         return element.OrgUnitCode;
       }).join();
 
-    this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
-      statusObj = data;
-      if (statusObj.Status === 0) {
-        el.click();
-        this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
-      } else if (statusObj.Status === 2) {
-        this.CodeExists = true;
-      }
-    });
+    // this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
+    //   statusObj = data;
+    //   if (statusObj.Status === 0) {
+    //     el.click();
+    //     this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
+    //   } else if (statusObj.Status === 2) {
+    //     this.CodeExists = true;
+    //   }
+    // });
+    console.log(vendor);
   }
 
   MoveToSelectedPHList() {
@@ -221,7 +223,11 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SetPHListValidation() {
+    this.PHList = this.AllPHList;
+    this.SelectedPHList = [];
     if (this.RegistrationForm.get('IsJWVendor').value) {
+      this.HasPHSelected = false;
+    } else if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = true;
     } else {
       this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { delay } from 'q';
+import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
+import { MasterDataDetails } from 'src/app/Models/master-data-details';
 
 declare var $: any;
 
@@ -19,7 +21,7 @@ export class PersonalDetailsComponent implements OnInit {
   personalDetailsForm: FormGroup;
   YearList: number[] = [];
   MasterVendorList: Vendor[] = [];
-
+  VendorTypeList: MasterDataDetails[];
   VendorCode: string;
   vendorType = 'DP';
 
@@ -27,9 +29,14 @@ export class PersonalDetailsComponent implements OnInit {
   PHList: OrgUnit[] = [];
   SelectedPHList: OrgUnit[] = [];
 
+  AddressCode: string;
+
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
-    private _fb: FormBuilder) { }
+    private _fb: FormBuilder,
+    private _mDDService: MasterDataDetailsService) {
+    this.AddressCode = '';
+  }
 
   ngOnInit() {
     this._route.parent.paramMap.subscribe((data) => {
@@ -49,6 +56,7 @@ export class PersonalDetailsComponent implements OnInit {
     );
 
     this.GetPHList();
+    this.GetMasterDataDetails('VendorType');
   }
 
   PupulateYears() {
@@ -67,13 +75,19 @@ export class PersonalDetailsComponent implements OnInit {
       });
   }
 
+  GetMasterDataDetails(MDHCode: string) {
+    this._mDDService.GetMasterDataDetails(MDHCode).subscribe((data) => {
+      this.VendorTypeList = data.Table;
+    });
+  }
+
   SavePersonalDetails() {
     let StatusObj: any;
     const vendor = new Vendor();
     vendor.VendorCode = this.VendorCode;
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
     vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
-    vendor.VendorCompanyType = this.personalDetailsForm.get('OtherRegDetails.VendorCompanyType').value;
+    vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
     vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value;
     vendor.PersonTopRanker2 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value;
     vendor.OtherCustomer1 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value;
@@ -113,25 +127,19 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
-        Code: [this.vendor.VendorCode],
-        Name: [this.vendor.VendorCode],
+        VendorCode: [this.vendor.VendorCode],
+        VendorName: [this.vendor.VendorCode],
         MasterVendorName: [this.vendor.MasterVendorName],
         PANNo: [this.vendor.PANNo],
         GSTIN: [this.vendor.GSTIN],
         TINNo: [this.vendor.TINNo],
-        VendorType: [this.vendor.VendorType],
         PHList: new FormControl(null),
         Ref_VendorCode: '',
-        IsExpanded: true
+        IsExpanded: true,
+        IsJWVendor: [false],
+        IsDirectVendor: [true]
       }),
       Address: this._fb.group({
-        nameInAddress: [this.vendor.nameInAddress],
-        PIN: [this.vendor.PIN],
-        State: [this.vendor.State],
-        AddressLine1: [this.vendor.AddressLine1],
-        AddressLine2: [this.vendor.AddressLine2],
-        City: [this.vendor.City],
-        AddressType: [this.vendor.AddressType],
         IsExpanded: false
       }),
       Contact: this._fb.group({
@@ -145,7 +153,7 @@ export class PersonalDetailsComponent implements OnInit {
       }),
       OtherRegDetails: this._fb.group({
         AssociatedSinceYear: [this.vendor.AssociatedSinceYear],
-        VendorCompanyType: [this.vendor.VendorCompanyType],
+        VendorType_MDDCode: [''],
         PersonTopRanker1: [this.vendor.PersonTopRanker1],
         PersonTopRanker2: [this.vendor.PersonTopRanker2],
         IsExpanded: false
