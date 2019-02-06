@@ -107,17 +107,25 @@
   
   
   
-            <div class="col-lg-6 col-md-6">
+            <!-- <div class="col-lg-6 col-md-6">
               <label class="text">Efficiency</label>
               <span>
                 <input type="text" name="efficiency" formControlName="efficiency" class="form-control input-sm"
-                [ngClass]="{ 'is-invalid': (techDetailsForm.controls.efficiency.touched) && techDetailsForm.controls.efficiency.errors }">
+                [ngClass]="{ 'is-invalid': (techDetailsForm.controls.efficiency.touched) && techDetailsForm.controls.efficiency.errors}"/>
             </span>
-            <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.touched) && techDetailsForm.controls.efficiency.errors}"
-            *ngIf="(techDetailsForm.controls.efficiency.touched) && techDetailsForm.controls.efficiency.errors">
-             No special characters</span>
+            <span [ngClass]="{ 'error-label':techDetailsForm.controls.efficiency.touched && techDetailsForm.controls.efficiency.errors}"
+            *ngIf="techDetailsForm.controls.efficiency.touched && techDetailsForm.controls.efficiency.errors">
+             Only Numeric\Decimal</span>
             </div>
-  
+   -->
+   <div class="col-lg-6 col-md-6">
+      <label class="text">Efficiency</label>
+      <span><input type="text" name="efficiency" formControlName="efficiency" 
+      class="form-control input-sm" [ngClass]="{ 'is-invalid err': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors }" /></span>
+      <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors}"
+      *ngIf="(techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors">
+       errors</span>
+  </div>
             </div>
             </div>
             <div class="form-group col-lg-12 col-md-12">

@@ -14,7 +14,9 @@ declare var $: any;
   styleUrls: ['./technical-details.component.css']
 })
 export class TechnicalDetailsComponent implements OnInit {
-  NumericPattern = '/^(0|[1-9]\d*)(\.\d+)?$/';
+  // NumericPattern = '^[.]+[0-9]*$';
+   NumericPattern = '^[0-9]*[\.\]?[0-9]*$';
+  // NumericPattern = '^[a-zA-Z0-9]*$';
   vendortechList: VendorTech[];
   vendorcode: string;
   VendorTech: VendorTech;
