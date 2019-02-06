@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorStaff } from 'src/app/Models/VendorStaff';
+declare var $: any;
+
 @Component({
   selector: 'app-staff-details',
   templateUrl: './staff-details.component.html',
@@ -36,7 +38,9 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.dismiss();
     this.staffDetailsForm = this._fb.group({
+      id: ['0'],
       dept: ['', Validators.required],
       designation: ['', Validators.required],
       name: ['', Validators.required],
@@ -44,8 +48,7 @@ export class StaffDetailsComponent implements OnInit {
       phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
       priority: ['', Validators.required],
       status: true,
-      remarks: '',
-      IsExpanded: true
+      remarks: ''
     });
 
     this._route.parent.paramMap.subscribe((data) => {
@@ -68,7 +71,6 @@ export class StaffDetailsComponent implements OnInit {
     this.pagedItems = this.vendorstaffList;
   }
 
-
   GetVendorDepartments() {
     this._vendorService.GetVendorsDeptStaff('10', '-1', 'Department').subscribe((data) => {
       this.deptList = data;
@@ -83,16 +85,15 @@ export class StaffDetailsComponent implements OnInit {
 
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
-      id: [this.VendorStaff.VendorStaffDetailsID],
-      dept: [this.VendorStaff.dept],
-      designation: [this.VendorStaff.designation],
+      id: ['0'],
+      dept: [''],
+      designation: [''],
       name: [this.VendorStaff.ContactName],
       email: [this.VendorStaff.ContactEmail],
       phone: [this.VendorStaff.ContactPhone],
       priority: [this.VendorStaff.Priority],
       status: [this.VendorStaff.Status],
-      remarks: [this.VendorStaff.Remarks],
-      IsExpanded: true
+      remarks: [this.VendorStaff.Remarks]
     });
   }
 
@@ -117,29 +118,49 @@ export class StaffDetailsComponent implements OnInit {
         this.VendorStaff = new VendorStaff();
         this.staffDetailsForm.reset();
         this.InitializeFormControls();
+
         this.vendorstaffList = data.VendorStaff;
         this.totalItems = data.VendorStaffCount[0].TotalVendors;
         this.GetVendorsStaffList();
+        this.designationList = [];
+        alert('Data saved/updated successfully.');
+        $('#myModal').modal('toggle');
+        this.dismiss();
       } else {
         alert('Error occured while saving.');
       }
     });
   }
 
-  GetStaffDetails() {
-    alert('call');
-    this._vendorService.GetStaffDetails(1).subscribe((data) => {
+   dismiss() {
+     this.staffDetailsForm = this._fb.group({
+       id: ['0'],
+      dept: [''],
+      designation: [''],
+      name: [''],
+      email: [''],
+      phone: [''],
+      priority: [''],
+      status: true,
+      remarks: ''
+     });
+   }
+
+  GetStaffDetails(x) {
+    this._vendorService.GetStaffDetails(x).subscribe((data) => {
       this.staffDetailsForm = this._fb.group({
-        dept: ['', Validators.required],
-        designation: ['', Validators.required],
-        name: data[0].ContactName,
-        email: ['', Validators.email],
-        phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
-        priority: ['', Validators.required],
-        status: true,
-        remarks: '',
-        IsExpanded: true
+        id: [data.Table[0].VendorStaffDetailsID],
+        dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
+        designation: [data.Table[0].VendorStaffConfigID, Validators.required],
+        name: data.Table[0].ContactName,
+        email: [data.Table[0].ContactEmail, Validators.email],
+        phone: [data.Table[0].ContactPhone, [Validators.minLength(10), Validators.maxLength(10)]],
+        priority: [data.Table[0].Priority, Validators.required],
+        status: data.Table[0].Status = 'A' ? true : false,
+        remarks: data.Table[0].Remarks
       });
+
+      this.GetVendorDesignation();
     });
   }
 }
