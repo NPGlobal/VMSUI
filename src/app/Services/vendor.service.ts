@@ -83,7 +83,7 @@ export class VendorService {
   }
   // Get Technical Information for Edit
   GetTechDetails(id: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetTechDetails/' + id;
+    const apiUrl = this.origin + 'api/VendorTech/GetTechDetails/' + id;
     return this._http.get<any>(apiUrl);
   }
 }
