@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorStaff } from 'src/app/Models/VendorStaff';
-
-//import { HttpClient } from '@angular/common/http';
-// import { Vendor } from 'src/app/Models/vendor';
-declare var $: any;
-
 @Component({
   selector: 'app-staff-details',
   templateUrl: './staff-details.component.html',
@@ -89,6 +83,7 @@ export class StaffDetailsComponent implements OnInit {
 
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
+      id: [this.VendorStaff.VendorStaffDetailsID],
       dept: [this.VendorStaff.dept],
       designation: [this.VendorStaff.designation],
       name: [this.VendorStaff.ContactName],
@@ -103,14 +98,11 @@ export class StaffDetailsComponent implements OnInit {
 
   SaveStaffDetails() {
     this.submitted = true;
-    let statusObj: any;
-
     if (this.staffDetailsForm.invalid) {
-      // alert('Something Went Wrong!!!');
       return;
     }
     this.VendorStaff = new VendorStaff();
-    this.VendorStaff.VendorStaffDetailsID = 0;
+    this.VendorStaff.VendorStaffDetailsID = this.staffDetailsForm.get('id').value;
     this.VendorStaff.VendorStaffConfigID = this.staffDetailsForm.get('designation').value;
     this.VendorStaff.VendorCode = this.vendorcode;
     this.VendorStaff.ContactName = this.staffDetailsForm.get('name').value;
@@ -120,18 +112,34 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff.Status = this.staffDetailsForm.get('status').value;
     this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value;
     this.VendorStaff.CreatedBy = 999999;
-
     this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
-      statusObj = data;
-
-      if (statusObj.Status = true) {
-        alert('Saved successfully.');
+      if (data.Msg = '0') {
         this.VendorStaff = new VendorStaff();
         this.staffDetailsForm.reset();
         this.InitializeFormControls();
+        this.vendorstaffList = data.VendorStaff;
+        this.totalItems = data.VendorStaffCount[0].TotalVendors;
+        this.GetVendorsStaffList();
       } else {
         alert('Error occured while saving.');
       }
+    });
+  }
+
+  GetStaffDetails() {
+    alert('call');
+    this._vendorService.GetStaffDetails(1).subscribe((data) => {
+      this.staffDetailsForm = this._fb.group({
+        dept: ['', Validators.required],
+        designation: ['', Validators.required],
+        name: data[0].ContactName,
+        email: ['', Validators.email],
+        phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
+        priority: ['', Validators.required],
+        status: true,
+        remarks: '',
+        IsExpanded: true
+      });
     });
   }
 }

@@ -34,41 +34,56 @@ export class VendorService {
   }
 
   // Added by Shubhi
+
+  // Used for save and update Vendor Staff Info
   SaveStaffInfo(VendorStaff: any): Observable<any> {
     const apiUrl = this.origin + 'api/VendorStaff/SaveVendorStaffInfo';
     return this._http.post<any>(apiUrl, VendorStaff);
   }
+  // Used for save and update Vendor Technical Info
   SaveTechInfo(VendorTech: any): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/SaveVendorTechInfo';
     return this._http.post<any>(apiUrl, VendorTech);
   }
+  // For Vendor Staff Department
   GetVendorsDeptStaff(companycode: string, deptcode: string, type: string): Observable<any> {
     const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
-
+  // For Vendor Staff Designation by Department
   GetVendorDesignation(companycode: string, deptcode: string, type: string): Observable<any> {
     const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
-
+  // For Vendor Technical Department
   GetVendorDeptTech(companycode: string, deptcode: string, type: string): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
-
+// For Vendor Technical Specification by Department
   GetVendorTechSpec(companycode: string, deptcode: string, type: string): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
-
+  // Get all Staff of a Vendor
   GetVendorStaffByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetVendorStaffList/10/' + vcode + '/' + pageIndex + '/' + Limit;
+    const apiUrl = this.origin + 'api/VendorStaff/GetVendorStaffByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
+    return this._http.get<any>(apiUrl);
+  }
+  // Get all Technical information of a Vendor
+  GetVendorTechByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorTech/GetVendorTechByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
     return this._http.get<any>(apiUrl);
   }
 
-  GetVendorTechByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorTech/GetVendorTechList/10/' + vcode + '/' + pageIndex + '/' + Limit;
+   // Get Staff Information for Edit
+   GetStaffDetails(id: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetStaffDetails/' + id;
+    return this._http.get<any>(apiUrl);
+  }
+  // Get Technical Information for Edit
+  GetTechDetails(id: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetTechDetails/' + id;
     return this._http.get<any>(apiUrl);
   }
 }

@@ -28,7 +28,7 @@
             <td>{{vendor.Email}}</td>
             <td>{{vendor.Phone}}</td>
             <td>
-              <a title="Edit" href="javascript:void(0)"  data-toggle="modal" 
+              <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetStaffDetails()" 
             data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
             </td>
           </tr>
@@ -61,6 +61,8 @@
         <!-- modal-body -->
         <div class="modal-body">
           <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
+            <input type="hidden" name="id" formControlName="id">
+
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
