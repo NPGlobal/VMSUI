@@ -1,4 +1,4 @@
-<div class="top-margin container" style="margin-left: 0px; max-width: 100%;">
+<div class="top-margin container" style="margin-left: 0px;">
   <div class="float-left">
     <h2>Producers</h2>
   </div>
@@ -16,16 +16,22 @@
     <thead>
       <tr>
         <th scope="col">Serial</th>
-        <th scope="col">VendorCode</th>
         <th scope="col">VendorName</th>
+        <th scope="col">ShortName</th>
+        <th scope="col">VendorCode</th>
+        <th scope="col">CreatedOn</th>
+        <th scope="col">Status</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let vendor of pagedItems;index as i;">
         <th scope="row">{{vendor.RowNumber}}</th>
-        <td>{{vendor.VendorCode}}</td>
         <td>{{vendor.VendorName}}</td>
+        <td>{{vendor.VendorShortName}}</td>
+        <td>{{vendor.VendorCode}}</td>
+        <td>{{vendor.CreatedOn | date:'medium'}}</td>
+        <td>{{vendor.Status}}</td>
         <td>
           <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit"></i></a>
         </td>
@@ -38,7 +44,7 @@
         <button class="page-link" (click)="GetVendors(1)">First</button>
       </li>
       <li class="page-item" *ngIf="pager.currentPage !== 1">
-        <button class="page-link" (click)="GetVendors(pager.currentPage - 1)">Prev</button>
+        <a class="page-link" (click)="GetVendors(pager.currentPage - 1)">Prev</a>
       </li>
 
       <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
@@ -46,10 +52,10 @@
       </li>
 
       <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <button class="page-link" (click)="GetVendors(pager.currentPage + 1)">Next</button>
+        <a class="page-link" (click)="GetVendors(pager.currentPage + 1)">Next</a>
       </li>
       <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <button class="page-link" (click)="GetVendors(pager.totalPages)">Last</button>
+        <a class="page-link" (click)="GetVendors(pager.totalPages)">Last</a>
       </li>
     </ul>
   </nav>

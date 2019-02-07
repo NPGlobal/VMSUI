@@ -2,6 +2,7 @@ export class Vendor {
     RowNumber: number;
     VendorCode: string;
     VendorName: string;
+    VendorShortName: string;
     MasterVendorName: string;
     PANNo: string;
     GSTIN: string;
@@ -32,4 +33,6 @@ export class Vendor {
     SelectedPHListCSV: string;
     IsProvisional: Boolean;
     IsRCM: Boolean;
+    createdOn : Date;
+    Status:string;
 }
