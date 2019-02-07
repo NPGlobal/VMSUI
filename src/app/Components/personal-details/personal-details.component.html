@@ -43,15 +43,23 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-4">
-                                <div class="masterVendorLabelDiv">Master Vendor Name
+                                <div class="masterVendorLabelDiv" for="Ref_VendorCode">Reference Producer Name</div>
+                                <select type="text" class="form-control col-md-12" formControlName="Ref_VendorCode">
+                                    <option value="-1" selected="selected">Select</option>
+                                    <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName
+                                        + ' (' + item.VendorCode + ')'}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="masterVendorLabelDiv">Master Producer Name
                                 </div>
                                 <small>(Parent/sister company)</small>
                                 <br>
                                 <span>
-                                    <select type="text" class="form-control" formControlName="Ref_VendorCode">
+                                    <select type="text" class="form-control" formControlName="MasterVendorId">
                                         <option value="-1">Select</option>
-                                        <option *ngFor="let item of MasterVendorList" value="{{item.VendorCode}}">
-                                            {{item.VendorName + '(' + item.VendorCode + ')'}}</option>
+                                        <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">
+                                            {{item.MasterVendorName }}</option>
                                     </select>
                                 </span>
                             </div>
@@ -307,10 +315,10 @@
         <!-- End of Detail Page -->
 
         <div class="col-md-12 page-footer">
-            <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button routerLink="vendor" type="button" class="btn">Cancel</button>
         </div>
     </div>
 </form>
 
-<app-address-form [VendorCode]="VendorCode" [AddressCode]="AddressCode"></app-address-form>
+<app-address-form [vendor]="vendor" [AddressCode]="AddressCode"></app-address-form>

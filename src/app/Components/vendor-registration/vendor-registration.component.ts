@@ -4,6 +4,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { Vendor } from 'src/app/Models/vendor';
 import { Router } from '@angular/router';
+import { MasterVendor } from 'src/app/Models/master-vendor';
 
 @Component({
   selector: 'app-vendor-registration',
@@ -18,8 +19,8 @@ export class VendorRegistrationComponent implements OnInit {
   SelectedPHStoreList: OrgUnit[] = [];
   CodeExists: boolean;
   borderStyle: string;
-  MasterVendorList: Vendor[] = [];
-
+  MasterVendorList: MasterVendor[] = [];
+  ReferenceVendorList: Vendor[] = [];
   HasPHSelected: boolean;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
 
@@ -52,6 +53,9 @@ export class VendorRegistrationComponent implements OnInit {
       'minlength': 'Invalid PAN number',
       'maxlength': 'Invalid PAN number',
       'pattern': 'Cannot contains special characters'
+    },
+    'MasterVendorId': {
+      'required': ''
     }
   };
 
@@ -59,7 +63,8 @@ export class VendorRegistrationComponent implements OnInit {
     'VendorCode': '',
     'VendorType': '',
     'GSTIN': '',
-    'PANNo': ''
+    'PANNo': '',
+    'MasterVendorId': ''
   };
 
   ngOnInit() {
@@ -72,8 +77,12 @@ export class VendorRegistrationComponent implements OnInit {
     });
 
 
+    this._vendorService.GetMasterVendorList().subscribe((result) => {
+      this.MasterVendorList = result.data.MasterVendors;
+    });
+
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
-      this.MasterVendorList = result.data.Vendors.filter(x => x.Status === 'A');
+      this.ReferenceVendorList = result.data.Vendors;
     });
 
     this.InitializeFormControls();
@@ -91,7 +100,8 @@ export class VendorRegistrationComponent implements OnInit {
       VendorName: [''],
       IsRCM: ['false'],
       IsProvisional: [false],
-      MasterVendorName: [''],
+      MasterVendorId: ['', Validators.required],
+      RefVendorName: [''],
       GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
       PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
@@ -159,6 +169,9 @@ export class VendorRegistrationComponent implements OnInit {
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let statusObj: any;
     const vendor = new Vendor();
+    const masterVendor = new MasterVendor();
+    vendor.MasterVendorId = this.RegistrationForm.get('MasterVendorId').value;
+    vendor.Ref_VendorCode = this.RegistrationForm.get('Ref_VendorCode').value;
     vendor.VendorName = this.RegistrationForm.get('VendorName').value;
     vendor.PANNo = this.RegistrationForm.get('PANNo').value;
     vendor.GSTIN = this.RegistrationForm.get('GSTIN').value;
@@ -269,9 +282,9 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   UnselectOptions() {
-    this.RegistrationForm.get('PHList').patchValue('');
-    this.RegistrationForm.get('StoreList').patchValue('');
-    this.RegistrationForm.get('SelectedPHStoreList').patchValue('');
+    // this.RegistrationForm.get('PHList').patchValue('');
+    // this.RegistrationForm.get('StoreList').patchValue('');
+    // this.RegistrationForm.get('SelectedPHStoreList').patchValue('');
   }
 
 }

@@ -2,7 +2,8 @@ export class Vendor {
     RowNumber: number;
     VendorCode: string;
     VendorName: string;
-    MasterVendorName: string;
+    Ref_VendorCode: string;
+    MasterVendorId: number;
     PANNo: string;
     GSTIN: string;
     TINNo: string;
@@ -31,7 +32,6 @@ export class Vendor {
     SelectedPHListCSV: string;
     IsProvisional: Boolean;
     IsRCM: Boolean;
-    Ref_VendorCode: string;
     IsJWVendor: boolean;
     IsDirectVendor: boolean;
 }

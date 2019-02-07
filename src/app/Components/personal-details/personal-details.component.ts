@@ -27,6 +27,7 @@ export class PersonalDetailsComponent implements OnInit {
   AllPHList: OrgUnit[];
   PHList: OrgUnit[] = [];
   SelectedPHList: OrgUnit[] = [];
+  ReferenceVendorList: Vendor[] = [];
 
   AddressCode: string;
 
@@ -50,9 +51,13 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.PupulateYears();
 
-    this._vendorService.GetVendors(-1, -1).subscribe(result =>
-      this.MasterVendorList = result.data.Vendors.filter(x => x.Status === 'A')
-    );
+    this._vendorService.GetVendors(-1, -1).subscribe((result) => {
+      this.ReferenceVendorList = result.data.Vendors;
+    });
+
+    this._vendorService.GetMasterVendorList().subscribe(result => {
+      this.MasterVendorList = result.data.MasterVendors;
+    });
 
     this.GetPHList();
     this.GetMasterDataDetails('VendorType');
@@ -66,12 +71,9 @@ export class PersonalDetailsComponent implements OnInit {
 
   GetPHList() {
     this._vendorService.GetPHList().subscribe((result) => {
-      delay(1000);
       this.AllPHList = result.data.Table;
-    },
-      (nextCallBack) => {
-        this.FillPHLists();
-      });
+      this.FillPHLists();
+    });
   }
 
   GetMasterDataDetails(MDHCode: string) {
@@ -94,10 +96,12 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value;
     vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value;
     vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value;
+
+    console.log(JSON.stringify(vendor));
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
-        alert('h!');
+        alert('Saved Succesfully!!');
       }
     });
   }
@@ -128,12 +132,12 @@ export class PersonalDetailsComponent implements OnInit {
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [{ value: this.vendor.VendorName, disabled: true }],
-        MasterVendorName: [this.vendor.MasterVendorName],
+        MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [{ value: this.vendor.PANNo, disabled: true }],
         GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
         TINNo: [this.vendor.TINNo],
         PHList: new FormControl({ value: null, disabled: true }),
-        Ref_VendorCode: '',
+        Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
         IsExpanded: true,
         IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: true }],
         IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: true }]
