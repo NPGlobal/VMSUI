@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { VendorTech } from 'src/app/Models/VendorTech';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
-import { PagerService } from 'src/app/Services/pager.service';
+//import { PagerService } from 'src/app/Services/pager.service';
 import { HttpClient } from '@angular/common/http';
 import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
