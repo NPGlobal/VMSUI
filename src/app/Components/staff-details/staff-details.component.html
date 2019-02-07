@@ -12,14 +12,26 @@
         <tr>
           <th scope="col">Sr No</th>
           <th scope="col">Name</th>
+          <th scope="col">Department</th>
+          <th scope="col">Designation</th>
           <th scope="col">Email</th>
           <th scope="col">Phone</th>
-          <th scope="col">Priority</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+          <tr *ngFor="let vendor of pagedItems;index as i;">
+            <th scope="row">{{vendor.RowNumber}}</th>
+            <td>{{vendor.Name}}</td>
+            <td>{{vendor.Department}}</td>
+            <td>{{vendor.Designation}}</td>
+            <td>{{vendor.Email}}</td>
+            <td>{{vendor.Phone}}</td>
+            <td>
+              <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit"></i></a>
+            </td>
+          </tr>
+        <!-- <tr>
           <th scope="row">1</th>
           <td>abcd</td>
           <td>abcd@gmail.com</td>
@@ -29,7 +41,7 @@
             <a title="Edit" href="javascript:void(0)"  data-toggle="modal" 
             data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
           </td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
 </div>
