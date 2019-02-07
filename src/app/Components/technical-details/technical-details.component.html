@@ -1,5 +1,5 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
-    <button type="button" class="btn btn-primary float-right" data-toggle="modal" 
+    <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
         <i class="fa fa-plus"></i>
         <span title="Add new" class="py-4">Add</span>
@@ -22,7 +22,6 @@
       <tbody>
           <tr *ngFor="let vendor of pagedItems;index as i;">
             <th scope="row">{{vendor.RowNumber}}</th>
-            
             <td>{{vendor.Department}}</td>
             <td>{{vendor.TechName}}</td>
             <td>{{vendor.TechLineNo}}</td>
@@ -60,7 +59,6 @@
                   <span>
                     <select formControlName="dept" class="form-control input-sm" (change)="GetVendorTechSpec($event)"
                       [ngClass]="{ 'is-invalid': (techDetailsForm.controls.dept.touched || submitted) && techDetailsForm.controls.dept.errors }">
-  
                       <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
                               <p *ngIf="staffDetailsForm.controls.dept.errors.required">Department is required</p>
                             </div> -->
@@ -68,22 +66,22 @@
                       <option *ngFor="let option of deptList" value={{option.DeptCode}}>
                         {{option.DeptName}}
                       </option>
-                      <!-- <option value="CU">Cutting</option>
-                            <option value="pro">Production</option> -->
                     </select>
                   </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Technical Specification <span class="error-label">*</span></label>
                   <span>
-                    <select formControlName="techSpec" class="form-control input-sm" [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techSpec.touched || submitted) && techDetailsForm.controls.techSpec.errors }">
-                      <option value="">Select</option>
-                      <option *ngFor="let option of techSpecList" value={{option.VendorConfigID}}>
+                    <select formControlName="techSpec" class="form-control input-sm" (change)="specChange($event)"
+                    [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techSpec.touched || submitted) && techDetailsForm.controls.techSpec.errors }">
+                      <option value="" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
+                      <option *ngFor="let option of techSpecList" 
+                      [attr.data-line]="option.isLine"
+                      [attr.data-efficiency]="option.isEfficiency"
+                      [attr.data-maxnumber]="option.Max_Allowed"
+                      value={{option.VendorConfigID}}>
                         {{option.TechSpec}}
                       </option>
-                      <!-- <option value="gm">General Manager</option>
-                            <option value="in">Incharge</option>
-                            <option value="he">Helper</option> -->
                     </select>
                   </span>
                 </div>
@@ -92,53 +90,36 @@
   
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-6 col-md-6" *ngIf="isLine">
                   <label class="text">Tech Line No. <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" name="techLineNo" formControlName="techLineNo" class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techLineNo.touched || submitted) && techDetailsForm.controls.techLineNo.errors }">
+                    <input type="text" name="techLineNo" formControlName="techLineNo" class="form-control input-sm">
+                      
                   </span>
-                  <!-- <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors}"
-                        *ngIf="(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors">
-                          &nbsp;(Name is required)</label> -->
+                  
                 </div>
-              
-           
-  
-  
-  
-            <!-- <div class="col-lg-6 col-md-6">
-              <label class="text">Efficiency</label>
-              <span>
-                <input type="text" name="efficiency" formControlName="efficiency" class="form-control input-sm"
-                [ngClass]="{ 'is-invalid': (techDetailsForm.controls.efficiency.touched) && techDetailsForm.controls.efficiency.errors}"/>
-            </span>
-            <span [ngClass]="{ 'error-label':techDetailsForm.controls.efficiency.touched && techDetailsForm.controls.efficiency.errors}"
-            *ngIf="techDetailsForm.controls.efficiency.touched && techDetailsForm.controls.efficiency.errors">
-             Only Numeric\Decimal</span>
-            </div>
-   -->
-   <div class="col-lg-6 col-md-6">
-      <label class="text">Efficiency</label>
-      <span><input type="text" name="efficiency" formControlName="efficiency" 
-      class="form-control input-sm" [ngClass]="{ 'is-invalid err': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors }" /></span>
-      <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors}"
-      *ngIf="(techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors">
-       errors</span>
-  </div>
-            </div>
+                <div class="col-lg-6 col-md-6" *ngIf="isEfficiency">
+                  <label class="text">Efficiency</label>
+                  <span><input type="text" name="efficiency" formControlName="efficiency" 
+                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors }" /></span>
+                    <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors}"
+                    *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors">
+                     Valid Percentage Only</span>
+                </div>
+              </div>
             </div>
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Unit Count<span class="error-label">*</span></label>
-                  <span><input type="text" name="unitCount" formControlName="unitCount" class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid': (techDetailsForm.controls.unitCount.touched || submitted) && techDetailsForm.controls.unitCount.errors }" /></span>
-  
-  
+                  <select formControlName="unitCount" class="form-control input-sm" [ngClass]="{ 'is-invalid': (techDetailsForm.controls.unitCount.touched || submitted) && techDetailsForm.controls.unitCount.errors }">
+                      <option value="">Select</option>
+                      <option *ngFor="let option of unitCountList(200); let i = index;" value={{i+1}}>{{i+1}}</option>
+                    </select>
+                  <!-- <span><input type="text" name="unitCount" formControlName="unitCount" class="form-control input-sm"
+                      [ngClass]="{ 'is-invalid': (techDetailsForm.controls.unitCount.touched || submitted) && techDetailsForm.controls.unitCount.errors }" /></span> -->
                 </div>
                 <div class="col-lg-6 col-md-6">
-  
                   <span><input type="checkbox" name="status" formControlName="status" /></span>
                   <label class="text" style="margin-left: 5px;font-size: 13px;margin-top:18%">Active</label>
                 </div>
