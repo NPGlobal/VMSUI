@@ -71,7 +71,9 @@
                     <span>
                       <select formControlName="designation" class="form-control input-sm" [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.designation.touched || submitted) && staffDetailsForm.controls.designation.errors }">
                         <option value="">Select Designation</option>
-                        <option *ngFor="let option of designationList" value={{option.VendorConfigID}}>
+                        <option *ngFor="let option of designationList" 
+                        [attr.data-maxnumber]="option.Max_Allowed"
+                        value={{option.VendorConfigID}}>
                           {{option.Designation}}
                         </option>
                       </select>
@@ -132,7 +134,7 @@
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
                           <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm"
-                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
+                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
                             <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')}"
                             *ngIf="(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')">
                             &nbsp;Numbers Only</span>

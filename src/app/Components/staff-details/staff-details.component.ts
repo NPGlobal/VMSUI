@@ -114,7 +114,7 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value;
     this.VendorStaff.CreatedBy = 999999;
     this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
-      if (data.Msg = '0') {
+      if (data.Msg[0].Result === 0) {
         this.VendorStaff = new VendorStaff();
         this.staffDetailsForm.reset();
         this.InitializeFormControls();
@@ -123,11 +123,11 @@ export class StaffDetailsComponent implements OnInit {
         this.totalItems = data.VendorStaffCount[0].TotalVendors;
         this.GetVendorsStaffList();
         this.designationList = [];
-        alert('Data saved/updated successfully.');
+        alert(data.Msg[0].Message);
         $('#myModal').modal('toggle');
         this.dismiss();
       } else {
-        alert('Error occured while saving.');
+        alert(data.Msg[0].Message);
       }
     });
   }
