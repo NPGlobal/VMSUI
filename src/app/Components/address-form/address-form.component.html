@@ -17,10 +17,10 @@
             <div class="col-md-6">
               <span>
                 <label class="text">
-                  <input formControlName="AllSameAddress" type="checkbox" />Same address for all</label>
+                  <input formControlName="HasSameAddress" type="checkbox" />Same address for all</label>
               </span>
             </div>
-            <div *ngIf="!AddressForm.get('AllSameAddress').value" class="col-md-5" style="padding:0px;">
+            <div *ngIf="!AddressForm.get('HasSameAddress').value" class="col-md-5" style="padding:0px;">
               <label class="text">OrgUnitCode</label>
               <span>
                 <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()" class="form-control input-sm"
@@ -124,7 +124,7 @@
           <div class="col-md-12 form-group page-footer">
             <!-- <button [disabled]="!AddressForm.valid" type="submit" class="mr-3 btn btn-primary">Save</button> -->
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button data-dismiss="modal" type="button" (click)="ResetForm()" class="btn">Cancel</button>
+            <button #modalCloseButton data-dismiss="modal" type="button" (click)="ResetForm()" class="btn">Cancel</button>
           </div>
         </form>
       </div>

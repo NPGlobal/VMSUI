@@ -14,4 +14,5 @@ export class VendorAddress {
     AddressReferenceID: string;
     AddressReference: string;
     VendorCode: string;
+    HasSameAddress: boolean;
 }

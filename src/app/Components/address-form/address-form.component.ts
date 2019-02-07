@@ -2,11 +2,9 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { VendorService } from 'src/app/Services/vendor.service';
-import { Vendor } from 'src/app/Models/vendor';
 import { VendorAddress } from 'src/app/Models/vendor-address';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
-import { delay } from 'q';
 import { Router } from '@angular/router';
 
 @Component({
@@ -91,21 +89,19 @@ export class AddressFormComponent implements OnInit {
       PIN: ['', Validators.required],
       Phone: ['', Validators.required],
       AddressTypeCode: ['F'],
-      AllSameAddress: [false]
+      HasSameAddress: [false]
     });
   }
 
   GetCountryList() {
-    this._mddService.GetMasterDataDetails('COUNTRY').subscribe((data) => {
-      delay(2000);
-      this.CountryList = data.Table.filter(x => x.MDDCode === 'IN');
+    this._mddService.GetMasterDataDetails('COUNTRY').subscribe((result) => {
+      this.CountryList = result.data.Table.filter(x => x.MDDName === 'India');
     });
   }
 
   GetStateList() {
-    this._mddService.GetMasterDataDetails('STATE').subscribe(data => {
-      delay(2000);
-      this.StateList = data.Table;
+    this._mddService.GetMasterDataDetails('STATE').subscribe(result => {
+      this.StateList = result.data.Table;
     });
   }
 
@@ -130,8 +126,8 @@ export class AddressFormComponent implements OnInit {
   }
 
   BindOrgUnitDropDown() {
-    this._vendorService.GetPHList().subscribe(PHList => {
-      this.PHList = PHList.Table;
+    this._vendorService.GetPHList().subscribe(result => {
+      this.PHList = result.data.Table;
     });
   }
 
@@ -144,6 +140,7 @@ export class AddressFormComponent implements OnInit {
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let StatusObj: any;
     this.VendorAddress = new VendorAddress();
+    this.VendorAddress.CompanyCode = '10';
     this.VendorAddress.OrgUnitCode = this.AddressForm.get('OrgUnitCode').value;
     this.VendorAddress.PIN = this.AddressForm.get('PIN').value;
     this.VendorAddress.Address1 = this.AddressForm.get('Address1').value;
@@ -156,14 +153,15 @@ export class AddressFormComponent implements OnInit {
     this.VendorAddress.AddressReference = 'V';
     this.VendorAddress.VendorCode = this.VendorCode;
     this.VendorAddress.AddressCode = this.AddressCode;
+    this.VendorAddress.HasSameAddress = this.AddressForm.get('HasSameAddress').value;
 
     console.log(JSON.stringify(this.VendorAddress));
 
-    this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
-      StatusObj = data;
-      if (StatusObj.Status === 0) {
-        el.click();
-      }
-    });
+    // this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
+    //   StatusObj = data;
+    //   if (StatusObj.Status === 0) {
+    //     el.click();
+    //   }
+    // });
   }
 }

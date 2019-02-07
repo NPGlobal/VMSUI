@@ -2,12 +2,10 @@ export class Vendor {
     RowNumber: number;
     VendorCode: string;
     VendorName: string;
-    VendorShortName: string;
     MasterVendorName: string;
     PANNo: string;
     GSTIN: string;
     TINNo: string;
-    VendorType: string;
     nameInAddress: string;
     AddressLine1: string;
     AddressLine2: string;
@@ -36,6 +34,4 @@ export class Vendor {
     Ref_VendorCode: string;
     IsJWVendor: boolean;
     IsDirectVendor: boolean;
-    createdOn : Date;
-    Status:string;
 }
