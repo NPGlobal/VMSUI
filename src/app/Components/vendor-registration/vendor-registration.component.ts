@@ -14,7 +14,8 @@ export class VendorRegistrationComponent implements OnInit {
   RegistrationForm: FormGroup;
   AllPHList: OrgUnit[];
   PHList: OrgUnit[];
-  SelectedPHList: OrgUnit[] = [];
+  StoreList: OrgUnit[];
+  SelectedPHStoreList: OrgUnit[] = [];
   CodeExists: boolean;
   borderStyle: string;
   MasterVendorList: Vendor[] = [];
@@ -32,7 +33,7 @@ export class VendorRegistrationComponent implements OnInit {
 
   ValidationMessages = {
     'VendorCode': {
-      'required': 'Vendor Code is Required',
+      'required': '',
       'maxlength': 'Code should not exceed 6 characters',
       'pattern': 'Cannot contains special characters',
       'CodeExist': 'Code Already Exists'
@@ -41,13 +42,13 @@ export class VendorRegistrationComponent implements OnInit {
       'required': 'Vendor Type is Required'
     },
     'GSTIN': {
-      'required': 'GST No. is Required',
+      'required': '',
       'minlength': 'Invalid GST No.',
       'maxlength': 'Invalid GST No.',
       'pattern': 'Cannot contains special characters'
     },
     'PANNo': {
-      'required': 'PAN No. is Required',
+      'required': '',
       'minlength': 'Invalid PAN number',
       'maxlength': 'Invalid PAN number',
       'pattern': 'Cannot contains special characters'
@@ -62,13 +63,17 @@ export class VendorRegistrationComponent implements OnInit {
   };
 
   ngOnInit() {
-    this._vendorService.GetPHList().subscribe(PHList => {
-      this.AllPHList = PHList.Table;
-      this.PHList = PHList.Table;
+    this._vendorService.GetPHList().subscribe(result => {
+      this.AllPHList = result.data.Table;
+      this.PHList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'P');
+      this.StoreList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'S');
+      console.log(this.PHList.length);
+      console.log(this.StoreList.length);
     });
 
-    this._vendorService.GetVendors(-1, -1).subscribe((Data) => {
-      this.MasterVendorList = Data.Vendors.filter(x => x.Status === 'A');
+
+    this._vendorService.GetVendors(-1, -1).subscribe((result) => {
+      this.MasterVendorList = result.data.Vendors.filter(x => x.Status === 'A');
     });
 
     this.InitializeFormControls();
@@ -90,7 +95,8 @@ export class VendorRegistrationComponent implements OnInit {
       GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
       PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
-      SelectedPHList: null,
+      StoreList: [''],
+      SelectedPHStoreList: null,
       PHListCSV: '',
       Ref_VendorCode: '-1',
       IsJWVendor: [false],
@@ -128,8 +134,9 @@ export class VendorRegistrationComponent implements OnInit {
 
   dismiss() {
     this.InitializeFormControls();
-    this.PHList = this.AllPHList;
-    this.SelectedPHList = [];
+    this.PHList = this.AllPHList.filter(ph => ph.OrgUnitTypeCode === 'P');
+    this.StoreList = this.AllPHList.filter(ph => ph.OrgUnitTypeCode === 'S');
+    this.SelectedPHStoreList = [];
   }
 
   NoPHLeft() {
@@ -141,7 +148,7 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   NoSelectedPH() {
-    if (this.SelectedPHList.length > 0) {
+    if (this.SelectedPHStoreList.length > 0) {
       return false;
     } else {
       return true;
@@ -150,7 +157,7 @@ export class VendorRegistrationComponent implements OnInit {
 
   SaveVendorPrimaryInfo() {
     const el = this.modalCloseButton.nativeElement as HTMLElement;
-    // let statusObj: any;
+    let statusObj: any;
     const vendor = new Vendor();
     vendor.VendorName = this.RegistrationForm.get('VendorName').value;
     vendor.PANNo = this.RegistrationForm.get('PANNo').value;
@@ -160,47 +167,67 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.VendorCode = this.RegistrationForm.get('VendorCode').value;
     vendor.IsDirectVendor = this.RegistrationForm.get('IsDirectVendor').value;
     vendor.IsJWVendor = this.RegistrationForm.get('IsJWVendor').value;
-    vendor.SelectedPHListCSV = (this.RegistrationForm.get('VendorType').value === 'DP') ? '10' :
-      this.SelectedPHList.map(function (element) {
+    vendor.SelectedPHListCSV = !vendor.IsJWVendor ? '' :
+      this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join();
 
-    // this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
-    //   statusObj = data;
-    //   if (statusObj.Status === 0) {
-    //     el.click();
-    //     this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
-    //   } else if (statusObj.Status === 2) {
-    //     this.CodeExists = true;
-    //   }
-    // });
-    console.log(vendor);
+    this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
+      statusObj = result;
+      if (statusObj.Status === 0) {
+        el.click();
+        this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
+      } else if (statusObj.Status === 2) {
+        this.CodeExists = true;
+      }
+    });
+    console.log(JSON.stringify(vendor));
   }
 
   MoveToSelectedPHList() {
-    const values = this.RegistrationForm.get('PHList').value as Array<string>;
+    const phValues = this.RegistrationForm.get('PHList').value as Array<string>;
+    const storeValues = this.RegistrationForm.get('StoreList').value as Array<string>;
 
-    for (let i = 0; i < this.PHList.length; i++) {
-      if (values.includes(this.PHList[i].OrgUnitCode)) {
-        this.SelectedPHList.push(this.PHList[i]);
+    if (phValues.length > 0) {
+      for (let i = 0; i < this.PHList.length; i++) {
+        if (phValues.includes(this.PHList[i].OrgUnitCode)) {
+          this.SelectedPHStoreList.push(this.PHList[i]);
+        }
       }
+      this.DeleteFromArray(phValues, 'PH');
     }
 
-    this.DeleteFromArray(values, 'PH');
-    this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
+    if (storeValues.length > 0) {
+      for (let i = 0; i < this.StoreList.length; i++) {
+        if (storeValues.includes(this.StoreList[i].OrgUnitCode)) {
+          this.SelectedPHStoreList.push(this.StoreList[i]);
+        }
+      }
+      this.DeleteFromArray(storeValues, 'Store');
+    }
+
+    this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
   }
 
   MoveToPHList() {
-    const values = this.RegistrationForm.get('SelectedPHList').value as Array<string>;
+    const values = this.RegistrationForm.get('SelectedPHStoreList').value as Array<string>;
 
-    for (let i = 0; i < this.SelectedPHList.length; i++) {
-      if (values.includes(this.SelectedPHList[i].OrgUnitCode)) {
-        this.PHList.push(this.SelectedPHList[i]);
+    for (let i = 0; i < this.SelectedPHStoreList.length; i++) {
+      if (values.includes(this.SelectedPHStoreList[i].OrgUnitCode)) {
+
+        if (this.SelectedPHStoreList[i].OrgUnitTypeCode === 'P') {
+          this.PHList.push(this.SelectedPHStoreList[i]);
+        }
+
+        if (this.SelectedPHStoreList[i].OrgUnitTypeCode === 'S') {
+          this.StoreList.push(this.SelectedPHStoreList[i]);
+        }
       }
     }
 
     this.DeleteFromArray(values, 'SelectedPH');
-    this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
+
+    this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -212,8 +239,14 @@ export class VendorRegistrationComponent implements OnInit {
             return value;
           }
         });
+      } else if (type === 'Store') {
+        this.StoreList = this.StoreList.filter(function (value) {
+          if (value.OrgUnitCode !== stringArr[i]) {
+            return value;
+          }
+        });
       } else {
-        this.SelectedPHList = this.SelectedPHList.filter(function (value) {
+        this.SelectedPHStoreList = this.SelectedPHStoreList.filter(function (value) {
           if (value.OrgUnitCode !== stringArr[i]) {
             return value;
           }
@@ -223,15 +256,22 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SetPHListValidation() {
-    this.PHList = this.AllPHList;
-    this.SelectedPHList = [];
+    this.PHList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'P');
+    this.StoreList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'S');
+    this.SelectedPHStoreList = [];
     if (this.RegistrationForm.get('IsJWVendor').value) {
       this.HasPHSelected = false;
     } else if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = true;
     } else {
-      this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;
+      this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     }
+  }
+
+  UnselectOptions() {
+    this.RegistrationForm.get('PHList').patchValue('');
+    this.RegistrationForm.get('StoreList').patchValue('');
+    this.RegistrationForm.get('SelectedPHStoreList').patchValue('');
   }
 
 }

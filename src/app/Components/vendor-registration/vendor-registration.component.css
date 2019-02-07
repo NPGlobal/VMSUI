@@ -1,5 +1,5 @@
 .modal-lg {
-    max-width: 1000px;
+    max-width: 1080px;
 }
 
 .mandatory {
@@ -10,3 +10,10 @@ form {
     margin: 10px;
 }
 
+.PHandStore {
+    max-width: none;
+}
+
+.shiftButton{
+    width: 100px;
+}

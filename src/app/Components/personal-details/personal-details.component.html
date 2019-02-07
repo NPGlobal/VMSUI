@@ -21,25 +21,24 @@
                             <div class="col-md-6">
                                 <label class="text">Vendor Code</label>
                                 <span>
-                                    <input disabled type="text" formControlName="VendorCode" class="form-control input-sm" />
+                                    <input type="text" formControlName="VendorCode" class="form-control input-sm" />
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">Vendor Name</label>
                                 <span>
-                                    <input disabled type="text" formControlName="VendorName" class="form-control input-sm"
-                                        value="" />
+                                    <input type="text" formControlName="VendorName" class="form-control input-sm" value="" />
                                 </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
                                 <label class="text">GST Registration No.</label>
-                                <span><input disabled type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
+                                <span><input type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">PAN No.</label>
-                                <span><input disabled type="text" formControlName="PANNo" class="form-control input-sm" /></span>
+                                <span><input type="text" formControlName="PANNo" class="form-control input-sm" /></span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
@@ -51,8 +50,8 @@
                                 <span>
                                     <select type="text" class="form-control" formControlName="Ref_VendorCode">
                                         <option value="-1">Select</option>
-                                        <option *ngFor="let item of MasterVendorList" value="{{item.VendorCode}}">{{item.VendorName
-                                            + '(' + item.VendorCode + ')'}}</option>
+                                        <option *ngFor="let item of MasterVendorList" value="{{item.VendorCode}}">
+                                            {{item.VendorName + '(' + item.VendorCode + ')'}}</option>
                                     </select>
                                 </span>
                             </div>
@@ -61,32 +60,29 @@
                     <div class="col-md-4" style="padding-left:0px;">
 
                         <div class="col-md-12 form-group">
-                            <div class="col-md-5" style="padding-left:0px;">
-                                <label class="text">Vendor Type</label>
+                            <div class="form-group col-md-6">
+                                <label>Vendor Type</label>
+                                <div class="col-md-3">
+                                    <label class="radio-inline">
+                                        <input type="checkbox" formControlName="IsDirectVendor">
+                                        <span style="margin-left:5px;">DP</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="radio-inline">
+                                        <input type="checkbox" formControlName="IsJWVendor">
+                                        <span style="margin-left:5px;">JW</span>
+                                    </label>
+                                </div>
                             </div>
-
-                            <div class="col-md-2">
-                                <label class="radio-inline">
-                                    <input disabled value="DP" type="radio" formControlName="VendorType">
-                                    <span style="margin-left:5px;">DP</span>
-                                </label>
-                            </div>
-
-                            <div class="col-md-1">
-                                <label class="radio-inline">
-                                    <input disabled value="JW" type="radio" formControlName="VendorType">
-                                    <span style="margin-left:5px;">JW</span>
-                                </label>
-                            </div>
-
                         </div>
 
-                        <div *ngIf="personalDetailsForm.get('PersonalDetails').controls.VendorType.value==='JW'">
+                        <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="col-md-12 form-group">
                                 <div class="col-md-5" style="padding:0px;">
                                     <label class="text">PH/FO</label>
                                     <span>
-                                        <select disabled formControlName="PHList" class="form-control input-sm" size="8"
+                                        <select formControlName="PHList" class="form-control input-sm" size="8"
                                             multiple="multiple">
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{
                                                 PH.OrgUnitName }}</option>
@@ -96,9 +92,8 @@
                                 </div>
                                 <div class="col-md-1" style="padding-left:5px;">
 
-                                    <input type="button" disabled="disabled" style="margin-bottom: 5px;" value=">"
-                                        (click)="MoveToSelectedPHList()">
-                                    <input type="button" disabled="disabled" value="<" (click)="MoveToPHList()">
+                                    <input type="button" disabled style="margin-bottom: 5px;" value=">" />
+                                    <input type="button" disabled value="<" />
 
                                 </div>
                                 <div class="col-md-5" style="padding-left:8px;padding-right: 0px">
@@ -318,5 +313,4 @@
     </div>
 </form>
 
-<app-address-form [VendorCode]="VendorCode"
-[AddressCode]="AddressCode"></app-address-form>
+<app-address-form [VendorCode]="VendorCode" [AddressCode]="AddressCode"></app-address-form>

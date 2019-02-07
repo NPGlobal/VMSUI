@@ -23,7 +23,6 @@ export class PersonalDetailsComponent implements OnInit {
   MasterVendorList: Vendor[] = [];
   VendorTypeList: MasterDataDetails[];
   VendorCode: string;
-  vendorType = 'DP';
 
   AllPHList: OrgUnit[];
   PHList: OrgUnit[] = [];
@@ -51,8 +50,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.PupulateYears();
 
-    this._vendorService.GetVendors(-1, -1).subscribe(data =>
-      this.MasterVendorList = data.Vendors.filter(x => x.Status === 'A')
+    this._vendorService.GetVendors(-1, -1).subscribe(result =>
+      this.MasterVendorList = result.data.Vendors.filter(x => x.Status === 'A')
     );
 
     this.GetPHList();
@@ -66,9 +65,9 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   GetPHList() {
-    this._vendorService.GetPHList().subscribe((PHList) => {
+    this._vendorService.GetPHList().subscribe((result) => {
       delay(1000);
-      this.AllPHList = PHList.Table;
+      this.AllPHList = result.data.Table;
     },
       (nextCallBack) => {
         this.FillPHLists();
@@ -76,8 +75,8 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   GetMasterDataDetails(MDHCode: string) {
-    this._mDDService.GetMasterDataDetails(MDHCode).subscribe((data) => {
-      this.VendorTypeList = data.Table;
+    this._mDDService.GetMasterDataDetails(MDHCode).subscribe((result) => {
+      this.VendorTypeList = result.data.Table;
     });
   }
 
@@ -104,8 +103,8 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   Editvendor(Code: string) {
-    this._vendorService.GetVendorByCode(Code).subscribe((data) => {
-      this.vendor = data.Vendor[0];
+    this._vendorService.GetVendorByCode(Code).subscribe((result) => {
+      this.vendor = result.data.Vendor[0];
       this.InitializeFormControls();
     });
   }
@@ -127,17 +126,17 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
-        VendorCode: [this.vendor.VendorCode],
-        VendorName: [this.vendor.VendorCode],
+        VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
+        VendorName: [{ value: this.vendor.VendorName, disabled: true }],
         MasterVendorName: [this.vendor.MasterVendorName],
-        PANNo: [this.vendor.PANNo],
-        GSTIN: [this.vendor.GSTIN],
+        PANNo: [{ value: this.vendor.PANNo, disabled: true }],
+        GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
         TINNo: [this.vendor.TINNo],
-        PHList: new FormControl(null),
+        PHList: new FormControl({ value: null, disabled: true }),
         Ref_VendorCode: '',
         IsExpanded: true,
-        IsJWVendor: [false],
-        IsDirectVendor: [true]
+        IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: true }],
+        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: true }]
       }),
       Address: this._fb.group({
         IsExpanded: false
@@ -171,8 +170,5 @@ export class PersonalDetailsComponent implements OnInit {
 
   ToggleContainer(formGroup: FormGroup) {
     formGroup.controls.IsExpanded.patchValue(!formGroup.controls.IsExpanded.value);
-  }
-
-  MoveToSelectedPHList() {
   }
 }

@@ -30,9 +30,9 @@ export class VendorListComponent implements OnInit {
   }
   GetVendors(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendors(this.currentPage, this.pageSize).subscribe(data => {
-      this.vendors = data.Vendors;
-      this.totalItems = data.VendorsCount[0].TotalVendors;
+    this._vendorService.GetVendors(this.currentPage, this.pageSize).subscribe(result => {
+      this.vendors = result.data.Vendors;
+      this.totalItems = result.data.VendorsCount[0].TotalVendors;
       this.GetVendorsList();
     });
   }
