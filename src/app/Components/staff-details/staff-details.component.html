@@ -28,20 +28,10 @@
             <td>{{vendor.Email}}</td>
             <td>{{vendor.Phone}}</td>
             <td>
-              <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit"></i></a>
+              <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetStaffDetails(vendor.VendorStaffDetailsId)" 
+            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
             </td>
           </tr>
-        <!-- <tr>
-          <th scope="row">1</th>
-          <td>abcd</td>
-          <td>abcd@gmail.com</td>
-          <td>9824346546</td>
-          <td>1</td>
-          <td>
-            <a title="Edit" href="javascript:void(0)"  data-toggle="modal" 
-            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
-          </td>
-        </tr> -->
       </tbody>
     </table>
 </div>
@@ -60,6 +50,8 @@
         <!-- modal-body -->
         <div class="modal-body">
           <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
+            <input type="hidden" name="id" formControlName="id">
+
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
