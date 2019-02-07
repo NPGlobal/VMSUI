@@ -1,5 +1,5 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
-    <button type="button" class="btn btn-primary float-right" data-toggle="modal" 
+    <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
         <i class="fa fa-plus"></i>
         <span title="Add new" class="py-4">Add</span>
@@ -122,8 +122,8 @@
       <label class="text">Efficiency</label>
       <span><input type="text" name="efficiency" formControlName="efficiency" 
       class="form-control input-sm" [ngClass]="{ 'is-invalid err': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors }" /></span>
-      <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors}"
-      *ngIf="(techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors">
+      <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors}"
+      *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors">
        Valid Percentage Only</span>
   </div>
             </div>

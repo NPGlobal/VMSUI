@@ -16,7 +16,7 @@ declare var $: any;
 })
 export class TechnicalDetailsComponent implements OnInit {
   // NumericPattern = '^[.]+[0-9]*$';
-   NumericPattern = '^[0-9]*[\.\]?[0-9]*$';
+  // NumericPattern = '^[0-9]*[\.\]?[0-9]*$';
    efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/ ;
   // NumericPattern = '^[a-zA-Z0-9]*$';
   // unitCountList = [1, 2 , 3 , 4, 5 , 6 , , 198, 200];
@@ -43,16 +43,17 @@ export class TechnicalDetailsComponent implements OnInit {
     private _pager: PagerService) { }
 
   ngOnInit() {
-    this.techDetailsForm = this._fb.group({
-      id: ['0'],
-      dept: ['', Validators.required],
-      techSpec: ['', Validators.required],
-      techLineNo: ['', Validators.required],
-      efficiency: ['', Validators.pattern(this.efficiencyPattern)],
-      unitCount: ['', Validators.required],
-      status: true,
-      remarks: '',
-     });
+    // this.techDetailsForm = this._fb.group({
+    //   id: ['0'],
+    //   dept: ['', Validators.required],
+    //   techSpec: ['', Validators.required],
+    //   techLineNo: ['', Validators.required],
+    //   efficiency: ['', Validators.pattern(this.efficiencyPattern)],
+    //   unitCount: ['', Validators.required],
+    //   status: true,
+    //   remarks: '',
+    //  });
+    this.openModal();
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorTech(this.currentPage);
@@ -135,7 +136,18 @@ export class TechnicalDetailsComponent implements OnInit {
       }
     });
   }
-
+  openModal() {
+    this.techDetailsForm = this._fb.group({
+      id: ['0'],
+      dept: ['', Validators.required],
+      techSpec: ['', Validators.required],
+      techLineNo: ['', Validators.required],
+      efficiency: ['', Validators.pattern(this.efficiencyPattern)],
+      unitCount: ['', Validators.required],
+      status: true,
+      remarks: '',
+    });
+  }
    dismiss() {
      this.techDetailsForm = this._fb.group({
        id: ['0'],

@@ -39,18 +39,18 @@ export class StaffDetailsComponent implements OnInit {
 
   ngOnInit() {
     // this.dismiss();
-    this.staffDetailsForm = this._fb.group({
-      id: ['0'],
-      dept: ['', Validators.required],
-      designation: ['', Validators.required],
-      name: ['', Validators.required],
-      email: ['', Validators.email],
-      phone: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
-      priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
-      status: true,
-      remarks: ''
-    });
-
+    // this.staffDetailsForm = this._fb.group({
+    //   id: ['0'],
+    //   dept: ['', Validators.required],
+    //   designation: ['', Validators.required],
+    //   name: ['', Validators.required],
+    //   email: ['', Validators.email],
+    //   phone: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
+    //   priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
+    //   status: true,
+    //   remarks: ''
+    // });
+    this.openModal();
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorStaffs(this.currentPage);
@@ -129,6 +129,19 @@ export class StaffDetailsComponent implements OnInit {
       } else {
         alert(data.Msg[0].Message);
       }
+    });
+  }
+  openModal() {
+    this.staffDetailsForm = this._fb.group({
+      id: ['0'],
+      dept: ['', Validators.required],
+      designation: ['', Validators.required],
+      name: ['', Validators.required],
+      email: ['', Validators.email],
+      phone: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
+      priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
+      status: true,
+      remarks: ''
     });
   }
 
