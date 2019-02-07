@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { VendorTech } from 'src/app/Models/VendorTech';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
-//import { PagerService } from 'src/app/Services/pager.service';
 import { HttpClient } from '@angular/common/http';
 import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
@@ -22,7 +21,6 @@ export class TechnicalDetailsComponent implements OnInit {
   vendorcode: string;
   VendorTech: VendorTech;
   techDetailsForm: FormGroup;
-  personalDetailsForm: FormGroup;
   deptList: any[];
   techSpecList: any[];
   status = true;
@@ -32,6 +30,8 @@ export class TechnicalDetailsComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
+  isLine = false;
+  isEfficiency = false;
 
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
@@ -43,11 +43,11 @@ export class TechnicalDetailsComponent implements OnInit {
       id: ['0'],
       dept: ['', Validators.required],
       techSpec: ['', Validators.required],
-      techLineNo: ['', Validators.required],
+      techLineNo: [''],
       efficiency: ['', Validators.pattern(this.NumericPattern)],
       unitCount: ['', Validators.required],
       status: true,
-      remarks: '',
+      remarks: ''
      });
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
@@ -69,17 +69,20 @@ export class TechnicalDetailsComponent implements OnInit {
     this.pagedItems = this.vendortechList;
   }
   GetVendorDepartments() {
-    this._vendorService.GetVendorDeptTech('10', '-1', 'Department').subscribe((data) => {
+    this._vendorService.GetVendorDeptTech('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
       this.deptList = data;
     });
   }
   GetVendorTechSpec() {
-
+    // if (this.techDetailsForm.get('dept').value === '') {
+    //   this.techSpecList = [];
+    // } else {
     // console.log(this.techDetailsForm.get('dept').value);
-    this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, 'TechSpec').subscribe((data) => {
+    this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
       this.techSpecList = data;
       });
-  }
+  // }
+}
 
   InitializeFormControls() {
 
@@ -114,7 +117,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
     this.VendorTech.CreatedBy = 999999;
     this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
-      if (data.Msg = '0') {
+      if (data.Msg[0].Result === 0) {
         this.VendorTech = new VendorTech();
         this.techDetailsForm.reset();
         this.InitializeFormControls();
@@ -123,11 +126,11 @@ export class TechnicalDetailsComponent implements OnInit {
         this.totalItems = data.VendorTechCount[0].TotalVendors;
         this.GetVendorsTechList();
         this.techSpecList = [];
-        alert('Data saved/updated successfully.');
+        alert(data.Msg[0].Message);
         $('#myModal').modal('toggle');
         this.dismiss();
       } else {
-        alert('Error occured while saving.');
+        alert(data.Msg[0].Message);
       }
     });
   }
@@ -143,7 +146,9 @@ export class TechnicalDetailsComponent implements OnInit {
       status: true,
       remarks: ''
      });
-   }
+     this.isLine = false;
+     this.isEfficiency = false;
+    }
 
   GetTechDetails(x) {
     this._vendorService.GetTechDetails(x).subscribe((data) => {
@@ -160,6 +165,14 @@ export class TechnicalDetailsComponent implements OnInit {
 
       this.GetVendorTechSpec();
     });
+  }
+
+  specChange(event) {
+    // alert(event.target.selectedOptions[0].attributes['data-line'].value);
+    // alert(event.target.selectedOptions[0].attributes['data-efficiency'].value);
+    this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
+    this.isLine = (event.target.selectedOptions[0].attributes['data-line'].value === '1') ? true : false;
+    this.isEfficiency = (event.target.selectedOptions[0].attributes['data-efficiency'].value === '1') ? true : false;
   }
 }
 

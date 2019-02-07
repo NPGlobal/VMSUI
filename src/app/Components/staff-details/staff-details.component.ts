@@ -72,15 +72,20 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   GetVendorDepartments() {
-    this._vendorService.GetVendorsDeptStaff('10', '-1', 'Department').subscribe((data) => {
+    this._vendorService.GetVendorsDeptStaff('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
       this.deptList = data;
     });
   }
 
   GetVendorDesignation() {
-    this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, 'Designation').subscribe((data) => {
-      this.designationList = data;
-    });
+    if (this.staffDetailsForm.get('dept').value === '') {
+      this.designationList = [];
+    } else {
+    this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
+    .subscribe((data) => {
+        this.designationList = data;
+      });
+    }
   }
 
   InitializeFormControls() {

@@ -9,8 +9,8 @@ import { Vendor } from '../Models/vendor';
 export class VendorService {
 
   // origin = 'http://172.16.7.60/VMSApi/';
-  origin = 'http://172.16.7.68/';
-  // origin = 'https://localhost:44372/';
+  // origin = 'http://172.16.7.68/';
+  origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number): Observable<any> {
@@ -46,23 +46,23 @@ export class VendorService {
     return this._http.post<any>(apiUrl, VendorTech);
   }
   // For Vendor Staff Department
-  GetVendorsDeptStaff(companycode: string, deptcode: string, type: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + type;
+  GetVendorsDeptStaff(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
   // For Vendor Staff Designation by Department
-  GetVendorDesignation(companycode: string, deptcode: string, type: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + type;
+  GetVendorDesignation(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
   // For Vendor Technical Department
-  GetVendorDeptTech(companycode: string, deptcode: string, type: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
+  GetVendorDeptTech(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
 // For Vendor Technical Specification by Department
-  GetVendorTechSpec(companycode: string, deptcode: string, type: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + type;
+  GetVendorTechSpec(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
   // Get all Staff of a Vendor
