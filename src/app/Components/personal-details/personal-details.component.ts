@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
+import { delay } from 'q';
+import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
+import { MasterDataDetails } from 'src/app/Models/master-data-details';
 
 declare var $: any;
 
@@ -16,7 +19,9 @@ export class PersonalDetailsComponent implements OnInit {
 
   vendor: Vendor;
   personalDetailsForm: FormGroup;
-
+  YearList: number[] = [];
+  MasterVendorList: Vendor[] = [];
+  VendorTypeList: MasterDataDetails[];
   VendorCode: string;
   vendorType = 'DP';
 
@@ -24,27 +29,78 @@ export class PersonalDetailsComponent implements OnInit {
   PHList: OrgUnit[] = [];
   SelectedPHList: OrgUnit[] = [];
 
+  AddressCode: string;
+
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
-    private _fb: FormBuilder) { }
+    private _fb: FormBuilder,
+    private _mDDService: MasterDataDetailsService) {
+    this.AddressCode = '';
+  }
 
   ngOnInit() {
-
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
+      if (this.VendorCode === null) {
+        this.vendor = new Vendor();
+        this.InitializeFormControls();
+      } else {
+        this.Editvendor(this.VendorCode);
+      }
     });
 
-    this._vendorService.GetPHList().subscribe(PHList => {
-      this.AllPHList = PHList.Table;
-      this.FillPHLists();
-    });
+    this.PupulateYears();
 
-    if (this.VendorCode === null) {
-      this.vendor = new Vendor();
-      this.InitializeFormControls();
-    } else {
-      this.Editvendor(this.VendorCode);
+    this._vendorService.GetVendors(-1, -1).subscribe(data =>
+      this.MasterVendorList = data.Vendors.filter(x => x.Status === 'A')
+    );
+
+    this.GetPHList();
+    this.GetMasterDataDetails('VendorType');
+  }
+
+  PupulateYears() {
+    for (let i = (new Date()).getFullYear(); i >= ((new Date()).getFullYear() - 20); i--) {
+      this.YearList.push(i);
     }
+  }
+
+  GetPHList() {
+    this._vendorService.GetPHList().subscribe((PHList) => {
+      delay(1000);
+      this.AllPHList = PHList.Table;
+    },
+      (nextCallBack) => {
+        this.FillPHLists();
+      });
+  }
+
+  GetMasterDataDetails(MDHCode: string) {
+    this._mDDService.GetMasterDataDetails(MDHCode).subscribe((data) => {
+      this.VendorTypeList = data.Table;
+    });
+  }
+
+  SavePersonalDetails() {
+    let StatusObj: any;
+    const vendor = new Vendor();
+    vendor.VendorCode = this.VendorCode;
+    vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
+    vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
+    vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
+    vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value;
+    vendor.PersonTopRanker2 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value;
+    vendor.OtherCustomer1 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value;
+    vendor.OtherCustomer2 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value;
+    vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value;
+    vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value;
+    vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value;
+    this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
+      StatusObj = data;
+      if (StatusObj.Status === 0) {
+        alert('h!');
+      }
+    });
   }
 
   Editvendor(Code: string) {
@@ -55,7 +111,7 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   FillPHLists() {
-    if (this.vendor.SelectedPHListCSV) {
+    if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {
         if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
@@ -71,24 +127,19 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
-        Code: [this.vendor.VendorCode],
-        Name: [this.vendor.VendorCode],
+        VendorCode: [this.vendor.VendorCode],
+        VendorName: [this.vendor.VendorCode],
         MasterVendorName: [this.vendor.MasterVendorName],
         PANNo: [this.vendor.PANNo],
         GSTIN: [this.vendor.GSTIN],
         TINNo: [this.vendor.TINNo],
-        VendorType: [this.vendor.VendorType],
         PHList: new FormControl(null),
-        IsExpanded: true
+        Ref_VendorCode: '',
+        IsExpanded: true,
+        IsJWVendor: [false],
+        IsDirectVendor: [true]
       }),
       Address: this._fb.group({
-        nameInAddress: [this.vendor.nameInAddress],
-        PIN: [this.vendor.PIN],
-        State: [this.vendor.State],
-        AddressLine1: [this.vendor.AddressLine1],
-        AddressLine2: [this.vendor.AddressLine2],
-        City: [this.vendor.City],
-        AddressType: [this.vendor.AddressType],
         IsExpanded: false
       }),
       Contact: this._fb.group({
@@ -102,17 +153,17 @@ export class PersonalDetailsComponent implements OnInit {
       }),
       OtherRegDetails: this._fb.group({
         AssociatedSinceYear: [this.vendor.AssociatedSinceYear],
-        EnterpriseNature: [this.vendor.EnterpriseNature],
-        Partner1Name: [this.vendor.Partner1Name],
-        Partner2Name: [this.vendor.Partner2Name],
+        VendorType_MDDCode: [''],
+        PersonTopRanker1: [this.vendor.PersonTopRanker1],
+        PersonTopRanker2: [this.vendor.PersonTopRanker2],
         IsExpanded: false
       }),
       CustomerDetails: this._fb.group({
-        Customer1Name: [this.vendor.Customer1Name],
-        Customer2Name: [this.vendor.Customer2Name],
-        Customer3Name: [this.vendor.Customer3Name],
-        Customer4Name: [this.vendor.Customer4Name],
-        Customer5Name: [this.vendor.Customer5Name],
+        OtherCustomer1: [this.vendor.OtherCustomer1],
+        OtherCustomer2: [this.vendor.OtherCustomer2],
+        OtherCustomer3: [this.vendor.OtherCustomer3],
+        OtherCustomer4: [this.vendor.OtherCustomer4],
+        OtherCustomer5: [this.vendor.OtherCustomer5],
         IsExpanded: false
       })
     });

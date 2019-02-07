@@ -17,6 +17,7 @@ export class VendorRegistrationComponent implements OnInit {
   SelectedPHList: OrgUnit[] = [];
   CodeExists: boolean;
   borderStyle: string;
+  MasterVendorList: Vendor[] = [];
 
   HasPHSelected: boolean;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
@@ -65,10 +66,24 @@ export class VendorRegistrationComponent implements OnInit {
       this.AllPHList = PHList.Table;
       this.PHList = PHList.Table;
     });
+
+    this._vendorService.GetVendors(-1, -1).subscribe((Data) => {
+      this.MasterVendorList = Data.Vendors.filter(x => x.Status === 'A');
+    });
+
+    this.InitializeFormControls();
+
+    this.HasPHSelected = true;
+    this.CodeExists = false;
+    this.RegistrationForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.RegistrationForm);
+    });
+  }
+
+  InitializeFormControls() {
     this.RegistrationForm = this._fb.group({
       VendorCode: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
       VendorName: [''],
-      VendorType: ['DP'],
       IsRCM: ['false'],
       IsProvisional: [false],
       MasterVendorName: [''],
@@ -76,13 +91,10 @@ export class VendorRegistrationComponent implements OnInit {
       PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       SelectedPHList: null,
-      PHListCSV: ''
-    });
-
-    this.HasPHSelected = true;
-    this.CodeExists = false;
-    this.RegistrationForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.RegistrationForm);
+      PHListCSV: '',
+      Ref_VendorCode: '-1',
+      IsJWVendor: [false],
+      IsDirectVendor: [true]
     });
   }
 
@@ -115,19 +127,7 @@ export class VendorRegistrationComponent implements OnInit {
   // }
 
   dismiss() {
-    this.RegistrationForm = this._fb.group({
-      VendorCode: ['', [Validators.required, Validators.maxLength(6)]],
-      VendorName: [''],
-      VendorType: ['DP'],
-      IsRCM: ['false'],
-      IsProvisional: [false],
-      MasterVendorName: [''],
-      GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
-      PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
-      PHList: [''],
-      SelectedPHList: null,
-      PHListCSV: ''
-    });
+    this.InitializeFormControls();
     this.PHList = this.AllPHList;
     this.SelectedPHList = [];
   }
@@ -150,7 +150,7 @@ export class VendorRegistrationComponent implements OnInit {
 
   SaveVendorPrimaryInfo() {
     const el = this.modalCloseButton.nativeElement as HTMLElement;
-    let statusObj: any;
+    // let statusObj: any;
     const vendor = new Vendor();
     vendor.VendorName = this.RegistrationForm.get('VendorName').value;
     vendor.PANNo = this.RegistrationForm.get('PANNo').value;
@@ -158,21 +158,23 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.IsProvisional = this.RegistrationForm.get('IsProvisional').value;
     vendor.IsRCM = this.RegistrationForm.get('IsRCM').value;
     vendor.VendorCode = this.RegistrationForm.get('VendorCode').value;
-    vendor.VendorType = this.RegistrationForm.get('VendorType').value;
+    vendor.IsDirectVendor = this.RegistrationForm.get('IsDirectVendor').value;
+    vendor.IsJWVendor = this.RegistrationForm.get('IsJWVendor').value;
     vendor.SelectedPHListCSV = (this.RegistrationForm.get('VendorType').value === 'DP') ? '10' :
       this.SelectedPHList.map(function (element) {
         return element.OrgUnitCode;
       }).join();
 
-    this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
-      statusObj = data;
-      if (statusObj.Status === 0) {
-        el.click();
-        this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
-      } else if (statusObj.Status === 2) {
-        this.CodeExists = true;
-      }
-    });
+    // this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(data => {
+    //   statusObj = data;
+    //   if (statusObj.Status === 0) {
+    //     el.click();
+    //     this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
+    //   } else if (statusObj.Status === 2) {
+    //     this.CodeExists = true;
+    //   }
+    // });
+    console.log(vendor);
   }
 
   MoveToSelectedPHList() {
@@ -221,7 +223,11 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SetPHListValidation() {
-    if (this.RegistrationForm.get('VendorType').value === 'DP') {
+    this.PHList = this.AllPHList;
+    this.SelectedPHList = [];
+    if (this.RegistrationForm.get('IsJWVendor').value) {
+      this.HasPHSelected = false;
+    } else if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = true;
     } else {
       this.HasPHSelected = (this.SelectedPHList && this.SelectedPHList.length > 0) ? true : false;

@@ -22,7 +22,7 @@
             <span class="mandatory" *ngIf="CodeExists">
               (Code Already Exists)
             </span>
-            <input type="text" [ngClass]="{'has-error': formErrors.VendorCode}" class="form-control col-md-12 "
+            <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}" class="form-control col-md-12 "
               formControlName="VendorCode" (blur)="logValidationErrors()">
           </div>
           <div class="form-group col-md-6">
@@ -36,7 +36,7 @@
             <span class="help-block mandatory" *ngIf="formErrors.PANNo">
               {{formErrors.PANNo}}
             </span>
-            <input type="text" [ngClass]="{'has-error': formErrors.PANNo}" class="form-control col-md-12"
+            <input type="text" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control col-md-12"
               formControlName="PANNo" (blur)="logValidationErrors()">
           </div>
           <div class="form-group col-md-6">
@@ -45,9 +45,30 @@
             <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
               {{formErrors.GSTIN}}
             </span>
-            <input type="text" [ngClass]="{'has-error': formErrors.GSTIN}" class="form-control col-md-12"
+            <input type="text" [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control col-md-12"
               formControlName="GSTIN" (blur)="logValidationErrors()">
           </div>
+
+
+
+          <div class="form-group col-md-6">
+            <label for="Ref_VendorCode">Ref_VendorCode</label>
+            <select type="text" class="form-control col-md-12" formControlName="Ref_VendorCode">
+                <option value="-1" selected="selected">Select</option>
+              <option *ngFor="let item of MasterVendorList" value="item.VendorCode">{{item.VendorName + '(' + item.VendorCode + ')'}}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <div class="checkbox">
+              <label>
+                <input value="True" type="checkbox" formControlName="IsProvisional">
+                &nbsp;
+                Provisional
+              </label>
+            </div>
+          </div>
+
+          <br><br>
 
           <div class="form-group col-md-6">
             <label for="ISRCM">Reverse Charge Mechanism Applied</label>
@@ -65,38 +86,24 @@
             </div>
           </div>
           <div class="form-group col-md-6">
-            <div class="checkbox">
-              <label>
-                <input value="True" type="checkbox" formControlName="IsProvisional">
-                &nbsp;
-                Provisional
-              </label>
-            </div>
-          </div>
-
-          <br><br>
-
-          <div class="form-group col-md-6">
             <label>Vendor Type</label>
             <div class="col-md-2">
               <label class="radio-inline">
-                <input value="DP" type="radio" formControlName="VendorType" (change)="SetPHListValidation($event)">
+                <input type="checkbox" formControlName="IsDirectVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">DP</span>
               </label>
             </div>
             <div class="col-md-2">
               <label class="radio-inline">
-                <input value="JW" type="radio" formControlName="VendorType" (change)="SetPHListValidation($event)">
+                <input type="checkbox" formControlName="IsJWVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">JW</span>
               </label>
             </div>
           </div>
-          <div class="col-md-6">
-          </div>
 
           <br><br>
 
-          <div *ngIf="RegistrationForm.controls.VendorType.value==='JW'" class="form-group-sm col-sm-12">
+          <div *ngIf="RegistrationForm.controls.IsJWVendor.value" class="form-group-sm col-sm-12">
             <div class="row">
               <div class="col-sm-5">
                 <label>PH/FO</label>

@@ -22,17 +22,20 @@ export class Vendor {
     EmailId: string;
     Website: string;
     AssociatedSinceYear: number;
-    EnterpriseNature: string;
-    Partner1Name: string;
-    Partner2Name: string;
-    Customer1Name: string;
-    Customer2Name: string;
-    Customer3Name: string;
-    Customer4Name: string;
-    Customer5Name: string;
+    VendorType_MDDCode: string;
+    PersonTopRanker1: string;
+    PersonTopRanker2: string;
+    OtherCustomer1: string;
+    OtherCustomer2: string;
+    OtherCustomer3: string;
+    OtherCustomer4: string;
+    OtherCustomer5: string;
     SelectedPHListCSV: string;
     IsProvisional: Boolean;
     IsRCM: Boolean;
+    Ref_VendorCode: string;
+    IsJWVendor: boolean;
+    IsDirectVendor: boolean;
     createdOn : Date;
     Status:string;
 }

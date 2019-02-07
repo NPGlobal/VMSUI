@@ -1,0 +1,133 @@
+<div class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+  <!-- modal-dialog -->
+  <div class="modal-dialog" role="document">
+    <!-- modal-content -->
+    <div class="modal-content">
+      <!-- modal-header -->
+      <div class="modal-header">
+        <h6 class="modal-title">Add New Address</h6>
+        <button class="close" aria-label="Close" (click)="ResetForm()" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- modal-body -->
+      <div class="modal-body">
+
+        <form class="form-inline" *ngIf="AddressForm" [formGroup]="AddressForm" novalidate (ngSubmit)="SaveAddressDetails()">
+          <div class="col-md-12 form-group">
+
+            <div class="col-md-6">
+              <span>
+                <label class="text">
+                  <input formControlName="AllSameAddress" type="checkbox" />Same address for all</label>
+              </span>
+            </div>
+            <div *ngIf="!AddressForm.get('AllSameAddress').value" class="col-md-5" style="padding:0px;">
+              <label class="text">OrgUnitCode</label>
+              <span>
+                <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                  [ngClass]="{'is-invalid': formErrors.OrgUnitCode}">
+                  <option value="" selected>Select</option>
+                  <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
+                </select>
+              </span>
+              <span class="help-block mandatory" *ngIf="formErrors.OrgUnitCode">
+                {{formErrors.OrgUnitCode}}
+              </span>
+            </div>
+            <div class="col-md-6">
+              <label class="text">Pincode</label>
+              <span>
+                <input formControlName="PIN" (blur)="LogValidationErrors()" type="text" class="form-control input-sm"
+                  [ngClass]="{'is-invalid': formErrors.PIN}" />
+              </span>
+              <span class="help-block mandatory" *ngIf="formErrors.PIN">
+                {{formErrors.PIN}}
+              </span>
+            </div>
+            <div class="col-md-6">
+              <label class="text">Country</label>
+              <span>
+                <select formControlName="CountryCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                  [ngClass]="{'is-invalid': formErrors.CountryCode}">
+                  <option selected value>Select</option>
+                  <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}</option>
+                </select>
+              </span>
+              <span class="help-block mandatory" *ngIf="formErrors.CountryCode">
+                {{formErrors.CountryCode}}
+              </span>
+            </div>
+            <div class="col-md-6">
+              <label class="text">State</label>
+              <span>
+                <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                  [ngClass]="{'is-invalid': formErrors.StateCode}">
+                  <option selected value>Select</option>
+                  <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
+                </select>
+              </span>
+              <span class="help-block mandatory" *ngIf="formErrors.StateCode">
+                {{formErrors.StateCode}}
+              </span>
+            </div>
+            <div class="col-md-12">
+              <label class="text">Address Line 1</label>
+              <span>
+                <input (blur)="LogValidationErrors()" formControlName="Address1" type="text" class="form-control input-sm"
+                  [ngClass]="{'is-invalid': formErrors.Address1}" />
+              </span>
+              <span class="help-block mandatory" *ngIf="formErrors.Address1">
+                {{formErrors.Address1}}
+              </span>
+            </div>
+            <div class="col-md-12">
+              <label class="text">Address Line 2</label>
+              <span>
+                <input formControlName="Address2" type="text" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-12">
+              <label class="text">Address Line 3</label>
+              <span>
+                <input formControlName="Address3" type="text" class="form-control input-sm" />
+              </span>
+            </div>
+            <div class="col-md-12">
+              <label class="text">City/District</label>
+              <span>
+                <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text" class="form-control input-sm"
+                  [ngClass]="{'is-invalid': formErrors.CityCode}" />
+              </span>
+              <span class="help-block mandatory" *ngIf="formErrors.CityCode">
+                {{formErrors.CityCode}}
+              </span>
+            </div>
+          </div>
+          <div class="col-md-12 form-group">
+            <div class="col-md-4">
+              <label class="text">Address Type</label>
+            </div>
+
+            <div class="col-md-2">
+              <label class="radio-inline">
+                <input value="F" type="radio" formControlName="AddressTypeCode">
+                <span style="margin-left:5px;">Factory</span>
+              </label>
+            </div>
+
+            <div class="col-md-2">
+              <label class="radio-inline">
+                <input value="O" type="radio" formControlName="AddressTypeCode">
+                <span style="margin-left:5px;">Office</span>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12 form-group page-footer">
+            <!-- <button [disabled]="!AddressForm.valid" type="submit" class="mr-3 btn btn-primary">Save</button> -->
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button data-dismiss="modal" type="button" (click)="ResetForm()" class="btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

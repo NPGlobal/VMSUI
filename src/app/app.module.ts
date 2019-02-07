@@ -18,6 +18,7 @@ import { BusinessDetailsComponent } from './Components/business-details/business
 import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
 import { DocumentComponent } from './Components/document/document.component';
 import { VendorRegistrationComponent } from './Components/vendor-registration/vendor-registration.component';
+import { AddressFormComponent } from './Components/address-form/address-form.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { VendorRegistrationComponent } from './Components/vendor-registration/ve
     BusinessDetailsComponent,
     ProductionDetailsComponent,
     DocumentComponent,
-    VendorRegistrationComponent
+    VendorRegistrationComponent,
+    AddressFormComponent
   ],
   imports: [
     BrowserModule,
