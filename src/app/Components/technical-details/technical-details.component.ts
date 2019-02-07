@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { VendorTech } from 'src/app/Models/VendorTech';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
-//import { PagerService } from 'src/app/Services/pager.service';
+// import { PagerService } from 'src/app/Services/pager.service';
 import { HttpClient } from '@angular/common/http';
 import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
@@ -17,7 +17,9 @@ declare var $: any;
 export class TechnicalDetailsComponent implements OnInit {
   // NumericPattern = '^[.]+[0-9]*$';
    NumericPattern = '^[0-9]*[\.\]?[0-9]*$';
+   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/ ;
   // NumericPattern = '^[a-zA-Z0-9]*$';
+  // unitCountList = [1, 2 , 3 , 4, 5 , 6 , , 198, 200];
   vendortechList: VendorTech[];
   vendorcode: string;
   VendorTech: VendorTech;
@@ -32,7 +34,9 @@ export class TechnicalDetailsComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
-
+  unitCountList(n: number): any[] {
+    return Array(n);
+  }
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -44,7 +48,7 @@ export class TechnicalDetailsComponent implements OnInit {
       dept: ['', Validators.required],
       techSpec: ['', Validators.required],
       techLineNo: ['', Validators.required],
-      efficiency: ['', Validators.pattern(this.NumericPattern)],
+      efficiency: ['', Validators.pattern(this.efficiencyPattern)],
       unitCount: ['', Validators.required],
       status: true,
       remarks: '',
@@ -97,7 +101,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   SaveTechDetails() {
     this.submitted = true;
-    console.log(JSON.stringify(this.techDetailsForm.value));
+     console.log(JSON.stringify(this.techDetailsForm.value));
     if (this.techDetailsForm.invalid) {
       return;
     }
@@ -152,7 +156,7 @@ export class TechnicalDetailsComponent implements OnInit {
         dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
         techSpec: [data.Table[0].VendorTechConfigID, Validators.required],
         techLineNo: data.Table[0].TechLineNo,
-        efficiency: [data.Table[0].Efficiency, Validators.pattern(this.NumericPattern)],
+        efficiency: [data.Table[0].Efficiency, Validators.pattern(this.efficiencyPattern)],
         unitCount: [data.Table[0].UnitCount, Validators.required],
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks

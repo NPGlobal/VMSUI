@@ -13,7 +13,7 @@ declare var $: any;
 })
 export class StaffDetailsComponent implements OnInit {
   vendorcode: string;
-
+  NumericPattern = '^[0-9]*$';
   vendorstaffList: VendorStaff[]; // For added Staff List
   VendorStaff: VendorStaff; // For form value save and update
   totalItems: number;
@@ -45,8 +45,8 @@ export class StaffDetailsComponent implements OnInit {
       designation: ['', Validators.required],
       name: ['', Validators.required],
       email: ['', Validators.email],
-      phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
-      priority: ['', Validators.required],
+      phone: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
+      priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
       status: true,
       remarks: ''
     });
@@ -154,8 +154,8 @@ export class StaffDetailsComponent implements OnInit {
         designation: [data.Table[0].VendorStaffConfigID, Validators.required],
         name: data.Table[0].ContactName,
         email: [data.Table[0].ContactEmail, Validators.email],
-        phone: [data.Table[0].ContactPhone, [Validators.minLength(10), Validators.maxLength(10)]],
-        priority: [data.Table[0].Priority, Validators.required],
+        phone: [data.Table[0].ContactPhone, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
+        priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });

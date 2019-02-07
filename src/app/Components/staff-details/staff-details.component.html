@@ -109,9 +109,9 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Phone</label>
                     <span><input type="text" name="phone" formControlName="phone" 
-                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors }" /></span>
-                    <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors}"
-                    *ngIf="(staffDetailsForm.controls.phone.touched || submitted) && staffDetailsForm.controls.phone.errors">
+                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid }" /></span>
+                    <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.dirty || submitted) &&  staffDetailsForm.get('phone').invalid }"
+                    *ngIf="(staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid ">
                      Please enter a valid phone</span>
                 </div>
               </div>
@@ -132,10 +132,10 @@
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
                           <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm"
-                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
-                          <!-- <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors}"
-                              *ngIf="(staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors">
-                               &nbsp;(Priority is required)</label> -->
+                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
+                            <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')}"
+                            *ngIf="(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')">
+                            &nbsp;Numbers Only</span>
                      
                   </div>
                   <div class="col-lg-3 col-md-3">
