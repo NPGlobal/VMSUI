@@ -6,6 +6,7 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { Router } from '@angular/router';
+import { Vendor } from 'src/app/Models/vendor';
 
 @Component({
   selector: 'app-address-form',
@@ -16,9 +17,10 @@ export class AddressFormComponent implements OnInit {
 
   VendorAddress: VendorAddress;
   AddressForm: FormGroup;
+  OnlyDirectVendor = false;
 
   @Input()
-  VendorCode: string;
+  vendor: Vendor;
 
   @Input()
   AddressCode: string;
@@ -26,28 +28,32 @@ export class AddressFormComponent implements OnInit {
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
 
-  PHList: OrgUnit[] = [];
+  AllPHList: OrgUnit[] = [];
+  SelectedPHList: OrgUnit[] = [];
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
 
   ValidationMessages = {
     'OrgUnitCode': {
-      'required': 'OrgUnitCode is Required'
+      'required': ''
     },
     'PIN': {
-      'required': 'PIN is Required'
+      'required': '',
+      'minlength': 'Invalid PIN number',
+      'maxlength': 'Invalid PIN number',
+      'pattern': 'Invalid PIN number'
     },
     'CountryCode': {
-      'required': 'Country is Required'
+      'required': ''
     },
     'StateCode': {
-      'required': 'State is Required'
+      'required': ''
     },
     'CityCode': {
-      'required': 'City is Required'
+      'required': ''
     },
     'Address1': {
-      'required': 'Line 1 is Required'
+      'required': ''
     }
   };
 
@@ -57,6 +63,7 @@ export class AddressFormComponent implements OnInit {
     'StateCode': '',
     'Address1': ''
   };
+  NumberPattern: '^[0-9]*$';
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
@@ -76,6 +83,17 @@ export class AddressFormComponent implements OnInit {
     this.BindOrgUnitDropDown();
   }
 
+  FillPHLists() {
+    if (this.vendor && this.vendor.SelectedPHListCSV) {
+      const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
+      for (let i = 0; i < this.AllPHList.length; ++i) {
+        if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
+          this.SelectedPHList.push(this.AllPHList[i]);
+        }
+      }
+    }
+  }
+
   InitializeFormControls() {
 
     this.AddressForm = this._fb.group({
@@ -86,7 +104,7 @@ export class AddressFormComponent implements OnInit {
       CountryCode: ['', Validators.required],
       CityCode: ['', Validators.required],
       StateCode: ['', Validators.required],
-      PIN: ['', Validators.required],
+      PIN: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
       Phone: ['', Validators.required],
       AddressTypeCode: ['F'],
       HasSameAddress: [false]
@@ -127,7 +145,8 @@ export class AddressFormComponent implements OnInit {
 
   BindOrgUnitDropDown() {
     this._vendorService.GetPHList().subscribe(result => {
-      this.PHList = result.data.Table;
+      this.AllPHList = result.data.Table;
+      this.FillPHLists();
     });
   }
 
@@ -151,17 +170,21 @@ export class AddressFormComponent implements OnInit {
     this.VendorAddress.CountryCode = this.AddressForm.get('CountryCode').value;
     this.VendorAddress.AddressTypeCode = this.AddressForm.get('AddressTypeCode').value;
     this.VendorAddress.AddressReference = 'V';
-    this.VendorAddress.VendorCode = this.VendorCode;
+    this.VendorAddress.VendorCode = this.vendor.VendorCode;
     this.VendorAddress.AddressCode = this.AddressCode;
     this.VendorAddress.HasSameAddress = this.AddressForm.get('HasSameAddress').value;
 
     console.log(JSON.stringify(this.VendorAddress));
 
-    // this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
-    //   StatusObj = data;
-    //   if (StatusObj.Status === 0) {
-    //     el.click();
-    //   }
-    // });
+    console.log(this.vendor);
+
+    this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
+      // tslint:disable-next-line:no-debugger
+      debugger;
+      StatusObj = data;
+      if (StatusObj.Status === 0) {
+        el.click();
+      }
+    });
   }
 }

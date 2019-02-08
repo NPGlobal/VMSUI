@@ -13,13 +13,12 @@
         <!-- Modal body -->
         <form class="form-inline" [formGroup]="RegistrationForm" novalidate (ngSubmit)="SaveVendorPrimaryInfo()">
 
-          <div class="form-group col-md-12">
+          <div class="form-group col-md-6">
             <label for="VendorName">Vendor Name</label>
             <input type="text" class="form-control col-md-12" formControlName="VendorName">
           </div>
-
           <div class="form-group col-md-6">
-            <label for="VendorCode">Vendor Code</label><i class="mandatory">*</i>
+            <label for="VendorCode">Vendor Code<i class="mandatory">*</i></label>
             &nbsp;&nbsp;
             <span class="help-block mandatory" *ngIf="formErrors.VendorCode">
               {{formErrors.VendorCode}}
@@ -30,12 +29,18 @@
             <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}" class="form-control col-md-12 "
               formControlName="VendorCode" (blur)="logValidationErrors()">
           </div>
+
           <div class="form-group col-md-6">
-            <label for="Ref_VendorCode">Master Producer Name</label>
+            <label for="Ref_VendorCode">Reference Producer Name</label>
             <select type="text" class="form-control col-md-12" formControlName="Ref_VendorCode">
               <option value="-1" selected="selected">Select</option>
-              <option *ngFor="let item of MasterVendorList" value="item.VendorCode">{{item.VendorName + '(' +
-                item.VendorCode + ')'}}</option>
+              <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName + ' (' + item.VendorCode + ')'}}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="Ref_VendorCode">Master Producer Name<i class="mandatory">*</i></label>
+            <select type="text" class="form-control col-md-12" formControlName="MasterVendorId" (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MasterVendorId}">
+              <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">{{item.MasterVendorName}}</option>
             </select>
           </div>
 
@@ -127,14 +132,15 @@
 
                 <input type="button" [disabled]="NoPHLeft()" style="margin-top: 100px; width: 100px;" value=">" (click)="MoveToSelectedPHList()">
                 <br />
-                <input type="button" [disabled]="NoSelectedPH()" style="margin-top: 10px; width: 100px;" value="<" (click)="MoveToPHList()">
+                <input type="button" [disabled]="NoSelectedPH()" style="margin-top: 10px; width: 100px;" value="<"
+                  (click)="MoveToPHList()">
 
               </div>
               <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-                <label class="text">Selected PH
+                <label class="text">Selected PH/Store
                   &nbsp;&nbsp;
                   <span *ngIf="!HasPHSelected" class="mandatory">
-                    PH is required
+                    This Field is required.
                   </span>
                 </label>
                 <span>
