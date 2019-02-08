@@ -38,18 +38,6 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.dismiss();
-    // this.staffDetailsForm = this._fb.group({
-    //   id: ['0'],
-    //   dept: ['', Validators.required],
-    //   designation: ['', Validators.required],
-    //   name: ['', Validators.required],
-    //   email: ['', Validators.email],
-    //   phone: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
-    //   priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
-    //   status: true,
-    //   remarks: ''
-    // });
     this.openModal();
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
@@ -61,9 +49,11 @@ export class StaffDetailsComponent implements OnInit {
   GetVendorStaffs(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
-      this.vendorstaffList = data.VendorStaff;
-      this.totalItems = data.VendorStaffCount[0].TotalVendors;
-      this.GetVendorsStaffList();
+      if (data.VendorStaff.length > 0) {
+        this.vendorstaffList = data.VendorStaff;
+        this.totalItems = data.VendorStaffCount[0].TotalVendors;
+        this.GetVendorsStaffList();
+      }
     });
   }
   GetVendorsStaffList() {
@@ -80,6 +70,7 @@ export class StaffDetailsComponent implements OnInit {
   GetVendorDesignation() {
     if (this.staffDetailsForm.get('dept').value === '') {
       this.designationList = [];
+      this.staffDetailsForm.controls.designation.patchValue('');
     } else {
     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
     .subscribe((data) => {
@@ -149,20 +140,19 @@ export class StaffDetailsComponent implements OnInit {
       remarks: ''
     });
   }
-
-   dismiss() {
-     this.staffDetailsForm = this._fb.group({
-       id: ['0'],
-      dept: [''],
-      designation: [''],
-      name: [''],
-      email: [''],
-      phone: [''],
-      priority: [''],
-      status: true,
-      remarks: ''
-     });
-   }
+  dismiss() {
+    this.staffDetailsForm = this._fb.group({
+      id: ['0'],
+    dept: [''],
+    designation: [''],
+    name: [''],
+    email: [''],
+    phone: [''],
+    priority: [''],
+    status: true,
+    remarks: ''
+    });
+  }
 
   GetStaffDetails(x) {
     this._vendorService.GetStaffDetails(x).subscribe((data) => {
@@ -173,11 +163,10 @@ export class StaffDetailsComponent implements OnInit {
         name: data.Table[0].ContactName,
         email: [data.Table[0].ContactEmail, Validators.email],
         phone: [data.Table[0].ContactPhone, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
-        priority: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
+        priority: [data.Table[0].Priority, [Validators.required, Validators.pattern(this.NumericPattern)]],
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });
-
       this.GetVendorDesignation();
     });
   }

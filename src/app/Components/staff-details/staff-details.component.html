@@ -110,11 +110,11 @@
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Phone</label>
-                    <span><input type="text" name="phone" formControlName="phone" 
-                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid }" /></span>
-                    <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.dirty || submitted) &&  staffDetailsForm.get('phone').invalid }"
-                    *ngIf="(staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid ">
-                     Please enter a valid phone</span>
+                    <span><input type="text" name="phone" formControlName="phone" maxlength="10"
+                      class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid }" /></span>
+                      <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.dirty || submitted) &&  staffDetailsForm.get('phone').invalid }"
+                      *ngIf="(staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid ">
+                       Please enter a valid phone</span>
                 </div>
               </div>
             </div>
@@ -133,27 +133,18 @@
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
-                          <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm"
-                            [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
-                            <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')}"
-                            *ngIf="(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')">
-                            &nbsp;Numbers Only</span>
-                     
+                      <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
+                        <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')}"
+                        *ngIf="(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')">
+                        &nbsp;Numbers Only</span>                     
                   </div>
                   <div class="col-lg-3 col-md-3">
-                   
-                        <span><input type="checkbox" name="status" formControlName="status" /></span>
-                        <label class="text" style="margin-left: 5px;font-size: 13px; margin-top:43%">Active</label>
+                    <span><input type="checkbox" name="status" formControlName="status" /></span>
+                    <label class="text" style="margin-left: 5px;font-size: 13px; margin-top:43%">Active</label>
                   </div>
               </div>
             </div>
-  
-            <!-- </div> -->
-            <!-- <div class="col-md-12 form-group page-footer">
-              <button type="submit" class="mr-3 btn btn-primary">Save</button>
-              <button type="button" class="btn" (click)="closeModalDialog()">Cancel</button>
-            </div> -->
-
             <!-- Modal footer -->
             <div class="modal-footer col-md-12  page-footer">
               <button type="submit" class="mr-3 btn btn-danger">Save</button>
