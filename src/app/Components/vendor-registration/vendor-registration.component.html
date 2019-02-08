@@ -158,7 +158,7 @@
           <!-- Modal footer -->
           <hr style="height: 1px; color:gray; width: 100%">
           <div class="col-md-12" style="margin: 10px; text-align:center">
-            <button type="submit" [disabled]="(!RegistrationForm.valid || !HasPHSelected)" class="mr-3 btn btn-danger">Register</button>
+            <button type="submit" (click)="logValidationErrors()" class="mr-3 btn btn-danger">Register</button>
             <button #modalCloseButton type="button" class="btn" (click)="dismiss()" data-dismiss="modal">Cancel</button>
           </div>
         </form>

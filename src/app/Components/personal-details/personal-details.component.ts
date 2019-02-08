@@ -7,6 +7,7 @@ import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { delay } from 'q';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import { VendorAddress } from 'src/app/Models/vendor-address';
 
 declare var $: any;
 
@@ -23,6 +24,7 @@ export class PersonalDetailsComponent implements OnInit {
   MasterVendorList: Vendor[] = [];
   VendorTypeList: MasterDataDetails[];
   VendorCode: string;
+  vendorAddress: VendorAddress[];
 
   AllPHList: OrgUnit[];
   PHList: OrgUnit[] = [];
@@ -60,7 +62,7 @@ export class PersonalDetailsComponent implements OnInit {
     });
 
     this.GetPHList();
-    this.GetMasterDataDetails('VendorType');
+    this.VendorTypeList = this.GetMasterDataDetails('VendorType');
   }
 
   PupulateYears() {
@@ -76,9 +78,9 @@ export class PersonalDetailsComponent implements OnInit {
     });
   }
 
-  GetMasterDataDetails(MDHCode: string) {
+  GetMasterDataDetails(MDHCode: string): any {
     this._mDDService.GetMasterDataDetails(MDHCode).subscribe((result) => {
-      this.VendorTypeList = result.data.Table;
+      return result.data.Table;
     });
   }
 
@@ -109,6 +111,7 @@ export class PersonalDetailsComponent implements OnInit {
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       this.vendor = result.data.Vendor[0];
+      this.vendorAddress = result.data.VendorAddress;
       this.InitializeFormControls();
     });
   }
