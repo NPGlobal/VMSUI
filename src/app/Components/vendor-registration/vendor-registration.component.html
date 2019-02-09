@@ -38,7 +38,7 @@
             </select>
           </div>
           <div class="form-group col-md-6">
-            <label for="Ref_VendorCode">Master Producer Name<i class="mandatory">*</i></label>
+            <label for="MasterVendorId">Master Producer Name<i class="mandatory">*</i></label>
             <select type="text" class="form-control col-md-12" formControlName="MasterVendorId" (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MasterVendorId}">
               <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">{{item.MasterVendorName}}</option>
             </select>
@@ -90,13 +90,13 @@
           </div>
           <div class="form-group col-md-3">
             <label>Vendor Type</label>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-left: 10px;">
               <label class="radio-inline">
                 <input type="checkbox" formControlName="IsDirectVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">DP</span>
               </label>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-left: 10px;">
               <label class="radio-inline">
                 <input type="checkbox" formControlName="IsJWVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">JW</span>
@@ -130,9 +130,9 @@
               </div>
               <div class="col-sm-2" style="padding-left:25px;">
 
-                <input type="button" [disabled]="NoPHLeft()" style="margin-top: 100px; width: 100px;" value=">" (click)="MoveToSelectedPHList()">
+                <input type="button" [disabled]="NoPHandStore()" style="margin-top: 100px; width: 100px;" value=">" (click)="MoveToSelectedPHList()">
                 <br />
-                <input type="button" [disabled]="NoSelectedPH()" style="margin-top: 10px; width: 100px;" value="<"
+                <input type="button" [disabled]="NoSelectedPHOrStore()" style="margin-top: 10px; width: 100px;" value="<"
                   (click)="MoveToPHList()">
 
               </div>
@@ -144,7 +144,7 @@
                   </span>
                 </label>
                 <span>
-                  <select (blur)="UnselectOptions()" formControlName="SelectedPHStoreList" class="form-control input-sm"
+                  <select (blur)="UnselectOptions()" [ngClass]="{'is-invalid': !HasPHSelected}" formControlName="SelectedPHStoreList" class="form-control input-sm"
                     size="13" multiple="multiple">
                     <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">{{
                       PHStore.OrgUnitName }}</option>

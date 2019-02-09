@@ -32,6 +32,8 @@ export class AddressFormComponent implements OnInit {
   SelectedPHList: OrgUnit[] = [];
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
+  NumberPattern: '^[0-9]*$';
+  submitted = false;
 
   ValidationMessages = {
     'OrgUnitCode': {
@@ -60,10 +62,12 @@ export class AddressFormComponent implements OnInit {
   formErrors = {
     'OrgUnitCode': '',
     'PIN': '',
+    'CountryCode': '',
     'StateCode': '',
+    'CityCode': '',
     'Address1': ''
   };
-  NumberPattern: '^[0-9]*$';
+
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
@@ -130,8 +134,8 @@ export class AddressFormComponent implements OnInit {
         this.LogValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
-        if (abstractControl && !abstractControl.valid &&
-          (abstractControl.touched || abstractControl.dirty)) {
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
           const messages = this.ValidationMessages[key];
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
@@ -151,11 +155,18 @@ export class AddressFormComponent implements OnInit {
   }
 
   ResetForm() {
+    this.submitted = false;
     this.AddressForm.reset();
     this.InitializeFormControls();
+    this.LogValidationErrors();
   }
 
   SaveAddressDetails() {
+    this.submitted = true;
+    if (this.AddressForm.invalid) {
+      this.LogValidationErrors();
+      return;
+    }
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let StatusObj: any;
     this.VendorAddress = new VendorAddress();

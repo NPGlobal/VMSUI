@@ -15,119 +15,100 @@
 
         <div class="modal-body">
 
-          <div class="form-group">
-            <div class="col-md-6">
-              <label class="text">Pincode<i class="mandatory">*</i></label>
-              <span>
-                <input formControlName="PIN" (blur)="LogValidationErrors()" type="text" class="form-control input-sm"
-                  [ngClass]="{'is-invalid': formErrors.PIN}" />
-              </span>
-              <span class="help-block mandatory" *ngIf="formErrors.PIN">
-                {{formErrors.PIN}}
-              </span>
-            </div>
-            <div class="col-md-6">
+          <div class="row">
+            <div class="form-group col-md-6">
               <label class="text">Country<i class="mandatory">*</i></label>
-              <span>
-                <select formControlName="CountryCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                  [ngClass]="{'is-invalid': formErrors.CountryCode}">
-                  <option selected value>Select</option>
-                  <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}</option>
-                </select>
-              </span>
+              <select formControlName="CountryCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                [ngClass]="{'is-invalid': formErrors.CountryCode}">
+                <option selected value>Select</option>
+                <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}</option>
+              </select>
             </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-md-6">
+            <div class="form-group col-md-6">
               <label class="text">State<i class="mandatory">*</i></label>
-              <span>
-                <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                  [ngClass]="{'is-invalid': formErrors.StateCode}">
-                  <option selected value>Select</option>
-                  <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
-                </select>
-              </span>
-            </div>
-            <div class="col-md-6">
-              <label class="text">City/District<i class="mandatory">*</i></label>
-              <span>
-                <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text"
-                  class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.CityCode}" />
-              </span>
+              <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                [ngClass]="{'is-invalid': formErrors.StateCode}">
+                <option selected value>Select</option>
+                <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
+              </select>
             </div>
           </div>
 
-          <div class="col-md-12">
-            <label class="text">Address Line 1<i class="mandatory">*</i></label>
-            <span>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="text">Pincode<i class="mandatory">*</i><span class="help-block mandatory"
+                  *ngIf="formErrors.PIN">
+                  {{formErrors.PIN}}
+                </span></label>
+              <input formControlName="PIN" (blur)="LogValidationErrors()" type="text" class="form-control input-sm"
+                [ngClass]="{'is-invalid': formErrors.PIN}" />
+            </div>
+            <div class="form-group col-md-6">
+              <label class="text">City/District<i class="mandatory">*</i></label>
+              <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text" class="form-control input-sm"
+                [ngClass]="{'is-invalid': formErrors.CityCode}" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="text">Address Line 1<i class="mandatory">*</i></label>
               <input (blur)="LogValidationErrors()" formControlName="Address1" type="text" class="form-control input-sm"
                 [ngClass]="{'is-invalid': formErrors.Address1}" />
-            </span>
+            </div>
           </div>
-          <div class="col-md-12">
-            <label class="text">Address Line 2</label>
-            <span>
+
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="text">Address Line 2</label>
               <input formControlName="Address2" type="text" class="form-control input-sm" />
-            </span>
+            </div>
           </div>
 
-          <div class="col-md-12">
-            <label class="text">Address Line 3</label>
-            <span>
+          <div class="row">
+            <div class="form-group col-md-12">
+              <label class="text">Address Line 3</label>
               <input formControlName="Address3" type="text" class="form-control input-sm" />
-            </span>
+            </div>
           </div>
 
-          <div class="form-group">
-            <div *ngIf="vendor.IsJWVendor" class="col-md-6">
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <label class="text"> Address Type </label>&nbsp;&nbsp;
               <label>
-                <input value="True" type="checkbox" formControlName="HasSameAddress">
-                &nbsp;
-                Same address for all
-              </label>
-            </div>
-            <div *ngIf="!AddressForm.get('HasSameAddress').value && vendor.IsJWVendor" class="col-md-5"
-              style="padding:0px;">
-              <label class="text">OrgUnitCode<i class="mandatory">*</i></label>
-              <span>
-                <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                  [ngClass]="{'is-invalid': formErrors.OrgUnitCode}">
-                  <option value="" selected>Select</option>
-                  <option *ngFor="let PH of SelectedPHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
-                </select>
-              </span>
-            </div>
-          </div>
-
-          <div class="col-md-12 form-group">
-            <div class="col-md-4">
-              <label class="text">Address Type</label>
-            </div>
-
-            <div class="col-md-2">
-              <label class="radio-inline">
                 <input value="F" type="radio" formControlName="AddressTypeCode">
-                <span style="margin-left:5px;">Factory</span>
+                &nbsp;Factory
               </label>
-            </div>
-
-            <div class="col-md-2">
-              <label class="radio-inline">
+              <label style="margin-left: 10px;">
                 <input value="O" type="radio" formControlName="AddressTypeCode">
-                <span style="margin-left:5px;">Office</span>
+                &nbsp;Office
               </label>
             </div>
           </div>
 
-
-
+          <div class="row">
+            <div *ngIf="vendor.IsJWVendor" class="col-md-6"><br>
+              <label style="justify-content: left;">
+                <input value="True" type="checkbox" formControlName="HasSameAddress">
+                &nbsp;&nbsp;Same Address For All
+              </label>
+            </div>
+            <div class="form-group col-md-6" *ngIf="!AddressForm.get('HasSameAddress').value && vendor.IsJWVendor">
+              <label class="text">OrgUnitCode<i class="mandatory">*</i></label>
+              <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                [ngClass]="{'is-invalid': formErrors.OrgUnitCode}">
+                <option selected value>Select</option>
+                <option *ngFor="let PH of SelectedPHList" value="{{PH.OrgUnitCode}}">{{PH.OrgUnitName}}</option>
+              </select>
+            </div>
+          </div>
+          
         </div>
 
         <div class="mr-auto modal-footer ml-auto">
           <div class="col-md-12 form-group">
             <!-- <button [disabled]="!AddressForm.valid" type="submit" class="mr-3 btn btn-primary">Save</button> -->
-            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button type="submit" (click)="LogValidationErrors()" class="mr-3 btn btn-primary">Save</button>
             <button #modalCloseButton data-dismiss="modal" type="button" (click)="ResetForm()"
               class="btn">Cancel</button>
           </div>

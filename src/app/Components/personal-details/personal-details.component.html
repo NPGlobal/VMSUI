@@ -53,10 +53,11 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="masterVendorLabelDiv">Master Producer Name
-                                        <small>(Parent/sister company)</small>
+                                    <small>(Parent/sister company)</small>
                                 </div>
                                 <span>
-                                    <select type="text" class="form-control" style="width: 362px; max-width: 362px;" formControlName="MasterVendorId">
+                                    <select type="text" class="form-control" style="width: 362px; max-width: 362px;"
+                                        formControlName="MasterVendorId">
                                         <option value="-1">Select</option>
                                         <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">
                                             {{item.MasterVendorName }}</option>
@@ -85,7 +86,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
+                        <!-- <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="col-md-12 form-group">
                                 <div class="col-md-5" style="padding:0px;">
                                     <label class="text">PH/FO</label>
@@ -95,22 +96,68 @@
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{
                                                 PH.OrgUnitName }}</option>
                                         </select>
-
                                     </span>
                                 </div>
                                 <div class="col-md-1" style="padding-left:5px;">
 
-                                    <input type="button" disabled style="margin-bottom: 5px;" value=">" />
-                                    <input type="button" disabled value="<" />
+                                    <input type="button" style="margin-bottom: 5px;" value=">" />
+                                    <input type="button" value="<" />
 
                                 </div>
                                 <div class="col-md-5" style="padding-left:8px;padding-right: 0px">
                                     <label class="text">Selected PH</label>
                                     <span>
-                                        <select disabled class="form-control input-sm" name="list2" size="8" id="list2"
+                                        <select class="form-control input-sm" name="list2" size="8" id="list2"
                                             multiple="multiple">
                                             <option *ngFor="let PH of SelectedPHList" [value]="PH.OrgUnitCode">{{
                                                 PH.OrgUnitName }}</option>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <div class="col-sm-6 PHandStore">
+                                        <label>PH/FO</label>
+                                        <span>
+                                            <select (blur)="UnselectOptions()" formControlName="PHList"
+                                                class="form-control input-sm" size="3" multiple="multiple">
+                                                <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
+                                                    {{ PH.OrgUnitName }}</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-6 PHandStore">
+                                        <label>Store</label>
+                                        <span>
+                                            <select (blur)="UnselectOptions()" formControlName="StoreList"
+                                                class="form-control input-sm" size="3" multiple="multiple">
+                                                <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
+                                                    {{ Store.OrgUnitName }}</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2" style="padding-left:25px;">
+
+                                    <input type="button" [disabled]="NoPHandStore()" style="margin-top: 60px;"
+                                        value=">" (click)="MoveToSelectedPHList()">
+                                    <br />
+                                    <input type="button" [disabled]="NoSelectedPHOrStore()" style="margin-top: 10px;"
+                                        value="<" (click)="MoveToPHList()">
+
+                                </div>
+                                <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
+                                    <label class="text">PH/Store</label>
+                                    <span>
+                                        <select (blur)="UnselectOptions()" [ngClass]="{'is-invalid': !HasPHSelected}"
+                                            formControlName="SelectedPHStoreList" class="form-control input-sm" size="9"
+                                            multiple="multiple">
+                                            <option *ngFor="let PHStore of SelectedPHStoreList"
+                                                [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                         </select>
                                     </span>
                                 </div>
@@ -136,12 +183,12 @@
 
                     <div class="col-md-12 form-group">
                         <span>
-                            <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right" data-toggle="modal"
-                                data-target="#myModal" data-backdrop="static" data-keyboard="false">
+                            <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
+                                data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false">
                                 <i class="fa fa-plus"></i>
                                 <span title="Add new" class="py-4">Add new address</span>
                             </button>
-                        </span> 
+                        </span>
                     </div>
 
                     <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
@@ -150,9 +197,7 @@
                                 <tr>
                                     <th scope="col">Sr No</th>
                                     <th scope="col">Store</th>
-                                    <th scope="col">Address 1</th>
-                                    <th scope="col">Address 2</th>
-                                    <th scope="col">Address 3</th>
+                                    <th scope="col">Address</th>
                                     <th scope="col">Country</th>
                                     <th scope="col">State</th>
                                     <th scope="col">City/District</th>
@@ -163,11 +208,11 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let address of vendorAddress;index as i;">
-                                    <th scope="row">{{i}}</th>
+                                    <th scope="row">{{i + 1}}</th>
                                     <td>{{address.OrgUnitCode}}</td>
-                                    <td>{{address.Address1}}</td>
-                                    <td>{{address.Address2}}</td>
-                                    <td>{{address.Address3}}</td>
+                                    <td>{{address.Address1 + ','}}
+                                        {{address.Address2 + ','}}
+                                        {{address.Address3}}</td>
                                     <td>{{address.CountryName}}</td>
                                     <td>{{ address.StateName }}</td>
                                     <td>{{address.CityCode}}</td>

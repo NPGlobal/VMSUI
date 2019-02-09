@@ -2,11 +2,7 @@
     color: red;
 }
 
-.modal-dialog {
-    overflow-y: initial !important
-}
 .modal-body {
-    height: 462px;
-    max-height: 430px;
-    overflow-y: auto;
+    height: 450px;
+    max-height: 450px;
 }

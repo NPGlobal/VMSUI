@@ -136,13 +136,6 @@ export class VendorRegistrationComponent implements OnInit {
     });
   }
 
-  // CodeExistValidation(): { [key: string]: boolean } | null {
-  //   if (this.CodeExists === true) {
-  //     return { 'CodeExist': true };
-  //   }
-  //   return null;
-  // }
-
   dismiss() {
     this.submitted = false;
     this.RegistrationForm.reset();
@@ -153,15 +146,15 @@ export class VendorRegistrationComponent implements OnInit {
     this.SelectedPHStoreList = [];
   }
 
-  NoPHLeft() {
-    if (this.PHList.length > 0) {
+  NoPHandStore() {
+    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
       return false;
     } else {
       return true;
     }
   }
 
-  NoSelectedPH() {
+  NoSelectedPHOrStore() {
     if (this.SelectedPHStoreList.length > 0) {
       return false;
     } else {
