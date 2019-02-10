@@ -23,6 +23,11 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
+  GetFilteredVendor(searchValue: string): Observable<any> {
+    const apiUrl = this.origin + 'api/Vendor/GetFilteredVendor';
+    return this._http.get<any>(apiUrl);
+  }
+
   GetPHList(): Observable<any> {
     const apiUrl = this.origin + 'api/OrgUnit/GetPHList';
     return this._http.get<any>(apiUrl);

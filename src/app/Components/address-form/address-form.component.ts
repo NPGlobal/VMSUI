@@ -32,7 +32,7 @@ export class AddressFormComponent implements OnInit {
   SelectedPHList: OrgUnit[] = [];
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
-  NumberPattern: '^[0-9]*$';
+  NumberPattern: '^[1-9][0-9]{5}$';
   submitted = false;
 
   ValidationMessages = {
@@ -41,9 +41,9 @@ export class AddressFormComponent implements OnInit {
     },
     'PIN': {
       'required': '',
+      'pattern': 'Invalid PIN number',
       'minlength': 'Invalid PIN number',
-      'maxlength': 'Invalid PIN number',
-      'pattern': 'Invalid PIN number'
+      'maxlength': 'Invalid PIN number'
     },
     'CountryCode': {
       'required': ''
@@ -108,7 +108,7 @@ export class AddressFormComponent implements OnInit {
       CountryCode: ['', Validators.required],
       CityCode: ['', Validators.required],
       StateCode: ['', Validators.required],
-      PIN: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
+      PIN: ['', [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
       Phone: ['', Validators.required],
       AddressTypeCode: ['F'],
       HasSameAddress: [false]

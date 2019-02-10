@@ -36,6 +36,16 @@ export class VendorListComponent implements OnInit {
       this.GetVendorsList();
     });
   }
+
+  SearchVendor(searchValue : string) {
+    console.log(searchValue);
+    this._vendorService.GetFilteredVendor(searchValue).subscribe(result => {
+      this.vendors = result.data.Vendors;
+      this.totalItems = result.data.VendorsCount[0].TotalVendors;
+      this.GetVendorsList();
+    });
+  }
+
   GetVendorsList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendors;
