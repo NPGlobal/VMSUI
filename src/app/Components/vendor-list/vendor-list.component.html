@@ -4,7 +4,7 @@
   </div>
   <div class="float-right">
     <i class="fa fa-search"></i>&nbsp;
-    <input type="search" placeholder="Search" (keypress)="SearchVendor($event.target.value)">&nbsp;&nbsp;
+    <input type="search" placeholder="Search" (keyup)="SearchVendor($event.target.value)">&nbsp;&nbsp;
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
       data-keyboard="false">
       <i class="fa fa-plus"></i>
