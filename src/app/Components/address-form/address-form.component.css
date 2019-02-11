@@ -2,7 +2,6 @@
     color: red;
 }
 
-.modal-body {
-    height: 450px;
-    max-height: 450px;
+.modal-dialog {
+    max-width: 1100px;
 }

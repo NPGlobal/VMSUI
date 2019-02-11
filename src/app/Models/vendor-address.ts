@@ -18,4 +18,16 @@ export class VendorAddress {
     AddressReference: string;
     VendorCode: string;
     HasSameAddress: boolean;
+    PrimaryContactName: string;
+    PrimaryContactEmail: string;
+    PrimaryContactPhone: string;
+    PrimaryContactFax: string;
+    PrimaryContactWebsite: string;
+    SecondaryContactName: string;
+    SecondaryContactEmail: string;
+    SecondaryContactPhone: string;
+    SecondaryContactFax: string;
+    SecondaryContactWebsite: string;
+    PrimaryAddressContactCode: string;
+    SecondaryAddressContactCode: string;
 }

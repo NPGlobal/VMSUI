@@ -56,10 +56,18 @@ export class AddressFormComponent implements OnInit {
     },
     'Address1': {
       'required': ''
+    },
+    'PrimaryContactName': {
+      'required': ''
+    },
+    'PrimaryContactPhone': {
+      'required': ''
     }
   };
 
   formErrors = {
+    'PrimaryContactName': '',
+    'PrimaryContactPhone': '',
     'OrgUnitCode': '',
     'PIN': '',
     'CountryCode': '',
@@ -102,7 +110,7 @@ export class AddressFormComponent implements OnInit {
   InitializeFormControls() {
 
     this.AddressForm = this._fb.group({
-      OrgUnitCode: [this.Address.OrgUnitCode, Validators.required],
+      OrgUnitCode: [this.Address.OrgUnitCode],
       Address1: [this.Address.Address1, Validators.required],
       Address2: [this.Address.Address2],
       Address3: [this.Address.Address3],
@@ -112,7 +120,16 @@ export class AddressFormComponent implements OnInit {
       PIN: [this.Address.PIN,
       [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
       AddressTypeCode: [this.Address.AddressTypeCode],
-      HasSameAddress: [false]
+      PrimaryContactName: ['', Validators.required],
+      PrimaryContactPhone: ['', Validators.required],
+      PrimaryContactFax: [''],
+      PrimaryContactEmail: [''],
+      PrimaryContactWebsite: [''],
+      SecondaryContactName: [''],
+      SecondaryContactPhone: [''],
+      SecondaryContactFax: [''],
+      SecondaryContactEmail: [''],
+      SecondaryContactWebsite: ['']
     });
   }
 
@@ -175,26 +192,46 @@ export class AddressFormComponent implements OnInit {
     let StatusObj: any;
     this.VendorAddress = new VendorAddress();
     this.VendorAddress.CompanyCode = '10';
-    this.VendorAddress.OrgUnitCode = this.AddressForm.get('OrgUnitCode').value;
+    this.VendorAddress.OrgUnitCode = this.AddressForm.get('OrgUnitCode').value === null ? '' : this.AddressForm.get('OrgUnitCode').value;
     this.VendorAddress.PIN = this.AddressForm.get('PIN').value;
     this.VendorAddress.Address1 = this.AddressForm.get('Address1').value;
-    this.VendorAddress.Address2 = this.AddressForm.get('Address2').value;
-    this.VendorAddress.Address3 = this.AddressForm.get('Address3').value;
+    this.VendorAddress.Address2 = this.AddressForm.get('Address2').value === null ? '' : this.AddressForm.get('Address2').value;
+    this.VendorAddress.Address3 = this.AddressForm.get('Address3').value === null ? '' : this.AddressForm.get('Address3').value;
     this.VendorAddress.StateCode = this.AddressForm.get('StateCode').value;
     this.VendorAddress.CityCode = this.AddressForm.get('CityCode').value;
     this.VendorAddress.CountryCode = this.AddressForm.get('CountryCode').value;
     this.VendorAddress.AddressTypeCode = this.AddressForm.get('AddressTypeCode').value;
     this.VendorAddress.AddressReference = 'V';
     this.VendorAddress.VendorCode = this.vendor.VendorCode;
-    this.VendorAddress.AddressCode = this.Address.AddressCode;
-    this.VendorAddress.HasSameAddress = this.AddressForm.get('HasSameAddress').value;
-
+    this.VendorAddress.AddressCode = this.Address.AddressCode === null ? '' : this.Address.AddressCode;
+    this.VendorAddress.PrimaryContactName = this.AddressForm.get('PrimaryContactName').value;
+    this.VendorAddress.PrimaryContactPhone = this.AddressForm.get('PrimaryContactPhone').value;
+    this.VendorAddress.PrimaryContactFax = this.AddressForm.get('PrimaryContactFax').value === null
+    ? '' : this.AddressForm.get('PrimaryContactFax').value;
+    this.VendorAddress.PrimaryContactEmail = this.AddressForm.get('PrimaryContactEmail').value === null
+    ? '' : this.AddressForm.get('PrimaryContactEmail').value;
+    this.VendorAddress.PrimaryContactWebsite = this.AddressForm.get('PrimaryContactWebsite').value === null
+    ? '' : this.AddressForm.get('PrimaryContactWebsite').value;
+    this.VendorAddress.SecondaryContactName = this.AddressForm.get('SecondaryContactName').value === null
+    ? '' : this.AddressForm.get('SecondaryContactName').value;
+    this.VendorAddress.SecondaryContactPhone = this.AddressForm.get('SecondaryContactPhone').value === null
+    ? '' : this.AddressForm.get('SecondaryContactPhone').value;
+    this.VendorAddress.SecondaryContactFax = this.AddressForm.get('SecondaryContactFax').value === null
+    ? '' : this.AddressForm.get('SecondaryContactFax').value;
+    this.VendorAddress.SecondaryContactEmail = this.AddressForm.get('SecondaryContactEmail').value === null
+    ? '' : this.AddressForm.get('SecondaryContactEmail').value;
+    this.VendorAddress.SecondaryContactWebsite = this.AddressForm.get('SecondaryContactWebsite').value === null
+    ? '' : this.AddressForm.get('SecondaryContactWebsite').value;
+    // tslint:disable-next-line:no-debugger
+    debugger;
     console.log(JSON.stringify(this.VendorAddress));
 
     console.log(this.vendor);
 
     this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
       StatusObj = data;
+      // tslint:disable-next-line:no-debugger
+      debugger;
       if (StatusObj.Status === 0) {
         el.click();
       }

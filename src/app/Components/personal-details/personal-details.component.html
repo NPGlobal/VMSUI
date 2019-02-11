@@ -107,10 +107,10 @@
                                 </div>
                                 <div class="col-sm-2" style="padding-left:25px;">
 
-                                    <input type="button" [disabled]="NoPHandStore()" style="margin-top: 60px;" value=">"
+                                    <input type="button" disabled style="margin-top: 60px;" value=">"
                                         (click)="MoveToSelectedPHList()">
                                     <br />
-                                    <input type="button" [disabled]="NoSelectedPHOrStore()" style="margin-top: 10px;"
+                                    <input type="button" disabled style="margin-top: 10px;"
                                         value="<" (click)="MoveToPHList()">
 
                                 </div>
@@ -164,6 +164,8 @@
                                     <th scope="col">City/District</th>
                                     <th scope="col">Address Type</th>
                                     <th scope="col">PIN</th>
+                                    <th scope="col">Primary Contact</th>
+                                    <th scope="col">Secondary Contact</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -177,8 +179,10 @@
                                     <td>{{address.CountryName}}</td>
                                     <td>{{address.StateName}}</td>
                                     <td>{{address.CityCode}}</td>
-                                    <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Home')}}</td>
+                                    <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Office')}}</td>
                                     <td>{{address.PIN}}</td>
+                                    <td>{{address.PrimaryContactName}}</td>
+                                    <td>{{address.SecondaryContactName}}</td>
                                     <td>
                                         <button #modalOpenButton type="button" data-target="#myModal" data-backdrop="static"
                                             data-keyboard="false" data-toggle="modal" style="display:none;">
@@ -192,69 +196,6 @@
                         </table>
                     </div>
 
-                </div>
-            </div>
-            <hr>
-
-            <!-- Contact -->
-
-            <div class="col" formGroupName="Contact">
-                <div class="content-heading">
-                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Contact'))"
-                        class="glyphicon-expand">
-                        <span>{{personalDetailsForm.get('Contact').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Contact
-                </div>
-                <div class="slider" [ngClass]="{
-                  closed: !personalDetailsForm.get('Contact').controls.IsExpanded.value
-              }">
-                    <div class="col-md-12 form-group">
-                        <div class="col-md-6">
-                            <label class="text">Contact Person
-                                <span>(For receiving notification/SMS from Fabindia)</span>
-                            </label>
-                            <span>
-                                <input type="text" formControlName="ContactPersonName" class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 form-group">
-                        <div class="col-md-4">
-                            <label class="text">Office Contact No.</label>
-                            <span>
-                                <input type="text" formControlName="OfficeContact" class="form-control input-sm" />
-                            </span>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="text">Contact Person's Mobile. No.</label>
-                            <span>
-                                <input type="text" formControlName="ContactPersonMobile" class="form-control input-sm"
-                                    value="" />
-                            </span>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="text">Fax No. <span>(If any)</span></label>
-                            <span>
-                                <input type="text" formControlName="FAXNo" class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 form-group">
-                        <div class="col-md-4">
-                            <label class="text">E-mail ID</label>
-                            <span>
-                                <input type="text" formControlName="EmailId" class="form-control input-sm" />
-                            </span>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="text">Website Address <span>(If any)</span></label>
-                            <span>
-                                <input type="text" formControlName="WebSite" class="form-control input-sm" value="" />
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </div>
             <hr>
