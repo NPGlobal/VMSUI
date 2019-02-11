@@ -152,6 +152,7 @@ export class StaffDetailsComponent implements OnInit {
     status: true,
     remarks: ''
     });
+    this.submitted = false;
   }
 
   GetStaffDetails(x) {
@@ -160,7 +161,7 @@ export class StaffDetailsComponent implements OnInit {
         id: [data.Table[0].VendorStaffDetailsID],
         dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
         designation: [data.Table[0].VendorStaffConfigID, Validators.required],
-        name: data.Table[0].ContactName,
+        name: [data.Table[0].ContactName, Validators.required],
         email: [data.Table[0].ContactEmail, Validators.email],
         phone: [data.Table[0].ContactPhone, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
         priority: [data.Table[0].Priority, [Validators.required, Validators.pattern(this.NumericPattern)]],

@@ -1,3 +1,11 @@
+<style type="text/css">
+.table > tbody > tr > td{
+    font-family: verdana;
+    color: #000000;
+    font-size: 13px;
+    font-weight: 700;
+}
+</style>
 <div class="col-lg-12 col-sm-12 col-md-12">
     <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
@@ -90,17 +98,16 @@
   
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
-                <div class="col-lg-6 col-md-6" *ngIf="isLine">
+                <div class="col-lg-6 col-md-6">
                   <label class="text">Tech Line No. <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" name="techLineNo" formControlName="techLineNo" class="form-control input-sm">
-                      
+                    <input type="text" [attr.disabled]="isLine==false ? true : null" name="techLineNo" formControlName="techLineNo" class="form-control input-sm">
                   </span>
                   
                 </div>
-                <div class="col-lg-6 col-md-6" *ngIf="isEfficiency">
+                <div class="col-lg-6 col-md-6">
                   <label class="text">Efficiency</label>
-                  <span><input type="text" name="efficiency" formControlName="efficiency" 
+                  <span><input type="text" [attr.disabled]="isEfficiency==false ? true : null" name="efficiency" formControlName="efficiency" 
                     class="form-control input-sm" [ngClass]="{ 'is-invalid err': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors }" /></span>
                     <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors}"
                     *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors">
