@@ -119,7 +119,7 @@ export class AddressFormComponent implements OnInit {
       StateCode: [this.Address.StateCode, Validators.required],
       PIN: [this.Address.PIN,
       [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
-      AddressTypeCode: [this.Address.AddressTypeCode],
+      AddressTypeCode: ['F'],
       PrimaryContactName: ['', Validators.required],
       PrimaryContactPhone: ['', Validators.required],
       PrimaryContactFax: [''],

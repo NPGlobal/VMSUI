@@ -111,7 +111,7 @@ a, a:hover, button, button:focus, a:focus, img {text-decoration: none;outline: n
 .main-div label.text span{padding-left:5px;font-weight: normal;font-size: small;}
 .main-div .form-group{padding-left: 0px;}
 
-/* input[type="text"]{margin-bottom: 15px;} */
+input[type="text"]{margin-bottom: 15px;}
 select{margin-bottom: 10px;}
 .content-heading{
   margin-bottom: 20px;border-bottom: 1px solid #bdbcbc;width: 100%;

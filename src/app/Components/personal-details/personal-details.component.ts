@@ -81,7 +81,7 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   GetMasterDataDetails(MDHCode: string) {
-    this._mDDService.GetMasterDataDetails(MDHCode).subscribe((result) => {
+    this._mDDService.GetMasterDataDetails(MDHCode, '-1').subscribe((result) => {
       this.VendorTypeList = result.data.Table;
     });
   }
