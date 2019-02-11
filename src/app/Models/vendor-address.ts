@@ -13,6 +13,7 @@ export class VendorAddress {
     CountryCode: string;
     CountryName: string;
     AddressTypeCode: string;
+    AddressTypeName: string;
     AddressReferenceID: string;
     AddressReference: string;
     VendorCode: string;

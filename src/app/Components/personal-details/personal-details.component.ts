@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
-import { delay } from 'q';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
-
-declare var $: any;
 
 @Component({
   selector: 'app-personal-details',
@@ -27,19 +24,22 @@ export class PersonalDetailsComponent implements OnInit {
   vendorAddress: VendorAddress[];
 
   AllPHList: OrgUnit[];
-  PHList: OrgUnit[] = [];
+  PHList: OrgUnit[];
   StoreList: OrgUnit[];
   SelectedPHStoreList: OrgUnit[] = [];
-  SelectedPHList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
 
-  AddressCode: string;
+  Address: VendorAddress;
+
+  @ViewChild('modalOpenButton')
+  modalOpenButton: ElementRef;
 
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _mDDService: MasterDataDetailsService) {
-    this.AddressCode = '';
+    this.Address = new VendorAddress();
+    this.Address.AddressCode = null;
   }
 
   ngOnInit() {
@@ -47,6 +47,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
         this.vendor = new Vendor();
+        this.GetPHList();
         this.InitializeFormControls();
       } else {
         this.Editvendor(this.VendorCode);
@@ -55,7 +56,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.PupulateYears();
 
-    this._vendorService.GetVendors(-1, -1).subscribe((result) => {
+    this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
       this.ReferenceVendorList = result.data.Vendors;
     });
 
@@ -63,8 +64,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.MasterVendorList = result.data.MasterVendors;
     });
 
-    this.GetPHList();
-    this.VendorTypeList = this.GetMasterDataDetails('VendorType');
+    this.GetMasterDataDetails('VendorType');
   }
 
   PupulateYears() {
@@ -80,9 +80,9 @@ export class PersonalDetailsComponent implements OnInit {
     });
   }
 
-  GetMasterDataDetails(MDHCode: string): any {
+  GetMasterDataDetails(MDHCode: string) {
     this._mDDService.GetMasterDataDetails(MDHCode).subscribe((result) => {
-      return result.data.Table;
+      this.VendorTypeList = result.data.Table;
     });
   }
 
@@ -114,18 +114,31 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       this.vendor = result.data.Vendor[0];
       this.vendorAddress = result.data.VendorAddress;
+      this.GetPHList();
       this.InitializeFormControls();
     });
   }
 
+  OpenAddressModal(vendorAddress: VendorAddress) {
+    this.Address = vendorAddress;
+    const el = this.modalOpenButton.nativeElement as HTMLElement;
+    el.click();
+  }
+
   FillPHLists() {
+    this.PHList = [];
+    this.StoreList = [];
     if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {
         if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
-          this.SelectedPHList.push(this.AllPHList[i]);
+          this.SelectedPHStoreList.push(this.AllPHList[i]);
         } else {
-          this.PHList.push(this.AllPHList[i]);
+          if (this.AllPHList[i].OrgUnitTypeCode === 'S') {
+            this.StoreList.push(this.AllPHList[i]);
+          } else {
+            this.PHList.push(this.AllPHList[i]);
+          }
         }
       }
     }
@@ -142,10 +155,12 @@ export class PersonalDetailsComponent implements OnInit {
         GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
         TINNo: [this.vendor.TINNo],
         PHList: new FormControl(),
+        StoreList: [''],
+        SelectedPHStoreList: [''],
         Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
         IsExpanded: true,
-        IsJWVendor: [],
-        IsDirectVendor: []
+        IsJWVendor: [this.vendor.IsJWVendor],
+        IsDirectVendor: [this.vendor.IsDirectVendor]
       }),
       Address: this._fb.group({
         IsExpanded: false

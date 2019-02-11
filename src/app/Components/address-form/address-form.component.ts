@@ -23,7 +23,7 @@ export class AddressFormComponent implements OnInit {
   vendor: Vendor;
 
   @Input()
-  AddressCode: string;
+  Address: VendorAddress;
 
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
@@ -75,6 +75,7 @@ export class AddressFormComponent implements OnInit {
     private _router: Router) { }
 
   ngOnInit() {
+    console.log(this.Address);
     this.InitializeFormControls();
 
     this.GetCountryList();
@@ -101,16 +102,16 @@ export class AddressFormComponent implements OnInit {
   InitializeFormControls() {
 
     this.AddressForm = this._fb.group({
-      OrgUnitCode: ['', Validators.required],
-      Address1: ['', Validators.required],
-      Address2: [''],
-      Address3: [''],
-      CountryCode: ['', Validators.required],
-      CityCode: ['', Validators.required],
-      StateCode: ['', Validators.required],
-      PIN: ['', [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
-      Phone: ['', Validators.required],
-      AddressTypeCode: ['F'],
+      OrgUnitCode: [this.Address.OrgUnitCode, Validators.required],
+      Address1: [this.Address.Address1, Validators.required],
+      Address2: [this.Address.Address2],
+      Address3: [this.Address.Address3],
+      CountryCode: [this.Address.CountryCode, Validators.required],
+      CityCode: [this.Address.CityCode, Validators.required],
+      StateCode: [this.Address.StateCode, Validators.required],
+      PIN: [this.Address.PIN,
+      [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
+      AddressTypeCode: [this.Address.AddressTypeCode],
       HasSameAddress: [false]
     });
   }
@@ -164,6 +165,9 @@ export class AddressFormComponent implements OnInit {
   SaveAddressDetails() {
     this.submitted = true;
     if (this.AddressForm.invalid) {
+
+
+      console.log(this.AddressForm.value);
       this.LogValidationErrors();
       return;
     }
@@ -182,7 +186,7 @@ export class AddressFormComponent implements OnInit {
     this.VendorAddress.AddressTypeCode = this.AddressForm.get('AddressTypeCode').value;
     this.VendorAddress.AddressReference = 'V';
     this.VendorAddress.VendorCode = this.vendor.VendorCode;
-    this.VendorAddress.AddressCode = this.AddressCode;
+    this.VendorAddress.AddressCode = this.Address.AddressCode;
     this.VendorAddress.HasSameAddress = this.AddressForm.get('HasSameAddress').value;
 
     console.log(JSON.stringify(this.VendorAddress));
@@ -190,8 +194,6 @@ export class AddressFormComponent implements OnInit {
     console.log(this.vendor);
 
     this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
-      // tslint:disable-next-line:no-debugger
-      debugger;
       StatusObj = data;
       if (StatusObj.Status === 0) {
         el.click();
