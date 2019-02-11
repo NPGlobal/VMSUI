@@ -134,13 +134,13 @@ export class AddressFormComponent implements OnInit {
   }
 
   GetCountryList() {
-    this._mddService.GetMasterDataDetails('COUNTRY').subscribe((result) => {
+    this._mddService.GetMasterDataDetails('COUNTRY', '-1').subscribe((result) => {
       this.CountryList = result.data.Table.filter(x => x.MDDName === 'India');
     });
   }
 
   GetStateList() {
-    this._mddService.GetMasterDataDetails('STATE').subscribe(result => {
+    this._mddService.GetMasterDataDetails('STATE', '-1').subscribe(result => {
       this.StateList = result.data.Table;
     });
   }
