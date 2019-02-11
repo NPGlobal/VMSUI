@@ -1,132 +1,193 @@
-<form class="form-inline" [formGroup]="personalDetailsForm" (ngSubmit)="SavePersonalDetails()" novalidate>
-  <div class="main-div">
-    <!-- Product Type Details -->
-    <div class="detail-page">
-      <div class="col clearfix" formGroupName="PersonalDetails">
-        <div class="content-heading">
-          <a href="javascript:void(0)" (click)="ToggleContainer()" class="glyphicon-expand">
-            <span>+</span>
-          </a>Product Type Details
-        </div>
-        <div class="slider" [ngClass]="{
-                closed: False
-            }">
-          <div class="col-md-8">
-            <div class="col-md-12 form-group">
-              <div class="col-md-6">
-                <label class="text">Division Code</label>
-                <span>
-                  <input type="text" name="Code" formControlName="Code" class="form-control input-sm" />
-                </span>
+<div class="col-lg-12 col-sm-12 col-md-12">
+  <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
+  data-target="#myModal" data-backdrop="static" data-keyboard="false">
+      <i class="fa fa-plus"></i>
+      <span title="Add new" class="py-4">Add</span>
+    </button>
+</div>
+<div class="clearfix"></div>
+<div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Sr. No</th>
+        <th scope="col">Division</th>
+        <th scope="col">Department</th>
+        <th scope="col">Approved Production Units</th>
+        <th scope="col">Sub Contracting Unit Name</th>
+        <th scope="col">Sub Contracting Unit Address</th>
+        <th scope="col">Nature of Sub Contracting Unit</th>
+        <th scope="col">Monthly Capacity</th>
+        <th scope="col">Minimal Capacity</th>
+        <th scope="col">Lean Months</th>
+        <th scope="col">Lean Capacity</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+        <!-- <tr *ngFor="let vendor of pagedItems;index as i;">
+          <th scope="row">{{vendor.RowNumber}}</th>
+          <td>{{vendor.Name}}</td>
+          <td>{{vendor.Department}}</td>
+          <td>{{vendor.Designation}}</td>
+          <td>{{vendor.Email}}</td>
+          <td>{{vendor.Phone}}</td>
+          <td>
+            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor.VendorProductionDetailsId)" 
+          data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+          </td>
+        </tr> -->
+    </tbody>
+  </table>
+</div>
+
+
+<div class="modal popup" id="myModal">
+  <!-- modal-dialog -->
+  <div class="modal-dialog" role="document">
+    <!-- modal-content -->
+    <div class="modal-content">
+      <!-- modal-header -->
+      <div class="modal-header">
+        <h6 class="modal-title">Production</h6>
+        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- modal-body -->
+      <div class="modal-body">
+        <form [formGroup]="productionDetailsForm" (ngSubmit)="SaveProductionDetails()" novalidate>
+          <input type="hidden" name="id" formControlName="id">
+
+          <div class="form-group col-lg-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                  <label class="text">Division<span class="error-label">*</span></label>
+                  <span>
+                    <select formControlName="division" class="form-control input-sm" (change)="GetDepartment($event)"
+                      [ngClass]="{ 'is-invalid': (ProductionDetailsForm.controls.division.touched || submitted) && ProductionDetailsForm.controls.division.errors }">      
+                      <option value="">Select Division</option>
+                      <option *ngFor="let option of divisionList" value={{option.DivCode}}>
+                        {{option.DivName}}
+                      </option>
+                      </select>
+                  </span>
               </div>
-              <div class="col-md-6">
-                <label class="text">Department Name</label>
-                <span>
-                  <input type="text" name="Name" formControlName="Name" class="form-control input-sm" value="" />
-                </span>
+              <div class="col-lg-6 col-md-6">
+                  <label class="text">Department<span class="error-label">*</span></label>
+                  <span>
+                    <select formControlName="department" class="form-control input-sm" [ngClass]="{ 'is-invalid': (ProductionDetailsForm.controls.department.touched || submitted) && ProductionDetailsForm.controls.department.errors }">
+                      <option value="">Select Department</option>
+                      <option *ngFor="let option of deptList" 
+                      value={{option.deptCode}}>
+                        {{option.deptName}}
+                      </option>
+                    </select>
+                  </span>
               </div>
             </div>
           </div>
-        </div>
+          
+            <fieldset>
+              <legend>Production Unit/s:</legend>
+              <div class="form-group col-lg-12">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Approved Production Units</label>
+                    <span>
+                      <input type="text" name="approvedProductionUnits" formControlName="approvedProductionUnits" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.approvedProductionUnits.touched || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.errors }" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.approvedProductionUnits.touched || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.errors}"
+                    *ngIf="(ProductionDetailsForm.controls.approvedProductionUnits.touched || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.errors">
+                    </span>
+                  </div>
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Sub Contracting Unit Name</label>
+                      <span><input type="text" name="subContractingUnitName" formControlName="subContractingUnitName"
+                        class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.subContractingUnitName.dirty || submitted) && ProductionDetailsForm.get('phone').invalid }" /></span>
+                        <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.subContractingUnitName.dirty || submitted) &&  ProductionDetailsForm.get('phone').invalid }"
+                        *ngIf="(ProductionDetailsForm.controls.subContractingUnitName.dirty || submitted) && ProductionDetailsForm.get('subContractingUnitName').invalid ">
+                         </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-lg-12">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Sub Contracting Unit Address</label>
+                    <span>
+                      <input type="text" name="subContractingUnitAddress" formControlName="subContractingUnitAddress" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.subContractingUnitAddress.touched || submitted) && ProductionDetailsForm.controls.subContractingUnitAddress.errors }" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.subContractingUnitAddress.touched || submitted) && ProductionDetailsForm.controls.subContractingUnitAddress.errors}"
+                    *ngIf="(ProductionDetailsForm.controls.subContractingUnitAddress.touched || submitted) && ProductionDetailsForm.controls.subContractingUnitAddress.errors">
+                    </span>
+                  </div>
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Nature of Sub Contracting Unit</label>
+                      <span><input type="text" name="natureOfSubContractingUnit" formControlName="natureOfSubContractingUnit"
+                        class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.natureOfSubContractingUnit.dirty || submitted) && ProductionDetailsForm.get('natureOfSubContractingUnit').invalid }" /></span>
+                        <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.natureOfSubContractingUnit.dirty || submitted) &&  ProductionDetailsForm.get('natureOfSubContractingUnit').invalid }"
+                        *ngIf="(ProductionDetailsForm.controls.natureOfSubContractingUnit.dirty || submitted) && ProductionDetailsForm.get('natureOfSubContractingUnit').invalid ">
+                       </span>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+         
+            <fieldset>
+              <legend>Capacity allocated to Fabindia :</legend>
+              <div class="form-group col-lg-12">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Monthly Capacity</label>
+                    <span>
+                      <input type="text" formControlName="monthlyCapacity" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.monthlyCapacity.touched || submitted) && ProductionDetailsForm.controls.monthlyCapacity.errors }" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.monthlyCapacity.touched || submitted) && ProductionDetailsForm.controls.monthlyCapacity.errors}"
+                    *ngIf="(ProductionDetailsForm.controls.monthlyCapacity.touched || submitted) && ProductionDetailsForm.controls.monthlyCapacity.errors">
+                    </span>
+                  </div>
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Minimal Capacity</label>
+                      <span><input type="text" formControlName="minimalCapacity"
+                        class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) && ProductionDetailsForm.get('minimalCapacity').invalid }" /></span>
+                        <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) &&  ProductionDetailsForm.get('minimalCapacity').invalid }"
+                        *ngIf="(ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) && ProductionDetailsForm.get('minimalCapacity').invalid ">
+                         </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-lg-12">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Lean Months</label>
+                    <span>
+                      <input type="text" formControlName="leanMonths" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.leanMonths.touched || submitted) && ProductionDetailsForm.controls.email.errors }" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.leanMonths.touched || submitted) && ProductionDetailsForm.controls.leanMonths.errors}"
+                    *ngIf="(ProductionDetailsForm.controls.leanMonths.touched || submitted) && ProductionDetailsForm.controls.leanMonths.errors">
+                   </span>
+                  </div>
+                  <div class="col-lg-6 col-md-6">
+                      <label class="text">Lean Capicity</label>
+                      <span><input type="text" formControlName="leanCapicity"
+                        class="form-control input-sm" [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.leanCapicity.dirty || submitted) && ProductionDetailsForm.get('leanCapicity').invalid }" /></span>
+                        <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.leanCapicity.dirty || submitted) &&  ProductionDetailsForm.get('leanCapicity').invalid }"
+                        *ngIf="(ProductionDetailsForm.controls.leanCapicity.dirty || submitted) && ProductionDetailsForm.get('leanCapicity').invalid ">
+                        </span>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+         
+          <!-- Modal footer -->
+          <div class="modal-footer col-md-12  page-footer">
+            <button type="submit" class="mr-3 btn btn-danger">Save</button>
+            <button #modalCloseButton type="button" class="btn" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
       </div>
-      <hr>
-
-      <!-- Vendor Address -->
-
-      <div class="col" formGroupName="Address">
-        <div class="content-heading">
-          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
-            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
-          </a>Production Unit(s)
-        </div>
-        <div class="slider" [ngClass]="{
-                closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
-            }">
-          <div class="col-md-12 form-group">
-            <div class="col-md-4">
-              <label class="text">Approved Production Units</label>
-              <span>
-                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
-              </span>
-            </div>
-            <div class="col-md-4">
-              <label class="text">Sub Contracting Unit Name</label>
-              <span>
-                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
-              </span>
-            </div>
-          </div>
-
-          <div class="col-md-12 form-group">
-            <div class="col-md-6">
-              <label class="text">Sub Contracting Unit Address</label>
-              <span>
-                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
-              </span>
-            </div>
-            <div class="col-md-6">
-              <label class="text">Nature of Sub Contracting Unit</label>
-              <span>
-                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr>
-
-      <!-- Capacity Allocated To FabIndia -->
-
-      <div class="col" formGroupName="Address">
-        <div class="content-heading">
-          <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))" class="glyphicon-expand">
-            <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
-          </a>Capacity Allocated
-        </div>
-        <div class="slider" [ngClass]="{
-                closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
-            }">
-          <div class="col-md-12 form-group">
-            <div class="col-md-4">
-              <label class="text">Monthly Capacity</label>
-              <span>
-                <input type="text" formControlName="RegisOffAddr" name="RegisOffAddr" class="form-control input-sm" />
-              </span>
-            </div>
-            <div class="col-md-4">
-              <label class="text">Minimal Capacity</label>
-              <span>
-                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
-              </span>
-            </div>
-          </div>
-
-          <div class="col-md-12 form-group">
-            <div class="col-md-4">
-              <label class="text">Lean Months</label>
-              <span>
-                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
-              </span>
-            </div>
-            <div class="col-md-4">
-              <label class="text">Lean Capacity</label>
-              <span>
-                <input type="text" formControlName="FactoryAddr" name="FactoryAddr" class="form-control input-sm" value="" />
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr>
-
-    </div>
-    <hr>
-
-    <!-- End of Detail Page -->
-
-    <div class="col-md-12 page-footer">
-      <button routerLink="/Vendor" type="submit" class="mr-3 btn btn-primary">Save</button>
-      <button routerLink="/Vendor" type="button" class="btn">Cancel</button>
     </div>
   </div>
-</form>
+</div>
+<style type="text/css">
+input[type="text"],select{margin-bottom:0px !important;}
+</style>
