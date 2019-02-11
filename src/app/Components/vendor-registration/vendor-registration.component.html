@@ -11,11 +11,12 @@
         </div>
 
         <!-- Modal body -->
+
         <form class="form-inline" [formGroup]="RegistrationForm" novalidate (ngSubmit)="SaveVendorPrimaryInfo()">
 
           <div class="form-group col-md-6">
             <label for="VendorName">Vendor Name</label>
-            <input type="text" class="form-control col-md-12" formControlName="VendorName">
+            <input type="text" class="form-control col-md-12 input-sm" formControlName="VendorName">
           </div>
           <div class="form-group col-md-6">
             <label for="VendorCode">Vendor Code<i class="mandatory">*</i></label>
@@ -26,21 +27,24 @@
             <span class="mandatory" *ngIf="CodeExists">
               (Code Already Exists)
             </span>
-            <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}" class="form-control col-md-12 "
+            <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}" class="form-control col-md-12  input-sm"
               formControlName="VendorCode" (blur)="logValidationErrors()">
           </div>
 
           <div class="form-group col-md-6">
             <label for="Ref_VendorCode">Reference Producer Name</label>
-            <select type="text" class="form-control col-md-12" formControlName="Ref_VendorCode">
+            <select type="text" class="form-control col-md-12  input-sm" formControlName="Ref_VendorCode">
               <option value="-1" selected="selected">Select</option>
-              <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName + ' (' + item.VendorCode + ')'}}</option>
+              <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">
+                {{item.VendorName + ' (' + item.VendorCode + ')'}}</option>
             </select>
           </div>
           <div class="form-group col-md-6">
-            <label for="Ref_VendorCode">Master Producer Name<i class="mandatory">*</i></label>
-            <select type="text" class="form-control col-md-12" formControlName="MasterVendorId" (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MasterVendorId}">
-              <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">{{item.MasterVendorName}}</option>
+            <label for="MasterVendorId">Master Producer Name<i class="mandatory">*</i></label>
+            <select type="text" class="form-control col-md-12  input-sm" formControlName="MasterVendorId"
+              (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MasterVendorId}">
+              <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">{{item.MasterVendorName}}
+              </option>
             </select>
           </div>
 
@@ -51,7 +55,7 @@
             <span class="help-block mandatory" *ngIf="formErrors.PANNo">
               {{formErrors.PANNo}}
             </span>
-            <input type="text" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control col-md-12"
+            <input type="text" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control col-md-12  input-sm"
               formControlName="PANNo" (blur)="logValidationErrors()">
           </div>
           <div class="form-group col-md-6">
@@ -60,7 +64,7 @@
             <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
               {{formErrors.GSTIN}}
             </span>
-            <input type="text" [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control col-md-12"
+            <input type="text" [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control col-md-12  input-sm"
               formControlName="GSTIN" (blur)="logValidationErrors()">
           </div>
 
@@ -90,13 +94,13 @@
           </div>
           <div class="form-group col-md-3">
             <label>Vendor Type</label>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-left: 10px;">
               <label class="radio-inline">
                 <input type="checkbox" formControlName="IsDirectVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">DP</span>
               </label>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-left: 10px;">
               <label class="radio-inline">
                 <input type="checkbox" formControlName="IsJWVendor" (change)="SetPHListValidation($event)">
                 <span style="margin-left:5px;">JW</span>
@@ -121,33 +125,29 @@
                 <div class="col-sm-6 PHandStore">
                   <label>Store</label>
                   <span>
-                    <select (blur)="UnselectOptions()" formControlName="StoreList" class="form-control input-sm" size="5"
-                      multiple="multiple">
-                      <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">{{ Store.OrgUnitName }}</option>
+                    <select (blur)="UnselectOptions()" formControlName="StoreList" class="form-control input-sm"
+                      size="5" multiple="multiple">
+                      <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">{{ Store.OrgUnitName }}
+                      </option>
                     </select>
                   </span>
                 </div>
               </div>
               <div class="col-sm-2" style="padding-left:25px;">
 
-                <input type="button" [disabled]="NoPHLeft()" style="margin-top: 100px; width: 100px;" value=">" (click)="MoveToSelectedPHList()">
+                <input type="button" [disabled]="NoPHandStore()" style="margin-top: 100px; width: 100px;" value=">"
+                  (click)="MoveToSelectedPHList()">
                 <br />
-                <input type="button" [disabled]="NoSelectedPH()" style="margin-top: 10px; width: 100px;" value="<"
-                  (click)="MoveToPHList()">
+                <input type="button" [disabled]="NoSelectedPHOrStore()" style="margin-top: 10px; width: 100px;"
+                  value="<" (click)="MoveToPHList()">
 
               </div>
               <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-                <label class="text">Selected PH/Store
-                  &nbsp;&nbsp;
-                  <span *ngIf="!HasPHSelected" class="mandatory">
-                    This Field is required.
-                  </span>
-                </label>
+                <label class="text">Selected PH/Store </label>
                 <span>
-                  <select (blur)="UnselectOptions()" formControlName="SelectedPHStoreList" class="form-control input-sm"
-                    size="13" multiple="multiple">
-                    <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">{{
-                      PHStore.OrgUnitName }}</option>
+                  <select (blur)="UnselectOptions()" [ngClass]="{'is-invalid': !HasPHSelected}"
+                    formControlName="SelectedPHStoreList" class="form-control input-sm" size="13" multiple="multiple">
+                    <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                   </select>
                 </span>
               </div>
@@ -156,12 +156,16 @@
 
 
           <!-- Modal footer -->
-          <hr style="height: 1px; color:gray; width: 100%">
-          <div class="col-md-12" style="margin: 10px; text-align:center">
-            <button type="submit" [disabled]="(!RegistrationForm.valid || !HasPHSelected)" class="mr-3 btn btn-danger">Register</button>
-            <button #modalCloseButton type="button" class="btn" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+
+          <div class="mr-auto modal-footer ml-auto">
+            <div class="col-md-12">
+              <button type="submit" (click)="logValidationErrors()" class="mr-3 btn btn-danger">Register</button>
+              <button #modalCloseButton type="button" class="btn" (click)="dismiss()"
+                data-dismiss="modal">Cancel</button>
+            </div>
           </div>
         </form>
+
       </div>
     </div>
   </div>

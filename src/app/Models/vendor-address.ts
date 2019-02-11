@@ -7,9 +7,11 @@ export class VendorAddress {
     Address3: string;
     CityCode: string;
     StateCode: string;
+    StateName: string;
     PIN: number;
     Phone: number;
     CountryCode: string;
+    CountryName: string;
     AddressTypeCode: string;
     AddressReferenceID: string;
     AddressReference: string;
