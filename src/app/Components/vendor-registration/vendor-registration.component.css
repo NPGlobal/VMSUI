@@ -1,13 +1,9 @@
 .modal-lg {
-    max-width: 1080px;
+    max-width: 1100px;
 }
 
 .mandatory {
     color: red;
-}
-
-form {
-    margin: 10px;
 }
 
 .PHandStore {
@@ -16,4 +12,14 @@ form {
 
 .shiftButton{
     width: 100px;
+}
+
+
+.modal-body{
+    height: 370px;
+    overflow-y: auto;
+}
+
+form {
+    margin: 10px;
 }

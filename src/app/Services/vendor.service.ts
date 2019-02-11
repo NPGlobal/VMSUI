@@ -13,8 +13,8 @@ export class VendorService {
    origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
-  GetVendors(pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/Vendor/GetVendors/' + pageIndex + '/' + Limit;
+  GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
+    const apiUrl = this.origin + 'api/Vendor/GetVendors/' + pageIndex + '/' + Limit + '/' + searchText;
     return this._http.get<any>(apiUrl);
   }
 
@@ -60,7 +60,7 @@ export class VendorService {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
-// For Vendor Technical Specification by Department
+  // For Vendor Technical Specification by Department
   GetVendorTechSpec(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
@@ -76,8 +76,8 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
-   // Get Staff Information for Edit
-   GetStaffDetails(id: number): Observable<any> {
+  // Get Staff Information for Edit
+  GetStaffDetails(id: number): Observable<any> {
     const apiUrl = this.origin + 'api/VendorStaff/GetStaffDetails/' + id;
     return this._http.get<any>(apiUrl);
   }

@@ -23,7 +23,7 @@ export class AddressFormComponent implements OnInit {
   vendor: Vendor;
 
   @Input()
-  AddressCode: string;
+  Address: VendorAddress;
 
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
@@ -32,6 +32,8 @@ export class AddressFormComponent implements OnInit {
   SelectedPHList: OrgUnit[] = [];
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
+  NumberPattern: '^[1-9][0-9]{5}$';
+  submitted = false;
 
   ValidationMessages = {
     'OrgUnitCode': {
@@ -39,9 +41,9 @@ export class AddressFormComponent implements OnInit {
     },
     'PIN': {
       'required': '',
+      'pattern': 'Invalid PIN number',
       'minlength': 'Invalid PIN number',
-      'maxlength': 'Invalid PIN number',
-      'pattern': 'Invalid PIN number'
+      'maxlength': 'Invalid PIN number'
     },
     'CountryCode': {
       'required': ''
@@ -60,10 +62,12 @@ export class AddressFormComponent implements OnInit {
   formErrors = {
     'OrgUnitCode': '',
     'PIN': '',
+    'CountryCode': '',
     'StateCode': '',
+    'CityCode': '',
     'Address1': ''
   };
-  NumberPattern: '^[0-9]*$';
+
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
@@ -71,6 +75,7 @@ export class AddressFormComponent implements OnInit {
     private _router: Router) { }
 
   ngOnInit() {
+    console.log(this.Address);
     this.InitializeFormControls();
 
     this.GetCountryList();
@@ -97,16 +102,16 @@ export class AddressFormComponent implements OnInit {
   InitializeFormControls() {
 
     this.AddressForm = this._fb.group({
-      OrgUnitCode: ['', Validators.required],
-      Address1: ['', Validators.required],
-      Address2: [''],
-      Address3: [''],
-      CountryCode: ['', Validators.required],
-      CityCode: ['', Validators.required],
-      StateCode: ['', Validators.required],
-      PIN: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
-      Phone: ['', Validators.required],
-      AddressTypeCode: ['F'],
+      OrgUnitCode: [this.Address.OrgUnitCode, Validators.required],
+      Address1: [this.Address.Address1, Validators.required],
+      Address2: [this.Address.Address2],
+      Address3: [this.Address.Address3],
+      CountryCode: [this.Address.CountryCode, Validators.required],
+      CityCode: [this.Address.CityCode, Validators.required],
+      StateCode: [this.Address.StateCode, Validators.required],
+      PIN: [this.Address.PIN,
+      [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
+      AddressTypeCode: [this.Address.AddressTypeCode],
       HasSameAddress: [false]
     });
   }
@@ -130,8 +135,8 @@ export class AddressFormComponent implements OnInit {
         this.LogValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
-        if (abstractControl && !abstractControl.valid &&
-          (abstractControl.touched || abstractControl.dirty)) {
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
           const messages = this.ValidationMessages[key];
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
@@ -151,11 +156,21 @@ export class AddressFormComponent implements OnInit {
   }
 
   ResetForm() {
+    this.submitted = false;
     this.AddressForm.reset();
     this.InitializeFormControls();
+    this.LogValidationErrors();
   }
 
   SaveAddressDetails() {
+    this.submitted = true;
+    if (this.AddressForm.invalid) {
+
+
+      console.log(this.AddressForm.value);
+      this.LogValidationErrors();
+      return;
+    }
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let StatusObj: any;
     this.VendorAddress = new VendorAddress();
@@ -171,7 +186,7 @@ export class AddressFormComponent implements OnInit {
     this.VendorAddress.AddressTypeCode = this.AddressForm.get('AddressTypeCode').value;
     this.VendorAddress.AddressReference = 'V';
     this.VendorAddress.VendorCode = this.vendor.VendorCode;
-    this.VendorAddress.AddressCode = this.AddressCode;
+    this.VendorAddress.AddressCode = this.Address.AddressCode;
     this.VendorAddress.HasSameAddress = this.AddressForm.get('HasSameAddress').value;
 
     console.log(JSON.stringify(this.VendorAddress));
@@ -179,8 +194,6 @@ export class AddressFormComponent implements OnInit {
     console.log(this.vendor);
 
     this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
-      // tslint:disable-next-line:no-debugger
-      debugger;
       StatusObj = data;
       if (StatusObj.Status === 0) {
         el.click();

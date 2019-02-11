@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
-import { delay } from 'q';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
-
-declare var $: any;
+import { VendorAddress } from 'src/app/Models/vendor-address';
 
 @Component({
   selector: 'app-personal-details',
@@ -23,19 +21,25 @@ export class PersonalDetailsComponent implements OnInit {
   MasterVendorList: Vendor[] = [];
   VendorTypeList: MasterDataDetails[];
   VendorCode: string;
+  vendorAddress: VendorAddress[];
 
   AllPHList: OrgUnit[];
-  PHList: OrgUnit[] = [];
-  SelectedPHList: OrgUnit[] = [];
+  PHList: OrgUnit[];
+  StoreList: OrgUnit[];
+  SelectedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
 
-  AddressCode: string;
+  Address: VendorAddress;
+
+  @ViewChild('modalOpenButton')
+  modalOpenButton: ElementRef;
 
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _mDDService: MasterDataDetailsService) {
-    this.AddressCode = '';
+    this.Address = new VendorAddress();
+    this.Address.AddressCode = null;
   }
 
   ngOnInit() {
@@ -43,6 +47,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
         this.vendor = new Vendor();
+        this.GetPHList();
         this.InitializeFormControls();
       } else {
         this.Editvendor(this.VendorCode);
@@ -51,7 +56,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.PupulateYears();
 
-    this._vendorService.GetVendors(-1, -1).subscribe((result) => {
+    this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
       this.ReferenceVendorList = result.data.Vendors;
     });
 
@@ -59,7 +64,6 @@ export class PersonalDetailsComponent implements OnInit {
       this.MasterVendorList = result.data.MasterVendors;
     });
 
-    this.GetPHList();
     this.GetMasterDataDetails('VendorType');
   }
 
@@ -109,18 +113,32 @@ export class PersonalDetailsComponent implements OnInit {
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       this.vendor = result.data.Vendor[0];
+      this.vendorAddress = result.data.VendorAddress;
+      this.GetPHList();
       this.InitializeFormControls();
     });
   }
 
+  OpenAddressModal(vendorAddress: VendorAddress) {
+    this.Address = vendorAddress;
+    const el = this.modalOpenButton.nativeElement as HTMLElement;
+    el.click();
+  }
+
   FillPHLists() {
+    this.PHList = [];
+    this.StoreList = [];
     if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {
         if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
-          this.SelectedPHList.push(this.AllPHList[i]);
+          this.SelectedPHStoreList.push(this.AllPHList[i]);
         } else {
-          this.PHList.push(this.AllPHList[i]);
+          if (this.AllPHList[i].OrgUnitTypeCode === 'S') {
+            this.StoreList.push(this.AllPHList[i]);
+          } else {
+            this.PHList.push(this.AllPHList[i]);
+          }
         }
       }
     }
@@ -136,11 +154,13 @@ export class PersonalDetailsComponent implements OnInit {
         PANNo: [{ value: this.vendor.PANNo, disabled: true }],
         GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
         TINNo: [this.vendor.TINNo],
-        PHList: new FormControl({ value: null, disabled: true }),
+        PHList: new FormControl(),
+        StoreList: [''],
+        SelectedPHStoreList: [''],
         Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
         IsExpanded: true,
-        IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: true }],
-        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: true }]
+        IsJWVendor: [this.vendor.IsJWVendor],
+        IsDirectVendor: [this.vendor.IsDirectVendor]
       }),
       Address: this._fb.group({
         IsExpanded: false
@@ -174,5 +194,90 @@ export class PersonalDetailsComponent implements OnInit {
 
   ToggleContainer(formGroup: FormGroup) {
     formGroup.controls.IsExpanded.patchValue(!formGroup.controls.IsExpanded.value);
+  }
+
+  MoveToSelectedPHList() {
+    const phValues = this.personalDetailsForm.get('PHList').value as Array<string>;
+    const storeValues = this.personalDetailsForm.get('StoreList').value as Array<string>;
+
+    if (phValues.length > 0) {
+      for (let i = 0; i < this.PHList.length; i++) {
+        if (phValues.includes(this.PHList[i].OrgUnitCode)) {
+          this.SelectedPHStoreList.push(this.PHList[i]);
+        }
+      }
+      this.DeleteFromArray(phValues, 'PH');
+    }
+
+    if (storeValues.length > 0) {
+      for (let i = 0; i < this.StoreList.length; i++) {
+        if (storeValues.includes(this.StoreList[i].OrgUnitCode)) {
+          this.SelectedPHStoreList.push(this.StoreList[i]);
+        }
+      }
+      this.DeleteFromArray(storeValues, 'Store');
+    }
+
+  }
+
+  MoveToPHList() {
+    const values = this.personalDetailsForm.get('SelectedPHStoreList').value as Array<string>;
+
+    for (let i = 0; i < this.SelectedPHStoreList.length; i++) {
+      if (values.includes(this.SelectedPHStoreList[i].OrgUnitCode)) {
+
+        if (this.SelectedPHStoreList[i].OrgUnitTypeCode === 'P') {
+          this.PHList.push(this.SelectedPHStoreList[i]);
+        }
+
+        if (this.SelectedPHStoreList[i].OrgUnitTypeCode === 'S') {
+          this.StoreList.push(this.SelectedPHStoreList[i]);
+        }
+      }
+    }
+
+    this.DeleteFromArray(values, 'SelectedPH');
+
+  }
+
+  DeleteFromArray(stringArr: string[], type: string) {
+
+    for (let i = 0; i < stringArr.length; ++i) {
+      if (type === 'PH') {
+        this.PHList = this.PHList.filter(function (value) {
+          if (value.OrgUnitCode !== stringArr[i]) {
+            return value;
+          }
+        });
+      } else if (type === 'Store') {
+        this.StoreList = this.StoreList.filter(function (value) {
+          if (value.OrgUnitCode !== stringArr[i]) {
+            return value;
+          }
+        });
+      } else {
+        this.SelectedPHStoreList = this.SelectedPHStoreList.filter(function (value) {
+          if (value.OrgUnitCode !== stringArr[i]) {
+            return value;
+          }
+        });
+      }
+    }
+  }
+
+  NoPHandStore() {
+    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  NoSelectedPHOrStore() {
+    if (this.SelectedPHStoreList.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

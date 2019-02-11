@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { Vendor } from 'src/app/Models/vendor';
-import { Observable } from 'rxjs';
-import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-vendor-list',
@@ -19,6 +17,7 @@ export class VendorListComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
+  searchText = '';
 
 
   constructor(private _http: HttpClient,
@@ -29,13 +28,21 @@ export class VendorListComponent implements OnInit {
     this.GetVendors(this.currentPage);
   }
   GetVendors(index: number) {
+    console.log({a: this.pageSize, b: this.currentPage, c: this.searchText});
     this.currentPage = index;
-    this._vendorService.GetVendors(this.currentPage, this.pageSize).subscribe(result => {
+    this._vendorService.GetVendors(this.currentPage, this.pageSize, this.searchText).subscribe(result => {
       this.vendors = result.data.Vendors;
       this.totalItems = result.data.VendorsCount[0].TotalVendors;
       this.GetVendorsList();
     });
   }
+
+  SearchVendor(searchText = '') {
+    this.searchText = searchText;
+    console.log(searchText);
+    this.GetVendors(1);
+  }
+
   GetVendorsList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendors;
