@@ -84,8 +84,8 @@
                     <select formControlName="divisionCode" class="form-control input-sm" (change)="GetDepartment($event)"
                       [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.divisionCode.touched || submitted) && businessDetailsForm.controls.divisionCode.errors }">      
                       <option value="">Select Division</option>
-                      <option *ngFor="let option of divisionList" value={{option.DivCode}}>
-                        {{option.DivName}}
+                      <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
+                        {{option.MDDName}}
                       </option>
                       </select>
                   </span>
@@ -95,8 +95,8 @@
                   <span>
                     <select formControlName="deptCode" class="form-control input-sm" [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.deptCode.touched || submitted) && businessDetailsForm.controls.deptCode.errors }">
                       <option value="">Select Department</option>
-                      <option *ngFor="let option of departmentList" value={{option.DeptCode}}>
-                        {{option.Department}}
+                      <option *ngFor="let option of departmentList" value={{option.MDDCode}}>
+                        {{option.MDDName}}
                       </option>
                     </select>
                   </span>

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
+import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 declare var $: any;
 
 @Component({
@@ -16,7 +17,8 @@ export class BusinessDetailsComponent implements OnInit {
     private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
-    private _pager: PagerService
+    private _pager: PagerService,
+    private _mddService: MasterDataDetailsService,
   ) {
 
   }
@@ -44,7 +46,6 @@ export class BusinessDetailsComponent implements OnInit {
     });
     this.GetDivisions();
   }
-
   GetVendorBusiness(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
@@ -59,7 +60,6 @@ export class BusinessDetailsComponent implements OnInit {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.businessList;
   }
-
   openModal() {
     this.businessDetailsForm = this._fb.group({
       id: ['0'],
@@ -152,22 +152,27 @@ export class BusinessDetailsComponent implements OnInit {
       remarks: [this.businessObj.Remarks]
     });
   }
+  GetDivisions() {
+    this._mddService.GetMasterDataDetails('Division', '-1').subscribe((result) => {
+      this.divisionList = result.data.Table;
+    });
+  }
   GetDepartment() {
     if (this.businessDetailsForm.get('divisionCode').value === '') {
       this.departmentList = [];
-      this.businessDetailsForm.controls.designation.patchValue('');
+      this.businessDetailsForm.controls.deptCode.patchValue('');
     } else {
-    this._vendorService.GetVendorDesignation('10', this.businessDetailsForm.get('divisionCode').value, this.vendorcode, 'Division')
-    .subscribe((data) => {
-        this.departmentList = data;
+    this._mddService.GetMasterDataDetails('Dept', this.businessDetailsForm.get('divisionCode').value)
+    .subscribe((result) => {
+        this.departmentList = result.data.Table;
       });
     }
   }
-  GetDivisions() {
-    this._vendorService.GetVendorsDeptStaff('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
-      this.divisionList = data;
-    });
-  }
+  // GetStateList() {
+  //   this._mddService.GetMasterDataDetails('STATE').subscribe(result => {
+  //     this.StateList = result.data.Table;
+  //   });
+  // }
 
   GetStaffDetails(x) {
     this._vendorService.GetBusinessDetails(x).subscribe((data) => {
