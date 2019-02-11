@@ -170,6 +170,7 @@ export class TechnicalDetailsComponent implements OnInit {
      });
      this.isLine = false;
      this.isEfficiency = false;
+    this.submitted = false;
     }
 
   GetTechDetails(x) {
@@ -186,6 +187,7 @@ export class TechnicalDetailsComponent implements OnInit {
       });
 
       this.GetVendorTechSpec();
+    //  this.specChange();
     });
   }
 

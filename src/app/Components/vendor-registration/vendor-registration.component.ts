@@ -22,6 +22,7 @@ export class VendorRegistrationComponent implements OnInit {
   MasterVendorList: MasterVendor[] = [];
   ReferenceVendorList: Vendor[] = [];
   HasPHSelected: boolean;
+  submitted = false;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
 
   @ViewChild('modalCloseButton')
@@ -122,8 +123,8 @@ export class VendorRegistrationComponent implements OnInit {
         this.logValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
-        if (abstractControl && !abstractControl.valid &&
-          (abstractControl.touched || abstractControl.dirty)) {
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
           const messages = this.ValidationMessages[key];
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
@@ -135,29 +136,25 @@ export class VendorRegistrationComponent implements OnInit {
     });
   }
 
-  // CodeExistValidation(): { [key: string]: boolean } | null {
-  //   if (this.CodeExists === true) {
-  //     return { 'CodeExist': true };
-  //   }
-  //   return null;
-  // }
-
   dismiss() {
+    this.submitted = false;
+    this.RegistrationForm.reset();
     this.InitializeFormControls();
+    this.logValidationErrors();
     this.PHList = this.AllPHList.filter(ph => ph.OrgUnitTypeCode === 'P');
     this.StoreList = this.AllPHList.filter(ph => ph.OrgUnitTypeCode === 'S');
     this.SelectedPHStoreList = [];
   }
 
-  NoPHLeft() {
-    if (this.PHList.length > 0) {
+  NoPHandStore() {
+    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
       return false;
     } else {
       return true;
     }
   }
 
-  NoSelectedPH() {
+  NoSelectedPHOrStore() {
     if (this.SelectedPHStoreList.length > 0) {
       return false;
     } else {
@@ -166,6 +163,11 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SaveVendorPrimaryInfo() {
+    this.submitted = true;
+    if (this.RegistrationForm.invalid) {
+      this.logValidationErrors();
+      return;
+    }
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let statusObj: any;
     const vendor = new Vendor();

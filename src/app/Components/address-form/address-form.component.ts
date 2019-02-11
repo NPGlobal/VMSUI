@@ -32,6 +32,8 @@ export class AddressFormComponent implements OnInit {
   SelectedPHList: OrgUnit[] = [];
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
+  NumberPattern: '^[1-9][0-9]{5}$';
+  submitted = false;
 
   ValidationMessages = {
     'OrgUnitCode': {
@@ -39,9 +41,9 @@ export class AddressFormComponent implements OnInit {
     },
     'PIN': {
       'required': '',
+      'pattern': 'Invalid PIN number',
       'minlength': 'Invalid PIN number',
-      'maxlength': 'Invalid PIN number',
-      'pattern': 'Invalid PIN number'
+      'maxlength': 'Invalid PIN number'
     },
     'CountryCode': {
       'required': ''
@@ -60,10 +62,12 @@ export class AddressFormComponent implements OnInit {
   formErrors = {
     'OrgUnitCode': '',
     'PIN': '',
+    'CountryCode': '',
     'StateCode': '',
+    'CityCode': '',
     'Address1': ''
   };
-  NumberPattern: '^[0-9]*$';
+
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
@@ -104,7 +108,7 @@ export class AddressFormComponent implements OnInit {
       CountryCode: ['', Validators.required],
       CityCode: ['', Validators.required],
       StateCode: ['', Validators.required],
-      PIN: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
+      PIN: ['', [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
       Phone: ['', Validators.required],
       AddressTypeCode: ['F'],
       HasSameAddress: [false]
@@ -130,8 +134,8 @@ export class AddressFormComponent implements OnInit {
         this.LogValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
-        if (abstractControl && !abstractControl.valid &&
-          (abstractControl.touched || abstractControl.dirty)) {
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
           const messages = this.ValidationMessages[key];
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
@@ -151,11 +155,18 @@ export class AddressFormComponent implements OnInit {
   }
 
   ResetForm() {
+    this.submitted = false;
     this.AddressForm.reset();
     this.InitializeFormControls();
+    this.LogValidationErrors();
   }
 
   SaveAddressDetails() {
+    this.submitted = true;
+    if (this.AddressForm.invalid) {
+      this.LogValidationErrors();
+      return;
+    }
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let StatusObj: any;
     this.VendorAddress = new VendorAddress();
