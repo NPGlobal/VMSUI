@@ -42,6 +42,27 @@
           </tr>
       </tbody>
     </table>
+    <nav aria-label="..." class="">
+      <ul class="pagination justify-content-end">
+        <li class="page-item" *ngIf="pager.currentPage !== 1">
+          <button class="page-link" (click)="GetVendorTech(1)">First</button>
+        </li>
+        <li class="page-item" *ngIf="pager.currentPage !== 1">
+          <a class="page-link" (click)="GetVendorTech(pager.currentPage - 1)">Prev</a>
+        </li>
+  
+        <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
+          <button class="page-link" (click)="GetVendorTech(i)" href="javascript:void(0)">{{i}}</button>
+        </li>
+  
+        <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
+          <a class="page-link" (click)="GetVendorTech(pager.currentPage + 1)">Next</a>
+        </li>
+        <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
+          <a class="page-link" (click)="GetVendorTech(pager.totalPages)">Last</a>
+        </li>
+      </ul>
+    </nav>
 </div>
 
 
