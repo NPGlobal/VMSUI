@@ -101,8 +101,8 @@ export class BusinessDetailsComponent implements OnInit {
       return;
     }
     this.businessObj.VendorBusinessDetailsID = this.businessDetailsForm.get('id').value;
-    this.businessObj.FinancialYear = this.businessDetailsForm.get('financialYear').value;
-    this.businessObj.CompanyCode = this.businessDetailsForm.get('companyCode').value;
+    this.businessObj.FinancialYear = '2018-19'; // this.businessDetailsForm.get('financialYear').value;
+    this.businessObj.CompanyCode = '10'; // this.businessDetailsForm.get('companyCode').value;
     this.businessObj.VendorCode = this.vendorcode;
     this.businessObj.divisionCode = this.businessDetailsForm.get('divisionCode').value;
     this.businessObj.deptCode = this.businessDetailsForm.get('deptCode').value;
@@ -168,12 +168,6 @@ export class BusinessDetailsComponent implements OnInit {
       });
     }
   }
-  // GetStateList() {
-  //   this._mddService.GetMasterDataDetails('STATE').subscribe(result => {
-  //     this.StateList = result.data.Table;
-  //   });
-  // }
-
   GetStaffDetails(x) {
     this._vendorService.GetBusinessDetails(x).subscribe((data) => {
       this.businessDetailsForm = this._fb.group({
