@@ -68,13 +68,17 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   GetVendorDesignation() {
+   // alert(this.staffDetailsForm.get('designation').value );
+    if (this.staffDetailsForm.get('designation').value !== '') {
+      this.designationList = [];
+      this.staffDetailsForm.controls.designation.patchValue('');
+    }
     if (this.staffDetailsForm.get('dept').value === '') {
       this.designationList = [];
       this.staffDetailsForm.controls.designation.patchValue('');
     } else {
     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
     .subscribe((data) => {
-     //
       this.designationList = data;
       });
       if (this.designationList.length === 0) {
@@ -82,6 +86,12 @@ export class StaffDetailsComponent implements OnInit {
         this.staffDetailsForm.controls.designation.patchValue(''); }
      }
   }
+  GetVendorDesignationForEdit() {
+     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
+     .subscribe((data) => {
+       this.designationList = data;
+       });
+   }
 
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
@@ -172,7 +182,7 @@ export class StaffDetailsComponent implements OnInit {
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });
-      this.GetVendorDesignation();
+      this.GetVendorDesignationForEdit();
     });
   }
 }
