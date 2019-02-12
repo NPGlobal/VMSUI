@@ -18,7 +18,7 @@ declare var $: any;
 export class TechnicalDetailsComponent implements OnInit {
   // NumericPattern = '^[.]+[0-9]*$';
   // NumericPattern = '^[0-9]*[\.\]?[0-9]*$';
-   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/ ;
+  efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // NumericPattern = '^[a-zA-Z0-9]*$';
   // unitCountList = [1, 2 , 3 , 4, 5 , 6 , , 198, 200];
   vendortechList: VendorTech[];
@@ -34,8 +34,8 @@ export class TechnicalDetailsComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
-  isLine = false;
-  isEfficiency = false;
+  isLine = 0;
+  isEfficiency = 0;
   unitCountList(n: number): any[] {
     return Array(n);
   }
@@ -81,16 +81,16 @@ export class TechnicalDetailsComponent implements OnInit {
     });
   }
   GetVendorTechSpec() {
-   // this.techDetailsForm.get('techSpec').value = '';
+    // this.techDetailsForm.get('techSpec').value = '';
     if (this.techDetailsForm.get('dept').value === '') {
       this.techSpecList = [];
     } else {
-    // console.log(this.techDetailsForm.get('dept').value);
-    this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
-      this.techSpecList = data;
+      // console.log(this.techDetailsForm.get('dept').value);
+      this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
+        this.techSpecList = data;
       });
+    }
   }
-}
 
   InitializeFormControls() {
 
@@ -103,37 +103,49 @@ export class TechnicalDetailsComponent implements OnInit {
       unitCount: [this.VendorTech.UnitCount],
       status: [this.VendorTech.Status],
       remarks: [this.VendorTech.Remarks],
-     });
+    });
   }
 
   SaveTechDetails() {
     this.submitted = true;
-     console.log(JSON.stringify(this.techDetailsForm.value));
+    console.log(JSON.stringify(this.techDetailsForm.value));
     if (this.techDetailsForm.invalid) {
       return;
     }
     // console.log(JSON.stringify(this.addressForm));
     this.VendorTech = new VendorTech();
-    this.VendorTech.VendorTechDetailsID =  this.techDetailsForm.get('id').value;
+    this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('id').value;
     this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
     // this.VendorTech.VendorCode = this.personalDetailsForm.get('code').value;
     this.VendorTech.VendorCode = this.vendorcode;
-    if (this.isLine === true) {
-    this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value; }
-    if (this.isEfficiency === true) {
-    this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value; }
+    // if (this.isLine) {
+    //   this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value; }
+    // this.VendorTech.TechLineNo = this.isLine === 1 ? this.techDetailsForm.get('techLineNo').value : '0';
+    // if (this.isEfficiency) {
+    //   this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
+    // }
+    //  if (this.isEfficiency) {
+    //   this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
+    // } else {
+   // this.VendorTech.Efficiency = 0 ; // }
+    // this.VendorTech.Efficiency = (this.isEfficiency) ? this.techDetailsForm.get('efficiency').value : '0';
+    this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value;
+    this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
     this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
     this.VendorTech.Status = this.techDetailsForm.get('status').value;
     this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
     this.VendorTech.CreatedBy = 999999;
+    console.log(JSON.stringify(this.VendorTech));
     this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
+    //  alert(data.Msg[0].Result);
+    // alert(data.Msg[0].Message);
       if (data.Msg[0].Result === 0) {
         this.VendorTech = new VendorTech();
-        this.techDetailsForm.reset();
-        this.InitializeFormControls();
+      //  this.techDetailsForm.reset();
 
         this.vendortechList = data.VendorTech;
         this.totalItems = data.VendorTechCount[0].TotalVendors;
+        this.InitializeFormControls();
         this.GetVendorsTechList();
         this.techSpecList = [];
         alert(data.Msg[0].Message);
@@ -142,7 +154,7 @@ export class TechnicalDetailsComponent implements OnInit {
       } else {
         alert(data.Msg[0].Message);
         // added by shubhi
-        this.dismiss();
+       // this.dismiss();
       }
     });
   }
@@ -159,9 +171,9 @@ export class TechnicalDetailsComponent implements OnInit {
     });
     // this.submitted = true;
   }
-   dismiss() {
-     this.techDetailsForm = this._fb.group({
-       id: ['0'],
+  dismiss() {
+    this.techDetailsForm = this._fb.group({
+      id: ['0'],
       dept: [''],
       techSpec: [''],
       techLineNo: [''],
@@ -169,41 +181,49 @@ export class TechnicalDetailsComponent implements OnInit {
       unitCount: [''],
       status: true,
       remarks: ''
-     });
-    //  this.isLine = false;
-    //  this.isEfficiency = false;
+    });
+    this.isLine = 0;
+    this.isEfficiency = 0;
     this.submitted = false;
-    }
+  }
 
   GetTechDetails(x) {
     this._vendorService.GetTechDetails(x).subscribe((data) => {
+      this.techDetailsForm.reset();
       this.techDetailsForm = this._fb.group({
         id: [data.Table[0].VendorTechDetailsID],
         dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
         techSpec: [data.Table[0].VendorTechConfigID, Validators.required],
         techLineNo: data.Table[0].TechLineNo,
-        efficiency: [data.Table[0].Efficiency, [ Validators.pattern(this.efficiencyPattern), Validators.required]],
+        efficiency: [data.Table[0].Efficiency, [Validators.pattern(this.efficiencyPattern), Validators.required]],
         unitCount: [data.Table[0].UnitCount, Validators.required],
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });
-      this.isLine = this.techDetailsForm.controls.techSpec.getAttribute('data-line');
+      this.isEfficiency = this.techDetailsForm.get('efficiency').value > 0 ? 1 : 0;
+      this.isLine = this.techDetailsForm.get('techLineNo').value > 0 ? 1 : 0;
+      this.GetVendorTechSpec();
+      // this.isLine = this.techSpecList[0].values;
+      // this.isEfficiency = this.techSpecList[1].values;
+      // alert(this.isLine);
       //  this.isLine =  tech.attributes['data-line'].value;
       //  alert(this.isLine);
       //  this.isEfficiency = data.Table[0].VendorTechConfigID.attributes['data-efficiency'].value;
-      this.GetVendorTechSpec();
-    //  this.specChange();
+      //  this.specChange();
     });
   }
 
   specChange(event) {
     // alert(event.target.selectedOptions[0].attributes['data-line'].value);
     // alert(event.target.selectedOptions[0].attributes['data-efficiency'].value);
-    this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
-    alert(event.target.selectedOptions[0]);
+   // this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
+    // alert(event.target.selectedOptions[0]);
     this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
+    // if (this.isLine) {
+      this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
+    // }
     this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
-   // alert(this.isLine);
+    // alert(this.isLine);
   }
 }
 
