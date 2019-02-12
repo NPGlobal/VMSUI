@@ -281,10 +281,4 @@ export class VendorRegistrationComponent implements OnInit {
     }
   }
 
-  UnselectOptions() {
-    // this.RegistrationForm.get('PHList').patchValue('');
-    // this.RegistrationForm.get('StoreList').patchValue('');
-    // this.RegistrationForm.get('SelectedPHStoreList').patchValue('');
-  }
-
 }

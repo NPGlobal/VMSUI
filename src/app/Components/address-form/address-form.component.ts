@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { VendorService } from 'src/app/Services/vendor.service';
@@ -18,6 +18,8 @@ export class AddressFormComponent implements OnInit, OnChanges {
   VendorAddress: VendorAddress;
   AddressForm: FormGroup;
   OnlyDirectVendor = false;
+
+  @Output() IsAddressSaved = new EventEmitter<boolean>();
 
   @Input()
   vendor: Vendor;
@@ -236,6 +238,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
       // tslint:disable-next-line:no-debugger
       debugger;
       if (StatusObj.Status === 0) {
+        this.IsAddressSaved.emit(true);
         el.click();
       }
     });

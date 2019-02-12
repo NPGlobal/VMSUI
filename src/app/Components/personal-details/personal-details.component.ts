@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Output, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
@@ -14,6 +14,7 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
   styleUrls: ['./personal-details.component.css']
 })
 export class PersonalDetailsComponent implements OnInit {
+
 
   vendor: Vendor;
   personalDetailsForm: FormGroup;
@@ -43,6 +44,7 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
@@ -104,6 +106,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     console.log(JSON.stringify(vendor));
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
+      // tslint:disable-next-line:no-debugger
+      debugger;
       StatusObj = data;
       if (StatusObj.Status === 0) {
         alert('Saved Succesfully!!');
@@ -281,6 +285,12 @@ export class PersonalDetailsComponent implements OnInit {
       return false;
     } else {
       return true;
+    }
+  }
+
+  OnAddressSaved(IsAddressSaved: boolean) {
+    if (IsAddressSaved) {
+      this.Editvendor(this.VendorCode);
     }
   }
 }
