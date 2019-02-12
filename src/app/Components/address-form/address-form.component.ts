@@ -120,16 +120,16 @@ export class AddressFormComponent implements OnInit {
       PIN: [this.Address.PIN,
       [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
       AddressTypeCode: ['F'],
-      PrimaryContactName: ['', Validators.required],
-      PrimaryContactPhone: ['', Validators.required],
-      PrimaryContactFax: [''],
-      PrimaryContactEmail: [''],
-      PrimaryContactWebsite: [''],
-      SecondaryContactName: [''],
-      SecondaryContactPhone: [''],
-      SecondaryContactFax: [''],
-      SecondaryContactEmail: [''],
-      SecondaryContactWebsite: ['']
+      PrimaryContactName: [this.Address.PrimaryContactName, Validators.required],
+      PrimaryContactPhone: [this.Address.PrimaryContactPhone, Validators.required],
+      PrimaryContactFax: [this.Address.PrimaryContactFax],
+      PrimaryContactEmail: [this.Address.PrimaryContactEmail],
+      PrimaryContactWebsite: [this.Address.PrimaryContactWebsite],
+      SecondaryContactName: [this.Address.SecondaryContactName],
+      SecondaryContactPhone: [this.Address.SecondaryContactPhone],
+      SecondaryContactFax: [this.Address.SecondaryContactFax],
+      SecondaryContactEmail: [this.Address.SecondaryContactEmail],
+      SecondaryContactWebsite: [this.Address.SecondaryContactWebsite]
     });
   }
 
