@@ -168,6 +168,12 @@ export class BusinessDetailsComponent implements OnInit {
     this._mddService.GetMasterDataDetails('Dept', this.businessDetailsForm.get('divisionCode').value)
     .subscribe((result) => {
         this.departmentList = result.data.Table;
+        if (this.businessDetailsForm.get('deptCode').value !== '') {
+          const strArray = this.departmentList.find((obj) => obj.MDDCode === this.businessDetailsForm.get('deptCode').value);
+          if (strArray === undefined) {
+            this.businessDetailsForm.controls.deptCode.patchValue('');
+          }
+        }
       });
     }
   }
