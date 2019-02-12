@@ -28,7 +28,6 @@ export class VendorListComponent implements OnInit {
     this.GetVendors(this.currentPage);
   }
   GetVendors(index: number) {
-    console.log({a: this.pageSize, b: this.currentPage, c: this.searchText});
     this.currentPage = index;
     this._vendorService.GetVendors(this.currentPage, this.pageSize, this.searchText).subscribe(result => {
       this.vendors = result.data.Vendors;
@@ -39,7 +38,6 @@ export class VendorListComponent implements OnInit {
 
   SearchVendor(searchText = '') {
     this.searchText = searchText;
-    console.log(searchText);
     this.GetVendors(1);
   }
 

@@ -47,14 +47,12 @@ export class PersonalDetailsComponent implements OnInit {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
         this.vendor = new Vendor();
-        this.GetPHList();
         this.InitializeFormControls();
+        this.GetPHList();
       } else {
         this.Editvendor(this.VendorCode);
       }
     });
-
-    this.PupulateYears();
 
     this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
       this.ReferenceVendorList = result.data.Vendors;
@@ -67,7 +65,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.GetMasterDataDetails('VendorType');
   }
 
-  PupulateYears() {
+  PopulateYears() {
     for (let i = (new Date()).getFullYear(); i >= ((new Date()).getFullYear() - 20); i--) {
       this.YearList.push(i);
     }
@@ -100,6 +98,9 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value;
     vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value;
     vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value;
+    vendor.SelectedPHListCSV = this.SelectedPHStoreList.map(function (element) {
+      return element.OrgUnitCode;
+    }).join();
 
     console.log(JSON.stringify(vendor));
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
@@ -146,6 +147,8 @@ export class PersonalDetailsComponent implements OnInit {
 
   InitializeFormControls() {
 
+    this.PopulateYears();
+
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
@@ -175,7 +178,7 @@ export class PersonalDetailsComponent implements OnInit {
       }),
       OtherRegDetails: this._fb.group({
         AssociatedSinceYear: [this.vendor.AssociatedSinceYear],
-        VendorType_MDDCode: [''],
+        VendorType_MDDCode: [this.vendor.VendorType_MDDCode],
         PersonTopRanker1: [this.vendor.PersonTopRanker1],
         PersonTopRanker2: [this.vendor.PersonTopRanker2],
         IsExpanded: false
@@ -195,9 +198,10 @@ export class PersonalDetailsComponent implements OnInit {
     formGroup.controls.IsExpanded.patchValue(!formGroup.controls.IsExpanded.value);
   }
 
-  MoveToSelectedPHList() {
-    const phValues = this.personalDetailsForm.get('PHList').value as Array<string>;
-    const storeValues = this.personalDetailsForm.get('StoreList').value as Array<string>;
+  MoveToSelectedPHList(event: any) {
+
+    const phValues = this.personalDetailsForm.get('PersonalDetails.PHList').value as Array<string>;
+    const storeValues = this.personalDetailsForm.get('PersonalDetails.StoreList').value as Array<string>;
 
     if (phValues.length > 0) {
       for (let i = 0; i < this.PHList.length; i++) {
@@ -219,8 +223,8 @@ export class PersonalDetailsComponent implements OnInit {
 
   }
 
-  MoveToPHList() {
-    const values = this.personalDetailsForm.get('SelectedPHStoreList').value as Array<string>;
+  MoveToPHList(event: any) {
+    const values = this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value as Array<string>;
 
     for (let i = 0; i < this.SelectedPHStoreList.length; i++) {
       if (values.includes(this.SelectedPHStoreList[i].OrgUnitCode)) {
@@ -235,7 +239,7 @@ export class PersonalDetailsComponent implements OnInit {
       }
     }
 
-    this.DeleteFromArray(values, 'SelectedPH');
+    this.DeleteFromArray(values, 'SelectedPHStoreList');
 
   }
 

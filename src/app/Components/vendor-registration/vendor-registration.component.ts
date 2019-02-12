@@ -73,8 +73,6 @@ export class VendorRegistrationComponent implements OnInit {
       this.AllPHList = result.data.Table;
       this.PHList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'P');
       this.StoreList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'S');
-      console.log(this.PHList.length);
-      console.log(this.StoreList.length);
     });
 
 

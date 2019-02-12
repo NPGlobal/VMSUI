@@ -83,7 +83,6 @@ export class AddressFormComponent implements OnInit {
     private _router: Router) { }
 
   ngOnInit() {
-    console.log(this.Address);
     this.InitializeFormControls();
 
     this.GetCountryList();
@@ -119,7 +118,7 @@ export class AddressFormComponent implements OnInit {
       StateCode: [this.Address.StateCode, Validators.required],
       PIN: [this.Address.PIN,
       [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
-      AddressTypeCode: ['F'],
+      AddressTypeCode: [this.Address.AddressTypeCode],
       PrimaryContactName: [this.Address.PrimaryContactName, Validators.required],
       PrimaryContactPhone: [this.Address.PrimaryContactPhone, Validators.required],
       PrimaryContactFax: [this.Address.PrimaryContactFax],
