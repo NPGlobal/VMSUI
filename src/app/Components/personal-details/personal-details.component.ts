@@ -35,12 +35,15 @@ export class PersonalDetailsComponent implements OnInit {
   @ViewChild('modalOpenButton')
   modalOpenButton: ElementRef;
 
+  HasAllCollapsed: boolean;
+
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _mDDService: MasterDataDetailsService) {
     this.Address = new VendorAddress();
     this.Address.AddressCode = null;
+    this.HasAllCollapsed = true;
   }
 
   ngOnInit() {
@@ -286,6 +289,14 @@ export class PersonalDetailsComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  ToggleAllContainers() {
+    this.HasAllCollapsed = !this.HasAllCollapsed;
+    this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
+    this.personalDetailsForm.get('Address.IsExpanded').patchValue(!this.HasAllCollapsed);
+    this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
+    this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
   }
 
   OnAddressSaved(IsAddressSaved: boolean) {

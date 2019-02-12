@@ -1,6 +1,11 @@
 <form *ngIf="personalDetailsForm" class="form-inline" [formGroup]="personalDetailsForm"
     (ngSubmit)="SavePersonalDetails()" novalidate>
     <div class="main-div">
+        <div class="content-heading">
+            <a href="javascript:void(0)" (click)="ToggleAllContainers()" class="glyphicon-expand">
+                <span>{{HasAllCollapsed ? '+' : '-'}}</span>
+            </a>{{HasAllCollapsed ? 'Expand' : 'Collapse'}} All
+        </div>
         <!-- Vendor Details -->
         <div class="detail-page">
 
