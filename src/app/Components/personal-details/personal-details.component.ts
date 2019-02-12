@@ -21,7 +21,7 @@ export class PersonalDetailsComponent implements OnInit {
   MasterVendorList: Vendor[] = [];
   VendorTypeList: MasterDataDetails[];
   VendorCode: string;
-  vendorAddress: VendorAddress[];
+  vendorAddresses: VendorAddress[];
 
   AllPHList: OrgUnit[];
   PHList: OrgUnit[];
@@ -114,7 +114,7 @@ export class PersonalDetailsComponent implements OnInit {
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       this.vendor = result.data.Vendor[0];
-      this.vendorAddress = result.data.VendorAddress;
+      this.vendorAddresses = result.data.VendorAddress;
       this.GetPHList();
       this.InitializeFormControls();
     });
