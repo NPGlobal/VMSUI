@@ -65,10 +65,10 @@ export class BusinessDetailsComponent implements OnInit {
       id: ['0'],
       divisionCode: ['', Validators.required],
       deptCode: ['', Validators.required],
-      ActualDPValueQty: ['0', Validators.required],
-      ActualDPGrnQty: ['0', Validators.required],
-      ActualJWValueQty: ['0', Validators.required],
-      ActualJWGrnQty: ['0', Validators.required],
+      // ActualDPValueQty: ['0', Validators.required],
+      // ActualDPGrnQty: ['0', Validators.required],
+      // ActualJWValueQty: ['0', Validators.required],
+      // ActualJWGrnQty: ['0', Validators.required],
       ProposedDPValueQty: ['', Validators.required],
       ProposedDPGrnQty: ['', Validators.required],
       ProposedJWValueQty: ['', Validators.required],
@@ -82,10 +82,10 @@ export class BusinessDetailsComponent implements OnInit {
       id: ['0'],
       divisionCode: [''],
       deptCode: [''],
-      ActualDPValueQty: ['0'],
-      ActualDPGrnQty: ['0'],
-      ActualJWValueQty: ['0'],
-      ActualJWGrnQty: ['0'],
+      // ActualDPValueQty: ['0'],
+      // ActualDPGrnQty: ['0'],
+      // ActualJWValueQty: ['0'],
+      // ActualJWGrnQty: ['0'],
       ProposedDPValueQty: [''],
       ProposedDPGrnQty: [''],
       ProposedJWValueQty: [''],
@@ -109,10 +109,10 @@ export class BusinessDetailsComponent implements OnInit {
     this.businessObj.VendorCode = this.vendorcode;
     this.businessObj.divisionCode = this.businessDetailsForm.get('divisionCode').value;
     this.businessObj.deptCode = this.businessDetailsForm.get('deptCode').value;
-    this.businessObj.ActualDPGrnQty = 0; // this.businessDetailsForm.get('ActualDPGrnQty').value;
-    this.businessObj.ActualDPValueQty = 0; // this.businessDetailsForm.get('ActualDPValueQty').value;
-    this.businessObj.ActualJWGrnQty = 0; // this.businessDetailsForm.get('ActualJWGrnQty').value;
-    this.businessObj.ActualJWValueQty = 0; // this.businessDetailsForm.get('ActualJWValueQty').value;
+    // this.businessObj.ActualDPGrnQty = 0; // this.businessDetailsForm.get('ActualDPGrnQty').value;
+    // this.businessObj.ActualDPValueQty = 0; // this.businessDetailsForm.get('ActualDPValueQty').value;
+    // this.businessObj.ActualJWGrnQty = 0; // this.businessDetailsForm.get('ActualJWGrnQty').value;
+    // this.businessObj.ActualJWValueQty = 0; // this.businessDetailsForm.get('ActualJWValueQty').value;
     this.businessObj.ProposedDPGrnQty = this.businessDetailsForm.get('ProposedDPGrnQty').value;
     this.businessObj.ProposedDPValueQty = this.businessDetailsForm.get('ProposedDPValueQty').value;
     this.businessObj.ProposedJWGrnQty = this.businessDetailsForm.get('ProposedJWGrnQty').value;
@@ -143,10 +143,10 @@ export class BusinessDetailsComponent implements OnInit {
       id: ['0'],
       divisionCode: [''],
       deptCode: [''],
-      ActualDPValueQty: [this.businessObj.ActualDPValueQty],
-      ActualDPGrnQty: [this.businessObj.ActualDPGrnQty],
-      ActualJWValueQty: [this.businessObj.ActualJWValueQty],
-      ActualJWGrnQty: [this.businessObj.ActualJWGrnQty],
+      // ActualDPValueQty: [this.businessObj.ActualDPValueQty],
+      // ActualDPGrnQty: [this.businessObj.ActualDPGrnQty],
+      // ActualJWValueQty: [this.businessObj.ActualJWValueQty],
+      // ActualJWGrnQty: [this.businessObj.ActualJWGrnQty],
       ProposedDPValueQty: [this.businessObj.ProposedDPValueQty],
       ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty],
       ProposedJWValueQty: [this.businessObj.ProposedJWValueQty],
@@ -177,10 +177,10 @@ export class BusinessDetailsComponent implements OnInit {
         id: [data.Table[0].VendorBusinessDetailsID],
         divisionCode: [data.Table[0].DivisionCode, Validators.required],
         deptCode: [data.Table[0].DeptCode, Validators.required],
-        ActualDPValueQty: [data.Table[0].ActualDPValueQty, Validators.required],
-        ActualDPGrnQty: [data.Table[0].ActualDPGrnQty, Validators.required],
-        ActualJWValueQty: [data.Table[0].ActualJWValueQty, Validators.required],
-        ActualJWGrnQty: [data.Table[0].ActualJWGrnQty, Validators.required],
+        // ActualDPValueQty: [data.Table[0].ActualDPValueQty, Validators.required],
+        // ActualDPGrnQty: [data.Table[0].ActualDPGrnQty, Validators.required],
+        // ActualJWValueQty: [data.Table[0].ActualJWValueQty, Validators.required],
+        // ActualJWGrnQty: [data.Table[0].ActualJWGrnQty, Validators.required],
         ProposedDPValueQty: [data.Table[0].ProposedDPValueQty, Validators.required],
         ProposedDPGrnQty: [data.Table[0].ProposedDPGrnQty, Validators.required],
         ProposedJWValueQty: [data.Table[0].ProposedJWValueQty, Validators.required],
