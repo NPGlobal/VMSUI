@@ -18,7 +18,7 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
-        <th rowspan="2" scope="col">Sr No</th>
+        <th rowspan="2" scope="col">Financial Year</th>
         <th rowspan="2" scope="col">Division</th>
         <th rowspan="2" scope="col">Department</th>
         <th scope="col" colspan="4" style="font-weight: 700;">Actual Quantity</th>
@@ -38,7 +38,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let vendor of pagedItems;index as i;">
-          <th scope="row">{{vendor.RowNumber}}</th>
+          <th scope="row">{{vendor.FinancialYear}}</th>
           <td>{{vendor.Division}}</td>
           <td>{{vendor.Department}}</td>
 
@@ -104,7 +104,7 @@
             </div>
           </div>
 
-          <fieldset>
+          <fieldset style="display:none;">
             <legend>Actual Quantity</legend>
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">

@@ -65,10 +65,10 @@ export class BusinessDetailsComponent implements OnInit {
       id: ['0'],
       divisionCode: ['', Validators.required],
       deptCode: ['', Validators.required],
-      ActualDPValueQty: ['', Validators.required],
-      ActualDPGrnQty: ['', Validators.required],
-      ActualJWValueQty: ['', Validators.required],
-      ActualJWGrnQty: ['', Validators.required],
+      ActualDPValueQty: ['0', Validators.required],
+      ActualDPGrnQty: ['0', Validators.required],
+      ActualJWValueQty: ['0', Validators.required],
+      ActualJWGrnQty: ['0', Validators.required],
       ProposedDPValueQty: ['', Validators.required],
       ProposedDPGrnQty: ['', Validators.required],
       ProposedJWValueQty: ['', Validators.required],
@@ -82,10 +82,10 @@ export class BusinessDetailsComponent implements OnInit {
       id: ['0'],
       divisionCode: [''],
       deptCode: [''],
-      ActualDPValueQty: [''],
-      ActualDPGrnQty: [''],
-      ActualJWValueQty: [''],
-      ActualJWGrnQty: [''],
+      ActualDPValueQty: ['0'],
+      ActualDPGrnQty: ['0'],
+      ActualJWValueQty: ['0'],
+      ActualJWGrnQty: ['0'],
       ProposedDPValueQty: [''],
       ProposedDPGrnQty: [''],
       ProposedJWValueQty: [''],
@@ -94,22 +94,25 @@ export class BusinessDetailsComponent implements OnInit {
       remarks: ''
     });
     this.submitted = false;
+    this.departmentList = null;
   }
   SaveBusinessDetails() {
     this.submitted = true;
     if (this.businessDetailsForm.invalid) {
       return;
     }
+    // console.log(JSON.stringify(this.businessDetailsForm.value));
+    this.businessObj = new VendorBusinessDetails();
     this.businessObj.VendorBusinessDetailsID = this.businessDetailsForm.get('id').value;
     this.businessObj.FinancialYear = '2018-19'; // this.businessDetailsForm.get('financialYear').value;
     this.businessObj.CompanyCode = '10'; // this.businessDetailsForm.get('companyCode').value;
     this.businessObj.VendorCode = this.vendorcode;
     this.businessObj.divisionCode = this.businessDetailsForm.get('divisionCode').value;
     this.businessObj.deptCode = this.businessDetailsForm.get('deptCode').value;
-    this.businessObj.ActualDPGrnQty = this.businessDetailsForm.get('ActualDPGrnQty').value;
-    this.businessObj.ActualDPValueQty = this.businessDetailsForm.get('ActualDPValueQty').value;
-    this.businessObj.ActualJWGrnQty = this.businessDetailsForm.get('ActualJWGrnQty').value;
-    this.businessObj.ActualJWValueQty = this.businessDetailsForm.get('ActualJWValueQty').value;
+    this.businessObj.ActualDPGrnQty = 0; // this.businessDetailsForm.get('ActualDPGrnQty').value;
+    this.businessObj.ActualDPValueQty = 0; // this.businessDetailsForm.get('ActualDPValueQty').value;
+    this.businessObj.ActualJWGrnQty = 0; // this.businessDetailsForm.get('ActualJWGrnQty').value;
+    this.businessObj.ActualJWValueQty = 0; // this.businessDetailsForm.get('ActualJWValueQty').value;
     this.businessObj.ProposedDPGrnQty = this.businessDetailsForm.get('ProposedDPGrnQty').value;
     this.businessObj.ProposedDPValueQty = this.businessDetailsForm.get('ProposedDPValueQty').value;
     this.businessObj.ProposedJWGrnQty = this.businessDetailsForm.get('ProposedJWGrnQty').value;
@@ -125,7 +128,7 @@ export class BusinessDetailsComponent implements OnInit {
         this.InitializeFormControls();
         this.businessList = data.VendorBusiness;
         this.totalItems = data.VendorBusinessCount[0].TotalVendors;
-        // this.GetVendorsStaffList();
+        this.GetVendorsBusinessList();
         this.departmentList = [];
         alert(data.Msg[0].Message);
         $('#myModal').modal('toggle');
@@ -168,7 +171,7 @@ export class BusinessDetailsComponent implements OnInit {
       });
     }
   }
-  GetStaffDetails(x) {
+  GetBusinessDetails(x) {
     this._vendorService.GetBusinessDetails(x).subscribe((data) => {
       this.businessDetailsForm = this._fb.group({
         id: [data.Table[0].VendorBusinessDetailsID],
