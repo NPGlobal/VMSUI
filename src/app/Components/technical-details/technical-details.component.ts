@@ -7,6 +7,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 // import { PagerService } from 'src/app/Services/pager.service';
 import { HttpClient } from '@angular/common/http';
 import { Vendor } from 'src/app/Models/vendor';
+import { load } from '@angular/core/src/render3';
 declare var $: any;
 
 @Component({
@@ -117,9 +118,9 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
     // this.VendorTech.VendorCode = this.personalDetailsForm.get('code').value;
     this.VendorTech.VendorCode = this.vendorcode;
-    if (this.isLine === true ) {
+    if (this.isLine === true) {
     this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value; }
-    if (this.isEfficiency === true ) {
+    if (this.isEfficiency === true) {
     this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value; }
     this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
     this.VendorTech.Status = this.techDetailsForm.get('status').value;
@@ -156,6 +157,7 @@ export class TechnicalDetailsComponent implements OnInit {
       status: true,
       remarks: '',
     });
+    // this.submitted = true;
   }
    dismiss() {
      this.techDetailsForm = this._fb.group({
@@ -168,8 +170,8 @@ export class TechnicalDetailsComponent implements OnInit {
       status: true,
       remarks: ''
      });
-     this.isLine = false;
-     this.isEfficiency = false;
+    //  this.isLine = false;
+    //  this.isEfficiency = false;
     this.submitted = false;
     }
 
@@ -185,7 +187,10 @@ export class TechnicalDetailsComponent implements OnInit {
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });
-
+      this.isLine = this.techDetailsForm.controls.techSpec.getAttribute('data-line');
+      //  this.isLine =  tech.attributes['data-line'].value;
+      //  alert(this.isLine);
+      //  this.isEfficiency = data.Table[0].VendorTechConfigID.attributes['data-efficiency'].value;
       this.GetVendorTechSpec();
     //  this.specChange();
     });
@@ -195,8 +200,10 @@ export class TechnicalDetailsComponent implements OnInit {
     // alert(event.target.selectedOptions[0].attributes['data-line'].value);
     // alert(event.target.selectedOptions[0].attributes['data-efficiency'].value);
     this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
-    this.isLine = (event.target.selectedOptions[0].attributes['data-line'].value === '1') ? true : false;
-    this.isEfficiency = (event.target.selectedOptions[0].attributes['data-efficiency'].value === '1') ? true : false;
+    alert(event.target.selectedOptions[0]);
+    this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
+    this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
+   // alert(this.isLine);
   }
 }
 

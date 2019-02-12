@@ -74,9 +74,13 @@ export class StaffDetailsComponent implements OnInit {
     } else {
     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
     .subscribe((data) => {
-        this.designationList = data;
+     //
+      this.designationList = data;
       });
-    }
+      if (this.designationList.length === 0) {
+        this.designationList = [];
+        this.staffDetailsForm.controls.designation.patchValue(''); }
+     }
   }
 
   InitializeFormControls() {
@@ -111,7 +115,7 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff.CreatedBy = 999999;
     this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
       if (data.Msg[0].Result === 0) {
-        this.VendorStaff = new VendorStaff();
+       this.VendorStaff = new VendorStaff();
         this.staffDetailsForm.reset();
         this.InitializeFormControls();
 
