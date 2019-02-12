@@ -7,7 +7,7 @@
 }
 </style>
 <div class="col-lg-12 col-sm-12 col-md-12">
-    <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModel()"
+    <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
         <i class="fa fa-plus"></i>
         <span title="Add new" class="py-4">Add</span>
@@ -101,7 +101,8 @@
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Tech Line No. <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" [attr.disabled]="isLine==0 ? 'true' : null" name="techLineNo" formControlName="techLineNo" class="form-control input-sm">
+                    <input type="text" [attr.disabled]="isLine==0 ? 'true' : null" name="techLineNo" formControlName="techLineNo" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techLineNo.touched || submitted) && techDetailsForm.controls.techLineNo.errors }">
                   </span>
                   
                 </div>
