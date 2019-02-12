@@ -1,6 +1,6 @@
 <div *ngIf="Address.AddressCode !== ''" class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
   <!-- modal-dialog -->
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg">
     <!-- modal-content -->
     <div class="modal-content">
       <!-- modal-header -->
@@ -15,98 +15,162 @@
 
         <div class="modal-body">
 
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label class="text">Country<i class="mandatory">*</i></label>
-              <select formControlName="CountryCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                [ngClass]="{'is-invalid': formErrors.CountryCode}">
+          <div class="row col-md-12">
+            <div class="form-group col-md-4">
+              <label class="text col-md-4">Address1<i class="mandatory">*</i></label>
+              <input (blur)="LogValidationErrors()" formControlName="Address1" type="text"
+                class="form-control col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.Address1}" />
+            </div>
+
+            <div class="form-group col-md-4">
+              <label class="text col-md-4">Address2</label>
+              <input formControlName="Address2" type="text" class="form-control col-md-8 input-sm" />
+            </div>
+
+            <div class="form-group col-md-4">
+              <label class="text  col-md-4">Address3</label>
+              <input formControlName="Address3" type="text" class="form-control col-md-8 input-sm" />
+            </div>
+          </div>
+
+          <div class="row col-md-12">
+            <div class="form-group col-md-4">
+              <label class="text col-md-4">Country<i class="mandatory">*</i></label>
+              <select formControlName="CountryCode" (blur)="LogValidationErrors()"
+                class="form-control col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.CountryCode}">
                 <option selected value>Select</option>
                 <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}</option>
               </select>
             </div>
-            <div class="form-group col-md-6">
-              <label class="text">State<i class="mandatory">*</i></label>
-              <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+
+            <div class="form-group col-md-4">
+              <label class="text col-md-4">State<i class="mandatory">*</i></label>
+              <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control col-md-8 input-sm"
                 [ngClass]="{'is-invalid': formErrors.StateCode}">
                 <option selected value>Select</option>
                 <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
               </select>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label class="text">Pincode<i class="mandatory">*</i><span class="help-block mandatory"
-                  *ngIf="formErrors.PIN">
-                  {{formErrors.PIN}}
-                </span></label>
-              <input formControlName="PIN" (blur)="LogValidationErrors()" type="text" class="form-control input-sm"
-                [ngClass]="{'is-invalid': formErrors.PIN}" />
-            </div>
-            <div class="form-group col-md-6">
-              <label class="text">City/District<i class="mandatory">*</i></label>
-              <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text" class="form-control input-sm"
-                [ngClass]="{'is-invalid': formErrors.CityCode}" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col-md-12">
-              <label class="text">Address Line 1<i class="mandatory">*</i></label>
-              <input (blur)="LogValidationErrors()" formControlName="Address1" type="text" class="form-control input-sm"
-                [ngClass]="{'is-invalid': formErrors.Address1}" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col-md-12">
-              <label class="text">Address Line 2</label>
-              <input formControlName="Address2" type="text" class="form-control input-sm" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col-md-12">
-              <label class="text">Address Line 3</label>
-              <input formControlName="Address3" type="text" class="form-control input-sm" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12 form-group">
-              <label class="text"> Address Type </label>&nbsp;&nbsp;
-              <label>
-                <input value="F" type="radio" formControlName="AddressTypeCode">
-                &nbsp;Factory
-              </label>
-              <label style="margin-left: 10px;">
-                <input value="O" type="radio" formControlName="AddressTypeCode">
-                &nbsp;Office
-              </label>
-            </div>
-          </div>
-
-          <div class="row">
-            <div *ngIf="vendor.IsJWVendor" class="col-md-6"><br>
-              <label style="justify-content: left;">
-                <input value="True" type="checkbox" formControlName="HasSameAddress">
-                &nbsp;&nbsp;Same Address For All
-              </label>
-            </div>
-            <div class="form-group col-md-6" *ngIf="!AddressForm.get('HasSameAddress').value && vendor.IsJWVendor">
-              <label class="text">OrgUnitCode<i class="mandatory">*</i></label>
-              <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                [ngClass]="{'is-invalid': formErrors.OrgUnitCode}">
+            <div class="form-group col-md-4" style="display:none;">
+              <label class="text col-md-4">OrgUnitCode<i class="mandatory">*</i></label>
+              <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()"
+                class="form-control col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.OrgUnitCode}">
                 <option selected value>Select</option>
                 <option *ngFor="let PH of SelectedPHList" value="{{PH.OrgUnitCode}}">{{PH.OrgUnitName}}</option>
               </select>
             </div>
           </div>
-          
-        </div>
 
+          <div class="row col-md-12">
+            <div class="form-group col-md-4">
+              <label class="text  col-md-4">Pincode<i class="mandatory">*</i><span class="help-block mandatory"
+                  *ngIf="formErrors.PIN">
+                  {{formErrors.PIN}}
+                </span></label>
+              <input formControlName="PIN" (blur)="LogValidationErrors()" type="text"
+                class="form-control  col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.PIN}" />
+            </div>
+
+            <div class="form-group col-md-4">
+              <label class="text  col-md-4">City<i class="mandatory">*</i></label>
+              <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text"
+                class="form-control  col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.CityCode}" />
+            </div>
+
+            <div class="col-md-4 form-group">
+              &nbsp;&nbsp;&nbsp;<label class="text"> Address Type </label>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span class="row col-md-8">
+                <label>
+                  <input value="F" type="radio" formControlName="AddressTypeCode">
+                  &nbsp;Factory
+                </label>
+                <label style="margin-left: 10px;">
+                  <input value="O" type="radio" formControlName="AddressTypeCode">
+                  &nbsp;Office
+                </label>
+              </span>
+            </div>
+          </div>
+
+<hr>
+
+          <!-- Contact -->
+
+          <div class="row col-md-12">
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Primary Contact Name<i class="mandatory">*</i></label>
+              <input (blur)="LogValidationErrors()" formControlName="PrimaryContactName" type="text"
+                class="form-control col-md-6 input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactName}" />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Secondary Contact Name</label>
+              <input (blur)="LogValidationErrors()" formControlName="SecondaryContactName" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+          </div>
+
+          <div class="row col-md-12">
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Primary Phone No.<i class="mandatory">*</i></label>
+              <input (blur)="LogValidationErrors()" formControlName="PrimaryContactPhone" type="text"
+                class="form-control col-md-6 input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}" />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Secondary Phone No.</label>
+              <input (blur)="LogValidationErrors()" formControlName="SecondaryContactPhone" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+          </div>
+
+          <div class="row col-md-12">
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Primary Fax</label>
+              <input (blur)="LogValidationErrors()" formControlName="PrimaryContactFax" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Secondary Fax</label>
+              <input (blur)="LogValidationErrors()" formControlName="SecondaryContactFax" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+          </div>
+
+          <div class="row col-md-12">
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Primary E-Mail</label>
+              <input (blur)="LogValidationErrors()" formControlName="PrimaryContactEmail" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Secondary E-Mail</label>
+              <input (blur)="LogValidationErrors()" formControlName="SecondaryContactEmail" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+          </div>
+
+          <div class="row col-md-12">
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Primary Website</label>
+              <input (blur)="LogValidationErrors()" formControlName="PrimaryContactWebsite" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+
+            <div class="form-group col-md-6">
+              <label class="text col-md-6">Secondary Website</label>
+              <input (blur)="LogValidationErrors()" formControlName="SecondaryContactWebsite" type="text"
+                class="form-control col-md-6 input-sm" />
+            </div>
+          </div>
+
+
+        </div>
         <div class="mr-auto modal-footer ml-auto">
-          <div class="col-md-12 form-group">
+          <div class="col-md-12">
             <!-- <button [disabled]="!AddressForm.valid" type="submit" class="mr-3 btn btn-primary">Save</button> -->
             <button type="submit" (click)="LogValidationErrors()" class="mr-3 btn btn-primary">Save</button>
             <button #modalCloseButton data-dismiss="modal" type="button" (click)="ResetForm()"

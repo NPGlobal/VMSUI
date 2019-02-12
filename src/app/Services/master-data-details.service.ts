@@ -13,8 +13,8 @@ export class MasterDataDetailsService {
 
   constructor(private _http: HttpClient) { }
 
-  GetMasterDataDetails(MDHCode: string): Observable<any> {
-    const apiUrl = this.origin + 'api/MasterDataDetails/GetMasterDataDetails/' + MDHCode;
+  GetMasterDataDetails(MDHCode: string,parentCode: string): Observable<any> {
+    const apiUrl = this.origin + 'api/MasterDataDetails/GetMasterDataDetails/' + MDHCode + '/' + parentCode;
     return this._http.get<any>(apiUrl);
   }
 }
