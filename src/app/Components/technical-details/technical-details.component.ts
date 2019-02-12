@@ -187,7 +187,10 @@ export class TechnicalDetailsComponent implements OnInit {
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });
-      this.isLine = this.techDetailsForm.controls.techSpec.getAttribute('data-line');
+      //this.isLine = this.techDetailsForm.controls.techSpec.getAttribute('data-line');
+
+
+
       //  this.isLine =  tech.attributes['data-line'].value;
       //  alert(this.isLine);
       //  this.isEfficiency = data.Table[0].VendorTechConfigID.attributes['data-efficiency'].value;
