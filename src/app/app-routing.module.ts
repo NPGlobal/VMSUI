@@ -8,6 +8,7 @@ import { TechnicalDetailsComponent } from './Components/technical-details/techni
 import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
+import { DocumentComponent } from './Components/document/document.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
       { path: 'staff', component: StaffDetailsComponent },
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
-      { path: 'business', component: BusinessDetailsComponent }
+      { path: 'business', component: BusinessDetailsComponent },
+      { path: 'document', component: DocumentComponent }
     ]
   },
   {
@@ -33,7 +35,8 @@ const routes: Routes = [
       { path: 'staff', component: StaffDetailsComponent },
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
-      { path: 'business', component: BusinessDetailsComponent }
+      { path: 'business', component: BusinessDetailsComponent },
+      { path: 'document', component: DocumentComponent }
     ]
   },
   {
