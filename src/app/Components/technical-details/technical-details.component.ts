@@ -110,17 +110,21 @@ export class TechnicalDetailsComponent implements OnInit {
     this.submitted = true;
     console.log(JSON.stringify(this.techDetailsForm.value));
     if (this.techDetailsForm.invalid) {
+    // alert(this.isEfficiency + 'no');
       return;
     }
     // console.log(JSON.stringify(this.addressForm));
+    // alert(this.isEfficiency + 'ji');
     this.VendorTech = new VendorTech();
     this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('id').value;
     this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
     // this.VendorTech.VendorCode = this.personalDetailsForm.get('code').value;
     this.VendorTech.VendorCode = this.vendorcode;
+    // alert(this.isEfficiency);
     // if (this.isLine) {
     //   this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value; }
-    // this.VendorTech.TechLineNo = this.isLine === 1 ? this.techDetailsForm.get('techLineNo').value : '0';
+     this.VendorTech.TechLineNo = (this.techDetailsForm.get('techLineNo').value > 0) ? this.techDetailsForm.get('techLineNo').value : '0';
+    // alert(this.VendorTech.TechLineNo);
     // if (this.isEfficiency) {
     //   this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
     // }
@@ -128,9 +132,11 @@ export class TechnicalDetailsComponent implements OnInit {
     //   this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
     // } else {
    // this.VendorTech.Efficiency = 0 ; // }
-    // this.VendorTech.Efficiency = (this.isEfficiency) ? this.techDetailsForm.get('efficiency').value : '0';
-    this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value;
-    this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
+     this.VendorTech.Efficiency = (this.techDetailsForm.get('efficiency').value > 0) ? this.techDetailsForm.get('efficiency').value : '0';
+    // alert(this.VendorTech.Efficiency);
+    // alert(this.VendorTech.Efficiency);
+    // this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value;
+    // this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value;
     this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
     this.VendorTech.Status = this.techDetailsForm.get('status').value;
     this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
@@ -152,7 +158,7 @@ export class TechnicalDetailsComponent implements OnInit {
         $('#myModal').modal('toggle');
         this.dismiss();
       } else {
-        alert(data.Msg[0].Message);
+       alert(data.Msg[0].Message);
         // added by shubhi
        // this.dismiss();
       }
@@ -163,8 +169,8 @@ export class TechnicalDetailsComponent implements OnInit {
       id: ['0'],
       dept: ['', Validators.required],
       techSpec: ['', Validators.required],
-      techLineNo: '',
-      efficiency: ['', [Validators.pattern(this.efficiencyPattern), Validators.required]],
+      techLineNo: ['', Validators.required],
+      efficiency: ['', [Validators.pattern(this.efficiencyPattern)]],
       unitCount: ['', Validators.required],
       status: true,
       remarks: '',
@@ -194,8 +200,8 @@ export class TechnicalDetailsComponent implements OnInit {
         id: [data.Table[0].VendorTechDetailsID],
         dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
         techSpec: [data.Table[0].VendorTechConfigID, Validators.required],
-        techLineNo: data.Table[0].TechLineNo,
-        efficiency: [data.Table[0].Efficiency, [Validators.pattern(this.efficiencyPattern), Validators.required]],
+        techLineNo: [data.Table[0].TechLineNo, Validators.required],
+        efficiency: [data.Table[0].Efficiency, [Validators.pattern(this.efficiencyPattern)]],
         unitCount: [data.Table[0].UnitCount, Validators.required],
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
@@ -219,10 +225,17 @@ export class TechnicalDetailsComponent implements OnInit {
    // this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
     // alert(event.target.selectedOptions[0]);
     this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
-    // if (this.isLine) {
-      this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
-    // }
-    this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
+    // alert(this.isLine);
+    if (this.isLine === 0 ) {
+      this.techDetailsForm.controls.techLineNo.patchValue(''); } else {
+      this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value); }
+    // alert(this.isLine);
+    //  if (this.isLine === 0 ) {
+    //   // this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
+    //  alert(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
+    //   this.techDetailsForm.get('techLineNo')=0;
+    //  }
+     this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
     // alert(this.isLine);
   }
 }
