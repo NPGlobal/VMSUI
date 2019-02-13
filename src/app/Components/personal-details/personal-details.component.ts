@@ -41,7 +41,7 @@ export class PersonalDetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _mDDService: MasterDataDetailsService) {
-    this.Address = new VendorAddress();
+    this.Address = this.CreateNewAddress();
     this.Address.AddressCode = null;
     this.HasAllCollapsed = true;
   }
@@ -68,6 +68,17 @@ export class PersonalDetailsComponent implements OnInit {
     });
 
     this.GetMasterDataDetails('VendorType');
+  }
+
+  CreateNewAddress(): any {
+    const address = Object.assign({}, {
+      AddressCode: null,
+      AddressTypeCode: 'F',
+      CountryCode: null,
+      StateCode: null,
+      PIN: null
+    });
+    return address;
   }
 
   PopulateYears() {

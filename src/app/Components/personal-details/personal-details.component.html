@@ -229,8 +229,13 @@
                                             </table>
                                         </td>
                                     </tr>
+                                    
                                 </ng-container>
-
+                                <tr *ngIf="vendorAddresses.length === 0">
+                                    <td colspan="7">
+                                        <h6>No Record Found</h6>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

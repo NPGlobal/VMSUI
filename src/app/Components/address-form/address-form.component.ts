@@ -18,6 +18,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
   VendorAddress: VendorAddress;
   AddressForm: FormGroup;
   OnlyDirectVendor = false;
+  NumberPattern: '^[1-9][0-9]*$';
 
   @Output() IsAddressSaved = new EventEmitter<boolean>();
 
@@ -34,7 +35,6 @@ export class AddressFormComponent implements OnInit, OnChanges {
   SelectedPHList: OrgUnit[] = [];
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
-  NumberPattern: '^[1-9][0-9]{5}$';
   submitted = false;
 
   ValidationMessages = {
@@ -44,8 +44,8 @@ export class AddressFormComponent implements OnInit, OnChanges {
     'PIN': {
       'required': '',
       'pattern': 'Invalid PIN number',
-      'minlength': 'Invalid PIN number',
-      'maxlength': 'Invalid PIN number'
+      'minlength': '',
+      'maxlength': ''
     },
     'CountryCode': {
       'required': ''
@@ -90,10 +90,6 @@ export class AddressFormComponent implements OnInit, OnChanges {
     this.BindOrgUnitDropDown();
 
     this.InitializeFormControls();
-
-    this.AddressForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.AddressForm);
-    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -122,7 +118,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
       CityCode: [this.Address.CityCode, Validators.required],
       StateCode: [this.Address.StateCode, Validators.required],
       PIN: [this.Address.PIN,
-      [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
+      [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
       AddressTypeCode: [this.Address.AddressTypeCode],
       PrimaryContactName: [this.Address.PrimaryContactName, Validators.required],
       PrimaryContactPhone: [this.Address.PrimaryContactPhone, Validators.required],
@@ -134,6 +130,9 @@ export class AddressFormComponent implements OnInit, OnChanges {
       SecondaryContactFax: [this.Address.SecondaryContactFax],
       SecondaryContactEmail: [this.Address.SecondaryContactEmail],
       SecondaryContactWebsite: [this.Address.SecondaryContactWebsite]
+    });
+    this.AddressForm.valueChanges.subscribe((data) => {
+      this.LogValidationErrors(this.AddressForm);
     });
   }
 
@@ -187,8 +186,6 @@ export class AddressFormComponent implements OnInit, OnChanges {
   SaveAddressDetails() {
     this.submitted = true;
     if (this.AddressForm.invalid) {
-
-
       console.log(this.AddressForm.value);
       this.LogValidationErrors();
       return;
@@ -227,8 +224,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
       ? '' : this.AddressForm.get('SecondaryContactEmail').value;
     this.VendorAddress.SecondaryContactWebsite = this.AddressForm.get('SecondaryContactWebsite').value === null
       ? '' : this.AddressForm.get('SecondaryContactWebsite').value;
-    // tslint:disable-next-line:no-debugger
-    debugger;
+
     console.log(JSON.stringify(this.VendorAddress));
 
     console.log(this.vendor);
