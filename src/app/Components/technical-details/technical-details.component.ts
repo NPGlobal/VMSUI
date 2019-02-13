@@ -33,7 +33,7 @@ export class TechnicalDetailsComponent implements OnInit {
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
-  pagedItems: any[];
+  pagedItems: VendorTech[];
   isLine = 0;
   isEfficiency = 0;
   unitCountList(n: number): any[] {
@@ -66,14 +66,19 @@ export class TechnicalDetailsComponent implements OnInit {
   GetVendorTech(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+      if (data.VendorTech.length > 0) {
       this.vendortechList = data.VendorTech;
       this.totalItems = data.VendorTechCount[0].TotalVendors;
       this.GetVendorsTechList();
+      } else {
+        this.totalItems = 0;
+      }
     });
   }
   GetVendorsTechList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendortechList;
+  //  alert(this.pagedItems.length);
   }
   GetVendorDepartments() {
     this._vendorService.GetVendorDeptTech('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
@@ -81,7 +86,7 @@ export class TechnicalDetailsComponent implements OnInit {
     });
   }
   GetVendorTechSpec() {
-    // this.techDetailsForm.get('techSpec').value = '';
+   // this.techDetailsForm.controls.techSpec.patchValue('');
     if (this.techDetailsForm.get('dept').value === '') {
       this.techSpecList = [];
     } else {
@@ -89,6 +94,10 @@ export class TechnicalDetailsComponent implements OnInit {
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
         this.techSpecList = data;
       });
+    //  alert(this.techSpecList.includes(this.techDetailsForm.get('techSpec')));
+      if (this.techSpecList.includes(this.techDetailsForm.get('techSpec')) === false) {
+        this.techDetailsForm.controls.techSpec.patchValue('');
+      } else {this.techDetailsForm.controls.techSpec.patchValue(this.techDetailsForm.get('techSpec')); }
     }
   }
 

@@ -28,6 +28,7 @@ export class StaffDetailsComponent implements OnInit {
   status = true;
   submitted = false;
 
+
   constructor(
     private _vendorService: VendorService,
     private _route: ActivatedRoute,
@@ -53,12 +54,15 @@ export class StaffDetailsComponent implements OnInit {
         this.vendorstaffList = data.VendorStaff;
         this.totalItems = data.VendorStaffCount[0].TotalVendors;
         this.GetVendorsStaffList();
+      } else {
+        this.totalItems = 0 ;
       }
-    });
+      });
   }
   GetVendorsStaffList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendorstaffList;
+  //  alert(this.pagedItems.length);
   }
 
   GetVendorDepartments() {

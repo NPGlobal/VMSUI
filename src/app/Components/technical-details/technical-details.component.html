@@ -28,6 +28,7 @@
         </tr>
       </thead>
       <tbody>
+        <tr><td colspan="7" *ngIf="totalItems === 0">No Record Found</td></tr>
           <tr *ngFor="let vendor of pagedItems;index as i;">
             <th scope="row">{{vendor.RowNumber}}</th>
             <td>{{vendor.Department}}</td>
@@ -42,7 +43,7 @@
           </tr>
       </tbody>
     </table>
-    <nav aria-label="..." class="">
+    <nav aria-label="..." class="" *ngIf="totalItems!==0">
       <ul class="pagination justify-content-end">
         <li class="page-item" *ngIf="pager.currentPage !== 1">
           <button class="page-link" (click)="GetVendorTech(1)">First</button>
