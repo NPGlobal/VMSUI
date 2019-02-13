@@ -73,8 +73,6 @@ export class VendorRegistrationComponent implements OnInit {
       this.AllPHList = result.data.Table;
       this.PHList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'P');
       this.StoreList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'S');
-      console.log(this.PHList.length);
-      console.log(this.StoreList.length);
     });
 
 
@@ -101,7 +99,7 @@ export class VendorRegistrationComponent implements OnInit {
       VendorName: [''],
       IsRCM: ['false'],
       IsProvisional: [false],
-      MasterVendorId: ['', Validators.required],
+      MasterVendorId: [null, Validators.required],
       RefVendorName: [''],
       GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
       PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
@@ -281,12 +279,6 @@ export class VendorRegistrationComponent implements OnInit {
     } else {
       this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     }
-  }
-
-  UnselectOptions() {
-    // this.RegistrationForm.get('PHList').patchValue('');
-    // this.RegistrationForm.get('StoreList').patchValue('');
-    // this.RegistrationForm.get('SelectedPHStoreList').patchValue('');
   }
 
 }

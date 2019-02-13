@@ -27,8 +27,8 @@
             <span class="mandatory" *ngIf="CodeExists">
               (Code Already Exists)
             </span>
-            <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}" class="form-control col-md-12  input-sm"
-              formControlName="VendorCode" (blur)="logValidationErrors()">
+            <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}"
+              class="form-control col-md-12  input-sm" formControlName="VendorCode" (blur)="logValidationErrors()">
           </div>
 
           <div class="form-group col-md-6">
@@ -43,6 +43,7 @@
             <label for="MasterVendorId">Master Producer Name<i class="mandatory">*</i></label>
             <select type="text" class="form-control col-md-12  input-sm" formControlName="MasterVendorId"
               (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MasterVendorId}">
+              <option [ngValue]="null">Select</option>
               <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">{{item.MasterVendorName}}
               </option>
             </select>
@@ -116,8 +117,8 @@
                 <div class="col-sm-6 PHandStore">
                   <label>PH/FO</label>
                   <span>
-                    <select (blur)="UnselectOptions()" formControlName="PHList" class="form-control input-sm" size="4"
-                      multiple="multiple">
+                    <select onfocusout="event.target.value = ''" formControlName="PHList" class="form-control input-sm"
+                      size="4" multiple="multiple">
                       <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
                     </select>
                   </span>
@@ -125,8 +126,8 @@
                 <div class="col-sm-6 PHandStore">
                   <label>Store</label>
                   <span>
-                    <select (blur)="UnselectOptions()" formControlName="StoreList" class="form-control input-sm"
-                      size="4" multiple="multiple">
+                    <select onfocusout="event.target.value = ''" formControlName="StoreList"
+                      class="form-control input-sm" size="4" multiple="multiple">
                       <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">{{ Store.OrgUnitName }}
                       </option>
                     </select>
@@ -145,9 +146,10 @@
               <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
                 <label class="text">Selected PH/Store </label>
                 <span>
-                  <select (blur)="UnselectOptions()" [ngClass]="{'is-invalid': !HasPHSelected}"
+                  <select onfocusout="event.target.value = ''" [ngClass]="{'is-invalid': !HasPHSelected}"
                     formControlName="SelectedPHStoreList" class="form-control input-sm" size="11" multiple="multiple">
-                    <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
+                    <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">
+                      {{ PHStore.OrgUnitName }}</option>
                   </select>
                 </span>
               </div>

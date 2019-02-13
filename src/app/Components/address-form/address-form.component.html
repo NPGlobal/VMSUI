@@ -1,4 +1,4 @@
-<div *ngIf="Address.AddressCode !== ''" class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+<div *ngIf="AddressForm.AddressCode !== null && AddressForm.AddressCode !== ''" class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
   <!-- modal-dialog -->
   <div class="modal-dialog modal-lg">
     <!-- modal-content -->
@@ -38,7 +38,7 @@
               <label class="text col-md-4">Country<i class="mandatory">*</i></label>
               <select formControlName="CountryCode" (blur)="LogValidationErrors()"
                 class="form-control col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.CountryCode}">
-                <option selected value>Select</option>
+                <option [ngValue]="null">Select</option>
                 <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}</option>
               </select>
             </div>
@@ -47,7 +47,7 @@
               <label class="text col-md-4">State<i class="mandatory">*</i></label>
               <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control col-md-8 input-sm"
                 [ngClass]="{'is-invalid': formErrors.StateCode}">
-                <option selected value>Select</option>
+                <option [ngValue]="null">Select</option>
                 <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
               </select>
             </div>
@@ -68,7 +68,7 @@
                   *ngIf="formErrors.PIN">
                   {{formErrors.PIN}}
                 </span></label>
-              <input formControlName="PIN" (blur)="LogValidationErrors()" type="text"
+              <input formControlName="PIN" [pattern]="NumberPattern" (blur)="LogValidationErrors()" type="text"
                 class="form-control  col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.PIN}" />
             </div>
 
@@ -93,7 +93,7 @@
             </div>
           </div>
 
-<hr>
+          <hr>
 
           <!-- Contact -->
 
@@ -182,3 +182,4 @@
     </div>
   </div>
 </div>
+
