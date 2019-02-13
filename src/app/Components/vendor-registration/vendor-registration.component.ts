@@ -99,7 +99,7 @@ export class VendorRegistrationComponent implements OnInit {
       VendorName: [''],
       IsRCM: ['false'],
       IsProvisional: [false],
-      MasterVendorId: ['', Validators.required],
+      MasterVendorId: [null, Validators.required],
       RefVendorName: [''],
       GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
       PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
