@@ -261,6 +261,7 @@
                             <label class="text">Associated With Fabindia Since</label>
                             <span>
                                 <select formControlName="AssociatedSinceYear" class="form-control input-sm">
+                                    <option [ngValue]="0">Select</option>
                                     <option *ngFor="let Year of YearList" value="{{Year}}">{{Year}}</option>
                                 </select>
                             </span>
@@ -270,7 +271,7 @@
                             <span>
                                 <select *ngIf="VendorTypeList" formControlName="VendorType_MDDCode"
                                     class="form-control input-sm">
-                                    <option selected value="">Select</option>
+                                    <option value="">Select</option>
                                     <option *ngFor="let VendorType of VendorTypeList" value="{{VendorType.MDDCode}}">
                                         {{VendorType.MDDName}}</option>
                                 </select>
