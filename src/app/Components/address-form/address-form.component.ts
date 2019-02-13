@@ -177,10 +177,21 @@ export class AddressFormComponent implements OnInit, OnChanges {
 
   ResetForm() {
     this.submitted = false;
-    this.Address = new VendorAddress();
-    this.Address.AddressCode = null;
+    this.AddressForm.reset();
+    this.Address = this.CreateNewAddress();
     this.InitializeFormControls();
     this.LogValidationErrors();
+  }
+
+  CreateNewAddress(): any {
+    const address = Object.assign({}, {
+      AddressCode: null,
+      AddressTypeCode: 'F',
+      CountryCode: null,
+      StateCode: null,
+      PIN: null
+    });
+    return address;
   }
 
   SaveAddressDetails() {
