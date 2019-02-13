@@ -3,11 +3,13 @@ export class VendorProduction {
     division: string;
     department: string;
     approvedProductionUnits: number;
-    subContractingUnitName: string;
+    subContractingUnitName:  string;
     subContractingUnitAddress: string;
     natureOfSubContractingUnit: string;
     monthlyCapacity: number;
     minimalCapacity: number;
     leanMonths: number;
-    leanCapicity: number;
+    leanCapacity: number;
+    VendorCode: String;
+    CreatedBy: number;
 }
