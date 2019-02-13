@@ -73,8 +73,6 @@ export class VendorRegistrationComponent implements OnInit {
       this.AllPHList = result.data.Table;
       this.PHList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'P');
       this.StoreList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'S');
-      console.log(this.PHList.length);
-      console.log(this.StoreList.length);
     });
 
 
@@ -281,12 +279,6 @@ export class VendorRegistrationComponent implements OnInit {
     } else {
       this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     }
-  }
-
-  UnselectOptions() {
-    // this.RegistrationForm.get('PHList').patchValue('');
-    // this.RegistrationForm.get('StoreList').patchValue('');
-    // this.RegistrationForm.get('SelectedPHStoreList').patchValue('');
   }
 
 }

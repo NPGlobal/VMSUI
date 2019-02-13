@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { VendorService } from 'src/app/Services/vendor.service';
@@ -13,11 +13,13 @@ import { Vendor } from 'src/app/Models/vendor';
   templateUrl: './address-form.component.html',
   styleUrls: ['./address-form.component.css']
 })
-export class AddressFormComponent implements OnInit {
+export class AddressFormComponent implements OnInit, OnChanges {
 
   VendorAddress: VendorAddress;
   AddressForm: FormGroup;
   OnlyDirectVendor = false;
+
+  @Output() IsAddressSaved = new EventEmitter<boolean>();
 
   @Input()
   vendor: Vendor;
@@ -76,24 +78,26 @@ export class AddressFormComponent implements OnInit {
     'Address1': ''
   };
 
-
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
     private _mddService: MasterDataDetailsService,
     private _router: Router) { }
 
   ngOnInit() {
-    console.log(this.Address);
-    this.InitializeFormControls();
-
     this.GetCountryList();
     this.GetStateList();
+
+    this.BindOrgUnitDropDown();
+
+    this.InitializeFormControls();
 
     this.AddressForm.valueChanges.subscribe((data) => {
       this.LogValidationErrors(this.AddressForm);
     });
+  }
 
-    this.BindOrgUnitDropDown();
+  ngOnChanges(changes: SimpleChanges) {
+    this.InitializeFormControls();
   }
 
   FillPHLists() {
@@ -119,17 +123,17 @@ export class AddressFormComponent implements OnInit {
       StateCode: [this.Address.StateCode, Validators.required],
       PIN: [this.Address.PIN,
       [Validators.required, Validators.pattern(this.NumberPattern), Validators.minLength(6), Validators.maxLength(6)]],
-      AddressTypeCode: ['F'],
-      PrimaryContactName: ['', Validators.required],
-      PrimaryContactPhone: ['', Validators.required],
-      PrimaryContactFax: [''],
-      PrimaryContactEmail: [''],
-      PrimaryContactWebsite: [''],
-      SecondaryContactName: [''],
-      SecondaryContactPhone: [''],
-      SecondaryContactFax: [''],
-      SecondaryContactEmail: [''],
-      SecondaryContactWebsite: ['']
+      AddressTypeCode: [this.Address.AddressTypeCode],
+      PrimaryContactName: [this.Address.PrimaryContactName, Validators.required],
+      PrimaryContactPhone: [this.Address.PrimaryContactPhone, Validators.required],
+      PrimaryContactFax: [this.Address.PrimaryContactFax],
+      PrimaryContactEmail: [this.Address.PrimaryContactEmail],
+      PrimaryContactWebsite: [this.Address.PrimaryContactWebsite],
+      SecondaryContactName: [this.Address.SecondaryContactName],
+      SecondaryContactPhone: [this.Address.SecondaryContactPhone],
+      SecondaryContactFax: [this.Address.SecondaryContactFax],
+      SecondaryContactEmail: [this.Address.SecondaryContactEmail],
+      SecondaryContactWebsite: [this.Address.SecondaryContactWebsite]
     });
   }
 
@@ -174,7 +178,8 @@ export class AddressFormComponent implements OnInit {
 
   ResetForm() {
     this.submitted = false;
-    this.AddressForm.reset();
+    this.Address = new VendorAddress();
+    this.Address.AddressCode = null;
     this.InitializeFormControls();
     this.LogValidationErrors();
   }
@@ -207,21 +212,21 @@ export class AddressFormComponent implements OnInit {
     this.VendorAddress.PrimaryContactName = this.AddressForm.get('PrimaryContactName').value;
     this.VendorAddress.PrimaryContactPhone = this.AddressForm.get('PrimaryContactPhone').value;
     this.VendorAddress.PrimaryContactFax = this.AddressForm.get('PrimaryContactFax').value === null
-    ? '' : this.AddressForm.get('PrimaryContactFax').value;
+      ? '' : this.AddressForm.get('PrimaryContactFax').value;
     this.VendorAddress.PrimaryContactEmail = this.AddressForm.get('PrimaryContactEmail').value === null
-    ? '' : this.AddressForm.get('PrimaryContactEmail').value;
+      ? '' : this.AddressForm.get('PrimaryContactEmail').value;
     this.VendorAddress.PrimaryContactWebsite = this.AddressForm.get('PrimaryContactWebsite').value === null
-    ? '' : this.AddressForm.get('PrimaryContactWebsite').value;
+      ? '' : this.AddressForm.get('PrimaryContactWebsite').value;
     this.VendorAddress.SecondaryContactName = this.AddressForm.get('SecondaryContactName').value === null
-    ? '' : this.AddressForm.get('SecondaryContactName').value;
+      ? '' : this.AddressForm.get('SecondaryContactName').value;
     this.VendorAddress.SecondaryContactPhone = this.AddressForm.get('SecondaryContactPhone').value === null
-    ? '' : this.AddressForm.get('SecondaryContactPhone').value;
+      ? '' : this.AddressForm.get('SecondaryContactPhone').value;
     this.VendorAddress.SecondaryContactFax = this.AddressForm.get('SecondaryContactFax').value === null
-    ? '' : this.AddressForm.get('SecondaryContactFax').value;
+      ? '' : this.AddressForm.get('SecondaryContactFax').value;
     this.VendorAddress.SecondaryContactEmail = this.AddressForm.get('SecondaryContactEmail').value === null
-    ? '' : this.AddressForm.get('SecondaryContactEmail').value;
+      ? '' : this.AddressForm.get('SecondaryContactEmail').value;
     this.VendorAddress.SecondaryContactWebsite = this.AddressForm.get('SecondaryContactWebsite').value === null
-    ? '' : this.AddressForm.get('SecondaryContactWebsite').value;
+      ? '' : this.AddressForm.get('SecondaryContactWebsite').value;
     // tslint:disable-next-line:no-debugger
     debugger;
     console.log(JSON.stringify(this.VendorAddress));
@@ -233,6 +238,7 @@ export class AddressFormComponent implements OnInit {
       // tslint:disable-next-line:no-debugger
       debugger;
       if (StatusObj.Status === 0) {
+        this.IsAddressSaved.emit(true);
         el.click();
       }
     });

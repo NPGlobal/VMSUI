@@ -1,4 +1,4 @@
-<div *ngIf="Address.AddressCode !== ''" class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+<div *ngIf="AddressForm.AddressCode !== null && AddressForm.AddressCode !== ''" class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
   <!-- modal-dialog -->
   <div class="modal-dialog modal-lg">
     <!-- modal-content -->
@@ -38,7 +38,6 @@
               <label class="text col-md-4">Country<i class="mandatory">*</i></label>
               <select formControlName="CountryCode" (blur)="LogValidationErrors()"
                 class="form-control col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.CountryCode}">
-                <option selected value>Select</option>
                 <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}</option>
               </select>
             </div>
@@ -93,7 +92,7 @@
             </div>
           </div>
 
-<hr>
+          <hr>
 
           <!-- Contact -->
 
@@ -182,3 +181,4 @@
     </div>
   </div>
 </div>
+
