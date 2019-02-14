@@ -68,31 +68,22 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   GetVendorDesignation() {
-   // alert(this.staffDetailsForm.get('designation').value );
-    if (this.staffDetailsForm.get('designation').value !== '') {
-      this.designationList = [];
-      this.staffDetailsForm.controls.designation.patchValue('');
-    }
     if (this.staffDetailsForm.get('dept').value === '') {
       this.designationList = [];
       this.staffDetailsForm.controls.designation.patchValue('');
     } else {
-    this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
-    .subscribe((data) => {
-      this.designationList = data;
+      this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
+      .subscribe((data) => {
+        this.designationList = data;
+        if (this.staffDetailsForm.get('designation').value !== '') {
+          const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
+          if (strArray === undefined) {
+            this.staffDetailsForm.controls.designation.patchValue('');
+          }
+        }
       });
-      if (this.designationList.length === 0) {
-        this.designationList = [];
-        this.staffDetailsForm.controls.designation.patchValue(''); }
-     }
+    }
   }
-  GetVendorDesignationForEdit() {
-     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
-     .subscribe((data) => {
-       this.designationList = data;
-       });
-   }
-
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
       id: ['0'],
@@ -108,6 +99,7 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   SaveStaffDetails() {
+    debugger;
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {
       return;
@@ -123,23 +115,30 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff.Status = this.staffDetailsForm.get('status').value;
     this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value;
     this.VendorStaff.CreatedBy = 999999;
-    this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
-      if (data.Msg[0].Result === 0) {
-       this.VendorStaff = new VendorStaff();
-        this.staffDetailsForm.reset();
-        this.InitializeFormControls();
-
-        this.vendorstaffList = data.VendorStaff;
-        this.totalItems = data.VendorStaffCount[0].TotalVendors;
-        this.GetVendorsStaffList();
-        this.designationList = [];
-        alert(data.Msg[0].Message);
-        $('#myModal').modal('toggle');
-        this.dismiss();
-      } else {
-        alert(data.Msg[0].Message);
-      }
-    });
+    try {
+      this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
+        if (data.Msg != null) {
+          if (data.Msg[0].Result === 0) {
+            this.VendorStaff = new VendorStaff();
+             this.staffDetailsForm.reset();
+             this.InitializeFormControls();
+             this.vendorstaffList = data.VendorStaff;
+             this.totalItems = data.VendorStaffCount[0].TotalVendors;
+             this.GetVendorsStaffList();
+             this.designationList = [];
+             alert(data.Msg[0].Message);
+             $('#myModal').modal('toggle');
+             this.dismiss();
+           } else {
+             alert(data.Msg[0].Message);
+           }
+        } else {
+          alert('There are some technical error. Please contact administrator.');
+        }
+      });
+    } catch {
+      alert('There are some technical error. Please contact administrator.');
+    }
   }
   openModal() {
     this.staffDetailsForm = this._fb.group({
@@ -157,16 +156,17 @@ export class StaffDetailsComponent implements OnInit {
   dismiss() {
     this.staffDetailsForm = this._fb.group({
       id: ['0'],
-    dept: [''],
-    designation: [''],
-    name: [''],
-    email: [''],
-    phone: [''],
-    priority: [''],
-    status: true,
-    remarks: ''
+      dept: [''],
+      designation: [''],
+      name: [''],
+      email: [''],
+      phone: [''],
+      priority: [''],
+      status: true,
+      remarks: ''
     });
     this.submitted = false;
+    this.designationList = [];
   }
 
   GetStaffDetails(x) {
@@ -182,7 +182,7 @@ export class StaffDetailsComponent implements OnInit {
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
       });
-      this.GetVendorDesignationForEdit();
+      this.GetVendorDesignation();
     });
   }
 }

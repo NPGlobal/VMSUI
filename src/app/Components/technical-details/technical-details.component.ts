@@ -69,6 +69,7 @@ export class TechnicalDetailsComponent implements OnInit {
   GetVendorTechSpec() {
     if (this.techDetailsForm.get('dept').value === '') {
       this.techSpecList = [];
+      this.techDetailsForm.controls.techSpec.patchValue('');
     } else {
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
         this.techSpecList = data;
