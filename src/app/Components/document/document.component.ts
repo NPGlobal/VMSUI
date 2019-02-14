@@ -17,19 +17,22 @@ declare var $: any;
 })
 export class DocumentComponent implements OnInit {
   vendorcode: string;
+  actionHeaderList: any[];
+  docHeaderList: any[];
+  submitted = false;
+  docDetailsForm: FormGroup;
+  vendorDocument: VendorDocument;
+
+  vendDocList: VendorDocument[];
+
+  // paging variables
   totalItems: number;
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
-  actionHeaderList: any[];
-  docHeaderList: any[];
-  // status = true;
-  submitted = false;
-  docDetailsForm: FormGroup;
-  vendorDocument: VendorDocument;
 
-  uploadReq: any;
+  formData: FormData;
 
   constructor(
     private _vendorService: VendorService,
@@ -38,33 +41,60 @@ export class DocumentComponent implements OnInit {
     private _pager: PagerService,
     private _mddService: MasterDataDetailsService,
     private cd: ChangeDetectorRef,
-    private _vendorDocService: VendorDocumentService) { }
+    private _vendorDocService: VendorDocumentService) {
+    this.formData = new FormData();
+    this.CreateNewVendorDocument();
+  }
 
   ngOnInit() {
     this.openModal();
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
-      // this.GetVendorBusiness(this.currentPage);
+      this.GetVendorDocuments(this.currentPage);
     });
     this.GetActionHeader();
   }
 
-  openModal() {
-    this.docDetailsForm = this._fb.group({
-      id: ['0'],
-      actionCode: ['', Validators.required],
-      docCode: ['', Validators.required],
-      uploadedFile: [null]
+  CreateNewVendorDocument() {
+    this.vendorDocument = new VendorDocument();
+    this.vendorDocument.VendorActionHeaderID = 0;
+    this.vendorDocument.VendorDocDetailsID = 0;
+    this.vendorDocument.VendDoc_MDDCode = '';
+    this.vendorDocument.VendAction_MDDCode = '';
+  }
+
+  GetVendorDocuments(index: number) {
+    this.currentPage = index;
+    this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(result => {
+      if (result.data.VendorDoc.length > 0) {
+        this.vendDocList = result.data.VendorDoc;
+        this.totalItems = result.data.VendorDoc[0].TotalVendors;
+        this.GetVendorDocumentsList();
+      }
     });
   }
 
-  dismiss() {
+  GetVendorDocumentsList() {
+    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.pagedItems = this.vendDocList;
+  }
+
+  InitializeFormControls() {
     this.docDetailsForm = this._fb.group({
-      id: ['0'],
-      actionCode: [''],
-      docCode: [''],
-      uploadedFile: [null]
+      VendorActionHeaderID: [this.vendorDocument.VendorActionHeaderID],
+      VendorDocDetailsID: [this.vendorDocument.VendorDocDetailsID],
+      VendAction_MDDCode: [this.vendorDocument.VendAction_MDDCode, Validators.required],
+      VendDoc_MDDCode: [this.vendorDocument.VendDoc_MDDCode, Validators.required]
     });
+  }
+
+  openModal() {
+    this.InitializeFormControls();
+  }
+
+  dismiss() {
+    this.CreateNewVendorDocument();
+    this.InitializeFormControls();
     this.submitted = false;
     this.actionHeaderList = null;
   }
@@ -76,15 +106,15 @@ export class DocumentComponent implements OnInit {
   }
 
   GetDocument() {
-    if (this.docDetailsForm.get('actionCode').value === '') {
+    if (this.docDetailsForm.get('VendAction_MDDCode').value === '') {
       this.docHeaderList = [];
-      this.docDetailsForm.controls.docCode.patchValue('');
+      this.docDetailsForm.controls.VendDoc_MDDCode.patchValue('');
     } else {
-      this._mddService.GetMasterDataDetails('VendDoc', this.docDetailsForm.get('actionCode').value)
+      this._mddService.GetMasterDataDetails('VendDoc', this.docDetailsForm.get('VendAction_MDDCode').value)
         .subscribe((result) => {
           this.docHeaderList = result.data.Table;
-          if (this.docDetailsForm.get('docCode').value !== '') {
-            const strArray = this.docHeaderList.find((obj) => obj.MDDCode === this.docDetailsForm.get('docCode').value);
+          if (this.docDetailsForm.get('VendDoc_MDDCode').value !== '') {
+            const strArray = this.docHeaderList.find((obj) => obj.MDDCode === this.docDetailsForm.get('VendDoc_MDDCode').value);
             if (strArray === undefined) {
               this.docDetailsForm.controls.docCode.patchValue('');
             }
@@ -95,45 +125,29 @@ export class DocumentComponent implements OnInit {
 
   OnFileChange(event) {
     const files = event.target.files;
-    const formData = new FormData();
-    // const reader = new FileReader();
+
     for (const file of files) {
-      formData.append(file.name, file);
+      this.formData.append(file.name, file);
     }
-
-    this.uploadReq = formData;
-
-    // if (event.target.files && event.target.files.length) {
-    //   const [file] = event.target.files;
-    //   reader.readAsDataURL(file);
-
-    //   reader.onload = () => {
-    //     this.docDetailsForm.patchValue({
-    //       uploadedFile: reader.result
-    //     });
-
-    //     // need to run CD since file load runs outside of zone
-    //     this.cd.markForCheck();
-    //   };
-    // }
   }
 
   SaveDocDetails() {
-    // this.vendorDocument = new VendorDocument();
-    // this.vendorDocument.CompanyCode = '10';
-    // this.vendorDocument.UploadedFile = this.docDetailsForm.get('uploadedFile').value;
-    // this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('actioncode').value;
-    // this.vendorDocument.VendDoc_MDDCode = this.docDetailsForm.get('docCode').value;
-    // this.vendorDocument.VendorActionHeaderID = this.docDetailsForm.get('id').value;
-    // this.vendorDocument.VendorCode = this.vendorcode;
-    // this.vendorDocument.VendorDocDetailsID = this.docDetailsForm.get('id').value;
+    console.log(this.docDetailsForm.value);
+    this.vendorDocument = new VendorDocument();
+    this.vendorDocument.CompanyCode = '10';
+    this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('VendAction_MDDCode').value;
+    this.vendorDocument.VendDoc_MDDCode = this.docDetailsForm.get('VendDoc_MDDCode').value;
+    this.vendorDocument.VendorActionHeaderID = this.docDetailsForm.get('VendorActionHeaderID').value;
+    this.vendorDocument.VendorCode = this.vendorcode;
+    this.vendorDocument.VendorDocDetailsID = this.docDetailsForm.get('VendorDocDetailsID').value;
 
-    console.log(this.vendorDocument);
-    console.log(this.docDetailsForm);
-    this._vendorDocService.SaveVendorDocuments(this.uploadReq)
+    this.formData.append('vendorDoc', JSON.stringify(this.vendorDocument));
+
+    this._vendorDocService.SaveVendorDocuments(this.formData)
       .subscribe((updateStatus) => {
         if (updateStatus.Error === '') {
-          alert(updateStatus.status);
+          this.dismiss();
+          $('#myModal').modal('toggle');
         }
       });
   }

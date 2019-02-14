@@ -13,18 +13,15 @@ export class VendorDocumentService {
   origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
-  SaveVendorDocuments(vendorDocObj: any, formData: FormData): Observable<any> {
+  GetVendorDocumentsByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorDoc/GetVendorDocumentsByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
+    return this._http.get<any>(apiUrl);
+  }
+
+  SaveVendorDocuments(formData: FormData): Observable<any> {
     const apiUrl = this.origin + 'api/VendorDoc/UploadFile';
-    const uploadReq = new HttpRequest('POST', apiUrl, vendorDocObj, {
-      reportProgress: true,
-    });
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Body': formData
-    });
-
-    return this._http.post(apiUrl, vendorDocObj,)
-    return this._http.request<any>(uploadReq);
+    return this._http.post(apiUrl, formData
+    );
   }
 }

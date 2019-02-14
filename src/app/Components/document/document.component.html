@@ -24,7 +24,7 @@
         <th scope="col">Action</th>
       </tr>
     </thead>
-    <!-- <tbody>
+    <tbody>
         <tr *ngFor="let vendor of pagedItems;index as i;">
           <th scope="row">{{vendor.FinancialYear}}</th>
           <td>{{vendor.Division}}</td>
@@ -34,30 +34,30 @@
           <td>{{vendor.ProposedJWValueQty}}</td>
           <td>{{vendor.ProposedJWGrnQty}}</td>
           <td>
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor.VendorBusinessDetailsID)" 
+            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor.VendorDocDetailsID)" 
           data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
           </td>
         </tr>
-    </tbody> -->
+    </tbody>
   </table>
   <nav aria-label="..." class="">
     <ul class="pagination justify-content-end">
       <li class="page-item" *ngIf="pager.currentPage !== 1">
-        <button class="page-link" (click)="GetVendorBusiness(1)">First</button>
+        <button class="page-link" (click)="GetVendorDocuments(1)">First</button>
       </li>
       <li class="page-item" *ngIf="pager.currentPage !== 1">
-        <a class="page-link" (click)="GetVendorBusiness(pager.currentPage - 1)">Prev</a>
+        <a class="page-link" (click)="GetVendorDocuments(pager.currentPage - 1)">Prev</a>
       </li>
 
       <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
-        <button class="page-link" (click)="GetVendorBusiness(i)" href="javascript:void(0)">{{i}}</button>
+        <button class="page-link" (click)="GetVendorDocuments(i)" href="javascript:void(0)">{{i}}</button>
       </li>
 
       <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <a class="page-link" (click)="GetVendorBusiness(pager.currentPage + 1)">Next</a>
+        <a class="page-link" (click)="GetVendorDocuments(pager.currentPage + 1)">Next</a>
       </li>
       <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <a class="page-link" (click)="GetVendorBusiness(pager.totalPages)">Last</a>
+        <a class="page-link" (click)="GetVendorDocuments(pager.totalPages)">Last</a>
       </li>
     </ul>
   </nav>
@@ -76,15 +76,17 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form [formGroup]="docDetailsForm" (ngSubmit)="SaveDocDetails()" novalidate>
-          <input type="hidden" name="id" formControlName="id">
+          <input type="hidden" formControlName="VendorActionHeaderID">
+
+          <input type="hidden" formControlName="VendorDocDetailsID">
 
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
                 <label class="text">Action Header <span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="actionCode" class="form-control input-sm" (change)="GetDocument()"
-                    [ngClass]="{ 'is-invalid': (docDetailsForm.controls.actionCode.touched || submitted) && docDetailsForm.controls.actionCode.errors }">
+                  <select formControlName="VendAction_MDDCode" class="form-control input-sm" (change)="GetDocument()"
+                    [ngClass]="{ 'is-invalid': (docDetailsForm.controls.VendAction_MDDCode.touched || submitted) && docDetailsForm.controls.VendAction_MDDCode.errors }">
                     <option value="">Select Action</option>
                     <option *ngFor="let option of actionHeaderList" value={{option.MDDCode}}>
                       {{option.MDDName}}
@@ -95,8 +97,8 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Document <span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="docCode" class="form-control input-sm"
-                    [ngClass]="{ 'is-invalid': (docDetailsForm.controls.docCode.touched || submitted) && docDetailsForm.controls.docCode.errors }">
+                  <select formControlName="VendDoc_MDDCode" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid': (docDetailsForm.controls.VendDoc_MDDCode.touched || submitted) && docDetailsForm.controls.VendDoc_MDDCode.errors }">
                     <option value="">Select Document</option>
                     <option *ngFor="let option of docHeaderList" value={{option.MDDCode}}>
                       {{option.MDDName}}
@@ -111,8 +113,7 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Upload Document<span class="error-label">*</span></label>
                 <span>
-                  <input class="form-control input-sm" type="file" multiple formControlName="uploadedFile"
-                    (change)="OnFileChange($event)" />
+                  <input class="form-control input-sm" type="file" (change)="OnFileChange($event)" />
                   <br />
                 </span>
               </div>
