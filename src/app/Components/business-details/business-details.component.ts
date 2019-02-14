@@ -69,10 +69,10 @@ export class BusinessDetailsComponent implements OnInit {
       // ActualDPGrnQty: ['0', Validators.required],
       // ActualJWValueQty: ['0', Validators.required],
       // ActualJWGrnQty: ['0', Validators.required],
-      ProposedDPValueQty: ['', Validators.required],
-      ProposedDPGrnQty: ['', Validators.required],
-      ProposedJWValueQty: ['', Validators.required],
-      ProposedJWGrnQty: ['', Validators.required],
+      ProposedDPValueQty: ['', [Validators.required, Validators.maxLength(14)]],
+      ProposedDPGrnQty: ['', [Validators.required, Validators.maxLength(14)]],
+      ProposedJWValueQty: ['', [Validators.required, Validators.maxLength(14)]],
+      ProposedJWGrnQty: ['', [Validators.required, Validators.maxLength(14)]],
       status: true,
       remarks: ''
     });
@@ -121,22 +121,30 @@ export class BusinessDetailsComponent implements OnInit {
     this.businessObj.Remarks = this.businessDetailsForm.get('remarks').value;
     this.businessObj.CreatedBy = 999999;
 
-    this._vendorService.SaveVendorBusinessInfo(this.businessObj).subscribe((data) => {
-      if (data.Msg[0].Result === 0) {
-        this.businessObj = new VendorBusinessDetails();
-        this.businessDetailsForm.reset();
-        this.InitializeFormControls();
-        this.businessList = data.VendorBusiness;
-        this.totalItems = data.VendorBusinessCount[0].TotalVendors;
-        this.GetVendorsBusinessList();
-        this.departmentList = [];
-        alert(data.Msg[0].Message);
-        $('#myModal').modal('toggle');
-        this.dismiss();
-      } else {
-        alert(data.Msg[0].Message);
-      }
-    });
+    try {
+      this._vendorService.SaveVendorBusinessInfo(this.businessObj).subscribe((data) => {
+        if (data.Msg != null) {
+          if (data.Msg[0].Result === 0) {
+            this.businessObj = new VendorBusinessDetails();
+            this.businessDetailsForm.reset();
+            this.InitializeFormControls();
+            this.businessList = data.VendorBusiness;
+            this.totalItems = data.VendorBusinessCount[0].TotalVendors;
+            this.GetVendorsBusinessList();
+            this.departmentList = [];
+            alert(data.Msg[0].Message);
+            $('#myModal').modal('toggle');
+            this.dismiss();
+          } else {
+            alert(data.Msg[0].Message);
+          }
+        } else {
+          alert('There are some technical error. Please contact administrator.');
+        }
+      });
+    } catch {
+      alert('There are some technical error. Please contact administrator.');
+    }
   }
   InitializeFormControls() {
     this.businessDetailsForm = this._fb.group({

@@ -2,5 +2,12 @@
     color:red;
     font-size: 90%;
     font-weight: 400;
-
 }
+.table > tbody > tr > td{
+    font-family: verdana;
+    color: #000000;
+    font-size: 13px;
+    /*font-weight: 700;*/
+}
+input[type="text"],select{margin-bottom:0px !important;}
+.modal label{font-size: 13px;}

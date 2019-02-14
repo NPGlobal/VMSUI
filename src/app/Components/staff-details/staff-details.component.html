@@ -104,17 +104,12 @@
             </div>
   
             <div class="form-group">
-              <div class="row">
-                <div class="col-lg-12 col-md-12">
-                    <label class="text">Name <span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" name="name" formControlName="name" class="form-control input-sm" 
-                    [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors }">
-                  </span>
-                  <!-- <label [ngClass]="{ 'error-label':(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors}"
-                      *ngIf="(staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors">
-                        &nbsp;(Name is required)</label> -->
-                </div>
+              <div class="col-lg-12 col-md-12">
+                <label class="text">Name <span class="error-label">*</span></label>
+                <span>
+                  <input type="text" formControlName="name" class="form-control input-sm" 
+                  [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.name.touched || submitted) && staffDetailsForm.controls.name.errors }">
+                </span>
               </div>
             </div>
   
@@ -123,7 +118,7 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Email</label>
                   <span>
-                    <input type="text" name="email" formControlName="email" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors }" />
+                    <input type="text" formControlName="email" class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors }" />
                   </span>
                   <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors}"
                   *ngIf="(staffDetailsForm.controls.email.touched || submitted) && staffDetailsForm.controls.email.errors">
@@ -131,7 +126,7 @@
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Phone</label>
-                    <span><input type="text" name="phone" formControlName="phone" maxlength="10"
+                    <span><input type="text" formControlName="phone" maxlength="10"
                       class="form-control input-sm" [ngClass]="{ 'is-invalid err': (staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid }" /></span>
                       <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.phone.dirty || submitted) &&  staffDetailsForm.get('phone').invalid }"
                       *ngIf="(staffDetailsForm.controls.phone.dirty || submitted) && staffDetailsForm.get('phone').invalid ">
@@ -140,13 +135,9 @@
               </div>
             </div>
             <div class="form-group">
-              <div class="row">
-                  <div class="col-lg-12 col-md-12">
-                    <span>
-                        <label class="text">Remarks</label>
-                      <input type="text" name="remarks" formControlName="remarks" 
-                      class="form-control input-sm" /></span>
-                  </div>
+              <div class="col-lg-12 col-md-12">
+                <label class="text">Remarks</label>
+                <span><input type="text" formControlName="remarks" class="form-control input-sm" /></span>
               </div>
             </div>
 
@@ -154,15 +145,11 @@
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
-                      <span><input type="text" name="priority" formControlName="priority" class="form-control input-sm"
+                      <span><input type="text" formControlName="priority" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid': (staffDetailsForm.controls.priority.touched || submitted) && staffDetailsForm.controls.priority.errors }" /></span>
                         <span [ngClass]="{ 'error-label':(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')}"
                         *ngIf="(staffDetailsForm.controls.priority.dirty || submitted) && staffDetailsForm.controls.priority.hasError('pattern')">
                         &nbsp;Numbers Only</span>                     
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <span><input type="checkbox" name="status" formControlName="status" /></span>
-                    <label class="text" style="margin-left: 5px;font-size: 13px; margin-top:43%">Active</label>
                   </div>
               </div>
             </div>
@@ -176,419 +163,3 @@
       </div>
     </div>
   </div>
-<style type="text/css">
-input[type="text"],select{margin-bottom:0px !important;}
-</style>
-<!-- <div id="ashu" >
-      <div class="col-md-66">
-        <div class="content-heading">Cutting Department</div>
-        <div class="col">
-          
-          <div class="col-md-12 form-group ">
-            <div class="col-md-6">
-                <label class="pull-left">General Manager</label>
-                <span>
-                  <input type="text" name="name" class="form-control" />
-                </span>
-              </div>
-              <div class="col-md-6">
-                  <label class="pull-left">Manager</label>
-                <span>
-                  <input type="text" class="form-control" value="" />
-                </span>
-              </div>
-          </div>
-
-          
-          <div class="col-md-12 form-group">
-            <div class="col-md-6">
-              <div class="col-md-6 text">Pattern Master</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="col-md-6 text">Incharge</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-12 form-group">
-            <div class="col-md-6">
-              <div class="col-md-6 text">Supervisor</div>
-              <div class="col-md-6">
-                <input type="text" name="name" class="form-control" />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="col-md-6 text">Operator</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-md-12 form-group">
-            <div class="col-md-6">
-              <div class="col-md-6 text">Checkers</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="col-md-6 text">Helper</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-66">
-        <div class="content-heading">Production</div>
-        <div class="col">
-          <div class="col-md-12 form-group">
-            <div class="col-md-6">
-              <div class="col-md-6 text">Manager</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="col-md-6 text">Incharge</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-            
-          </div>
-          <div class="col-md-12 form-group ">
-            <div class="col-md-6">
-              <div class="col-md-6 text">Supervisor</div>
-              <div class="col-md-6">
-                <input type="text" name="name" class="form-control" />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="col-md-6 text">Operator</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-            
-          </div>
-
-          <div class="col-md-12 form-group ">
-            <div class="col-md-6">
-              <div class="col-md-6 text">Checkers</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="col-md-6 text">Helper</div>
-              <div class="col-md-6">
-                <input type="text" class="form-control" value="" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    
-    <div class="clearfix"></div> -->
-<!-- <div class="page-header">
-      </div> -->
-
-<!-- Cutting Department
-      <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Cutting Department
-        </div>
-        <div class="mycontainer">
-            <div class="col-md-12 form-group">
-              <div class="col-md-3">
-                <label class="text">General Manager</label>
-                <span>
-                  <input type="text" name="name" class="form-control input-sm" />
-                </span>
-              </div>
-              <div class="col-md-3">
-                <label class="text">Manager</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                <label class="text">Pattern Master</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                  <label class="text">Incharge</label>
-                  <span><input type="text" class="form-control input-sm" value="" /></span>
-                </div>
-            </div>
-            <div class="col-md-12 form-group">
-             
-              <div class="col-md-3">
-                <label class="text">Supervisor</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                <label class="text">Operator</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                  <label class="text">Checkers</label>
-                  <span><input type="text" class="form-control input-sm" value="" /></span>
-                </div>
-                <div class="col-md-3">
-                  <label class="text">Helper</label>
-                  <span><input type="text" class="form-control input-sm" value="" /></span>
-                </div>
-            </div>
-           
-        </div>
-      </div>
-      <hr>
-
-      Production
-      <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Production
-        </div>
-        <div class="mycontainer">
-          <div class="col-md-12 form-group">
-            <div class="col-md-3">
-                <label class="text">Manager</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Incharge</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Supervisor</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Operator</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-          <div class="col-md-12 form-group ">
-          
-            <div class="col-md-3">
-                <label class="text">Checkers</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Helper</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr>
-
-      <!-- Finishing -->
-<!-- <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Finishing
-        </div>
-        <div class="mycontainer">
-          <div class="col-md-12 form-group">
-            <div class="col-md-3">
-                <label class="text">Manager</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Incharge</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Supervisor</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Operator</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-          <div class="col-md-12 form-group ">
-           
-            <div class="col-md-3">
-                <label class="text">Press Man</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Thread Cutters</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr> -->
-
-<!-- Packing -->
-<!-- <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Packing
-        </div>
-        <div class="mycontainer">
-          <div class="col-md-12 form-group">
-            <div class="col-md-3">
-                <label class="text">Manager</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Incharge</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Supervisor</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Operator</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-          <div class="col-md-12 form-group ">
-            
-            <div class="col-md-3">
-                <label class="text">Helper</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr> -->
-
-<!-- Washing -->
-<!-- <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Washing
-        </div>
-        <div class="mycontainer">
-          <div class="col-md-12 form-group">
-            <div class="col-md-3">
-              <label class="text">Manager</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-              <label class="text">Incharge</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-              <label class="text">Supervisor</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Operator</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-          </div>
-          <div class="col-md-12 form-group ">
-           
-            <div class="col-md-3">
-              <label class="text">Helper</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr> -->
-
-<!-- Sampling -->
-<!-- <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Sampling
-        </div>
-        <div class="mycontainer">
-          <div class="col-md-12 form-group">
-            <div class="col-md-3">
-              <label class="text">Manager</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-              <label class="text">Incharge</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-              <label class="text">Supervisor</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">Operator</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-          </div>
-          <div class="col-md-12 form-group ">
-           
-            <div class="col-md-3">
-              <label class="text">Helper</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr> -->
-
-<!-- Quality -->
-<!-- <div class="col clearfix">
-        <div class="content-heading">
-          <a href="javascript:void(0)" class="glyphicon-expand"><span>+</span></a>Quality
-        </div>
-        <div class="mycontainer">
-          <div class="col-md-12 form-group ">
-              <div class="col-md-3">
-                <label class="text">Manager</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                <label class="text">Incharge</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                <label class="text">QC Fabric</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                  <label class="text">QC Cutting</label>
-                  <span><input type="text" class="form-control input-sm" value="" /></span>
-                </div>
-          </div>
-          <div class="col-md-12 form-group">
-            
-            <div class="col-md-3">
-              <label class="text">QC Production</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-              <label class="text">QC Finishing</label>
-              <span><input type="text" class="form-control input-sm" value="" /></span>
-            </div>
-            <div class="col-md-3">
-                <label class="text">QC Packing</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-              <div class="col-md-3">
-                <label class="text">QC Washing</label>
-                <span><input type="text" class="form-control input-sm" value="" /></span>
-              </div>
-          </div>
-        
-        </div>
-      </div>
-      <hr> -->
-<!-- End of Detail Page -->
-
-<!-- <div class="col-md-12 page-footer">
-      <button type="button" class="mr-3 btn btn-primary">Save</button>
-      <button type="button" class="btn">Cancel</button>
-    </div> -->
