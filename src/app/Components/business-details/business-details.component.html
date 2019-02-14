@@ -182,14 +182,16 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">DP Business <span class="error-label">*</span></label>
                     <span>
-                      <input type="text" formControlName="ProposedDPValueQty" class="form-control input-sm" 
-                      [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedDPValueQty.touched || submitted) && businessDetailsForm.controls.ProposedDPValueQty.errors }">
+                      <input type="text" formControlName="ProposedDPValueQty" class="form-control input-sm" maxlength="12" 
+                      [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedDPValueQty.touched || submitted) 
+                      && businessDetailsForm.controls.ProposedDPValueQty.errors 
+                       }">
                     </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">DP Quantity <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" formControlName="ProposedDPGrnQty" class="form-control input-sm" 
+                    <input type="text" formControlName="ProposedDPGrnQty" class="form-control input-sm" maxlength="12" 
                     [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedDPGrnQty.touched || submitted) && businessDetailsForm.controls.ProposedDPGrnQty.errors }">
                   </span>
                 </div>
@@ -200,14 +202,14 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">JW Business <span class="error-label">*</span></label>
                     <span>
-                      <input type="text" formControlName="ProposedJWValueQty" class="form-control input-sm" 
+                      <input type="text" formControlName="ProposedJWValueQty" class="form-control input-sm" maxlength="12" 
                       [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedJWValueQty.touched || submitted) && businessDetailsForm.controls.ProposedJWValueQty.errors }">
                     </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">JW Quantity <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" formControlName="ProposedJWGrnQty" class="form-control input-sm" 
+                    <input type="text" formControlName="ProposedJWGrnQty" class="form-control input-sm" maxlength="12" 
                     [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedJWGrnQty.touched || submitted) && businessDetailsForm.controls.ProposedJWGrnQty.errors }">
                   </span>
                 </div>
