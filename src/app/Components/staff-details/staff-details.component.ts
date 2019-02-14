@@ -99,7 +99,6 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   SaveStaffDetails() {
-    debugger;
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {
       return;
