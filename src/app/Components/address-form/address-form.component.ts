@@ -177,8 +177,6 @@ export class AddressFormComponent implements OnInit, OnChanges {
 
   ResetForm() {
     this.submitted = false;
-    this.AddressForm.reset();
-    this.Address = this.CreateNewAddress();
     this.InitializeFormControls();
     this.LogValidationErrors();
   }
@@ -196,13 +194,15 @@ export class AddressFormComponent implements OnInit, OnChanges {
 
   SaveAddressDetails() {
     this.submitted = true;
+
     if (this.AddressForm.invalid) {
-      console.log(this.AddressForm.value);
       this.LogValidationErrors();
       return;
     }
+
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let StatusObj: any;
+
     this.VendorAddress = new VendorAddress();
     this.VendorAddress.CompanyCode = '10';
     this.VendorAddress.OrgUnitCode = this.AddressForm.get('OrgUnitCode').value === null ? '' : this.AddressForm.get('OrgUnitCode').value;
@@ -236,14 +236,9 @@ export class AddressFormComponent implements OnInit, OnChanges {
     this.VendorAddress.SecondaryContactWebsite = this.AddressForm.get('SecondaryContactWebsite').value === null
       ? '' : this.AddressForm.get('SecondaryContactWebsite').value;
 
-    console.log(JSON.stringify(this.VendorAddress));
-
-    console.log(this.vendor);
-
     this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
       StatusObj = data;
-      // tslint:disable-next-line:no-debugger
-      debugger;
+
       if (StatusObj.Status === 0) {
         this.IsAddressSaved.emit(true);
         el.click();

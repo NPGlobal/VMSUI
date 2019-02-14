@@ -95,16 +95,16 @@
                                 <div class="col-sm-5">
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">PH/FO</label>
-                                        <select formControlName="PHList" onfocusout="event.target.value = ''" class="form-control input-sm" size="3"
-                                            multiple="multiple">
+                                        <select formControlName="PHList" onfocusout="event.target.value = ''"
+                                            class="form-control input-sm" size="3" multiple="multiple">
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
                                                 {{ PH.OrgUnitName }}</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">Store</label>
-                                        <select formControlName="StoreList" onfocusout="event.target.value = ''" class="form-control input-sm" size="3"
-                                            multiple="multiple">
+                                        <select formControlName="StoreList" onfocusout="event.target.value = ''"
+                                            class="form-control input-sm" size="3" multiple="multiple">
                                             <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
                                                 {{ Store.OrgUnitName }}</option>
                                         </select>
@@ -121,8 +121,8 @@
                                 </div>
                                 <div class="col-sm-5 form-group" style="padding-left:8px;padding-right: 0px">
                                     <label class="text">PH/Store</label>
-                                    <select formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''" class="form-control input-sm" size="8"
-                                        multiple="multiple">
+                                    <select formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
+                                        class="form-control input-sm" size="8" multiple="multiple">
                                         <option *ngFor="let PHStore of SelectedPHStoreList"
                                             [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                     </select>
@@ -150,7 +150,7 @@
                     <div class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
-                                data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false">
+                                (click)="OpenAddressModal(CreateNewAddress())">
                                 <i class="fa fa-plus"></i>
                                 <span title="Add new" class="py-4">Add new address</span>
                             </button>
@@ -229,7 +229,7 @@
                                             </table>
                                         </td>
                                     </tr>
-                                    
+
                                 </ng-container>
                                 <tr *ngIf="vendorAddresses.length === 0">
                                     <td colspan="7">

@@ -118,10 +118,7 @@ export class PersonalDetailsComponent implements OnInit {
       return element.OrgUnitCode;
     }).join();
 
-    console.log(JSON.stringify(vendor));
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
-      // tslint:disable-next-line:no-debugger
-      debugger;
       StatusObj = data;
       if (StatusObj.Status === 0) {
         alert('Saved Succesfully!!');
