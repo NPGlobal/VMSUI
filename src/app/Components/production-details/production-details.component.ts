@@ -5,6 +5,7 @@ import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService} from 'src/app/Services/master-data-details.service';
+import { MasterDataDetails } from 'src/app/Models/master-data-details';
 declare var $: any;
 
 @Component({
@@ -37,10 +38,15 @@ export class ProductionDetailsComponent implements OnInit {
   departmentList: any[];
   status = true;
   submitted = false;
+  action = 'Insert';
+  CountryList:  MasterDataDetails[] = [];
+  StateList:  MasterDataDetails[] = [];
 
   ngOnInit() {
     // this.openModal();
     this.openModal();
+    this.GetCountryList();
+    this.GetStateList();
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
        this.GetVendorProduction(this.currentPage);
@@ -60,6 +66,17 @@ export class ProductionDetailsComponent implements OnInit {
       }
       });
   }
+  GetCountryList() {
+    this._mddService.GetMasterDataDetails('COUNTRY', '-1').subscribe((result) => {
+      this.CountryList = result.data.Table.filter(x => x.MDDName === 'India');
+    });
+  }
+
+  GetStateList() {
+    this._mddService.GetMasterDataDetails('STATE', '-1').subscribe(result => {
+      this.StateList = result.data.Table;
+    });
+  }
   GetVendorsProductionList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendorProductionList;
@@ -67,25 +84,34 @@ export class ProductionDetailsComponent implements OnInit {
   }
   InitializeFormControls() {
     this.ProductionDetailsForm = this._fb.group({
-      id: ['0'],
-      division: [''],
-      department: ['-1'],
-      approvedProductionUnits: [this.VendorProduction.approvedProductionUnits],
-      subContractingUnitName: [this.VendorProduction.subContractingUnitName],
+      // id: ['0'],
+      Division: [''],
+      Department: ['-1'],
+      approvedProductionUnits: [this.VendorProduction.ApprovedProductionUnits],
+      subContractingUnitName: [this.VendorProduction.SubContractingUnitName],
       // subContractingUnitAddress: [this.VendorProduction.subContractingUnitAddress],
-      natureOfSubContractingUnit: [this.VendorProduction.natureOfSubContractingUnit],
-      monthlyCapacity: [this.VendorProduction.monthlyCapacity],
-      minimalCapacity: [this.VendorProduction.minimalCapacity],
-      leanMonths: [this.VendorProduction.leanMonths],
-      leanCapacity: [this.VendorProduction.leanCapacity]
+      natureOfSubContractingUnit: [this.VendorProduction.NatureOfSubContractingUnit],
+      monthlyCapacity: [this.VendorProduction.MonthlyCapacity],
+      minimalCapacity: [this.VendorProduction.MinimalCapacity],
+      leanMonths: [this.VendorProduction.LeanMonths],
+      leanCapacity: [this.VendorProduction.LeanCapacity],
+      address1: [this.VendorProduction.Address1],
+      address2: [this.VendorProduction.Address2],
+      address3: [this.VendorProduction.Address3],
+      CountryCode: [this.VendorProduction.CountryCode],
+      StateCode: [this.VendorProduction.StateCode],
+      city: [this.VendorProduction.City],
+      pincode: [this.VendorProduction.Pincode],
+      remarks: [this.VendorProduction.Remarks]
     });
   }
   openModal() {
+    this.action = 'Insert';
      this.ProductionDetailsForm = this._fb.group({
-      id: ['0'],
+      // id: ['0'],
 
-      division: ['', Validators.required],
-      department: ['-1', Validators.required],
+      Division: ['', Validators.required],
+      Department: ['-1', Validators.required],
       approvedProductionUnits: ['', Validators.required],
       subContractingUnitName: ['', Validators.required],
       // subContractingUnitAddress: ['', Validators.required],
@@ -93,14 +119,22 @@ export class ProductionDetailsComponent implements OnInit {
       monthlyCapacity: ['', Validators.required],
       minimalCapacity: ['', Validators.required],
       leanMonths: ['', Validators.required],
-      leanCapacity: ['', Validators.required]
+      leanCapacity: ['', Validators.required],
+      address1: ['', Validators.required],
+      address2: [''],
+      address3: [''],
+      CountryCode: ['', Validators.required],
+      StateCode: ['', Validators.required],
+      city: ['', Validators.required],
+      pincode: ['', Validators.required],
+      remarks: ['']
      });
   }
   dismiss() {
     this.ProductionDetailsForm = this._fb.group({
-      id: ['0'],
-      division: [''],
-      department: ['-1'],
+      // id: ['0'],
+      Division: [''],
+      Department: ['-1'],
       approvedProductionUnits: [''],
       subContractingUnitName: [''],
       // subContractingUnitAddress: [''],
@@ -108,7 +142,15 @@ export class ProductionDetailsComponent implements OnInit {
       monthlyCapacity: [''],
       minimalCapacity: [''],
       leanMonths: [''],
-      leanCapacity: ['']
+      leanCapacity: [''],
+      address1: [''],
+      address2: [''],
+      address3: [''],
+      CountryCode: [''],
+      StateCode: [''],
+      city: [''],
+      pincode: [''],
+      remarks: ['']
     });
     this.submitted = false;
     this.departmentList = [];
@@ -121,11 +163,11 @@ export class ProductionDetailsComponent implements OnInit {
     });
   }
   GetDepartment() {
-    if (this.ProductionDetailsForm.get('division').value === '') {
+    if (this.ProductionDetailsForm.get('Division').value === '') {
       this.departmentList = [];
       this.ProductionDetailsForm.controls.department.patchValue('');
     } else {
-    this._mddService.GetMasterDataDetails('Dept', this.ProductionDetailsForm.get('division').value)
+    this._mddService.GetMasterDataDetails('Dept', this.ProductionDetailsForm.get('Division').value)
     .subscribe((result) => {
         this.departmentList = result.data.Table;
       });
@@ -137,46 +179,56 @@ export class ProductionDetailsComponent implements OnInit {
       return;
     }
     this.VendorProduction = new VendorProduction();
-    this.VendorProduction.id = this.ProductionDetailsForm.get('id').value;
-    this.VendorProduction.division = this.ProductionDetailsForm.get('division').value;
-    this.VendorProduction.department = this.ProductionDetailsForm.get('department').value;
+    // this.VendorProduction.id = this.ProductionDetailsForm.get('id').value;
+    this.VendorProduction.Division = this.ProductionDetailsForm.get('Division').value;
+    this.VendorProduction.Department = this.ProductionDetailsForm.get('Department').value;
     this.VendorProduction.VendorCode = this.vendorcode;
-    this.VendorProduction.approvedProductionUnits = this.ProductionDetailsForm.get('approvedProductionUnits').value;
-    this.VendorProduction.subContractingUnitName = this.ProductionDetailsForm.get('subContractingUnitName').value;
+    this.VendorProduction.ApprovedProductionUnits = this.ProductionDetailsForm.get('approvedProductionUnits').value;
+    this.VendorProduction.SubContractingUnitName = this.ProductionDetailsForm.get('subContractingUnitName').value;
     // this.VendorProduction.subContractingUnitAddress = this.ProductionDetailsForm.get('subContractingUnitAddress').value;
-    this.VendorProduction.natureOfSubContractingUnit = this.ProductionDetailsForm.get('natureOfSubContractingUnit').value;
-    this.VendorProduction.monthlyCapacity = this.ProductionDetailsForm.get('monthlyCapacity').value;
-    this.VendorProduction.minimalCapacity = this.ProductionDetailsForm.get('minimalCapacity').value;
-    this.VendorProduction.leanMonths = this.ProductionDetailsForm.get('leanMonths').value;
-    this.VendorProduction.leanCapacity = this.ProductionDetailsForm.get('leanCapacity').value;
+    this.VendorProduction.NatureOfSubContractingUnit = this.ProductionDetailsForm.get('natureOfSubContractingUnit').value;
+    this.VendorProduction.MonthlyCapacity = this.ProductionDetailsForm.get('monthlyCapacity').value;
+    this.VendorProduction.MinimalCapacity = this.ProductionDetailsForm.get('minimalCapacity').value;
+    this.VendorProduction.LeanMonths = this.ProductionDetailsForm.get('leanMonths').value;
+    this.VendorProduction.LeanCapacity = this.ProductionDetailsForm.get('leanCapacity').value;
+    this.VendorProduction.Address1 = this.ProductionDetailsForm.get('address1').value;
+    this.VendorProduction.Address2 = this.ProductionDetailsForm.get('address2').value;
+    this.VendorProduction.Address3 = this.ProductionDetailsForm.get('address3').value;
+    this.VendorProduction.CountryCode = this.ProductionDetailsForm.get('CountryCode').value;
+    this.VendorProduction.StateCode = this.ProductionDetailsForm.get('StateCode').value;
+    this.VendorProduction.City = this.ProductionDetailsForm.get('city').value;
+    this.VendorProduction.Pincode = this.ProductionDetailsForm.get('pincode').value;
+    this.VendorProduction.Remarks = this.ProductionDetailsForm.get('remarks').value;
     this.VendorProduction.CreatedBy = 999999;
+    this.VendorProduction.Action = this.action;
 
     console.log(JSON.stringify(this.VendorProduction));
-    this._vendorService.SaveProductionInfo(this.VendorProduction).subscribe((data) => {
-    //  if (data.Msg[0].Result === 0) {
-       this.VendorProduction = new VendorProduction();
-        this.ProductionDetailsForm.reset();
-        this.InitializeFormControls();
+    // this._vendorService.SaveProductionInfo(this.VendorProduction).subscribe((data) => {
+    //    if (data.Msg[0].Result === 0) {
+    //    this.VendorProduction = new VendorProduction();
+    //     this.ProductionDetailsForm.reset();
+    //     this.InitializeFormControls();
 
-        this.vendorProductionList = data.VendorProduction;
-       // this.totalItems = data.VendorProductionCount[0].TotalVendors;
-        this.GetVendorsProductionList();
-        this.departmentList = [];
-      //  alert(data.Msg[0].Message);
-        $('#myModal').modal('toggle');
-        this.dismiss();
-      // } else {
-      //  alert(data.Msg[0].Message);
-      // }
-    });
+    //     this.vendorProductionList = data.VendorProduction;
+    //     this.totalItems = data.VendorProductionCount[0].TotalVendors;
+    //     this.GetVendorsProductionList();
+    //     this.departmentList = [];
+    //     alert(data.Msg[0].Message);
+    //     $('#myModal').modal('toggle');
+    //     this.dismiss();
+    //    } else {
+    //    alert(data.Msg[0].Message);
+    //    }
+    // });
   }
 
   GetProductionDetails(x) {
+this.action = 'Update';
     this._vendorService.GetProductionDetails(x).subscribe((data) => {
       this.ProductionDetailsForm = this._fb.group({
-        id: [data.Table[0].id],
-        division: [data.Table[0].division, Validators.required],
-        department: [data.Table[0].department, Validators.required],
+        // id: [data.Table[0].id],
+        Division: [data.Table[0].Division, Validators.required],
+        Department: [data.Table[0].Department, Validators.required],
         approvedProductionUnits: [data.Table[0].approvedProductionUnits, Validators.required],
         subContractingUnitName: [data.Table[0].subContractingUnitName, Validators.required],
          // subContractingUnitAddress: [data.Table[0].subContractingUnitAddress, Validators.required],
@@ -185,6 +237,14 @@ export class ProductionDetailsComponent implements OnInit {
         minimalCapacity: [data.Table[0].minimalCapacity, Validators.required],
         leanMonths: [data.Table[0].leanMonths, Validators.required],
         leanCapacity: [data.Table[0].leanCapacity, Validators.required],
+        address1: [data.Table[0].address1, Validators.required],
+        address2: [data.Table[0].address1],
+        address3: [data.Table[0].address1],
+        CountryCode: [data.Table[0].CountryCode, Validators.required],
+        StateCode: [data.Table[0].StateCode, Validators.required],
+        city: [data.Table[0].city, Validators.required],
+        pincode: [data.Table[0].pincode, Validators.required],
+        remarks: [data.Table[0].remarks]
       });
      // this.GetVendorDesignationForEdit();
     });
