@@ -1,16 +1,12 @@
 <style type="text/css">
-  input[type="text"],select{margin-bottom:0px !important;}
-  fieldset legend{font-size: 15px;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0px 0px 5px 0px;}
-  .modal label{font-size: 13px;}
-  .error-label{color:red;}
 </style>
 
 <div class="col-lg-12 col-sm-12 col-md-12">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
-  data-target="#myModal" data-backdrop="static" data-keyboard="false">
-      <i class="fa fa-plus"></i>
-      <span title="Add new" class="py-4">Add</span>
-    </button>
+    data-target="#myModal" data-backdrop="static" data-keyboard="false">
+    <i class="fa fa-plus"></i>
+    <span title="Add new" class="py-4">Add</span>
+  </button>
 </div>
 
 <div class="clearfix"></div>
@@ -81,32 +77,44 @@
       <div class="modal-body">
         <form [formGroup]="docDetailsForm" (ngSubmit)="SaveDocDetails()" novalidate>
           <input type="hidden" name="id" formControlName="id">
-          
+
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
-                  <label class="text">Action Header <span class="error-label">*</span></label>
-                  <span>
-                    <select formControlName="actionCode" class="form-control input-sm" (change)="GetDocument()"
-                      [ngClass]="{ 'is-invalid': (docDetailsForm.controls.actionCode.touched || submitted) && docDetailsForm.controls.actionCode.errors }">      
-                      <option value="">Select Action</option>
-                      <option *ngFor="let option of actionHeaderList" value={{option.MDDCode}}>
-                        {{option.MDDName}}
-                      </option>
-                      </select>
-                  </span>
+                <label class="text">Action Header <span class="error-label">*</span></label>
+                <span>
+                  <select formControlName="actionCode" class="form-control input-sm" (change)="GetDocument()"
+                    [ngClass]="{ 'is-invalid': (docDetailsForm.controls.actionCode.touched || submitted) && docDetailsForm.controls.actionCode.errors }">
+                    <option value="">Select Action</option>
+                    <option *ngFor="let option of actionHeaderList" value={{option.MDDCode}}>
+                      {{option.MDDName}}
+                    </option>
+                  </select>
+                </span>
               </div>
               <div class="col-lg-6 col-md-6">
-                  <label class="text">Document <span class="error-label">*</span></label>
-                  <span>
-                    <select formControlName="docCode" class="form-control input-sm" 
+                <label class="text">Document <span class="error-label">*</span></label>
+                <span>
+                  <select formControlName="docCode" class="form-control input-sm"
                     [ngClass]="{ 'is-invalid': (docDetailsForm.controls.docCode.touched || submitted) && docDetailsForm.controls.docCode.errors }">
-                      <option value="">Select Document</option>
-                      <option *ngFor="let option of docHeaderList" value={{option.MDDCode}}>
-                        {{option.MDDName}}
-                      </option>
-                    </select>
-                  </span>
+                    <option value="">Select Document</option>
+                    <option *ngFor="let option of docHeaderList" value={{option.MDDCode}}>
+                      {{option.MDDName}}
+                    </option>
+                  </select>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-lg-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <label class="text">Upload Document<span class="error-label">*</span></label>
+                <span>
+                  <input class="form-control input-sm" type="file" multiple formControlName="uploadedFile"
+                    (change)="OnFileChange($event)" />
+                  <br />
+                </span>
               </div>
             </div>
           </div>
