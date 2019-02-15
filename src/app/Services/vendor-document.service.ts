@@ -17,7 +17,11 @@ export class VendorDocumentService {
     const apiUrl = this.origin + 'api/VendorDoc/GetVendorDocumentsByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
     return this._http.get<any>(apiUrl);
   }
-
+ // Get Vendor Business Information for Edit
+ GetDocDetails(id: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorDoc/GetDocDetails/' + id;
+    return this._http.get<any>(apiUrl);
+  }
   SaveVendorDocuments(formData: FormData): Observable<any> {
     const apiUrl = this.origin + 'api/VendorDoc/UploadFile';
 

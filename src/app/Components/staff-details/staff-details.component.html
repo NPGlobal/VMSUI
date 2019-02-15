@@ -21,7 +21,7 @@
       </thead>
       <tbody>
           <tr *ngFor="let vendor of pagedItems;index as i;">
-            <th scope="row">{{vendor.RowNumber}}</th>
+            <td>{{vendor.RowNumber}}</td>
             <td>{{vendor.Name}}</td>
             <td>{{vendor.Department}}</td>
             <td>{{vendor.Designation}}</td>
@@ -30,6 +30,11 @@
             <td>
               <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetStaffDetails(vendor.VendorStaffDetailsId)" 
             data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+            </td>
+          </tr>
+          <tr *ngIf="pagedItems && pagedItems.length === 0">
+            <td colspan="7">
+              <h6>No Record Found</h6>
             </td>
           </tr>
       </tbody>

@@ -53,7 +53,9 @@ export class StaffDetailsComponent implements OnInit {
         this.vendorstaffList = data.VendorStaff;
         this.totalItems = data.VendorStaffCount[0].TotalVendors;
         this.GetVendorsStaffList();
-      }
+       } else {
+         this.pagedItems = undefined;
+       }
     });
   }
   GetVendorsStaffList() {

@@ -68,7 +68,7 @@ export class DocumentComponent implements OnInit {
     this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(result => {
       if (result.data.VendorDoc.length > 0) {
         this.vendDocList = result.data.VendorDoc;
-        this.totalItems = result.data.VendorDoc[0].TotalVendors;
+        this.totalItems = result.data.VendorDocCount[0].TotalVendors;
         this.GetVendorDocumentsList();
       }
     });
@@ -125,7 +125,6 @@ export class DocumentComponent implements OnInit {
 
   OnFileChange(event) {
     const files = event.target.files;
-
     for (const file of files) {
       this.formData.append(file.name, file);
     }
@@ -143,13 +142,30 @@ export class DocumentComponent implements OnInit {
 
     this.formData.append('vendorDoc', JSON.stringify(this.vendorDocument));
 
-    this._vendorDocService.SaveVendorDocuments(this.formData)
+    try {
+      this._vendorDocService.SaveVendorDocuments(this.formData)
       .subscribe((updateStatus) => {
         if (updateStatus.Error === '') {
           this.dismiss();
           $('#myModal').modal('toggle');
+        } else {
+          alert('There are some technical error. Please contact administrator.');
         }
       });
+    } catch {
+      alert('There are some technical error. Please contact administrator.');
+    }
   }
+  GetDocDetails(x) {
+    this._vendorDocService.GetDocDetails(x).subscribe((data) => {
+      this.docDetailsForm = this._fb.group({
+        VendorActionHeaderID: [data.Table[0].VendorActionHeaderID],
+        VendorDocDetailsID: [data.Table[0].VendorDocDetailsID],
+        VendAction_MDDCode: [data.Table[0].VendAction_MDDCode, Validators.required],
+        VendDoc_MDDCode: [data.Table[0].VendDoc_MDDCode, Validators.required]
+      });
 
+      this.GetDocument();
+    });
+  }
 }
