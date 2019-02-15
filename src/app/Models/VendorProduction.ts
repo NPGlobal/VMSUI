@@ -1,18 +1,17 @@
 export class VendorProduction {
     // id: number;
-    Division: string;
-    Department: string;
-    ApprovedProductionUnits: number;
+    DivisionCode: string;
+    DeptCode: string;
+    ApprovedProductionCount: number;
     Address1: string;
     Address2: string;
     Address3: string;
-    CountryCode: string;
+    Phone: string;
     StateCode: string;
-    City: string;
-    Pincode: number;
-    SubContractingUnitName:  string;
-    SubContractingUnitAddress: string;
-    NatureOfSubContractingUnit: string;
+    CityCode: string;
+    Pin: number;
+    SubContractingName:  string;
+     NatureOfSubContracting: string;
     MonthlyCapacity: number;
     MinimalCapacity: number;
     LeanMonths: number;

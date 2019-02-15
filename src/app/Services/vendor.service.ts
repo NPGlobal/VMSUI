@@ -9,8 +9,9 @@ import { Vendor } from '../Models/vendor';
 export class VendorService {
 
    // origin = 'http://172.16.7.60/VMSApi/';
-    origin = 'http://172.16.7.68/';
-   // origin = 'https://localhost:44372/';
+  // origin = 'http://172.16.7.68/';
+  // origin = 'http://172.16.7.69/';
+  origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
@@ -119,7 +120,7 @@ export class VendorService {
   }
  // Used for save and update Vendor Production Info
  SaveProductionInfo(VendorProduction: any): Observable<any> {
-  const apiUrl = this.origin + 'api/VendorProduction/SaveVendorVendorProductionInfo';
+  const apiUrl = this.origin + 'api/VendorProduction/SaveVendorProductionInfo';
   return this._http.post<any>(apiUrl, VendorProduction);
 }
   // Get all Production details of a vendor
@@ -127,9 +128,9 @@ export class VendorService {
     const apiUrl = this.origin + 'api/VendorProduction/GetVendorProductionByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
     return this._http.get<any>(apiUrl);
   }
-  // Get Vendor Production Information for Edit
-  GetProductionDetails(id: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorProduction/GetProductionDetails/' + id;
+   // Get Vendor Production Information for Edit
+   GetProductionDetails(vcode: string, div: string, dept: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorProduction/GetProductionDetails/10/' + vcode + '/' + div + '/' + dept;
     return this._http.get<any>(apiUrl);
   }
 }
