@@ -49,8 +49,8 @@
             <div class="panel-group"></div>
         <tr>
           <th scope="row">{{i+1}}</th>
-          <td>{{vendor.DivisionCode}}</td>
-          <td>{{vendor.DeptCode}}</td>
+          <td>{{vendor.DivisionName}}</td>
+          <td>{{vendor.DeptName}}</td>
           <td>{{vendor.ApprovedProductionCount}}</td>
           <td>{{vendor.SubContractingName}}</td>
           <td>{{vendor.NatureOfSubContracting}}</td>
@@ -61,7 +61,7 @@
           <td>
             <!-- <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor.VendorProductionDetailsId)" 
             data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a> -->
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails()"
+            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor)"
               data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
             <a class="ml-2" title="View Address" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
               data-toggle="collapse">
@@ -83,7 +83,10 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{vendor.Address}}</td>
+                  <td>{{vendor.Address1}} ,
+                      {{vendor.Address2}} ,
+                      {{vendor.Address3}}
+                  </td>
                   <td>{{vendor.Phone}}</td>
                   <td>{{vendor.StateCode}}</td>
                   <td>{{vendor.CityCode}}</td>

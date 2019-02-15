@@ -2,6 +2,8 @@ export class VendorProduction {
     // id: number;
     DivisionCode: string;
     DeptCode: string;
+    DivisionName: string;
+    DeptName: string;
     ApprovedProductionCount: number;
     Address1: string;
     Address2: string;

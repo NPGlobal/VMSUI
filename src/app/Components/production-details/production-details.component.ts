@@ -60,7 +60,7 @@ export class ProductionDetailsComponent implements OnInit {
     this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(result => {
       if (result.data.Table.length > 0) {
         this.vendorProductionList = result.data.Table;
-        // console.log(this.vendorProductionList);
+        console.log(this.vendorProductionList);
         this.totalItems = result.data.Table1.TotalVendors;
         this.GetVendorsProductionList();
       } else {
@@ -219,29 +219,29 @@ export class ProductionDetailsComponent implements OnInit {
     });
   }
 
-  GetProductionDetails() {
+  GetProductionDetails(vendor: VendorProduction) {
 this.action = 'Update';
-    this._vendorService.GetProductionDetails(this.vendorcode, this.Division, this.Department).subscribe((data) => {
+    this._vendorService.GetProductionDetails(this.vendorcode, vendor.DivisionCode, vendor.DeptCode).subscribe((result) => {
       this.ProductionDetailsForm = this._fb.group({
         // id: [data.Table[0].id],
-        Division: [data.Table[0].DivisionCode, Validators.required],
-        Department: [data.Table[0].DeptCode, Validators.required],
-        approvedProductionUnits: [data.Table[0].ApprovedProductionCount, [Validators.required, Validators.pattern(this.NumericPattern)]],
-        subContractingUnitName: [data.Table[0].SubContractingName, Validators.required],
-         // subContractingUnitAddress: [data.Table[0].subContractingUnitAddress, Validators.required],
-        natureOfSubContractingUnit: [data.Table[0].NatureOfSubContracting, Validators.required],
-        monthlyCapacity: [data.Table[0].MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
-        minimalCapacity: [data.Table[0].MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
-        leanMonths: [data.Table[0].LeanMonths, [Validators.required, Validators.pattern(this.NumericPattern)]],
-        leanCapacity: [data.Table[0].LeanCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
-        address1: [data.Table[0].Address1, Validators.required],
-        address2: [data.Table[0].Address2],
-        address3: [data.Table[0].Address3],
-        Phone: [data.Table[0].Phone, Validators.required],
-        StateCode: [data.Table[0].StateCode, Validators.required],
-        city: [data.Table[0].CityCode, Validators.required],
-        pincode: [data.Table[0].Pin, Validators.required],
-        remarks: [data.Table[0].Remarks]
+        Division: [result.data.Table[0].DivisionCode, Validators.required],
+        Department: [result.data.Table[0].DeptCode, Validators.required],
+        approvedProductionUnits: [result.data.Table[0].ApprovedProductionCount,
+        [Validators.required, Validators.pattern(this.NumericPattern)]],
+        subContractingUnitName: [result.data.Table[0].SubContractingName, Validators.required],
+        natureOfSubContractingUnit: [result.data.Table[0].NatureOfSubContracting, Validators.required],
+        monthlyCapacity: [result.data.Table[0].MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
+        minimalCapacity: [result.data.Table[0].MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
+        leanMonths: [result.data.Table[0].LeanMonths, [Validators.required, Validators.pattern(this.NumericPattern)]],
+        leanCapacity: [result.data.Table[0].LeanCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
+        address1: [result.data.Table[0].Address1, Validators.required],
+        address2: [result.data.Table[0].Address2],
+        address3: [result.data.Table[0].Address3],
+        Phone: [result.data.Table[0].Phone, Validators.required],
+        StateCode: [result.data.Table[0].StateCode, Validators.required],
+        city: [result.data.Table[0].CityCode, Validators.required],
+        pincode: [result.data.Table[0].Pin, Validators.required],
+        remarks: [result.data.Table[0].Remarks]
       });
      // this.GetVendorDesignationForEdit();
     });
