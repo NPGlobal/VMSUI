@@ -23,7 +23,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                         // server-side error
                         errorMessage = 'Error Code: ${error.status}\nMessage: ${error.message}';
                     }
-                    alert('We are facing some technical issues. Please contact administrator.');
+                    // alert('We are facing some technical issues. Please contact administrator.');
                     return throwError(errorMessage);
                 })
             );

@@ -23,6 +23,7 @@ export class ProductionDetailsComponent implements OnInit {
   ) {
 
   }
+  isDisable = false;
   Division: string;
   Department: string;
   vendorcode: string;
@@ -34,7 +35,7 @@ export class ProductionDetailsComponent implements OnInit {
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
-  pagedItems: any[];
+  pagedItems: any[] = [];
 
   ProductionDetailsForm: FormGroup;
   divisionList: any[];
@@ -42,9 +43,8 @@ export class ProductionDetailsComponent implements OnInit {
   status = true;
   submitted = false;
   action = 'Insert';
-  CountryList:  MasterDataDetails[] = [];
-  StateList:  MasterDataDetails[] = [];
 
+  StateList:  MasterDataDetails[] = [];
   ngOnInit() {
     // this.openModal();
     this.openModal();
@@ -83,7 +83,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.ProductionDetailsForm = this._fb.group({
       // id: ['0'],
       DivisionCode: [''],
-      DeptCode: ['-1'],
+      DeptCode: [''],
       approvedProductionUnits: [this.VendorProduction.ApprovedProductionCount],
       subContractingUnitName: [this.VendorProduction.SubContractingName],
       // subContractingUnitAddress: [this.VendorProduction.subContractingUnitAddress],
@@ -96,19 +96,20 @@ export class ProductionDetailsComponent implements OnInit {
       address2: [this.VendorProduction.Address2],
       address3: [this.VendorProduction.Address3],
       Phone: [this.VendorProduction.Phone],
-      StateCode: [this.VendorProduction.StateCode],
+      StateCode: [''],
       city: [this.VendorProduction.CityCode],
       pincode: [this.VendorProduction.Pin],
       remarks: [this.VendorProduction.Remarks]
     });
   }
   openModal() {
+    this.isDisable = false;
     this.action = 'Insert';
      this.ProductionDetailsForm = this._fb.group({
       // id: ['0'],
 
       Division: ['', Validators.required],
-      Department: ['-1', Validators.required],
+      Department: ['', Validators.required],
       approvedProductionUnits: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
       subContractingUnitName: ['', Validators.required],
       // subContractingUnitAddress: ['', Validators.required],
@@ -131,7 +132,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.ProductionDetailsForm = this._fb.group({
       // id: ['0'],
       Division: [''],
-      Department: ['-1'],
+      Department: [''],
       approvedProductionUnits: [''],
       subContractingUnitName: [''],
       // subContractingUnitAddress: [''],
@@ -151,6 +152,7 @@ export class ProductionDetailsComponent implements OnInit {
     });
     this.submitted = false;
     this.departmentList = [];
+    // this.isDisabled = false;
   }
 
   GetDivisions() {
@@ -221,6 +223,7 @@ export class ProductionDetailsComponent implements OnInit {
 
   GetProductionDetails(vendor: VendorProduction) {
 this.action = 'Update';
+this.isDisable = true;
     this._vendorService.GetProductionDetails(this.vendorcode, vendor.DivisionCode, vendor.DeptCode).subscribe((result) => {
       this.ProductionDetailsForm = this._fb.group({
         // id: [data.Table[0].id],
@@ -243,7 +246,8 @@ this.action = 'Update';
         pincode: [result.data.Table[0].Pin, Validators.required],
         remarks: [result.data.Table[0].Remarks]
       });
-     // this.GetVendorDesignationForEdit();
+      this.GetDepartment();
+     // this.GetStateList();
     });
   }
 }

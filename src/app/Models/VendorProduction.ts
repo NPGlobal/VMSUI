@@ -10,6 +10,7 @@ export class VendorProduction {
     Address3: string;
     Phone: string;
     StateCode: string;
+    StateName: string;
     CityCode: string;
     Pin: number;
     SubContractingName:  string;
@@ -22,4 +23,5 @@ export class VendorProduction {
     CreatedBy: number;
     Remarks: string;
     Action: string;
+    isDisable: boolean;
 }
