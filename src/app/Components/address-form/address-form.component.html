@@ -1,11 +1,12 @@
-<div *ngIf="AddressForm.AddressCode !== null && AddressForm.AddressCode !== ''" class="modal" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+<div *ngIf="AddressForm.AddressCode !== null && AddressForm.AddressCode !== ''" class="modal" id="myModal" tabindex="-1"
+  role="dialog" style="display: none;">
   <!-- modal-dialog -->
   <div class="modal-dialog modal-lg">
     <!-- modal-content -->
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Add New Address</h6>
+        <h6 class="modal-title">{{(Address.AddressCode !== null && Address.AddressCode !== '') ? 'Edit' : 'Add new'}} Address</h6>
         <button class="close" aria-label="Close" (click)="ResetForm()" data-dismiss="modal"><span
             aria-hidden="true">&times;</span></button>
       </div>
@@ -52,14 +53,7 @@
               </select>
             </div>
 
-            <div class="form-group col-md-4" style="display:none;">
-              <label class="text col-md-4">OrgUnitCode<i class="mandatory">*</i></label>
-              <select formControlName="OrgUnitCode" (blur)="LogValidationErrors()"
-                class="form-control col-md-8 input-sm" [ngClass]="{'is-invalid': formErrors.OrgUnitCode}">
-                <option selected value>Select</option>
-                <option *ngFor="let PH of SelectedPHList" value="{{PH.OrgUnitCode}}">{{PH.OrgUnitName}}</option>
-              </select>
-            </div>
+            <input type="hidden" formControlName="OrgUnitCode" />
           </div>
 
           <div class="row col-md-12">
@@ -79,15 +73,15 @@
             </div>
 
             <div class="col-md-4 form-group">
-              &nbsp;&nbsp;&nbsp;<label class="text"> Address Type </label>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span class="row col-md-8">
+              <label class="text"> Address Type </label>
+              <span class="row ml-2 col-md-15">
                 <label>
                   <input value="F" type="radio" formControlName="AddressTypeCode">
                   &nbsp;Factory
                 </label>
-                <label style="margin-left: 10px;">
-                  <input value="O" type="radio" formControlName="AddressTypeCode">
-                  &nbsp;Office
+                <label class="ml-2">
+                  <input value="I" type="radio" formControlName="AddressTypeCode">
+                  &nbsp;Sister Concern
                 </label>
               </span>
             </div>
@@ -182,4 +176,3 @@
     </div>
   </div>
 </div>
-

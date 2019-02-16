@@ -134,14 +134,159 @@
             </div>
             <hr>
 
-            <!-- Vendor Address -->
+            <!-- Vendor Registered Office Address -->
+
+            <div class="col" formGroupName="RegisteredOfficeAddress">
+                <div class="content-heading">
+                    <a href="javascript:void(0)"
+                        (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Registered Office Address
+                </div>
+                <div class="slider" [ngClass]="{
+                      closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
+                  }">
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-4">
+                            <label class="text col-md-4">Address1</label>
+                            <input formControlName="Address1" type="text" class="form-control col-md-8 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="text col-md-4">Address2</label>
+                            <input formControlName="Address2" type="text" class="form-control col-md-8 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="text  col-md-4">Address3</label>
+                            <input formControlName="Address3" type="text" class="form-control col-md-8 input-sm" />
+                        </div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-4">
+                            <label class="text col-md-4">Country</label>
+                            <select formControlName="CountryCode" class="form-control col-md-8 input-sm">
+                                <option [ngValue]="null">Select</option>
+                                <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
+                                    {{country.MDDName}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="text col-md-4">State</label>
+                            <select formControlName="StateCode" class="form-control col-md-8 input-sm">
+                                <option [ngValue]="null">Select</option>
+                                <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="text col-md-10">Same for Factory/Sister concern</label>
+                            <input formControlName="IsSameForAll" type="checkbox" />
+                        </div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-4">
+                            <label class="text  col-md-4">Pincode</label>
+                            <input formControlName="PIN" type="text" class="form-control  col-md-8 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="text  col-md-4">City</label>
+                            <input formControlName="CityCode" type="text" class="form-control  col-md-8 input-sm" />
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- Contact -->
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Primary Contact Name</label>
+                            <input formControlName="PrimaryContactName" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Secondary Contact Name</label>
+                            <input formControlName="SecondaryContactName" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Primary Phone No.</label>
+                            <input formControlName="PrimaryContactPhone" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Secondary Phone No.</label>
+                            <input formControlName="SecondaryContactPhone" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Primary Fax</label>
+                            <input formControlName="PrimaryContactFax" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Secondary Fax</label>
+                            <input formControlName="SecondaryContactFax" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Primary E-Mail</label>
+                            <input formControlName="PrimaryContactEmail" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Secondary E-Mail</label>
+                            <input formControlName="SecondaryContactEmail" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+                    </div>
+
+                    <div class="row col-md-12">
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Primary Website</label>
+                            <input formControlName="PrimaryContactWebsite" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label class="text col-md-6">Secondary Website</label>
+                            <input formControlName="SecondaryContactWebsite" type="text"
+                                class="form-control col-md-6 input-sm" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <hr>
+
+            <!-- Vendor Factory Address -->
 
             <div class="col" formGroupName="Address">
                 <div class="content-heading">
                     <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))"
                         class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Address
+                    </a>Factory/Sister Concern Address
                 </div>
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
@@ -181,10 +326,6 @@
                                         <td>{{address.StateName + ', ' + address.CountryName}}</td>
                                         <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Office')}}</td>
                                         <td>
-                                            <button #modalOpenButton type="button" data-target="#myModal"
-                                                data-backdrop="static" data-keyboard="false" data-toggle="modal"
-                                                style="display:none;">
-                                            </button>
                                             <a title="Edit" href="javascript:void(0)"
                                                 (click)="OpenAddressModal(address)">
                                                 <i class="fa fa-edit"></i>
@@ -359,4 +500,7 @@
     </div>
 </form>
 
+<button #modalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
 <app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form>

@@ -15,7 +15,8 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 })
 export class PersonalDetailsComponent implements OnInit {
 
-
+  CountryList: MasterDataDetails[];
+  StateList: MasterDataDetails[];
   vendor: Vendor;
   personalDetailsForm: FormGroup;
   YearList: number[] = [];
@@ -36,13 +37,15 @@ export class PersonalDetailsComponent implements OnInit {
   modalOpenButton: ElementRef;
 
   HasAllCollapsed: boolean;
+  IsAddressSaved = false;
 
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _mDDService: MasterDataDetailsService) {
     this.Address = this.CreateNewAddress();
-    this.Address.AddressCode = null;
+    this.vendor = new Vendor();
+    this.vendor.RegisteredOfficeAddress = new VendorAddress();
     this.HasAllCollapsed = true;
   }
 
@@ -51,7 +54,6 @@ export class PersonalDetailsComponent implements OnInit {
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
-        this.vendor = new Vendor();
         this.InitializeFormControls();
         this.GetPHList();
       } else {
@@ -68,6 +70,8 @@ export class PersonalDetailsComponent implements OnInit {
     });
 
     this.GetMasterDataDetails('VendorType');
+    this.GetMasterDataDetails('COUNTRY');
+    this.GetMasterDataDetails('STATE');
   }
 
   CreateNewAddress(): any {
@@ -96,7 +100,20 @@ export class PersonalDetailsComponent implements OnInit {
 
   GetMasterDataDetails(MDHCode: string) {
     this._mDDService.GetMasterDataDetails(MDHCode, '-1').subscribe((result) => {
-      this.VendorTypeList = result.data.Table;
+      switch (MDHCode) {
+        case 'VendorType': {
+          this.VendorTypeList = result.data.Table;
+          break;
+        }
+        case 'COUNTRY': {
+          this.CountryList = result.data.Table.filter(x => x.MDDName === 'India');
+          break;
+        }
+        case 'STATE': {
+          this.StateList = result.data.Table;
+          break;
+        }
+      }
     });
   }
 
@@ -118,6 +135,65 @@ export class PersonalDetailsComponent implements OnInit {
       return element.OrgUnitCode;
     }).join();
 
+    vendor.RegisteredOfficeAddress = new VendorAddress();
+    vendor.RegisteredOfficeAddress.CompanyCode = '10';
+    vendor.RegisteredOfficeAddress.PIN = this.personalDetailsForm.get('RegisteredOfficeAddress.PIN').value;
+    vendor.RegisteredOfficeAddress.Address1 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address1').value;
+    vendor.RegisteredOfficeAddress.Address2 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address2').value === null
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.Address2').value;
+    vendor.RegisteredOfficeAddress.Address3 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address3').value === null
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.Address3').value;
+    vendor.RegisteredOfficeAddress.StateCode = this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value;
+    vendor.RegisteredOfficeAddress.CityCode = this.personalDetailsForm.get('RegisteredOfficeAddress.CityCode').value;
+    vendor.RegisteredOfficeAddress.CountryCode = this.personalDetailsForm.get('RegisteredOfficeAddress.CountryCode').value;
+    vendor.RegisteredOfficeAddress.AddressTypeCode = 'O';
+    vendor.RegisteredOfficeAddress.AddressReference = 'V';
+    vendor.RegisteredOfficeAddress.VendorCode = vendor.VendorCode;
+    vendor.RegisteredOfficeAddress.AddressCode = this.Address.AddressCode === null ? '' : this.Address.AddressCode;
+
+    vendor.RegisteredOfficeAddress.PrimaryContactName =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactName').value == null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactName').value;
+
+    vendor.RegisteredOfficeAddress.PrimaryContactPhone =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactPhone').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactPhone').value;
+
+    vendor.RegisteredOfficeAddress.PrimaryContactFax =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactFax').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactFax').value;
+
+    vendor.RegisteredOfficeAddress.PrimaryContactEmail =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactEmail').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactEmail').value;
+
+    vendor.RegisteredOfficeAddress.PrimaryContactWebsite =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactWebsite').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactWebsite').value;
+
+    vendor.RegisteredOfficeAddress.SecondaryContactName =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactName').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactName').value;
+
+    vendor.RegisteredOfficeAddress.SecondaryContactPhone =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactPhone').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactPhone').value;
+
+    vendor.RegisteredOfficeAddress.SecondaryContactFax =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactFax').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactFax').value;
+
+    vendor.RegisteredOfficeAddress.SecondaryContactEmail =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactEmail').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactEmail').value;
+
+    vendor.RegisteredOfficeAddress.SecondaryContactWebsite =
+      this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactWebsite').value === null
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactWebsite').value;
+
+    vendor.RegisteredOfficeAddress.IsSameForAll = this.personalDetailsForm.get('RegisteredOfficeAddress.IsSameForAll').value;
+
+    console.log(this.vendor);
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
@@ -128,10 +204,19 @@ export class PersonalDetailsComponent implements OnInit {
 
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
-      this.vendor = result.data.Vendor[0];
-      this.vendorAddresses = result.data.VendorAddress;
-      this.GetPHList();
-      this.InitializeFormControls();
+      if (!this.IsAddressSaved) {
+        this.vendor = result.data.Vendor[0];
+      }
+
+      this.vendor.RegisteredOfficeAddress =
+        ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
+      this.vendorAddresses = result.data.FactoryAddress;
+
+      if (!this.IsAddressSaved) {
+        this.GetPHList();
+
+        this.InitializeFormControls();
+      }
     });
   }
 
@@ -179,16 +264,29 @@ export class PersonalDetailsComponent implements OnInit {
         IsJWVendor: [this.vendor.IsJWVendor],
         IsDirectVendor: [this.vendor.IsDirectVendor]
       }),
-      Address: this._fb.group({
+      RegisteredOfficeAddress: this._fb.group({
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1],
+        Address2: [this.vendor.RegisteredOfficeAddress.Address2],
+        Address3: [this.vendor.RegisteredOfficeAddress.Address3],
+        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode],
+        CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
+        StateCode: [this.vendor.RegisteredOfficeAddress.StateCode],
+        PIN: [this.vendor.RegisteredOfficeAddress.PIN],
+        AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
+        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName],
+        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone],
+        PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax],
+        PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail],
+        PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite],
+        SecondaryContactName: [this.vendor.RegisteredOfficeAddress.SecondaryContactName],
+        SecondaryContactPhone: [this.vendor.RegisteredOfficeAddress.SecondaryContactPhone],
+        SecondaryContactFax: [this.vendor.RegisteredOfficeAddress.SecondaryContactFax],
+        SecondaryContactEmail: [this.vendor.RegisteredOfficeAddress.SecondaryContactEmail],
+        SecondaryContactWebsite: [this.vendor.RegisteredOfficeAddress.SecondaryContactWebsite],
+        IsSameForAll: [false],
         IsExpanded: false
       }),
-      Contact: this._fb.group({
-        ContactPersonName: [this.vendor.ContactPersonName],
-        OfficeContact: [this.vendor.OfficeContact],
-        ContactPersonMobile: [this.vendor.ContactPersonMobile],
-        FAXNo: [this.vendor.FAXNo],
-        EmailId: [this.vendor.EmailId],
-        WebSite: [this.vendor.Website],
+      Address: this._fb.group({
         IsExpanded: false
       }),
       OtherRegDetails: this._fb.group({
@@ -305,11 +403,14 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('Address.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
+    this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(!this.HasAllCollapsed);
   }
 
-  OnAddressSaved(IsAddressSaved: boolean) {
-    if (IsAddressSaved) {
+  OnAddressSaved(IsSaved: boolean) {
+    this.IsAddressSaved = IsSaved;
+    if (this.IsAddressSaved) {
       this.Editvendor(this.VendorCode);
+      this.IsAddressSaved = false;
     }
   }
 }
