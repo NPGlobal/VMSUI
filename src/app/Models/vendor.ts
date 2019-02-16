@@ -1,3 +1,5 @@
+import { VendorAddress } from './vendor-address';
+
 export class Vendor {
     RowNumber: number;
     VendorCode: string;
@@ -6,20 +8,6 @@ export class Vendor {
     MasterVendorId: number;
     PANNo: string;
     GSTIN: string;
-    TINNo: string;
-    nameInAddress: string;
-    AddressLine1: string;
-    AddressLine2: string;
-    AddressType: string;
-    City: string;
-    State: string;
-    PIN: string;
-    ContactPersonName: string;
-    OfficeContact: string;
-    ContactPersonMobile: number;
-    FAXNo: string;
-    EmailId: string;
-    Website: string;
     AssociatedSinceYear: number;
     VendorType_MDDCode: string;
     PersonTopRanker1: string;
@@ -34,4 +22,5 @@ export class Vendor {
     IsRCM: Boolean;
     IsJWVendor: boolean;
     IsDirectVendor: boolean;
+    RegisteredOfficeAddress: VendorAddress;
 }

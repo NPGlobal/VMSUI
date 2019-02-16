@@ -88,7 +88,7 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
-  SaveVendorPersonalDetails(PersonalDetails: any): Observable<any> {
+  SaveVendorPersonalDetails(PersonalDetails: Vendor): Observable<any> {
     const apiUrl = this.origin + 'api/Vendor/SaveVendorPersonalDetails';
     return this._http.post<any>(apiUrl, PersonalDetails);
   }
