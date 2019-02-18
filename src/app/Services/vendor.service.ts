@@ -74,4 +74,20 @@ export class VendorService {
     const apiUrl = this.origin + 'api/MasterVendor/GetMasterVendorList';
     return this._http.get<any>(apiUrl);
   }
+
+  // Used for save and update Vendor Production Info
+  SaveProductionInfo(VendorProduction: any): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorProduction/SaveVendorProductionInfo';
+    return this._http.post<any>(apiUrl, VendorProduction);
+  }
+  // Get all Production details of a vendor
+  GetVendorProductionByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorProduction/GetVendorProductionByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
+    return this._http.get<any>(apiUrl);
+  }
+  // Get Vendor Production Information for Edit
+  GetProductionDetails(vcode: string, div: string, dept: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorProduction/GetProductionDetails/10/' + vcode + '/' + div + '/' + dept;
+    return this._http.get<any>(apiUrl);
+  }
 }
