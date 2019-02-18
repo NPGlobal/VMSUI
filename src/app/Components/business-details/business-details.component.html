@@ -55,7 +55,7 @@
           <td>{{vendor.ProposedJWValueQty}}</td>
           <td>{{vendor.ProposedJWGrnQty}}</td>
           <td>
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor.VendorBusinessDetailsID)" 
+            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor)" 
           data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
           </td>
         </tr>
@@ -103,7 +103,7 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form [formGroup]="businessDetailsForm" (ngSubmit)="SaveBusinessDetails()" novalidate>
-          <input type="hidden" name="id" formControlName="id">
+          <input type="hidden" formControlName="VendorBusinessDetailsID">
           
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">

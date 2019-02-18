@@ -25,7 +25,7 @@
           <td>{{vendor.VendDoc}}</td>
           <td>{{vendor.FileName}}</td>
           <td>
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetDocDetails(vendor.VendorDocDetailsID)" 
+            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetDocDetails(vendor)" 
           data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
           </td>
         </tr>
@@ -103,8 +103,13 @@
             <div class="row">
               <div class="col-lg-6 col-md-6">
                 <label class="text">Upload Document<span class="error-label">*</span></label>
+                <!-- <span>
+                  <input class="form-control input-sm" type="file" (change)="OnFileChange($event)"
+                  [ngClass]="{ 'is-invalid': (docDetailsForm.controls.FileName.touched || submitted) && docDetailsForm.controls.FileName.errors }" />
+                  <br />
+                </span> -->
                 <span>
-                  <input class="form-control input-sm" type="file" (change)="OnFileChange($event)" />
+                  <input class="form-control input-sm" type="file" formControlName="FileName" (change)="OnFileChange($event)"/>
                   <br />
                 </span>
               </div>
