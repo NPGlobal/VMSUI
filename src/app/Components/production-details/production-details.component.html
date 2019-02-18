@@ -31,7 +31,6 @@
   <table class="table table-striped table-bordered table-hover">
     <thead class="table-primary">
       <tr>
-        <th scope="col">Sr. No</th>
         <th scope="col">Division</th>
         <th scope="col">Department</th>
         <th scope="col">Approved Production Units</th>
@@ -48,7 +47,6 @@
         <ng-container *ngFor="let vendor of pagedItems;index as i;">
             <div class="panel-group"></div>
         <tr>
-          <th scope="row">{{i+1}}</th>
           <td>{{vendor.DivisionName}}</td>
           <td>{{vendor.DeptName}}</td>
           <td>{{vendor.ApprovedProductionCount}}</td>
@@ -83,8 +81,8 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{vendor.Address1}} ,
-                      {{vendor.Address2}} ,
+                  <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
+                      {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
                       {{vendor.Address3}}
                   </td>
                   <td>{{vendor.Phone}}</td>
