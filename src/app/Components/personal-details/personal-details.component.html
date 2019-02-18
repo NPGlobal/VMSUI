@@ -32,8 +32,7 @@
                             <div class="col-md-6">
                                 <label class="text">Producer Name</label>
                                 <span>
-                                    <input type="text" formControlName="VendorName" class="form-control input-sm"
-                                        value="" />
+                                    <input type="text" formControlName="VendorName" class="form-control input-sm" />
                                 </span>
                             </div>
                         </div>
@@ -43,8 +42,14 @@
                                 <span><input type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
                             </div>
                             <div class="col-md-6">
-                                <label class="text">PAN No.</label>
-                                <span><input type="text" formControlName="PANNo" class="form-control input-sm" /></span>
+                                <label class="text">PAN No.<i class="mandatory">*</i></label>
+                                <span>
+                                    <span class="help-block mandatory" *ngIf="formErrors.PANNo">
+                                        {{formErrors.PANNo}}
+                                    </span>
+                                    <input type="text" formControlName="PANNo" class="form-control input-sm"
+                                        (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PANNo}" />
+                                </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
@@ -148,130 +153,164 @@
                       closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
                   }">
 
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-4">
-                            <label class="text col-md-4">Address1</label>
-                            <input formControlName="Address1" type="text" class="form-control col-md-8 input-sm" />
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Address1</label>
+                            <span>
+                                <input formControlName="Address1" type="text" class="form-control input-sm" />
+                            </span>
                         </div>
 
-                        <div class="form-group col-md-4">
-                            <label class="text col-md-4">Address2</label>
-                            <input formControlName="Address2" type="text" class="form-control col-md-8 input-sm" />
+                        <div class="col-md-4">
+                            <label class="text">Address2</label>
+                            <span>
+                                <input formControlName="Address2" type="text" class="form-control input-sm" />
+                            </span>
                         </div>
 
-                        <div class="form-group col-md-4">
-                            <label class="text  col-md-4">Address3</label>
-                            <input formControlName="Address3" type="text" class="form-control col-md-8 input-sm" />
-                        </div>
-                    </div>
-
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-4">
-                            <label class="text col-md-4">Country</label>
-                            <select formControlName="CountryCode" class="form-control col-md-8 input-sm">
-                                <option [ngValue]="null">Select</option>
-                                <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
-                                    {{country.MDDName}}</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label class="text col-md-4">State</label>
-                            <select formControlName="StateCode" class="form-control col-md-8 input-sm">
-                                <option [ngValue]="null">Select</option>
-                                <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label class="text col-md-10">Same for Factory/Sister concern</label>
-                            <input formControlName="IsSameForAll" type="checkbox" />
+                        <div class="col-md-4">
+                            <label class="text">Address3</label>
+                            <span>
+                                <input formControlName="Address3" type="text" class="form-control input-sm" />
+                            </span>
                         </div>
                     </div>
 
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-4">
-                            <label class="text  col-md-4">Pincode</label>
-                            <input formControlName="PIN" type="text" class="form-control  col-md-8 input-sm" />
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Country</label>
+                            <span>
+                                <select formControlName="CountryCode" class="form-control input-sm">
+                                    <option [ngValue]="null">Select</option>
+                                    <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
+                                        {{country.MDDName}}</option>
+                                </select>
+                            </span>
                         </div>
 
-                        <div class="form-group col-md-4">
-                            <label class="text  col-md-4">City</label>
-                            <input formControlName="CityCode" type="text" class="form-control  col-md-8 input-sm" />
+                        <div class="col-md-4">
+                            <label class="text">State</label>
+                            <span>
+                                <select formControlName="StateCode" class="form-control input-sm">
+                                    <option [ngValue]="null">Select</option>
+                                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
+                                    </option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">Same for Factory/Sister concern</label>
+                            <span>
+                                <input class="ml-2" formControlName="IsSameForAll" type="checkbox" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Pincode</label>
+                            <span>
+                                <input formControlName="PIN" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">City</label>
+                            <span>
+                                <input formControlName="CityCode" type="text" class="form-control input-sm" />
+                            </span>
                         </div>
                     </div>
                     <hr>
 
                     <!-- Contact -->
 
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Primary Contact Name</label>
-                            <input formControlName="PrimaryContactName" type="text"
-                                class="form-control col-md-6 input-sm" />
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Contact Name</label>
+                            <span>
+                                <input formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
+                            </span>
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Secondary Contact Name</label>
-                            <input formControlName="SecondaryContactName" type="text"
-                                class="form-control col-md-6 input-sm" />
-                        </div>
-                    </div>
-
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Primary Phone No.</label>
-                            <input formControlName="PrimaryContactPhone" type="text"
-                                class="form-control col-md-6 input-sm" />
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Secondary Phone No.</label>
-                            <input formControlName="SecondaryContactPhone" type="text"
-                                class="form-control col-md-6 input-sm" />
+                        <div class="col-md-6">
+                            <label class="text">Secondary Contact Name</label>
+                            <span>
+                                <input formControlName="SecondaryContactName" type="text"
+                                    class="form-control input-sm" />
+                            </span>
                         </div>
                     </div>
 
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Primary Fax</label>
-                            <input formControlName="PrimaryContactFax" type="text"
-                                class="form-control col-md-6 input-sm" />
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Phone No.</label>
+                            <span>
+                                <input formControlName="PrimaryContactPhone" type="text"
+                                    class="form-control input-sm" />
+                            </span>
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Secondary Fax</label>
-                            <input formControlName="SecondaryContactFax" type="text"
-                                class="form-control col-md-6 input-sm" />
-                        </div>
-                    </div>
-
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Primary E-Mail</label>
-                            <input formControlName="PrimaryContactEmail" type="text"
-                                class="form-control col-md-6 input-sm" />
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Secondary E-Mail</label>
-                            <input formControlName="SecondaryContactEmail" type="text"
-                                class="form-control col-md-6 input-sm" />
+                        <div class="col-md-6">
+                            <label class="text">Secondary Phone No.</label>
+                            <span>
+                                <input formControlName="SecondaryContactPhone" type="text"
+                                    class="form-control input-sm" />
+                            </span>
                         </div>
                     </div>
 
-                    <div class="row col-md-12">
-                        <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Fax</label>
+                            <span>
+                                <input formControlName="PrimaryContactFax" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary Fax</label>
+                            <span>
+                                <input formControlName="SecondaryContactFax" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary E-Mail</label>
+                            <span>
+                                <input formControlName="PrimaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary E-Mail</label>
+                            <span>
+                                <input formControlName="SecondaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-6">
                             <label class="text col-md-6">Primary Website</label>
-                            <input formControlName="PrimaryContactWebsite" type="text"
-                                class="form-control col-md-6 input-sm" />
+                            <span>
+                                <input formControlName="PrimaryContactWebsite" type="text"
+                                    class="form-control col-md-6 input-sm" />
+                            </span>
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label class="text col-md-6">Secondary Website</label>
-                            <input formControlName="SecondaryContactWebsite" type="text"
-                                class="form-control col-md-6 input-sm" />
+                        <div class="col-md-6">
+                            <label class="text">Secondary Website</label>
+                            <span>
+                                <input formControlName="SecondaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
                         </div>
                     </div>
 

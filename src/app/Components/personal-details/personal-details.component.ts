@@ -39,6 +39,20 @@ export class PersonalDetailsComponent implements OnInit {
   HasAllCollapsed: boolean;
   IsAddressSaved = false;
 
+  submitted = false;
+  ValidationMessages = {
+    'PANNo': {
+      'required': '',
+      'minlength': 'Invalid PAN number',
+      'maxlength': 'Invalid PAN number',
+      'pattern': 'Cannot contains special characters'
+    }
+  };
+
+  formErrors = {
+    'PANNo': ''
+  };
+
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -118,9 +132,17 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   SavePersonalDetails() {
+    this.submitted = true;
+    if (this.personalDetailsForm.invalid) {
+      this.logValidationErrors();
+      return;
+    }
+
     let StatusObj: any;
     const vendor = new Vendor();
     vendor.VendorCode = this.VendorCode;
+    vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
+    vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value;
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
     vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
     vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
@@ -256,9 +278,9 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
-        VendorName: [{ value: this.vendor.VendorName, disabled: true }],
+        VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [{ value: this.vendor.PANNo, disabled: true }],
+        PANNo: [this.vendor.PANNo, [Validators.required, Validators.maxLength(10), Validators.minLength(10)]],
         GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
         PHList: new FormControl(''),
         StoreList: [''],
@@ -308,6 +330,11 @@ export class PersonalDetailsComponent implements OnInit {
         OtherCustomer5: [this.vendor.OtherCustomer5],
         IsExpanded: false
       })
+    });
+
+
+    this.personalDetailsForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.personalDetailsForm);
     });
   }
 
@@ -415,5 +442,25 @@ export class PersonalDetailsComponent implements OnInit {
     if (this.IsAddressSaved) {
       this.Editvendor(this.VendorCode);
     }
+  }
+
+  logValidationErrors(group: FormGroup = this.personalDetailsForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
+      } else {
+        this.formErrors[key] = '';
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
+          const messages = this.ValidationMessages[key];
+          for (const errorkey in abstractControl.errors) {
+            if (errorkey) {
+              this.formErrors[key] += messages[errorkey] + ' ';
+            }
+          }
+        }
+      }
+    });
   }
 }
