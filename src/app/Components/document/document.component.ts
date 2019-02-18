@@ -61,6 +61,7 @@ export class DocumentComponent implements OnInit {
     this.vendorDocument.VendorDocDetailsID = 0;
     this.vendorDocument.VendDoc_MDDCode = '';
     this.vendorDocument.VendAction_MDDCode = '';
+    this.vendorDocument.FileName = '';
   }
 
   GetVendorDocuments(index: number) {
@@ -68,7 +69,7 @@ export class DocumentComponent implements OnInit {
     this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(result => {
       if (result.data.VendorDoc.length > 0) {
         this.vendDocList = result.data.VendorDoc;
-        this.totalItems = result.data.VendorDoc[0].TotalVendors;
+        this.totalItems = result.data.VendorDocCount[0].TotalVendors;
         this.GetVendorDocumentsList();
       }
     });
@@ -84,7 +85,8 @@ export class DocumentComponent implements OnInit {
       VendorActionHeaderID: [this.vendorDocument.VendorActionHeaderID],
       VendorDocDetailsID: [this.vendorDocument.VendorDocDetailsID],
       VendAction_MDDCode: [this.vendorDocument.VendAction_MDDCode, Validators.required],
-      VendDoc_MDDCode: [this.vendorDocument.VendDoc_MDDCode, Validators.required]
+      VendDoc_MDDCode: [this.vendorDocument.VendDoc_MDDCode, Validators.required],
+      FileName: [this.vendorDocument.FileName]
     });
   }
 
@@ -96,7 +98,7 @@ export class DocumentComponent implements OnInit {
     this.CreateNewVendorDocument();
     this.InitializeFormControls();
     this.submitted = false;
-    this.actionHeaderList = null;
+    this.docHeaderList = null;
   }
 
   GetActionHeader() {
@@ -125,14 +127,17 @@ export class DocumentComponent implements OnInit {
 
   OnFileChange(event) {
     const files = event.target.files;
-
     for (const file of files) {
       this.formData.append(file.name, file);
     }
   }
 
   SaveDocDetails() {
-    console.log(this.docDetailsForm.value);
+    this.submitted = true;
+    if (this.docDetailsForm.invalid) {
+      return;
+    }
+    // console.log(this.docDetailsForm.value);
     this.vendorDocument = new VendorDocument();
     this.vendorDocument.CompanyCode = '10';
     this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('VendAction_MDDCode').value;
@@ -140,16 +145,49 @@ export class DocumentComponent implements OnInit {
     this.vendorDocument.VendorActionHeaderID = this.docDetailsForm.get('VendorActionHeaderID').value;
     this.vendorDocument.VendorCode = this.vendorcode;
     this.vendorDocument.VendorDocDetailsID = this.docDetailsForm.get('VendorDocDetailsID').value;
+    this.vendorDocument.CreatedBy = 999999;
 
     this.formData.append('vendorDoc', JSON.stringify(this.vendorDocument));
 
-    this._vendorDocService.SaveVendorDocuments(this.formData)
+    try {
+      this._vendorDocService.SaveVendorDocuments(this.formData)
       .subscribe((updateStatus) => {
         if (updateStatus.Error === '') {
+          this.vendDocList = updateStatus.data.VendorDoc;
+          this.totalItems = updateStatus.data.VendorDocCount[0].TotalVendors;
+          this.GetVendorDocumentsList();
+          alert(updateStatus.data.Msg[0].Message);
           this.dismiss();
           $('#myModal').modal('toggle');
+        } else {
+          alert('There are some technical error. Please contact administrator.');
         }
       });
+    } catch {
+      alert('There are some technical error. Please contact administrator.');
+    }
   }
-
+  GetDocDetails(vDoc: VendorDocument) {
+    this.docDetailsForm = this._fb.group({
+      VendorActionHeaderID: [vDoc.VendorActionHeaderID],
+      VendorDocDetailsID: [vDoc.VendorDocDetailsID],
+      VendAction_MDDCode: [vDoc.VendAction_MDDCode, Validators.required],
+      VendDoc_MDDCode: [vDoc.VendDoc_MDDCode, Validators.required] // ,
+      // FileName: [vDoc.FileName, Validators.required]
+    });
+    this.GetDocument();
+  }
+  // GetDocDetails(vDoc: VendorDocument) {
+  //   const x =  vDoc.VendorDocDetailsID;
+  //   this._vendorDocService.GetDocDetails(x).subscribe((data) => {
+  //      this.docDetailsForm = this._fb.group({
+  //        VendorActionHeaderID: [data.Table[0].VendorActionHeaderID],
+  //        VendorDocDetailsID: [data.Table[0].VendorDocDetailsID],
+  //        VendAction_MDDCode: [data.Table[0].VendAction_MDDCode, Validators.required],
+  //        VendDoc_MDDCode: [data.Table[0].VendDoc_MDDCode, Validators.required] // ,
+  //        // FileName: [data.Table[0].FileName, Validators.required]
+  //      });
+  //      this.GetDocument();
+  //    });
+  // }
 }

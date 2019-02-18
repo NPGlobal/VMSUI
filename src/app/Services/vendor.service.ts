@@ -8,10 +8,9 @@ import { Vendor } from '../Models/vendor';
 })
 export class VendorService {
 
-   // origin = 'http://172.16.7.60/VMSApi/';
-  // origin = 'http://172.16.7.68/';
-  // origin = 'http://172.16.7.69/';
-  origin = 'https://localhost:44372/';
+   origin = 'http://172.16.7.60/VMSApi/';
+   // origin = 'http://172.16.7.68/';
+    // origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
@@ -35,26 +34,10 @@ export class VendorService {
   }
 
   // Added by Shubhi
-
-  // Used for save and update Vendor Staff Info
-  SaveStaffInfo(VendorStaff: any): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/SaveVendorStaffInfo';
-    return this._http.post<any>(apiUrl, VendorStaff);
-  }
   // Used for save and update Vendor Technical Info
   SaveTechInfo(VendorTech: any): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/SaveVendorTechInfo';
     return this._http.post<any>(apiUrl, VendorTech);
-  }
-  // For Vendor Staff Department
-  GetVendorsDeptStaff(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
-    return this._http.get<any>(apiUrl);
-  }
-  // For Vendor Staff Designation by Department
-  GetVendorDesignation(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
-    return this._http.get<any>(apiUrl);
   }
   // For Vendor Technical Department
   GetVendorDeptTech(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
@@ -66,20 +49,9 @@ export class VendorService {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorsDeptTech/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
     return this._http.get<any>(apiUrl);
   }
-  // Get all Staff of a Vendor
-  GetVendorStaffByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetVendorStaffByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
-    return this._http.get<any>(apiUrl);
-  }
   // Get all Technical information of a Vendor
   GetVendorTechByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
     const apiUrl = this.origin + 'api/VendorTech/GetVendorTechByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
-    return this._http.get<any>(apiUrl);
-  }
-
-  // Get Staff Information for Edit
-  GetStaffDetails(id: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorStaff/GetStaffDetails/' + id;
     return this._http.get<any>(apiUrl);
   }
   // Get Technical Information for Edit
@@ -88,7 +60,7 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
-  SaveVendorPersonalDetails(PersonalDetails: Vendor): Observable<any> {
+  SaveVendorPersonalDetails(PersonalDetails: any): Observable<any> {
     const apiUrl = this.origin + 'api/Vendor/SaveVendorPersonalDetails';
     return this._http.post<any>(apiUrl, PersonalDetails);
   }
@@ -100,37 +72,6 @@ export class VendorService {
 
   GetMasterVendorList(): Observable<any> {
     const apiUrl = this.origin + 'api/MasterVendor/GetMasterVendorList';
-    return this._http.get<any>(apiUrl);
-  }
-
-  // Used for save and update Vendor Business Info
-  SaveVendorBusinessInfo(VendorBusiness: any): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorBusiness/SaveVendorBusinessInfo';
-    return this._http.post<any>(apiUrl, VendorBusiness);
-  }
-  // Get Vendor Business Information for Edit
-  GetBusinessDetails(id: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorBusiness/GetBusinessDetails/' + id;
-    return this._http.get<any>(apiUrl);
-  }
-   // Get all Staff of a Vendor
-   GetVendorBusinessByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorBusiness/GetVendorBusinessByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
-    return this._http.get<any>(apiUrl);
-  }
- // Used for save and update Vendor Production Info
- SaveProductionInfo(VendorProduction: any): Observable<any> {
-  const apiUrl = this.origin + 'api/VendorProduction/SaveVendorProductionInfo';
-  return this._http.post<any>(apiUrl, VendorProduction);
-}
-  // Get all Production details of a vendor
-  GetVendorProductionByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorProduction/GetVendorProductionByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
-    return this._http.get<any>(apiUrl);
-  }
-   // Get Vendor Production Information for Edit
-   GetProductionDetails(vcode: string, div: string, dept: string): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorProduction/GetProductionDetails/10/' + vcode + '/' + div + '/' + dept;
     return this._http.get<any>(apiUrl);
   }
 }
