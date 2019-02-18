@@ -1,6 +1,3 @@
-<style type="text/css">
-</style>
-
 <div class="col-lg-12 col-sm-12 col-md-12">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
@@ -14,27 +11,21 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
-        <th scope="col">Financial Year</th>
-        <th scope="col">Division</th>
-        <th scope="col">Department</th>
-        <th scope="col">Proposed DP Business</th>
-        <th scope="col">Proposed DP Qty</th>
-        <th scope="col">Proposed JW Business</th>
-        <th scope="col">Proposed JW Qty</th>
+        <th scope="col">Sr No</th>
+        <th scope="col">Action</th>
+        <th scope="col">Document</th>
+        <th scope="col">File</th>
         <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
         <tr *ngFor="let vendor of pagedItems;index as i;">
-          <th scope="row">{{vendor.FinancialYear}}</th>
-          <td>{{vendor.Division}}</td>
-          <td>{{vendor.Department}}</td>
-          <td>{{vendor.ProposedDPValueQty}}</td>
-          <td>{{vendor.ProposedDPGrnQty}}</td>
-          <td>{{vendor.ProposedJWValueQty}}</td>
-          <td>{{vendor.ProposedJWGrnQty}}</td>
+          <td>{{vendor.RowNumber}}</td>
+          <td>{{vendor.VendAction}}</td>
+          <td>{{vendor.VendDoc}}</td>
+          <td>{{vendor.FileName}}</td>
           <td>
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor.VendorDocDetailsID)" 
+            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetDocDetails(vendor)" 
           data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
           </td>
         </tr>
@@ -112,8 +103,13 @@
             <div class="row">
               <div class="col-lg-6 col-md-6">
                 <label class="text">Upload Document<span class="error-label">*</span></label>
+                <!-- <span>
+                  <input class="form-control input-sm" type="file" (change)="OnFileChange($event)"
+                  [ngClass]="{ 'is-invalid': (docDetailsForm.controls.FileName.touched || submitted) && docDetailsForm.controls.FileName.errors }" />
+                  <br />
+                </span> -->
                 <span>
-                  <input class="form-control input-sm" type="file" (change)="OnFileChange($event)" />
+                  <input class="form-control input-sm" type="file" formControlName="FileName" (change)="OnFileChange($event)"/>
                   <br />
                 </span>
               </div>

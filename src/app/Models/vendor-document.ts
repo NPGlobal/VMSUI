@@ -5,5 +5,6 @@ export class VendorDocument {
     VendorCode: string;
     VendAction_MDDCode: string;
     VendDoc_MDDCode: string;
+    FileName: string;
     CreatedBy: number;
 }

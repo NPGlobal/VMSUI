@@ -198,6 +198,8 @@ export class PersonalDetailsComponent implements OnInit {
       StatusObj = data;
       if (StatusObj.Status === 0) {
         alert('Saved Succesfully!!');
+        this.IsAddressSaved = true;
+        this.Editvendor(this.VendorCode);
       }
     });
   }
@@ -217,6 +219,8 @@ export class PersonalDetailsComponent implements OnInit {
 
         this.InitializeFormControls();
       }
+
+      this.IsAddressSaved = false;
     });
   }
 
@@ -410,7 +414,6 @@ export class PersonalDetailsComponent implements OnInit {
     this.IsAddressSaved = IsSaved;
     if (this.IsAddressSaved) {
       this.Editvendor(this.VendorCode);
-      this.IsAddressSaved = false;
     }
   }
 }
