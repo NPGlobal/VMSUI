@@ -47,6 +47,7 @@ export class TechnicalDetailsComponent implements OnInit {
       this.GetVendorTech(this.currentPage);
     });
     this.GetVendorDepartments();
+    // this.formControlValueChanged();
   }
 
   GetVendorTech(index: number) {
@@ -67,14 +68,25 @@ export class TechnicalDetailsComponent implements OnInit {
     });
   }
   GetVendorTechSpec() {
+    // tslint:disable-next-line:triple-equals
+    if (this.techDetailsForm.get('id').value == 0) {
+      this.isLine = 0;
+      this.isEfficiency = 0;
+      this.techDetailsForm.controls.techSpec.patchValue('');
+      this.techDetailsForm.controls.techLineNo.patchValue('');
+      this.techDetailsForm.controls.efficiency.patchValue('');
+    }
+    // if ( this.isLine = 0 ) {
+    // this.techDetailsForm.controls.TechLineNo = null; }
     if (this.techDetailsForm.get('dept').value === '') {
       this.techSpecList = [];
-      this.techDetailsForm.controls.techSpec.patchValue('');
     } else {
+      // Added by SHubhi
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
         this.techSpecList = data;
       });
     }
+    this.checkValidation();
   }
 
   InitializeFormControls() {
@@ -101,8 +113,10 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('id').value;
     this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
     this.VendorTech.VendorCode = this.vendorcode;
-    this.VendorTech.TechLineNo = (this.techDetailsForm.get('techLineNo').value > 0) ? this.techDetailsForm.get('techLineNo').value : '0';
-    this.VendorTech.Efficiency = (this.techDetailsForm.get('efficiency').value > 0) ? this.techDetailsForm.get('efficiency').value : '0';
+    this.VendorTech.TechLineNo = (this.techDetailsForm.get('techLineNo').value !== null)
+      ? this.techDetailsForm.get('techLineNo').value : '0';
+    this.VendorTech.Efficiency = (this.techDetailsForm.get('efficiency').value > 0)
+      ? this.techDetailsForm.get('efficiency').value : '0';
     this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
     this.VendorTech.Status = this.techDetailsForm.get('status').value;
     this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
@@ -110,6 +124,7 @@ export class TechnicalDetailsComponent implements OnInit {
     // console.log(JSON.stringify(this.VendorTech));
     try {
       this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
+        // alert('Hello Shubhi');
         if (data.Msg != null) {
           if (data.Msg[0].Result === 0) {
             this.VendorTech = new VendorTech();
@@ -122,7 +137,7 @@ export class TechnicalDetailsComponent implements OnInit {
             $('#myModal').modal('toggle');
             this.dismiss();
           } else {
-          alert(data.Msg[0].Message);
+            alert(data.Msg[0].Message);
           }
         } else {
           alert('There are some technical error. Please contact administrator.');
@@ -132,13 +147,30 @@ export class TechnicalDetailsComponent implements OnInit {
       alert('There are some technical error. Please contact administrator.');
     }
   }
+  checkValidation() {
+    // tslint:disable-next-line:triple-equals
+    if (this.isLine == 1) {
+      this.techDetailsForm.controls['techLineNo'].setValidators(Validators.required);
+    } else {
+      this.techDetailsForm.controls['techLineNo'].clearValidators();
+    }
+    // tslint:disable-next-line:triple-equals
+    if (this.isEfficiency == 1) {
+      this.techDetailsForm.controls['efficiency'].setValidators([Validators.required, Validators.pattern(this.efficiencyPattern)]);
+    } else {
+      this.techDetailsForm.controls['efficiency'].clearValidators();
+    }
+
+  }
   openModal() {
+    // tslint:disable-next-line:triple-equals
     this.techDetailsForm = this._fb.group({
       id: ['0'],
       dept: ['', Validators.required],
       techSpec: ['', Validators.required],
-      techLineNo: ['', Validators.required],
-      efficiency: ['', [Validators.pattern(this.efficiencyPattern)]],
+      techLineNo: [''],
+      // efficiency: ['', [Validators.pattern(this.efficiencyPattern)]],
+      efficiency: ['', Validators.required],
       unitCount: ['', Validators.required],
       status: true,
       remarks: '',
@@ -168,8 +200,8 @@ export class TechnicalDetailsComponent implements OnInit {
         id: [data.Table[0].VendorTechDetailsID],
         dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
         techSpec: [data.Table[0].VendorTechConfigID, Validators.required],
-        techLineNo: [data.Table[0].TechLineNo, Validators.required],
-        efficiency: [data.Table[0].Efficiency, [Validators.pattern(this.efficiencyPattern)]],
+        techLineNo: [data.Table[0].TechLineNo],
+       efficiency: [data.Table[0].Efficiency],
         unitCount: [data.Table[0].UnitCount, Validators.required],
         status: data.Table[0].Status = 'A' ? true : false,
         remarks: data.Table[0].Remarks
@@ -181,11 +213,21 @@ export class TechnicalDetailsComponent implements OnInit {
   }
   specChange(event) {
     this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
-    if (this.isLine === 0 ) {
-      this.techDetailsForm.controls.techLineNo.patchValue(''); } else {
-      this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value); }
+    this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
+    this.checkValidation();
+    // if (this.techDetailsForm.controls.techSpec !== null) {
+    // tslint:disable-next-line:triple-equals
+    if (this.isLine == 0) {
+      this.techDetailsForm.controls.techLineNo.patchValue('');
+      // this.techDetailsForm.controls.techLineNo = '0';
+    } else {
+      this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
+    }
+    // tslint:disable-next-line:triple-equals
+    if (this.isEfficiency == 0) {
+      this.techDetailsForm.controls.efficiency.patchValue('');
+    } else {
       this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
+    }
   }
 }
-
-
