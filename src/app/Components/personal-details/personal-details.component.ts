@@ -215,7 +215,6 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.IsSameForAll = this.personalDetailsForm.get('RegisteredOfficeAddress.IsSameForAll').value;
 
-    console.log(this.vendor);
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
