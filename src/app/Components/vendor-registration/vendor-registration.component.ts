@@ -43,11 +43,6 @@ export class VendorRegistrationComponent implements OnInit {
     'VendorType': {
       'required': 'Vendor Type is Required'
     },
-    'GSTIN': {
-      'minlength': '',
-      'maxlength': '',
-      'pattern': 'Cannot contains special characters'
-    },
     'PANNo': {
       'minlength': '',
       'maxlength': '',
@@ -61,7 +56,6 @@ export class VendorRegistrationComponent implements OnInit {
   formErrors = {
     'VendorCode': '',
     'VendorType': '',
-    'GSTIN': '',
     'PANNo': '',
     'MasterVendorId': ''
   };
@@ -98,11 +92,8 @@ export class VendorRegistrationComponent implements OnInit {
     this.RegistrationForm = this._fb.group({
       VendorCode: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
       VendorName: [''],
-      IsRCM: ['false'],
-      IsProvisional: [false],
       MasterVendorId: [null, Validators.required],
       RefVendorName: [''],
-      GSTIN: ['', [Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
       PANNo: ['', [Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       StoreList: [''],
@@ -174,11 +165,8 @@ export class VendorRegistrationComponent implements OnInit {
     vendor.MasterVendorId = this.RegistrationForm.get('MasterVendorId').value;
     vendor.Ref_VendorCode = this.RegistrationForm.get('Ref_VendorCode').value;
     vendor.VendorName = this.RegistrationForm.get('VendorName').value;
-    vendor.PANNo = this.RegistrationForm.get('PANNo').value;
-    vendor.GSTIN = this.RegistrationForm.get('GSTIN').value;
-    vendor.IsProvisional = this.RegistrationForm.get('IsProvisional').value;
-    vendor.IsRCM = this.RegistrationForm.get('IsRCM').value;
     vendor.VendorCode = this.RegistrationForm.get('VendorCode').value;
+    vendor.PANNo = this.RegistrationForm.get('PANNo').value;
     vendor.IsDirectVendor = this.RegistrationForm.get('IsDirectVendor').value;
     vendor.IsJWVendor = this.RegistrationForm.get('IsJWVendor').value;
     vendor.SelectedPHListCSV = !vendor.IsJWVendor ? '' :

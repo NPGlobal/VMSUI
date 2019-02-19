@@ -7,7 +7,6 @@ export class Vendor {
     Ref_VendorCode: string;
     MasterVendorId: number;
     PANNo: string;
-    GSTIN: string;
     Status: string;
     AssociatedSinceYear: number;
     VendorType_MDDCode: string;
@@ -19,8 +18,11 @@ export class Vendor {
     OtherCustomer4: string;
     OtherCustomer5: string;
     SelectedPHListCSV: string;
+    IsGSTRegistered: boolean;
+    GSTIN: string;
     IsProvisional: Boolean;
     IsRCM: Boolean;
+    GSTDate: Date;
     IsJWVendor: boolean;
     IsDirectVendor: boolean;
     RegisteredOfficeAddress: VendorAddress;

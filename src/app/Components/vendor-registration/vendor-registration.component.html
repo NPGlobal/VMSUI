@@ -49,7 +49,6 @@
             </select>
           </div>
 
-
           <div class="form-group col-md-6">
             <label for="PANNo">PAN</label>
             &nbsp;&nbsp;
@@ -58,40 +57,6 @@
             </span>
             <input type="text" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control col-md-12  input-sm"
               formControlName="PANNo" (blur)="logValidationErrors()">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="GSTIN">GST No</label>
-            &nbsp;&nbsp;
-            <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
-              {{formErrors.GSTIN}}
-            </span>
-            <input type="text" [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control col-md-12  input-sm"
-              formControlName="GSTIN" (blur)="logValidationErrors()">
-          </div>
-
-          <div class="form-group col-md-6">
-            <label for="ISRCM">Reverse Charge Mechanism Applied</label>
-            <div class="col-md-2">
-              <label class="radio-inline">
-                <input value="true" type="radio" formControlName="IsRCM">
-                <span style="margin-left:5px;">Yes</span>
-              </label>
-            </div>
-            <div class="col-md-2">
-              <label class="radio-inline">
-                <input value="false" type="radio" formControlName="IsRCM">
-                <span style="margin-left:5px;">No</span>
-              </label>
-            </div>
-          </div>
-          <div class="form-group col-md-3">
-            <div class="checkbox">
-              <label>
-                <input value="True" type="checkbox" formControlName="IsProvisional">
-                &nbsp;
-                Provisional
-              </label>
-            </div>
           </div>
           <div class="form-group col-md-3">
             <label>Vendor Type</label>
@@ -159,8 +124,8 @@
 
           <!-- Modal footer -->
 
-          <div class="mr-auto modal-footer ml-auto">
-            <div class="col-md-12">
+          <div class="modal-footer col-md-12  page-footer">
+            <div class="mr-auto ml-auto">
               <button type="submit" (click)="logValidationErrors()" class="mr-3 btn btn-danger">Register</button>
               <button #modalCloseButton type="button" class="btn" (click)="dismiss()"
                 data-dismiss="modal">Cancel</button>
