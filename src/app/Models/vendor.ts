@@ -8,6 +8,7 @@ export class Vendor {
     MasterVendorId: number;
     PANNo: string;
     GSTIN: string;
+    Status: string;
     AssociatedSinceYear: number;
     VendorType_MDDCode: string;
     PersonTopRanker1: string;

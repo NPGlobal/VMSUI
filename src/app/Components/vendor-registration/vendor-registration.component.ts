@@ -44,15 +44,13 @@ export class VendorRegistrationComponent implements OnInit {
       'required': 'Vendor Type is Required'
     },
     'GSTIN': {
-      'required': '',
-      'minlength': 'Invalid GST No.',
-      'maxlength': 'Invalid GST No.',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'PANNo': {
-      'required': '',
-      'minlength': 'Invalid PAN number',
-      'maxlength': 'Invalid PAN number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'MasterVendorId': {
@@ -77,11 +75,14 @@ export class VendorRegistrationComponent implements OnInit {
 
 
     this._vendorService.GetMasterVendorList().subscribe((result) => {
-      this.MasterVendorList = result.data.MasterVendors;
+      let lst: MasterVendor[];
+      lst = result.data.MasterVendors;
+      this.MasterVendorList = lst.filter(x => x.Status.trim().toUpperCase() === 'A');
     });
 
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
-      this.ReferenceVendorList = result.data.Vendors;
+      this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A');
+      console.log(this.ReferenceVendorList.length);
     });
 
     this.InitializeFormControls();
@@ -101,8 +102,8 @@ export class VendorRegistrationComponent implements OnInit {
       IsProvisional: [false],
       MasterVendorId: [null, Validators.required],
       RefVendorName: [''],
-      GSTIN: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
-      PANNo: ['', [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
+      GSTIN: ['', [Validators.pattern(this.AlphanumericPattern), Validators.minLength(15), Validators.maxLength(15)]],
+      PANNo: ['', [Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       StoreList: [''],
       SelectedPHStoreList: null,

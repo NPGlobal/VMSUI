@@ -39,16 +39,14 @@
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
                                 <label class="text">GST Registration No.</label>
-                                <span><input type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
+                                <span>
+                                    <input type="text" formControlName="GSTIN" [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
+                                </span>
                             </div>
                             <div class="col-md-6">
-                                <label class="text">PAN No.<i class="mandatory">*</i></label>
+                                <label class="text">PAN No.</label>&nbsp;&nbsp;
                                 <span>
-                                    <span class="help-block mandatory" *ngIf="formErrors.PANNo">
-                                        {{formErrors.PANNo}}
-                                    </span>
-                                    <input type="text" formControlName="PANNo" class="form-control input-sm"
-                                        (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PANNo}" />
+                                    <input type="text" formControlName="PANNo" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
                             </div>
                         </div>
@@ -548,7 +546,7 @@
 
         <div class="col-md-12 page-footer">
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button routerLink="vendor" type="button" class="btn">Cancel</button>
+            <button [routerLink]="['/vendor']" type="button" class="btn">Cancel</button>
         </div>
     </div>
 </form>
