@@ -29,7 +29,10 @@ export class PersonalDetailsComponent implements OnInit {
   PHList: OrgUnit[];
   StoreList: OrgUnit[];
   SelectedPHStoreList: OrgUnit[] = [];
+  SavedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
+
+  AlphanumericPattern = '^[a-zA-Z0-9]*$';
 
   Address: VendorAddress;
 
@@ -39,18 +42,25 @@ export class PersonalDetailsComponent implements OnInit {
   HasAllCollapsed: boolean;
   IsAddressSaved = false;
 
+  HasPHSelected: boolean;
+
   submitted = false;
   ValidationMessages = {
     'PANNo': {
-      'required': '',
       'minlength': 'Invalid PAN number',
       'maxlength': 'Invalid PAN number',
+      'pattern': 'Cannot contains special characters'
+    },
+    'GSTIN': {
+      'minlength': 'Invalid GST number',
+      'maxlength': 'Invalid GST number',
       'pattern': 'Cannot contains special characters'
     }
   };
 
   formErrors = {
-    'PANNo': ''
+    'PANNo': '',
+    'GSTIN': ''
   };
 
   constructor(private _vendorService: VendorService,
@@ -133,6 +143,14 @@ export class PersonalDetailsComponent implements OnInit {
 
   SavePersonalDetails() {
     this.submitted = true;
+
+    if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value &&
+      (this.SavedPHStoreList.length === 0 &&
+        this.SelectedPHStoreList.length === 0)) {
+      this.HasPHSelected = false;
+      return;
+    }
+
     if (this.personalDetailsForm.invalid) {
       this.logValidationErrors();
       return;
@@ -153,9 +171,10 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value;
     vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value;
     vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value;
-    vendor.SelectedPHListCSV = this.SelectedPHStoreList.map(function (element) {
-      return element.OrgUnitCode;
-    }).join();
+    vendor.SelectedPHListCSV = this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value ?
+      this.SelectedPHStoreList.map(function (element) {
+        return element.OrgUnitCode;
+      }).join() : '';
 
     vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.RegisteredOfficeAddress.CompanyCode = '10';
@@ -258,7 +277,7 @@ export class PersonalDetailsComponent implements OnInit {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {
         if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
-          this.SelectedPHStoreList.push(this.AllPHList[i]);
+          this.SavedPHStoreList.push(this.AllPHList[i]);
         } else {
           if (this.AllPHList[i].OrgUnitTypeCode === 'S') {
             this.StoreList.push(this.AllPHList[i]);
@@ -268,6 +287,9 @@ export class PersonalDetailsComponent implements OnInit {
         }
       }
     }
+
+    this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
+      (this.SelectedPHStoreList.length > 0);
   }
 
   InitializeFormControls() {
@@ -279,15 +301,15 @@ export class PersonalDetailsComponent implements OnInit {
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [this.vendor.PANNo, [Validators.required, Validators.maxLength(10), Validators.minLength(10)]],
-        GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
+        PANNo: [this.vendor.PANNo, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
+        GSTIN: [this.vendor.GSTIN, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]],
         PHList: new FormControl(''),
         StoreList: [''],
         SelectedPHStoreList: [''],
         Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
         IsExpanded: true,
-        IsJWVendor: [this.vendor.IsJWVendor],
-        IsDirectVendor: [this.vendor.IsDirectVendor]
+        IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
+        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }]
       }),
       RegisteredOfficeAddress: this._fb.group({
         Address1: [this.vendor.RegisteredOfficeAddress.Address1],
@@ -364,6 +386,8 @@ export class PersonalDetailsComponent implements OnInit {
       this.DeleteFromArray(storeValues, 'Store');
     }
 
+    this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
+      (this.SelectedPHStoreList.length > 0);
   }
 
   MoveToPHList(event: any) {
@@ -384,6 +408,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.DeleteFromArray(values, 'SelectedPHStoreList');
 
+    this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
+      (this.SelectedPHStoreList.length > 0);
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -461,5 +487,11 @@ export class PersonalDetailsComponent implements OnInit {
         }
       }
     });
+  }
+
+  SetPHListValidation($event) {
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue('');
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue('');
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue('');
   }
 }

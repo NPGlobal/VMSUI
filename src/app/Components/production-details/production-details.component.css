@@ -11,11 +11,13 @@
 .err{
     margin-bottom:0% 
 }
-.table > tbody > thead > tr > td{
+
+.table > tbody > tr > td{
     font-family: verdana;
     color: #000000;
     font-size: 13px;
     /*font-weight: 700;*/
 }
+
 input[type="text"],select{margin-bottom:0px !important;}
 .modal label{font-size: 13px;}
