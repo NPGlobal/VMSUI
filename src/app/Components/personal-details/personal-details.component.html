@@ -32,8 +32,7 @@
                             <div class="col-md-6">
                                 <label class="text">Producer Name</label>
                                 <span>
-                                    <input type="text" formControlName="VendorName" class="form-control input-sm"
-                                        value="" />
+                                    <input type="text" formControlName="VendorName" class="form-control input-sm" />
                                 </span>
                             </div>
                         </div>
@@ -43,8 +42,14 @@
                                 <span><input type="text" formControlName="GSTIN" class="form-control input-sm" /></span>
                             </div>
                             <div class="col-md-6">
-                                <label class="text">PAN No.</label>
-                                <span><input type="text" formControlName="PANNo" class="form-control input-sm" /></span>
+                                <label class="text">PAN No.<i class="mandatory">*</i></label>
+                                <span>
+                                    <span class="help-block mandatory" *ngIf="formErrors.PANNo">
+                                        {{formErrors.PANNo}}
+                                    </span>
+                                    <input type="text" formControlName="PANNo" class="form-control input-sm"
+                                        (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PANNo}" />
+                                </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
@@ -95,16 +100,16 @@
                                 <div class="col-sm-5">
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">PH/FO</label>
-                                        <select formControlName="PHList" onfocusout="event.target.value = ''" class="form-control input-sm" size="3"
-                                            multiple="multiple">
+                                        <select formControlName="PHList" onfocusout="event.target.value = ''"
+                                            class="form-control input-sm" size="3" multiple="multiple">
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
                                                 {{ PH.OrgUnitName }}</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">Store</label>
-                                        <select formControlName="StoreList" onfocusout="event.target.value = ''" class="form-control input-sm" size="3"
-                                            multiple="multiple">
+                                        <select formControlName="StoreList" onfocusout="event.target.value = ''"
+                                            class="form-control input-sm" size="3" multiple="multiple">
                                             <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
                                                 {{ Store.OrgUnitName }}</option>
                                         </select>
@@ -121,8 +126,8 @@
                                 </div>
                                 <div class="col-sm-5 form-group" style="padding-left:8px;padding-right: 0px">
                                     <label class="text">PH/Store</label>
-                                    <select formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''" class="form-control input-sm" size="8"
-                                        multiple="multiple">
+                                    <select formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
+                                        class="form-control input-sm" size="8" multiple="multiple">
                                         <option *ngFor="let PHStore of SelectedPHStoreList"
                                             [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                     </select>
@@ -134,14 +139,193 @@
             </div>
             <hr>
 
-            <!-- Vendor Address -->
+            <!-- Vendor Registered Office Address -->
+
+            <div class="col" formGroupName="RegisteredOfficeAddress">
+                <div class="content-heading">
+                    <a href="javascript:void(0)"
+                        (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Registered Office Address
+                </div>
+                <div class="slider" [ngClass]="{
+                      closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
+                  }">
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Address1</label>
+                            <span>
+                                <input formControlName="Address1" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">Address2</label>
+                            <span>
+                                <input formControlName="Address2" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">Address3</label>
+                            <span>
+                                <input formControlName="Address3" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Country</label>
+                            <span>
+                                <select formControlName="CountryCode" class="form-control input-sm">
+                                    <option [ngValue]="null">Select</option>
+                                    <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
+                                        {{country.MDDName}}</option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">State</label>
+                            <span>
+                                <select formControlName="StateCode" class="form-control input-sm">
+                                    <option [ngValue]="null">Select</option>
+                                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
+                                    </option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">Same for Factory/Sister concern</label>
+                            <span>
+                                <input class="ml-2" formControlName="IsSameForAll" type="checkbox" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Pincode</label>
+                            <span>
+                                <input formControlName="PIN" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">City</label>
+                            <span>
+                                <input formControlName="CityCode" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- Contact -->
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Contact Name</label>
+                            <span>
+                                <input formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary Contact Name</label>
+                            <span>
+                                <input formControlName="SecondaryContactName" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Phone No.</label>
+                            <span>
+                                <input formControlName="PrimaryContactPhone" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary Phone No.</label>
+                            <span>
+                                <input formControlName="SecondaryContactPhone" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Fax</label>
+                            <span>
+                                <input formControlName="PrimaryContactFax" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary Fax</label>
+                            <span>
+                                <input formControlName="SecondaryContactFax" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary E-Mail</label>
+                            <span>
+                                <input formControlName="PrimaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary E-Mail</label>
+                            <span>
+                                <input formControlName="SecondaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">
+                            <label class="text">Primary Website</label>
+                            <span>
+                                <input formControlName="PrimaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text">Secondary Website</label>
+                            <span>
+                                <input formControlName="SecondaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <hr>
+
+            <!-- Vendor Factory Address -->
 
             <div class="col" formGroupName="Address">
                 <div class="content-heading">
                     <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))"
                         class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Address
+                    </a>Factory/Sister Concern Address
                 </div>
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
@@ -150,7 +334,7 @@
                     <div class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
-                                data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false">
+                                (click)="OpenAddressModal(CreateNewAddress())">
                                 <i class="fa fa-plus"></i>
                                 <span title="Add new" class="py-4">Add new address</span>
                             </button>
@@ -158,8 +342,8 @@
                     </div>
 
                     <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
-                        <table class="table table-bordered table-hover">
-                            <thead class="table-primary">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
                                 <tr>
                                     <th scope="col">Address1</th>
                                     <th scope="col">Address2</th>
@@ -179,12 +363,8 @@
                                         <td>{{address.Address3}}</td>
                                         <td>{{address.CityCode + '(' + address.PIN + ')'}}</td>
                                         <td>{{address.StateName + ', ' + address.CountryName}}</td>
-                                        <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Office')}}</td>
+                                        <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}</td>
                                         <td>
-                                            <button #modalOpenButton type="button" data-target="#myModal"
-                                                data-backdrop="static" data-keyboard="false" data-toggle="modal"
-                                                style="display:none;">
-                                            </button>
                                             <a title="Edit" href="javascript:void(0)"
                                                 (click)="OpenAddressModal(address)">
                                                 <i class="fa fa-edit"></i>
@@ -197,8 +377,8 @@
                                     </tr>
                                     <tr class="collapse" id="{{'Collapse' + (i + 1)}}">
                                         <td colspan="9">
-                                            <table class="table table-hover table-sm">
-                                                <thead class="table-warning">
+                                            <table class="table table-warning table-sm">
+                                                <thead>
                                                     <tr>
                                                         <th>Type</th>
                                                         <th>Name</th>
@@ -213,7 +393,7 @@
                                                         <td>Primary</td>
                                                         <td>{{address.PrimaryContactName}}</td>
                                                         <td>{{address.PrimaryContactPhone}}</td>
-                                                        <td>{{address.PrimayContactFax}}</td>
+                                                        <td>{{address.PrimaryContactFax}}</td>
                                                         <td>{{address.PrimaryContactEmail}}</td>
                                                         <td>{{address.PrimaryContactWebsite}}</td>
                                                     </tr>
@@ -229,7 +409,7 @@
                                             </table>
                                         </td>
                                     </tr>
-                                    
+
                                 </ng-container>
                                 <tr *ngIf="vendorAddresses.length === 0">
                                     <td colspan="7">
@@ -261,7 +441,7 @@
                             <label class="text">Associated With Fabindia Since</label>
                             <span>
                                 <select formControlName="AssociatedSinceYear" class="form-control input-sm">
-                                    <option [ngValue]="null">Select</option>
+                                    <option [ngValue]="0">Select</option>
                                     <option *ngFor="let Year of YearList" value="{{Year}}">{{Year}}</option>
                                 </select>
                             </span>
@@ -271,7 +451,7 @@
                             <span>
                                 <select *ngIf="VendorTypeList" formControlName="VendorType_MDDCode"
                                     class="form-control input-sm">
-                                    <option [ngValue]="null">Select</option>
+                                    <option value="">Select</option>
                                     <option *ngFor="let VendorType of VendorTypeList" value="{{VendorType.MDDCode}}">
                                         {{VendorType.MDDName}}</option>
                                 </select>
@@ -359,4 +539,7 @@
     </div>
 </form>
 
+<button #modalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
 <app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form>

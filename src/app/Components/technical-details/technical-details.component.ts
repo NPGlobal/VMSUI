@@ -68,25 +68,29 @@ export class TechnicalDetailsComponent implements OnInit {
     });
   }
   GetVendorTechSpec() {
-    // tslint:disable-next-line:triple-equals
-    if (this.techDetailsForm.get('id').value == 0) {
-      this.isLine = 0;
-      this.isEfficiency = 0;
-      this.techDetailsForm.controls.techSpec.patchValue('');
-      this.techDetailsForm.controls.techLineNo.patchValue('');
-      this.techDetailsForm.controls.efficiency.patchValue('');
-    }
-    // if ( this.isLine = 0 ) {
-    // this.techDetailsForm.controls.TechLineNo = null; }
-    if (this.techDetailsForm.get('dept').value === '') {
+     if (this.techDetailsForm.get('dept').value === '') {
       this.techSpecList = [];
+      this.techDetailsForm.controls.techSpec.patchValue('');
     } else {
       // Added by SHubhi
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {
         this.techSpecList = data;
+        if (this.techDetailsForm.get('techSpec').value !== '') {
+          const strArray = this.techSpecList.find((obj) => obj.VendorConfigID === this.techDetailsForm.get('techSpec').value);
+          if (strArray === undefined) {
+           // this.techDetailsForm.controls.techSpec.patchValue('');
+           this.isLine = 0;
+           this.isEfficiency = 0;
+           this.techDetailsForm.controls.techSpec.patchValue('');
+           this.techDetailsForm.controls.techLineNo.patchValue('');
+           this.techDetailsForm.controls.efficiency.patchValue('');
+          }
+        }
+        // this.specChange(event);
+        this.checkValidation();
       });
     }
-    this.checkValidation();
+   // this.checkValidation();
   }
 
   InitializeFormControls() {
@@ -151,17 +155,18 @@ export class TechnicalDetailsComponent implements OnInit {
     // tslint:disable-next-line:triple-equals
     if (this.isLine == 1) {
       this.techDetailsForm.controls['techLineNo'].setValidators(Validators.required);
-    } else {
+      } else {
       this.techDetailsForm.controls['techLineNo'].clearValidators();
     }
     // tslint:disable-next-line:triple-equals
     if (this.isEfficiency == 1) {
-      this.techDetailsForm.controls['efficiency'].setValidators([Validators.required, Validators.pattern(this.efficiencyPattern)]);
-    } else {
+      this.techDetailsForm.controls['efficiency'].setValidators([Validators.pattern(this.efficiencyPattern), Validators.required]);
+     } else {
       this.techDetailsForm.controls['efficiency'].clearValidators();
     }
-
-  }
+    this.techDetailsForm.controls['techLineNo'].updateValueAndValidity();
+    this.techDetailsForm.controls['efficiency'].updateValueAndValidity();
+    }
   openModal() {
     // tslint:disable-next-line:triple-equals
     this.techDetailsForm = this._fb.group({
@@ -170,7 +175,7 @@ export class TechnicalDetailsComponent implements OnInit {
       techSpec: ['', Validators.required],
       techLineNo: [''],
       // efficiency: ['', [Validators.pattern(this.efficiencyPattern)]],
-      efficiency: ['', Validators.required],
+      efficiency: [''],
       unitCount: ['', Validators.required],
       status: true,
       remarks: '',
@@ -215,19 +220,17 @@ export class TechnicalDetailsComponent implements OnInit {
     this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
     this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
     this.checkValidation();
-    // if (this.techDetailsForm.controls.techSpec !== null) {
-    // tslint:disable-next-line:triple-equals
+   // tslint:disable-next-line:triple-equals
     if (this.isLine == 0) {
       this.techDetailsForm.controls.techLineNo.patchValue('');
-      // this.techDetailsForm.controls.techLineNo = '0';
     } else {
       this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
     }
     // tslint:disable-next-line:triple-equals
     if (this.isEfficiency == 0) {
       this.techDetailsForm.controls.efficiency.patchValue('');
-    } else {
+   } else {
       this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
-    }
+   }
   }
 }

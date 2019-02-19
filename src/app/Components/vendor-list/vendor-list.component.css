@@ -1,3 +1,10 @@
-.container{
+.container {
     max-width:100%;
+}
+
+.table > tbody > tr > td {
+    font-family: verdana;
+    color: #000000;
+    font-size: 13px;
+    /*font-weight: 700;*/
 }

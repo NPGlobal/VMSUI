@@ -122,10 +122,13 @@
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Efficiency</label>
-                  <span><input type="text" [attr.disabled]="isEfficiency == 0 ? 'true' : null" name="efficiency" formControlName="efficiency" maxlength="8"
-                    class="form-control input-sm" [ngClass]="{ 'is-invalid': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.hasError('required')}" /></span>
-                    <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.hasError('pattern')}"
-                    *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.hasError('pattern')">
+                  <span>
+                    <input type="text" [attr.disabled]="isEfficiency == 0 ? 'true' : null" formControlName="efficiency" class="form-control input-sm" maxlength="8"     
+                    [ngClass]="{ 'is-invalid': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors }" >
+                  </span>
+                   
+                    <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.hasError('pattern') && isEfficiency == 1}"
+                    *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.hasError('pattern') && isEfficiency == 1">
                      Valid Percentage Only</span>
                 </div>
               </div>
