@@ -82,14 +82,16 @@
                             &nbsp;
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input type="checkbox" formControlName="IsDirectVendor">
+                                    <input type="checkbox" formControlName="IsDirectVendor"
+                                        (change)="SetPHListValidation()" />
                                     <span style="margin-left:5px;" class="text">DP</span>
                                 </label>
                             </div>
                             &nbsp;
                             <div class="col-md-1">
                                 <label class="radio-inline">
-                                    <input type="checkbox" formControlName="IsJWVendor">
+                                    <input type="checkbox" formControlName="IsJWVendor"
+                                        (change)="SetPHListValidation()" />
                                     <span style="margin-left:5px;" class="text">JW</span>
                                 </label>
                             </div>
@@ -124,13 +126,25 @@
                                         (click)="MoveToPHList($event)">
 
                                 </div>
-                                <div class="col-sm-5 form-group" style="padding-left:8px;padding-right: 0px">
-                                    <label class="text">PH/Store</label>
-                                    <select formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
-                                        class="form-control input-sm" size="8" multiple="multiple">
-                                        <option *ngFor="let PHStore of SelectedPHStoreList"
-                                            [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
-                                    </select>
+                                <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
+                                    <div *ngIf="SavedPHStoreList.length > 0" class="col-sm-6 PHandStore form-group">
+                                        <label class="text">Saved PH/Store</label>
+                                        <select class="form-control input-sm" size="3" multiple="multiple">
+                                            <option *ngFor="let PHStore of SavedPHStoreList"
+                                                [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6 PHandStore form-group">
+                                        <label class="text">Selected PH/Store</label>
+                                        <select [ngClass]="{'is-invalid': !HasPHSelected}"
+                                            formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
+                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 3: 9)"
+                                            multiple="multiple">
+                                            <option *ngFor="let PHStore of SelectedPHStoreList"
+                                                [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
+                                        </select>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
