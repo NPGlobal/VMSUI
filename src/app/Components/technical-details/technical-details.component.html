@@ -116,16 +116,16 @@
                   <label class="text">Tech Line No. <span class="error-label">*</span></label>
                   <span>
                     <input type="text" [attr.disabled]="isLine==0 ? 'true' : null" formControlName="techLineNo" class="form-control input-sm" maxlength="50"
-                    [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techLineNo.touched || submitted) && techDetailsForm.controls.techLineNo.errors }">
+                   [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techLineNo.touched || submitted) && techDetailsForm.controls.techLineNo.errors }">
                   </span>
                   
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Efficiency</label>
                   <span><input type="text" [attr.disabled]="isEfficiency == 0 ? 'true' : null" name="efficiency" formControlName="efficiency" maxlength="8"
-                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.errors  && (isEfficiency == 1)}" /></span>
-                    <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors}"
-                    *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.errors && (isEfficiency == 1)">
+                    class="form-control input-sm" [ngClass]="{ 'is-invalid': (techDetailsForm.controls.efficiency.touched || submitted) && techDetailsForm.controls.efficiency.hasError('required')}" /></span>
+                    <span [ngClass]="{ 'error-label':(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.hasError('pattern')}"
+                    *ngIf="(techDetailsForm.controls.efficiency.dirty || submitted) && techDetailsForm.controls.efficiency.hasError('pattern')">
                      Valid Percentage Only</span>
                 </div>
               </div>

@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
 })
 export class VendorBusinessService {
 
-  // origin = 'http://172.16.7.60/VMSApi/';
+  origin = 'http://172.16.7.60/VMSApi/';
   // origin = 'http://172.16.7.68/';
-  origin = 'https://localhost:44372/';
+  // origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   // Used for save and update Vendor Business Info
