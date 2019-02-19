@@ -27,6 +27,8 @@ export class ProductionDetailsComponent implements OnInit {
   Division: string;
   Department: string;
   vendorcode: string;
+  PhonePattern =  '^[0-9]{10}$';
+  PinPattern = '^[1-9][0-9]{5}$';
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   vendorProductionList: VendorProduction[]; // For added Production List
@@ -121,10 +123,10 @@ export class ProductionDetailsComponent implements OnInit {
       address1: ['', Validators.required],
       address2: [''],
       address3: [''],
-      Phone: ['', Validators.required],
+      Phone: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: ['', Validators.required],
       city: ['', Validators.required],
-      pincode: ['', Validators.required],
+      pincode: ['', [Validators.required, Validators.pattern(this.PinPattern)]],
       remarks: ['']
      });
   }
@@ -240,10 +242,10 @@ this.isDisable = true;
         address1: [result.data.Table[0].Address1, Validators.required],
         address2: [result.data.Table[0].Address2],
         address3: [result.data.Table[0].Address3],
-        Phone: [result.data.Table[0].Phone, Validators.required],
+        Phone: [result.data.Table[0].Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
         StateCode: [result.data.Table[0].StateCode, Validators.required],
         city: [result.data.Table[0].CityCode, Validators.required],
-        pincode: [result.data.Table[0].Pin, Validators.required],
+        pincode: [result.data.Table[0].Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
         remarks: [result.data.Table[0].Remarks]
       });
       this.GetDepartment();

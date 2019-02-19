@@ -232,6 +232,9 @@
                     <input type="text" name="Phone" formControlName="Phone" class="form-control input-sm"
                       [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.Phone.touched || submitted) && ProductionDetailsForm.controls.Phone.errors }" />
                   </span>
+                    <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.Phone.dirty || submitted) && ProductionDetailsForm.controls.Phone.hasError('pattern')}"
+                    *ngIf="(ProductionDetailsForm.controls.Phone.dirty || submitted) && ProductionDetailsForm.controls.Phone.hasError('pattern')">
+                    Please Enter a Valid Phone No.</span>
                 </div>
                 <div class="col-lg-3 col-md-3">
                   <label class="text">State<span class="error-label">*</span></label>
@@ -253,7 +256,10 @@
                   <label class="text">PinCode<span class="error-label">*</span></label>
                   <span><input type="text" name="pincode" formControlName="pincode" class="form-control input-sm"
                       [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.pincode.touched || submitted) && ProductionDetailsForm.get('pincode').invalid }" /></span>
-                </div>
+                      <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.pincode.dirty || submitted) && ProductionDetailsForm.controls.pincode.hasError('pattern')}"
+                      *ngIf="(ProductionDetailsForm.controls.pincode.touched || submitted) && ProductionDetailsForm.controls.pincode.hasError('pattern')">
+                      Please Enter a Valid PinCode</span>
+                    </div>
               </div>
             </div>
           <!-- </fieldset> -->
