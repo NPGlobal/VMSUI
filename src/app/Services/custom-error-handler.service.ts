@@ -9,6 +9,6 @@ export class CustomErrorHandlerService implements ErrorHandler {
 
   handleError(error: any): void {
     // console.warn('Handler caught an error', error);
-     // alert('We are facing some technical issues. Please contact administrator.');
+     alert('We are facing some technical issues. Please contact administrator.');
   }
 }
