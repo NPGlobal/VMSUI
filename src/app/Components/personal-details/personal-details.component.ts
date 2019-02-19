@@ -31,6 +31,8 @@ export class PersonalDetailsComponent implements OnInit {
   SelectedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
 
+  AlphanumericPattern = '^[a-zA-Z0-9]*$';
+
   Address: VendorAddress;
 
   @ViewChild('modalOpenButton')
@@ -42,15 +44,20 @@ export class PersonalDetailsComponent implements OnInit {
   submitted = false;
   ValidationMessages = {
     'PANNo': {
-      'required': '',
       'minlength': 'Invalid PAN number',
       'maxlength': 'Invalid PAN number',
+      'pattern': 'Cannot contains special characters'
+    },
+    'GSTIN': {
+      'minlength': 'Invalid GST number',
+      'maxlength': 'Invalid GST number',
       'pattern': 'Cannot contains special characters'
     }
   };
 
   formErrors = {
-    'PANNo': ''
+    'PANNo': '',
+    'GSTIN': ''
   };
 
   constructor(private _vendorService: VendorService,
@@ -279,8 +286,8 @@ export class PersonalDetailsComponent implements OnInit {
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [this.vendor.PANNo, [Validators.required, Validators.maxLength(10), Validators.minLength(10)]],
-        GSTIN: [{ value: this.vendor.GSTIN, disabled: true }],
+        PANNo: [this.vendor.PANNo, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
+        GSTIN: [this.vendor.GSTIN, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]],
         PHList: new FormControl(''),
         StoreList: [''],
         SelectedPHStoreList: [''],

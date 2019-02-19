@@ -19,7 +19,7 @@
             <input type="text" class="form-control col-md-12 input-sm" formControlName="VendorName">
           </div>
           <div class="form-group col-md-6">
-            <label for="VendorCode">Producer Code<i class="mandatory">*</i></label>
+            <label for="VendorCode">Short Name<i class="mandatory">*</i></label>
             &nbsp;&nbsp;
             <span class="help-block mandatory" *ngIf="formErrors.VendorCode">
               {{formErrors.VendorCode}}
@@ -51,7 +51,7 @@
 
 
           <div class="form-group col-md-6">
-            <label for="PANNo">PAN</label><i class="mandatory">*</i>
+            <label for="PANNo">PAN</label>
             &nbsp;&nbsp;
             <span class="help-block mandatory" *ngIf="formErrors.PANNo">
               {{formErrors.PANNo}}
@@ -60,7 +60,7 @@
               formControlName="PANNo" (blur)="logValidationErrors()">
           </div>
           <div class="form-group col-md-6">
-            <label for="GSTIN">GST No</label><i class="mandatory">*</i>
+            <label for="GSTIN">GST No</label>
             &nbsp;&nbsp;
             <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
               {{formErrors.GSTIN}}
