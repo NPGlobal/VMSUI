@@ -21,6 +21,7 @@ import { VendorRegistrationComponent } from './Components/vendor-registration/ve
 import { AddressFormComponent } from './Components/address-form/address-form.component';
 import { HttpErrorInterceptor } from './Interceptors/http-error-interceptor';
 import { CustomErrorHandlerService } from './Services/custom-error-handler.service';
+import { BankDetailsComponent } from './Components/bank-details/bank-details.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { CustomErrorHandlerService } from './Services/custom-error-handler.servi
     ProductionDetailsComponent,
     DocumentComponent,
     VendorRegistrationComponent,
-    AddressFormComponent
+    AddressFormComponent,
+    BankDetailsComponent
   ],
   imports: [
     BrowserModule,

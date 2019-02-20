@@ -1,0 +1,80 @@
+<form class="form-inline" [formGroup]="BankDetailsForm" (ngSubmit)="SaveVendorBankDetails()" novalidate>
+
+  <div class="row col-md-12">
+    <div class="form-group col-md-6">
+      <label for="NameAsPerBankAccount">A/C Holder Name</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
+    </div>
+  </div>
+
+  <div class="form-group col-md-4">
+    <label for="BankName">Bank Name</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="BankName">
+  </div>
+  <div class="form-group col-md-4">
+    <label for="BranchName">Branch Name</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="BranchName">
+  </div>
+  <div style="margin-top: 10px;" class="form-group col-md-4">
+    <div>
+      <label class="radio-inline">
+        <input type="checkbox" formControlName="isECSenabled">
+        <span style="margin-left:5px;">ECS enabled</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-group col-md-4">
+    <label for="AccountNo">Account No</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="AccountNo">
+  </div>
+  <div class="form-group col-md-4">
+    <label for="AccountType">Account Type</label>
+    <select type="text" class="form-control col-md-12  input-sm" formControlName="AccountType">
+      <option value="-1" selected="selected">Select</option>
+      <option value="Saving">Saving</option>
+      <option value="Current">Current</option>
+    </select>
+  </div>
+  <div class="form-group col-md-4">
+    <label for="CurrencyCode">Currency<i class="mandatory">*</i></label>
+    <select type="text" class="form-control col-md-12  input-sm" (blur)="logValidationErrors()"
+      [ngClass]="{'is-invalid': formErrors.CurrencyCode}" formControlName="CurrencyCode">
+      <option value="EUR">Euro</option>
+      <option selected="selected" value="INR">Indian Rupee</option>
+      <option value="AED">UAE Dirham</option>
+      <option value="USD">US Dollar</option>
+    </select>
+  </div>
+
+  <div class="form-group col-md-4">
+    <label for="PaymentTerms">Payment Terms<i class="mandatory">*</i></label>
+    <input type="text" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PaymentTerms}">
+  </div>
+  <div class="form-group col-md-4">
+    <label for="IFSCCode">IFSC Code</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="IFSCCode">
+  </div>
+  <div class="form-group col-md-4">
+    <label for="MICRNo">MICR No</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="MICRNo">
+  </div>
+
+  <div class="form-group col-md-4">
+    <label for="SWIFTCode">SWIFT Code</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="SWIFTCode">
+  </div>
+  <div class="form-group col-md-4">
+    <label for="RemittanceInfavourof">Remittance Infavourof</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
+  </div>
+
+  <hr>
+
+  <div class="col-md-12 page-footer md-auto mr-auto">
+    <button type="submit" class="mr-3 btn btn-primary">Save</button>
+    <button [routerLink]="['/vendor']" type="button" class="btn">Cancel</button>
+  </div>
+
+</form>
