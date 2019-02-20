@@ -141,6 +141,13 @@ export class StaffDetailsComponent implements OnInit {
     if (this.staffDetailsForm.invalid) {
       return;
     }
+    this.sendFormData();
+  }
+  DeleteStaffDetails() {
+    this.sendFormData();
+  }
+  sendFormData() {
+    const st = this.staffDetailsForm.get('status').value;
     this.VendorStaff = new VendorStaff();
     this.VendorStaff.VendorStaffDetailsId = this.staffDetailsForm.get('VendorStaffDetailsId').value;
     this.VendorStaff.VendorStaffConfigId = this.staffDetailsForm.get('designation').value;
@@ -150,9 +157,10 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff.ContactPhone = (this.staffDetailsForm.get('ContactPhone').value === null)
       ? '' : this.staffDetailsForm.get('ContactPhone').value;
     this.VendorStaff.Priority = this.staffDetailsForm.get('priority').value;
-    this.VendorStaff.Status = this.staffDetailsForm.get('status').value;
+    this.VendorStaff.Status = st;
     this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value;
     this.VendorStaff.CreatedBy = 999999;
+
     try {
       this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
         if (data.Msg != null) {
@@ -162,7 +170,11 @@ export class StaffDetailsComponent implements OnInit {
             this.totalItems = data.VendorStaffCount[0].TotalVendors;
             this.GetVendorsStaffList();
             alert(data.Msg[0].Message);
-            $('#myModal').modal('toggle');
+            if (st === true) {
+              $('#myModal').modal('toggle');
+            } else {
+              $('#deleteModal').modal('toggle');
+            }
             this.dismiss();
           } else {
             alert(data.Msg[0].Message);
@@ -212,5 +224,19 @@ export class StaffDetailsComponent implements OnInit {
   //     this.GetVendorDesignation();
   //   });
   // }
+  DeleteStaffDetailPopup(vobj: VendorStaff) {
+    this.staffDetailsForm = this._fb.group({
+      VendorStaffDetailsId: [vobj.VendorStaffDetailsId],
+      VendorStaffConfigId: [vobj.VendorStaffConfigId],
+      dept: [vobj.dept, Validators.required],
+      designation: [vobj.VendorStaffConfigId, Validators.required],
+      ContactName: [vobj.ContactName, Validators.required],
+      ContactEmail: [vobj.ContactEmail, Validators.email],
+      ContactPhone: [vobj.ContactPhone, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.NumericPattern)]],
+      priority: [vobj.Priority, [Validators.required, Validators.pattern(this.NumericPattern)]],
+      status: false,
+      remarks: vobj.Remarks
+    });
+  }
 }
 
