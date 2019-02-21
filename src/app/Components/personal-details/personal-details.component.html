@@ -40,13 +40,15 @@
                             <div class="col-md-6">
                                 <label class="text">GST Registration No.</label>
                                 <span>
-                                    <input type="text" formControlName="GSTIN" [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
+                                    <input type="text" formControlName="GSTIN"
+                                        [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">PAN No.</label>&nbsp;&nbsp;
                                 <span>
-                                    <input type="text" formControlName="PANNo" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
+                                    <input type="text" formControlName="PANNo"
+                                        [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
                             </div>
                         </div>
@@ -151,6 +153,134 @@
             </div>
             <hr>
 
+            <!-- GST Registration Details -->
+
+            <div class="col" formGroupName="GSTRegistrationDetails">
+                <div class="content-heading">
+                    <a href="javascript:void(0)"
+                        (click)="ToggleContainer(personalDetailsForm.get('GSTRegistrationDetails'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('GSTRegistrationDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>GST Registration Details
+                </div>
+                <div class="slider" [ngClass]="{
+                      closed: !personalDetailsForm.get('GSTRegistrationDetails').controls.IsExpanded.value
+                  }">
+
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-6">
+                            <label class="text">GST Registered</label>
+                            <div class="col-md-2">
+                                <label class="radio-inline">
+                                    <input value="true" type="radio" formControlName="IsGSTRegistered"
+                                        (change)="SetValidationForGSTControls($event)" />
+                                    <span style="margin-left:5px;">Yes</span>
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="radio-inline">
+                                    <input value="false" type="radio" formControlName="IsGSTRegistered"
+                                        (change)="SetValidationForGSTControls($event)" />
+                                    <span style="margin-left:5px;">No</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text">Reverse Change Mechanism Applied</label>
+                            <div class="col-md-2">
+                                <label class="radio-inline">
+                                    <input value="true" type="radio" formControlName="IsRCM">
+                                    <span style="margin-left:5px;">Yes</span>
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="radio-inline">
+                                    <input value="false" type="radio" formControlName="IsRCM">
+                                    <span style="margin-left:5px;">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">GST No</label><i class="mandatory">*</i>
+                            <span>
+                                <input formControlName="GSTIN" type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input value="True" type="checkbox" formControlName="IsProvisional">
+                                    &nbsp;
+                                    Provisional
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">GST Date</label>
+                            <span>
+                                <input formControlName="GSTDate" type="date" class="form-control input-sm" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">Country</label>
+                            <span>
+                                <select class="form-control input-sm">
+                                    <option [ngValue]="null">Select</option>
+                                    <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
+                                        {{country.MDDName}}</option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">GST Registered for State</label>
+                            <span>
+                                <select class="form-control input-sm">
+                                    <option [ngValue]="null">Select</option>
+                                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
+                                    </option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">State Code</label>
+                            <label></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-4">
+                            <label class="text">City</label><i class="mandatory">*</i>
+                            <span>
+                                <input type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="text">PIN</label><i class="mandatory">*</i>
+                            <span>
+                                <input type="text" class="form-control input-sm" />
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <hr>
+
             <!-- Vendor Registered Office Address -->
 
             <div class="col" formGroupName="RegisteredOfficeAddress">
@@ -205,7 +335,8 @@
                             <span>
                                 <select formControlName="StateCode" class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
-                                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
+                                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
+                                        {{state.MDDName}}
                                     </option>
                                 </select>
                             </span>
@@ -375,7 +506,8 @@
                                         <td>{{address.Address3}}</td>
                                         <td>{{address.CityCode + '(' + address.PIN + ')'}}</td>
                                         <td>{{address.StateName + ', ' + address.CountryName}}</td>
-                                        <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}</td>
+                                        <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}
+                                        </td>
                                         <td>
                                             <a title="Edit" href="javascript:void(0)"
                                                 (click)="OpenAddressModal(address)">
