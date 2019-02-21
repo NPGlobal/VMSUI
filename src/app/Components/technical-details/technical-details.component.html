@@ -11,8 +11,8 @@
       <thead>
         <tr>
           <th scope="col">Sr No</th>
-          <th scope="col">Department</th>
-          <th scope="col">Technical Specification</th>
+          <th scope="col">Machine Type</th>
+          <th scope="col">Machine Name</th>
           <th scope="col">Tech Line No.</th>
           <th scope="col">Efficiency</th>
           <th scope="col">Unit Count</th>
@@ -30,7 +30,11 @@
             <td>{{vendor.UnitCount}}</td>
             <td>
               <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetTechDetails(vendor.VendorTechDetailsId)" 
-            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+             data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+            <a class="ml-2" title="Delete Machine" href="javascript:void(0)"  data-backdrop="static" data-keyboard="false"
+            (click)="DeleteTechDetails(vendor)">
+            
+              <i class="fa fa-remove"></i></a>
             </td>
           </tr>
       </tbody>
@@ -77,9 +81,9 @@
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
-                  <label class="text">Department <span class="error-label">*</span></label>
+                  <label class="text">Machine Type <span class="error-label">*</span></label>
                   <span>
-                    <select formControlName="dept" class="form-control input-sm" (change)="GetVendorTechSpec($event)"
+                    <select formControlName="dept" class="form-control input-sm" (change)="GetVendorTechSpec($event)" [attr.disabled]="isDisable===true ? 'true' : null" 
                       [ngClass]="{ 'is-invalid': (techDetailsForm.controls.dept.touched || submitted) && techDetailsForm.controls.dept.errors }">
                       <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
                               <p *ngIf="staffDetailsForm.controls.dept.errors.required">Department is required</p>
@@ -92,9 +96,9 @@
                   </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
-                  <label class="text">Technical Specification <span class="error-label">*</span></label>
+                  <label class="text">Machine Name <span class="error-label">*</span></label>
                   <span>
-                    <select formControlName="techSpec" class="form-control input-sm" (change)="specChange($event)"
+                    <select formControlName="techSpec" class="form-control input-sm" (change)="specChange($event)" [attr.disabled]="isDisable===true ? 'true' : null" 
                     [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techSpec.touched || submitted) && techDetailsForm.controls.techSpec.errors }">
                       <option value="" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
                       <option *ngFor="let option of techSpecList" 
@@ -115,7 +119,7 @@
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Tech Line No. <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" [attr.disabled]="isLine==0 ? 'true' : null" formControlName="techLineNo" class="form-control input-sm" maxlength="50"
+                    <input type="text" [attr.disabled]="(isLine==0 || isDisable===true) ? 'true' : null" formControlName="techLineNo" class="form-control input-sm" maxlength="50"
                    [ngClass]="{ 'is-invalid': (techDetailsForm.controls.techLineNo.touched || submitted) && techDetailsForm.controls.techLineNo.errors }">
                   </span>
                   
