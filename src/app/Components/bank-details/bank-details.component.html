@@ -1,68 +1,68 @@
-<form *ngIf="BankDetailsForm" class="form-inline slider" [formGroup]="BankDetailsForm"
-  (ngSubmit)="SaveVendorBankDetails()" novalidate>
+<form *ngIf="BankDetailsForm" [formGroup]="BankDetailsForm" (ngSubmit)="SaveVendorBankDetails()" novalidate>
 
-  <div class="content-heading" align="left">Bank Details</div>
-  <div class="form-group col-md-6">
-    <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
-  </div>
-  <div class="form-group col-md-3">
-    <label class="text" for="BankName">Bank Name</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="BankName">
-  </div>
-  <div class="form-group col-md-3">
-    <label class="text" for="BranchName">Branch Name</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="BranchName">
-  </div>
+  <div class="form-inline">
+    <div class="content-heading" align="left">Bank Details</div>
+    <div class="form-group col-md-3">
+      <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="BankName">Bank Name</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="BankName">
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="BranchName">Branch Name</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="BranchName">
+    </div>
+    <div style="margin-top: 10px;" class="form-group col-md-3">
+      <div>
+        <label class="text radio-inline">
+          <input type="checkbox" formControlName="isECSenabled">
+          <span style="margin-left:5px;">ECS enabled</span>
+        </label>
+      </div>
+    </div>
 
-  <div class="form-group col-md-4">
-    <label class="text" for="AccountNo">Account No</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="AccountNo"
-      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.AccountNo}">
-  </div>
-  <div class="form-group col-md-4">
-    <label class="text" for="AccountType">Account Type</label>
-    <select type="text" class="form-control col-md-12  input-sm" formControlName="AccountType">
-      <option value="-1" selected="selected">Select</option>
-      <option *ngFor="let type of AccountType" value="{{type.accountType}}">{{type.accountType}}</option>
-    </select>
-  </div>
-  <div class="form-group col-md-4">
-    <label class="text" for="CurrencyCode">Currency<i class="mandatory">*</i></label>
-    <select type="text" class="form-control col-md-12  input-sm" (blur)="logValidationErrors()"
-      [ngClass]="{'is-invalid': formErrors.CurrencyCode}" formControlName="CurrencyCode">
-      <option *ngFor="let currency of CurrencyList" value="{{currency.CurrencyCode}}">{{currency.Currency}}</option>
-    </select>
-  </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="AccountNo">Account No</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="AccountNo"
+        (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.AccountNo}">
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="AccountType">Account Type</label>
+      <select type="text" class="form-control col-md-12  input-sm" formControlName="AccountType">
+        <option value="-1" selected="selected">Select</option>
+        <option *ngFor="let type of AccountType" value="{{type.accountType}}">{{type.accountType}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="CurrencyCode">Currency<i class="mandatory">*</i></label>
+      <select type="text" class="form-control col-md-12  input-sm" (blur)="logValidationErrors()"
+        [ngClass]="{'is-invalid': formErrors.CurrencyCode}" formControlName="CurrencyCode">
+        <option *ngFor="let currency of CurrencyList" value="{{currency.CurrencyCode}}">{{currency.Currency}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="PaymentTerms">Payment Terms<i class="mandatory">*</i></label>
+      <input type="text" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
+        (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PaymentTerms}">
+    </div>
 
-  <div class="form-group col-md-4">
-    <label class="text" for="PaymentTerms">Payment Terms<i class="mandatory">*</i></label>
-    <input type="text" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
-      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PaymentTerms}">
-  </div>
-  <div class="form-group col-md-4">
-    <label class="text" for="IFSCCode">IFSC Code</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="IFSCCode">
-  </div>
-  <div class="form-group col-md-4">
-    <label class="text" for="MICRNo">MICR No</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="MICRNo">
-  </div>
-
-  <div class="form-group col-md-4">
-    <label class="text" for="SWIFTCode">SWIFT Code</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="SWIFTCode">
-  </div>
-  <div class="form-group col-md-4">
-    <label class="text" for="RemittanceInfavourof">Remittance Infavourof</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
-  </div>
-  <div style="margin-top: 10px;" class="form-group col-md-4">
-    <div>
-      <label class="text radio-inline">
-        <input type="checkbox" formControlName="isECSenabled">
-        <span style="margin-left:5px;">ECS enabled</span>
-      </label>
+    <div class="form-group col-md-3">
+      <label class="text" for="IFSCCode">IFSC Code</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="IFSCCode">
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="MICRNo">MICR No</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="MICRNo">
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="SWIFTCode">SWIFT Code</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="SWIFTCode">
+    </div>
+    <div class="form-group col-md-3">
+      <label class="text" for="RemittanceInfavourof">Remittance Infavourof</label>
+      <input type="text" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
     </div>
   </div>
 
@@ -76,3 +76,28 @@
   </div>
 
 </form>
+
+<!-- Saved Conformantion Modal -->
+
+<button #modalOpenButton type="button" data-target="#dataSaved" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="dataSaved" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Saved Successfully!!</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+        <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">Saved Successfully!!</div>
+          <div class="modal-footer">
+              <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+          </div>
+    </div> -->
+  </div>
+</div>
