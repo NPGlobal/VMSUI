@@ -52,15 +52,44 @@ export class PersonalDetailsComponent implements OnInit {
       'pattern': 'Cannot contains special characters'
     },
     'GSTIN': {
+      'required': '',
       'minlength': 'Invalid GST number',
       'maxlength': 'Invalid GST number',
       'pattern': 'Cannot contains special characters'
-    }
+    },
+    'GSTDate': {
+      'required': ''
+    },
+    'Address1': {
+      'required': ''
+    },
+    'CountryCode': {
+      'required': ''
+    },
+    'StateCode': {
+      'required': ''
+    },
+    'PIN': {
+      'required': ''
+    },
+    'PrimaryContactName': {
+      'required': ''
+    },
+    'PrimaryContactPhone': {
+      'required': ''
+    },
   };
 
   formErrors = {
     'PANNo': '',
-    'GSTIN': ''
+    'GSTIN': '',
+    'GSTDate': '',
+    'Address1': '',
+    'CountryCode': '',
+    'StateCode': '',
+    'PIN': '',
+    'PrimaryContactName': '',
+    'PrimaryContactPhone': ''
   };
 
   constructor(private _vendorService: VendorService,
@@ -124,6 +153,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   GetMasterDataDetails(MDHCode: string) {
     this._mDDService.GetMasterDataDetails(MDHCode, '-1').subscribe((result) => {
+      let lst: MasterDataDetails[];
       switch (MDHCode) {
         case 'VendorType': {
           this.VendorTypeList = result.data.Table;
@@ -134,7 +164,8 @@ export class PersonalDetailsComponent implements OnInit {
           break;
         }
         case 'STATE': {
-          this.StateList = result.data.Table;
+          lst = result.data.Table;
+          this.StateList = lst.filter(x => x.IsDeleted === 'N');
           break;
         }
       }
@@ -162,6 +193,8 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
     vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value;
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
+    vendor.isInsured = this.personalDetailsForm.get('PersonalDetails.IsInsured').value;
+    vendor.NameofInsuranceCompany = this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value;
     vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
     vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
     vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value;
@@ -176,6 +209,11 @@ export class PersonalDetailsComponent implements OnInit {
         return element.OrgUnitCode;
       }).join() : '';
 
+    vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
+    vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value;
+    vendor.isRCM = this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').value;
+    vendor.isProvisional = this.personalDetailsForm.get('RegisteredOfficeAddress.IsProvisional').value;
+    vendor.GSTDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
     vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.RegisteredOfficeAddress.CompanyCode = '10';
     vendor.RegisteredOfficeAddress.PIN = this.personalDetailsForm.get('RegisteredOfficeAddress.PIN').value;
@@ -234,6 +272,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.IsSameForAll = this.personalDetailsForm.get('RegisteredOfficeAddress.IsSameForAll').value;
 
+    console.log(vendor);
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
@@ -302,34 +341,32 @@ export class PersonalDetailsComponent implements OnInit {
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
-        GSTIN: [this.vendor.GSTIN, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]],
         PHList: new FormControl(''),
         StoreList: [''],
         SelectedPHStoreList: [''],
         Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
         IsExpanded: true,
         IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
-        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }]
-      }),
-      GSTRegistrationDetails: this._fb.group({
-        IsGSTRegistered: [this.vendor.IsGSTRegistered, [Validators.required]],
-        IsRCM: [this.vendor.IsRCM],
-        GSTIN: [this.vendor.GSTIN],
-        GSTDate: [this.vendor.GSTDate],
-        IsProvisional: [this.vendor.IsProvisional],
-        IsExpanded: false
+        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }],
+        NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
+        IsInsured: [this.vendor.isInsured]
       }),
       RegisteredOfficeAddress: this._fb.group({
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1],
+        IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
+        IsRCM: [{ value: this.vendor.isRCM, disabled: true }],
+        GSTIN: [this.vendor.GSTIN],
+        GSTDate: [this.vendor.GSTDate],
+        IsProvisional: [this.vendor.isProvisional],
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
         Address2: [this.vendor.RegisteredOfficeAddress.Address2],
         Address3: [this.vendor.RegisteredOfficeAddress.Address3],
-        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode],
+        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
-        StateCode: [this.vendor.RegisteredOfficeAddress.StateCode],
-        PIN: [this.vendor.RegisteredOfficeAddress.PIN],
+        StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
+        PIN: [this.vendor.RegisteredOfficeAddress.PIN, [Validators.required]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
-        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName],
-        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone],
+        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
+        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone, [Validators.required]],
         PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax],
         PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail],
         PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite],
@@ -365,6 +402,8 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors(this.personalDetailsForm);
     });
+
+    this.SetValidationForGSTControls();
   }
 
   ToggleContainer(formGroup: FormGroup) {
@@ -468,7 +507,6 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(!this.HasAllCollapsed);
-    this.personalDetailsForm.get('GSTRegistrationDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
   }
 
   OnAddressSaved(IsSaved: boolean) {
@@ -504,15 +542,26 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue('');
   }
 
-  SetValidationForGSTControls($event) {
-    if (this.personalDetailsForm.get('GSTRegistrationDetails.IsGSTRegistered').value) {
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTIN').setValidators([Validators.required]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTDate').setValidators([Validators.required]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.IsRCM').patchValue(false);
+  SetValidationForGSTControls() {
+    if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
+        [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]);
+
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([Validators.required]);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators(
+        [Validators.required]
+      );
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
     } else {
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTIN').setValidators([]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTDate').setValidators([]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.IsRCM').patchValue(true);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue('');
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([]);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
     }
   }
 }
