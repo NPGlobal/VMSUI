@@ -1,6 +1,7 @@
 import { VendorAddress } from './vendor-address';
 
 export class Vendor {
+    SaveOnlyBankDetails: boolean;
     RowNumber: number;
     VendorCode: string;
     VendorName: string;

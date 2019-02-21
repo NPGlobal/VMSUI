@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { Vendor } from 'src/app/Models/vendor';
+import { VendorAddress } from 'src/app/Models/vendor-address';
 
 @Component({
   selector: 'app-bank-details',
@@ -15,6 +16,7 @@ export class BankDetailsComponent implements OnInit {
   vendor: Vendor;
   submitted = false;
   VendorCode: string;
+  SaveOnlyBankDetails = true;
 
   ValidationMessages = {
     'CurrencyCode': {
@@ -34,7 +36,6 @@ export class BankDetailsComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private _fb: FormBuilder, private _vendorService: VendorService) { }
 
   ngOnInit() {
-    console.log('Bank OnInit Called');
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
@@ -42,6 +43,8 @@ export class BankDetailsComponent implements OnInit {
       } else {
         this.Editvendor(this.VendorCode);
       }
+      this.vendor = new Vendor();
+      this.InitializeFormControls();
     });
   }
 
@@ -100,8 +103,10 @@ export class BankDetailsComponent implements OnInit {
       return;
     }
 
-    const vendor = new Vendor();
+    const vendor = this.vendor;
+    vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.VendorCode = this.VendorCode;
+    vendor.SaveOnlyBankDetails = this.SaveOnlyBankDetails;
     vendor.NameAsPerBankAccount = this.BankDetailsForm.get('NameAsPerBankAccount').value;
     vendor.BankAcctNo = this.BankDetailsForm.get('AccountNo').value;
     vendor.BankName = this.BankDetailsForm.get('BankName').value;
@@ -114,13 +119,13 @@ export class BankDetailsComponent implements OnInit {
     vendor.SwiftCode = this.BankDetailsForm.get('SWIFTCode').value;
     vendor.accountType = this.BankDetailsForm.get('AccountType').value;
     vendor.isECSenabled = this.BankDetailsForm.get('isECSenabled').value;
-    // this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
-    //   const StatusObj = data;
-    //   if (StatusObj.Status === 0) {
-    //     alert('Saved Succesfully!!');
-    //     this.Editvendor(this.VendorCode);
-    //   }
-    // });
-    console.log(vendor);
+    this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
+      const StatusObj = data;
+      if (StatusObj.Status === 0) {
+        alert('Saved Succesfully!!');
+        this.Editvendor(this.VendorCode);
+      }
+    });
+    console.log(JSON.stringify(vendor));
   }
 }
