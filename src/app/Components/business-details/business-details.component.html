@@ -1,9 +1,9 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
-  data-target="#myModal" data-backdrop="static" data-keyboard="false">
-      <i class="fa fa-plus"></i>
-      <span title="Add new" class="py-4">Add</span>
-    </button>
+    data-target="#myModal" data-backdrop="static" data-keyboard="false">
+    <i class="fa fa-plus"></i>
+    <span title="Add new" class="py-4">Add</span>
+  </button>
 </div>
 
 <div class="clearfix"></div>
@@ -40,36 +40,34 @@
       </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let vendor of pagedItems;index as i;">
-          <td>{{vendor.FinancialYear}}</td>
-          <td>{{vendor.Division}}</td>
-          <td>{{vendor.Department}}</td>
+      <tr>
+        <td colspan="8" *ngIf="pagedItems.length === 0">No Record Found</td>
+      </tr>
+      <tr *ngFor="let vendor of pagedItems;index as i;">
+        <td>{{vendor.FinancialYear}}</td>
+        <td>{{vendor.Division}}</td>
+        <td>{{vendor.Department}}</td>
 
-          <!-- <td>{{vendor.ActualDPValueQty}}</td>
+        <!-- <td>{{vendor.ActualDPValueQty}}</td>
           <td>{{vendor.ActualDPGrnQty}}</td>
           <td>{{vendor.ActualJWValueQty}}</td>
           <td>{{vendor.ActualJWGrnQty}}</td> -->
 
-          <td>{{vendor.ProposedDPValueQty}}</td>
-          <td>{{vendor.ProposedDPGrnQty}}</td>
-          <td>{{vendor.ProposedJWValueQty}}</td>
-          <td>{{vendor.ProposedJWGrnQty}}</td>
-          <td>
-            <a title="Edit Business" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor)" 
+        <td>{{vendor.ProposedDPValueQty}}</td>
+        <td>{{vendor.ProposedDPGrnQty}}</td>
+        <td>{{vendor.ProposedJWValueQty}}</td>
+        <td>{{vendor.ProposedJWGrnQty}}</td>
+        <td>
+          <a title="Edit Business" href="javascript:void(0)" data-toggle="modal" (click)="GetBusinessDetails(vendor)"
             data-target="#myModal"><i class="fa fa-edit"></i></a>
 
-            <a title="Delete Business" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteBusinessDetailPopup(vendor)" 
-              data-target="#deleteModal"><i class="fa fa-remove"></i></a>
-          </td>
-        </tr>
-        <tr *ngIf="pagedItems && pagedItems.length === 0">
-          <td colspan="8">
-            <h6>No Record Found</h6>
-          </td>
-        </tr>
+          <a title="Delete Business" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+            (click)="DeleteBusinessDetailPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i></a>
+        </td>
+      </tr>
     </tbody>
   </table>
-  <nav aria-label="..." class="">
+  <nav aria-label="..." class="" *ngIf="totalItems!==0">
     <ul class="pagination justify-content-end">
       <li class="page-item" *ngIf="pager.currentPage !== 1">
         <button class="page-link" (click)="GetVendorBusiness(1)">First</button>
@@ -107,31 +105,32 @@
       <div class="modal-body">
         <form [formGroup]="businessDetailsForm" (ngSubmit)="SaveBusinessDetails()" novalidate>
           <input type="hidden" formControlName="VendorBusinessDetailsID">
-          
+
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
-                  <label class="text">Division <span class="error-label">*</span></label>
-                  <span>
-                    <select formControlName="divisionCode" class="form-control input-sm" (change)="GetDepartment($event)"
-                      [ngClass]="{ 'is-invalid': formErrors.divisionCode }">      
-                      <option value="">Select Division</option>
-                      <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
-                        {{option.MDDName}}
-                      </option>
-                      </select>
-                  </span>
+                <label class="text">Division <span class="error-label">*</span></label>
+                <span>
+                  <select formControlName="divisionCode" class="form-control input-sm" (change)="GetDepartment($event)"
+                    [ngClass]="{ 'is-invalid': formErrors.divisionCode }">
+                    <option value="">Select Division</option>
+                    <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
+                      {{option.MDDName}}
+                    </option>
+                  </select>
+                </span>
               </div>
               <div class="col-lg-6 col-md-6">
-                  <label class="text">Department <span class="error-label">*</span></label>
-                  <span>
-                    <select formControlName="deptCode" class="form-control input-sm" [ngClass]="{ 'is-invalid': formErrors.deptCode }">
-                      <option value="">Select Department</option>
-                      <option *ngFor="let option of departmentList" value={{option.MDDCode}}>
-                        {{option.MDDName}}
-                      </option>
-                    </select>
-                  </span>
+                <label class="text">Department <span class="error-label">*</span></label>
+                <span>
+                  <select formControlName="deptCode" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid': formErrors.deptCode }">
+                    <option value="">Select Department</option>
+                    <option *ngFor="let option of departmentList" value={{option.MDDCode}}>
+                      {{option.MDDName}}
+                    </option>
+                  </select>
+                </span>
               </div>
             </div>
           </div>
@@ -174,23 +173,23 @@
               </div>
             </div>
           </fieldset> -->
-          
+
           <fieldset>
             <legend>Proposed Quantity</legend>
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
-                    <label class="text">DP Business <span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="ProposedDPValueQty" class="form-control input-sm" maxlength="12" 
+                  <label class="text">DP Business <span class="error-label">*</span></label>
+                  <span>
+                    <input type="text" formControlName="ProposedDPValueQty" class="form-control input-sm" maxlength="12"
                       [ngClass]="{ 'is-invalid': formErrors.ProposedDPValueQty }">
-                    </span>
+                  </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">DP Quantity <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" formControlName="ProposedDPGrnQty" class="form-control input-sm" maxlength="12" 
-                    [ngClass]="{ 'is-invalid': formErrors.ProposedDPGrnQty }">
+                    <input type="text" formControlName="ProposedDPGrnQty" class="form-control input-sm" maxlength="12"
+                      [ngClass]="{ 'is-invalid': formErrors.ProposedDPGrnQty }">
                   </span>
                 </div>
               </div>
@@ -198,17 +197,17 @@
             <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
-                    <label class="text">JW Business <span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="ProposedJWValueQty" class="form-control input-sm" maxlength="12" 
+                  <label class="text">JW Business <span class="error-label">*</span></label>
+                  <span>
+                    <input type="text" formControlName="ProposedJWValueQty" class="form-control input-sm" maxlength="12"
                       [ngClass]="{ 'is-invalid': formErrors.ProposedJWValueQty }">
-                    </span>
+                  </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">JW Quantity <span class="error-label">*</span></label>
                   <span>
-                    <input type="text" formControlName="ProposedJWGrnQty" class="form-control input-sm" maxlength="12" 
-                    [ngClass]="{ 'is-invalid': formErrors.ProposedJWGrnQty }">
+                    <input type="text" formControlName="ProposedJWGrnQty" class="form-control input-sm" maxlength="12"
+                      [ngClass]="{ 'is-invalid': formErrors.ProposedJWGrnQty }">
                   </span>
                 </div>
               </div>
@@ -227,20 +226,21 @@
 </div>
 
 <!-- Delete Modal-->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
-                <button class="btn btn-primary" (click)="DeleteBusinessDetails()">Yes</button>
-            </div>
-        </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
+        <button class="btn btn-primary" (click)="DeleteBusinessDetails()">Yes</button>
+      </div>
     </div>
+  </div>
 </div>

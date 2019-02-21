@@ -23,7 +23,7 @@ export class StaffDetailsComponent implements OnInit {
   staffDetailsForm: FormGroup;
 
   // paging variables
-  totalItems: number;
+  totalItems = 0;
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
@@ -176,7 +176,7 @@ export class StaffDetailsComponent implements OnInit {
           }
         });
     }
-  } 
+  }
   SaveStaffDetails() {
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {

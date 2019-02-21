@@ -10,7 +10,6 @@
     <table class="table table-striped table-bordered table-hover">
       <thead>
         <tr>
-          <th scope="col">Sr No</th>
           <th scope="col">Machine Type</th>
           <th scope="col">Machine Name</th>
           <th scope="col">Tech Line No.</th>
@@ -22,7 +21,6 @@
       <tbody>
         <tr><td colspan="7" *ngIf="totalItems === 0">No Record Found</td></tr>
           <tr *ngFor="let vendor of pagedItems;index as i;">
-            <th scope="row">{{vendor.RowNumber}}</th>
             <td>{{vendor.Department}}</td>
             <td>{{vendor.TechName}}</td>
             <td>{{vendor.TechLineNo}}</td>

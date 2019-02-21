@@ -26,11 +26,11 @@ export class BusinessDetailsComponent implements OnInit {
   businessDetailsForm: FormGroup;
 
   // paging variables
-  totalItems: number;
+  totalItems = 0;
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
-  pagedItems: any[];
+  pagedItems: any[] = [];
 
   constructor(
     private _route: ActivatedRoute,
@@ -180,16 +180,16 @@ export class BusinessDetailsComponent implements OnInit {
       this.departmentList = [];
       this.businessDetailsForm.controls.deptCode.patchValue('');
     } else {
-    this._mddService.GetMasterDataDetails('Dept', this.businessDetailsForm.get('divisionCode').value)
-    .subscribe((result) => {
-        this.departmentList = result.data.Table;
-        if (this.businessDetailsForm.get('deptCode').value !== '') {
-          const strArray = this.departmentList.find((obj) => obj.MDDCode === this.businessDetailsForm.get('deptCode').value);
-          if (strArray === undefined) {
-            this.businessDetailsForm.controls.deptCode.patchValue('');
+      this._mddService.GetMasterDataDetails('Dept', this.businessDetailsForm.get('divisionCode').value)
+        .subscribe((result) => {
+          this.departmentList = result.data.Table;
+          if (this.businessDetailsForm.get('deptCode').value !== '') {
+            const strArray = this.departmentList.find((obj) => obj.MDDCode === this.businessDetailsForm.get('deptCode').value);
+            if (strArray === undefined) {
+              this.businessDetailsForm.controls.deptCode.patchValue('');
+            }
           }
-        }
-      });
+        });
     }
   }
 
@@ -219,7 +219,7 @@ export class BusinessDetailsComponent implements OnInit {
   DeleteBusinessDetails() {
     this.sendFormData();
   }
-  
+
   sendFormData() {
     const st = this.businessDetailsForm.get('Status').value;
     // console.log(JSON.stringify(this.businessDetailsForm.value));
