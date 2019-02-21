@@ -155,7 +155,8 @@ export class VendorRegistrationComponent implements OnInit {
   SaveVendorPrimaryInfo() {
     this.submitted = true;
 
-    if (this.RegistrationForm.invalid) {
+    if (this.RegistrationForm.invalid ||
+      (this.RegistrationForm.get('IsJWVendor').value && !this.HasPHSelected)) {
       this.logValidationErrors();
       return;
     }
