@@ -131,6 +131,13 @@ export class BusinessDetailsComponent implements OnInit {
     if (this.businessDetailsForm.invalid) {
       return;
     }
+    this.sendFormData();
+  }
+  DeleteBusinessDetails() {
+    this.sendFormData();
+  }
+  sendFormData() {
+    const st = this.businessDetailsForm.get('status').value;
     // console.log(JSON.stringify(this.businessDetailsForm.value));
     this.businessObj = new VendorBusinessDetails();
     this.businessObj.VendorBusinessDetailsID = this.businessDetailsForm.get('VendorBusinessDetailsID').value;
@@ -159,7 +166,11 @@ export class BusinessDetailsComponent implements OnInit {
             this.totalItems = data.VendorBusinessCount[0].TotalVendors;
             this.GetVendorsBusinessList();
             alert(data.Msg[0].Message);
-            $('#myModal').modal('toggle');
+            if (st === true) {
+              $('#myModal').modal('toggle');
+            } else {
+              $('#deleteModal').modal('toggle');
+            }
             this.dismiss();
           } else {
             alert(data.Msg[0].Message);
@@ -189,6 +200,23 @@ export class BusinessDetailsComponent implements OnInit {
       remarks: ''
     });
     this.GetDepartment();
+  }
+  DeleteBusinessDetailPopup(vobj: VendorBusinessDetails) {
+    this.businessDetailsForm = this._fb.group({
+      VendorBusinessDetailsID: [vobj.VendorBusinessDetailsID],
+      divisionCode: [vobj.divisionCode, Validators.required],
+      deptCode: [vobj.deptCode, Validators.required],
+      // ActualDPValueQty: [data.Table[0].ActualDPValueQty, [Validators.required, Validators.maxLength(14)]],
+      // ActualDPGrnQty: [data.Table[0].ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
+      // ActualJWValueQty: [data.Table[0].ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
+      // ActualJWGrnQty: [data.Table[0].ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedDPValueQty: [vobj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedDPGrnQty: [vobj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedJWValueQty: [vobj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedJWGrnQty: [vobj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
+      status: false,
+      remarks: ''
+    });
   }
   // This function is used for get data from database.
   // GetBusinessDetails(x) {
