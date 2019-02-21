@@ -169,3 +169,21 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 .slider.closed, .detailslider.closed {
   max-height: 0;
 }
+
+
+.col-md-22 {
+  float:left;position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 768px){
+  .col-md-22 {
+    flex: 0 0 19.666667%;
+    max-width: 19.666667%;
+  }
+}
+.mandatory {
+  color: red;
+}
