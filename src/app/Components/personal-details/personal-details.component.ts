@@ -287,6 +287,7 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       if (!this.IsAddressSaved) {
         this.vendor = result.data.Vendor[0];
+        this.vendor.GSTDate = new Date(new Date(result.data.Vendor[0].GSTDate).toISOString().slice(0, 10));
       }
 
       this.vendor.RegisteredOfficeAddress =
@@ -398,12 +399,11 @@ export class PersonalDetailsComponent implements OnInit {
       })
     });
 
+    this.SetValidationForGSTControls();
 
     this.personalDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors(this.personalDetailsForm);
     });
-
-    this.SetValidationForGSTControls();
   }
 
   ToggleContainer(formGroup: FormGroup) {
@@ -556,8 +556,9 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
     } else {
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue('');
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
+
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([]);
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
