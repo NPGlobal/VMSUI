@@ -18,7 +18,7 @@ export class BankDetailsComponent implements OnInit {
   VendorCode: string;
   SaveOnlyBankDetails = true;
   AccountNumberValidation = '^[0-9]*$';
-  AlphanumericPattern = '^[a-zA-Z0-9]*$';
+  AlphanumericPattern = '^[A-Za-z0-9- ]+$';
 
   ValidationMessages = {
     'CurrencyCode': {
