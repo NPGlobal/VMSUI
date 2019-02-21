@@ -19,10 +19,10 @@ export class Vendor {
     OtherCustomer4: string;
     OtherCustomer5: string;
     SelectedPHListCSV: string;
-    IsGSTRegistered: boolean;
+    isGSTRegistered: boolean;
     GSTIN: string;
-    IsProvisional: Boolean;
-    IsRCM: Boolean;
+    isProvisional: Boolean;
+    isRCM: Boolean;
     GSTDate: Date;
     IsJWVendor: boolean;
     IsDirectVendor: boolean;
@@ -39,4 +39,6 @@ export class Vendor {
     IFSCCode: string;
     SwiftCode: string;
     PaymentTerms: string;
+    isInsured: boolean;
+    NameofInsuranceCompany: string;
 }

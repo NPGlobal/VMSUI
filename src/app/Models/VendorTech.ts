@@ -10,4 +10,5 @@ UnitCount: number;
 Status: boolean;
 Remarks: string;
 CreatedBy: number;
+isDisable: boolean;
 }
