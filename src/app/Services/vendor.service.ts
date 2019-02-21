@@ -11,7 +11,7 @@ export class VendorService {
    origin = 'http://172.16.7.60/VMSApi/';
   // origin = 'http://172.16.7.68/';
   // origin = 'http://172.16.7.69/';
-  // origin = 'https://localhost:44372/';
+  origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
@@ -131,6 +131,16 @@ export class VendorService {
    // Get Vendor Production Information for Edit
    GetProductionDetails(vcode: string, div: string, dept: string): Observable<any> {
     const apiUrl = this.origin + 'api/VendorProduction/GetProductionDetails/10/' + vcode + '/' + div + '/' + dept;
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetCurrencyList() {
+    const apiUrl = this.origin + 'api/Vendor/GetCurrencyList';
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetAccountType() {
+    const apiUrl = this.origin + 'api/Vendor/GetAccountType';
     return this._http.get<any>(apiUrl);
   }
 }

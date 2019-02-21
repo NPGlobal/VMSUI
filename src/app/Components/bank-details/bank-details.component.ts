@@ -17,6 +17,8 @@ export class BankDetailsComponent implements OnInit {
   submitted = false;
   VendorCode: string;
   SaveOnlyBankDetails = true;
+  AccountType: any[];
+  CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
 
   ValidationMessages = {
@@ -51,6 +53,8 @@ export class BankDetailsComponent implements OnInit {
       this.vendor = new Vendor();
       this.InitializeFormControls();
     });
+    this.GetCurrencyList();
+    this.GetAccountType();
   }
 
   InitializeFormControls() {
@@ -132,5 +136,18 @@ export class BankDetailsComponent implements OnInit {
       }
     });
     console.log(JSON.stringify(vendor));
+  }
+
+  GetCurrencyList() {
+    this._vendorService.GetCurrencyList().subscribe((result) => {
+      this.CurrencyList = result.data.Table;
+      this.InitializeFormControls();
+    });
+  }
+  GetAccountType() {
+    this._vendorService.GetAccountType().subscribe((result) => {
+      this.AccountType = result.data.Table;
+      this.InitializeFormControls();
+    });
   }
 }

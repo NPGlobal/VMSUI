@@ -3,9 +3,12 @@
 }
 
 form {
+    margin-top: 10px;
     padding-top: 20px;
+    border: 1px solid #bdbcbc;
+    background-color: #f4f4f4;
 }
 
 .text {
-    font-weight: 400;
+    font-weight: 500;
 }
