@@ -1,6 +1,7 @@
 import { VendorAddress } from './vendor-address';
 
 export class Vendor {
+    SaveOnlyBankDetails: boolean;
     RowNumber: number;
     VendorCode: string;
     VendorName: string;
@@ -26,6 +27,18 @@ export class Vendor {
     IsJWVendor: boolean;
     IsDirectVendor: boolean;
     RegisteredOfficeAddress: VendorAddress;
+    NameAsPerBankAccount: string;
+    CurrencyCode: string;
+    BankName: string;
+    BranchName: string;
+    BankAcctNo: string;
+    RemittanceInfavourof: string;
+    isECSenabled: boolean;
+    accountType: string;
+    MICRNo: string;
+    IFSCCode: string;
+    SwiftCode: string;
+    PaymentTerms: string;
     isInsured: boolean;
     NameofInsuranceCompany: string;
 }
