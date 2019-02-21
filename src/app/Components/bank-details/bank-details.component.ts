@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { VendorService } from 'src/app/Services/vendor.service';
@@ -17,6 +17,12 @@ export class BankDetailsComponent implements OnInit {
   submitted = false;
   VendorCode: string;
   SaveOnlyBankDetails = true;
+  AccountType: any[];
+  CurrencyList: any[];
+  AccountNumberValidation = '^[0-9]*$';
+
+  @ViewChild('modalOpenButton')
+  modalOpenButton: ElementRef;
 
   ValidationMessages = {
     'CurrencyCode': {
@@ -24,12 +30,16 @@ export class BankDetailsComponent implements OnInit {
     },
     'PaymentTerms': {
       'required': ''
+    },
+    'AccountNo': {
+      'pattern': ''
     }
   };
 
   formErrors = {
     'CurrencyCode': '',
-    'PaymentTerms': ''
+    'PaymentTerms': '',
+    'AccountNo': ''
   };
 
 
@@ -46,6 +56,8 @@ export class BankDetailsComponent implements OnInit {
       this.vendor = new Vendor();
       this.InitializeFormControls();
     });
+    this.GetCurrencyList();
+    this.GetAccountType();
   }
 
   InitializeFormControls() {
@@ -54,9 +66,9 @@ export class BankDetailsComponent implements OnInit {
       BankName: [this.vendor.BankName],
       BranchName: [this.vendor.BranchName],
       isECSenabled: [this.vendor.isECSenabled],
-      AccountNo: [this.vendor.BankAcctNo],
-      AccountType: [this.vendor.accountType],
-      CurrencyCode: [this.vendor.CurrencyCode, Validators.required],
+      AccountNo: [this.vendor.BankAcctNo, Validators.pattern(this.AccountNumberValidation)],
+      AccountType: [this.vendor.accountType === null ? '-1' : this.vendor.accountType],
+      CurrencyCode: [this.vendor.CurrencyCode === null ? 'INR' : this.vendor.CurrencyCode, Validators.required],
       PaymentTerms: [this.vendor.PaymentTerms, Validators.required],
       IFSCCode: [this.vendor.IFSCCode],
       MICRNo: [this.vendor.MICRNo],
@@ -122,10 +134,25 @@ export class BankDetailsComponent implements OnInit {
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       const StatusObj = data;
       if (StatusObj.Status === 0) {
-        alert('Saved Succesfully!!');
+        // alert('Saved Succesfully!!');
+        const el = this.modalOpenButton.nativeElement as HTMLElement;
+        el.click();
         this.Editvendor(this.VendorCode);
       }
     });
     console.log(JSON.stringify(vendor));
+  }
+
+  GetCurrencyList() {
+    this._vendorService.GetCurrencyList().subscribe((result) => {
+      this.CurrencyList = result.data.Table;
+      this.InitializeFormControls();
+    });
+  }
+  GetAccountType() {
+    this._vendorService.GetAccountType().subscribe((result) => {
+      this.AccountType = result.data.Table;
+      this.InitializeFormControls();
+    });
   }
 }

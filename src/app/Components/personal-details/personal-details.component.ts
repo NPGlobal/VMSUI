@@ -287,7 +287,6 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       if (!this.IsAddressSaved) {
         this.vendor = result.data.Vendor[0];
-        this.vendor.GSTDate = new Date(new Date(result.data.Vendor[0].GSTDate).toISOString().slice(0, 10));
       }
 
       this.vendor.RegisteredOfficeAddress =
@@ -356,7 +355,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
         IsRCM: [{ value: this.vendor.isRCM, disabled: true }],
         GSTIN: [this.vendor.GSTIN],
-        GSTDate: [this.vendor.GSTDate],
+        GSTDate: [this.FormatDate(this.vendor.GSTDate)],
         IsProvisional: [this.vendor.isProvisional],
         Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
         Address2: [this.vendor.RegisteredOfficeAddress.Address2],
@@ -404,6 +403,23 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors(this.personalDetailsForm);
     });
+  }
+
+  FormatDate(date: Date) {
+    const d = new Date(date),
+      year = d.getFullYear();
+    let month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate();
+
+    if (month.length < 2) {
+      month = '0' + month;
+
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
   }
 
   ToggleContainer(formGroup: FormGroup) {
