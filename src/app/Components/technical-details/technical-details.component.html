@@ -120,7 +120,7 @@
                 <label class="text">Tech Line No. <span class="error-label">*</span></label>
                 <span>
                   <input type="text" formControlName="techLineNo"  class="form-control input-sm" maxlength="50" (blur)="LogValidationErrors()"
-                  [attr.disabled]="(isLine==0 || isDisable===true) ? 'true' : null" [ngClass]="{ 'is-invalid': formErrors.techLineNo }">
+                  [attr.disabled]="true" [ngClass]="{ 'is-invalid': formErrors.techLineNo }">
                  </span>
                </div>
               <div class="col-lg-6 col-md-6">

@@ -178,29 +178,29 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
       alert('There is nothing to change');
       return;
     }}
-    // try {
-    //   this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
-    //     if (data.Msg != null) {
-    //       if (data.Msg[0].Result === 0) {
-    //         this.VendorTech = new VendorTech();
-    //         this.vendortechList = data.VendorTech;
-    //         this.totalItems = data.VendorTechCount[0].TotalVendors;
-    //         this.InitializeFormControls();
-    //         this.GetVendorsTechList();
-    //         this.techSpecList = [];
-    //         alert(data.Msg[0].Message);
-    //         $('#myModal').modal('toggle');
-    //         this.dismiss();
-    //       } else {
-    //         alert(data.Msg[0].Message);
-    //       }
-    //     } else {
-    //       alert('There are some technical error. Please contact administrator.');
-    //     }
-    //   });
-    // } catch {
-    //   alert('There are some technical error. Please contact administrator.');
-    // }
+    try {
+      this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
+        if (data.Msg != null) {
+          if (data.Msg[0].Result === 0) {
+            this.VendorTech = new VendorTech();
+            this.vendortechList = data.VendorTech;
+            this.totalItems = data.VendorTechCount[0].TotalVendors;
+            this.InitializeFormControls();
+            this.GetVendorsTechList();
+            this.techSpecList = [];
+            alert(data.Msg[0].Message);
+            $('#myModal').modal('toggle');
+            this.dismiss();
+          } else {
+            alert(data.Msg[0].Message);
+          }
+        } else {
+          alert('There are some technical error. Please contact administrator.');
+        }
+      });
+    } catch {
+      alert('There are some technical error. Please contact administrator.');
+    }
   }
   checkValidation() {
     // tslint:disable-next-line:triple-equals
