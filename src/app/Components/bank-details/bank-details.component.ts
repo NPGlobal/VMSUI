@@ -18,15 +18,13 @@ export class BankDetailsComponent implements OnInit {
   VendorCode: string;
   SaveOnlyBankDetails = true;
   AccountNumberValidation = '^[0-9]*$';
-  AlphanumericPattern = '^[A-Za-z0-9- ]+$';
 
   ValidationMessages = {
     'CurrencyCode': {
       'required': ''
     },
     'PaymentTerms': {
-      'required': '',
-      'pattern': ''
+      'required': ''
     },
     'AccountNo': {
       'pattern': ''
@@ -64,7 +62,7 @@ export class BankDetailsComponent implements OnInit {
       AccountNo: [this.vendor.BankAcctNo, Validators.pattern(this.AccountNumberValidation)],
       AccountType: [this.vendor.accountType === null ? '-1' : this.vendor.accountType],
       CurrencyCode: [this.vendor.CurrencyCode === null ? 'INR' : this.vendor.CurrencyCode, Validators.required],
-      PaymentTerms: [this.vendor.PaymentTerms, [Validators.required, Validators.pattern(this.AlphanumericPattern)]],
+      PaymentTerms: [this.vendor.PaymentTerms, Validators.required],
       IFSCCode: [this.vendor.IFSCCode],
       MICRNo: [this.vendor.MICRNo],
       SWIFTCode: [this.vendor.SwiftCode],
