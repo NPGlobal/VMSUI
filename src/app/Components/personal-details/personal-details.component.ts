@@ -311,6 +311,14 @@ export class PersonalDetailsComponent implements OnInit {
         IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
         IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }]
       }),
+      GSTRegistrationDetails: this._fb.group({
+        IsGSTRegistered: [this.vendor.IsGSTRegistered, [Validators.required]],
+        IsRCM: [this.vendor.IsRCM],
+        GSTIN: [this.vendor.GSTIN],
+        GSTDate: [this.vendor.GSTDate],
+        IsProvisional: [this.vendor.IsProvisional],
+        IsExpanded: false
+      }),
       RegisteredOfficeAddress: this._fb.group({
         Address1: [this.vendor.RegisteredOfficeAddress.Address1],
         Address2: [this.vendor.RegisteredOfficeAddress.Address2],
@@ -460,6 +468,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(!this.HasAllCollapsed);
+    this.personalDetailsForm.get('GSTRegistrationDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
   }
 
   OnAddressSaved(IsSaved: boolean) {
@@ -493,5 +502,17 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue('');
     this.personalDetailsForm.get('PersonalDetails.PHList').patchValue('');
     this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue('');
+  }
+
+  SetValidationForGSTControls($event) {
+    if (this.personalDetailsForm.get('GSTRegistrationDetails.IsGSTRegistered').value) {
+      this.personalDetailsForm.get('GSTRegistrationDetails.GSTIN').setValidators([Validators.required]);
+      this.personalDetailsForm.get('GSTRegistrationDetails.GSTDate').setValidators([Validators.required]);
+      this.personalDetailsForm.get('GSTRegistrationDetails.IsRCM').patchValue(false);
+    } else {
+      this.personalDetailsForm.get('GSTRegistrationDetails.GSTIN').setValidators([]);
+      this.personalDetailsForm.get('GSTRegistrationDetails.GSTDate').setValidators([]);
+      this.personalDetailsForm.get('GSTRegistrationDetails.IsRCM').patchValue(true);
+    }
   }
 }
