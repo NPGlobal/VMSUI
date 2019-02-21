@@ -294,8 +294,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
-                                    class="form-control input-sm">
+                                <select (change)="SetStateCodeLabel()" [ngClass]="{'is-invalid': formErrors.StateCode}"
+                                    formControlName="StateCode" class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
                                         {{state.MDDName}}
@@ -305,9 +305,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="text">State Code</label>
-                            <span>
-                                <label>{{0}}</label>
-                            </span>
+                            <small class="ml-2">{{StateCodeLabel}}</small>
                         </div>
 
                     </div>

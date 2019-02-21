@@ -154,10 +154,17 @@ export class VendorRegistrationComponent implements OnInit {
 
   SaveVendorPrimaryInfo() {
     this.submitted = true;
+
     if (this.RegistrationForm.invalid) {
       this.logValidationErrors();
       return;
     }
+
+    if (!this.RegistrationForm.get('IsDirectVendor').value && !this.RegistrationForm.get('IsJWVendor').value) {
+      alert('Please select Vendor Type.');
+      return;
+    }
+
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let statusObj: any;
     const vendor = new Vendor();
@@ -181,9 +188,10 @@ export class VendorRegistrationComponent implements OnInit {
         this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
       } else if (statusObj.Status === 2) {
         this.CodeExists = true;
+      } else {
+        alert('We are facing some technical issues. Please contact administrator.');
       }
     });
-    console.log(JSON.stringify(vendor));
   }
 
   MoveToSelectedPHList() {
@@ -260,12 +268,14 @@ export class VendorRegistrationComponent implements OnInit {
   SetPHListValidation() {
     this.PHList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'P');
     this.StoreList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'S');
-    this.SelectedPHStoreList = [];
     if (this.RegistrationForm.get('IsJWVendor').value) {
-      this.HasPHSelected = false;
-    } else if (this.RegistrationForm.get('IsDirectVendor').value) {
-      this.HasPHSelected = true;
+      this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     } else {
+      this.SelectedPHStoreList = [];
+      this.HasPHSelected = true;
+    }
+
+    if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     }
   }
