@@ -114,7 +114,7 @@
                   <label class="text">Division <span class="error-label">*</span></label>
                   <span>
                     <select formControlName="divisionCode" class="form-control input-sm" (change)="GetDepartment($event)"
-                      [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.divisionCode.touched || submitted) && businessDetailsForm.controls.divisionCode.errors }">      
+                      [ngClass]="{ 'is-invalid': formErrors.divisionCode }">      
                       <option value="">Select Division</option>
                       <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
                         {{option.MDDName}}
@@ -125,7 +125,7 @@
               <div class="col-lg-6 col-md-6">
                   <label class="text">Department <span class="error-label">*</span></label>
                   <span>
-                    <select formControlName="deptCode" class="form-control input-sm" [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.deptCode.touched || submitted) && businessDetailsForm.controls.deptCode.errors }">
+                    <select formControlName="deptCode" class="form-control input-sm" [ngClass]="{ 'is-invalid': formErrors.deptCode }">
                       <option value="">Select Department</option>
                       <option *ngFor="let option of departmentList" value={{option.MDDCode}}>
                         {{option.MDDName}}
@@ -184,16 +184,14 @@
                     <label class="text">DP Business <span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="ProposedDPValueQty" class="form-control input-sm" maxlength="12" 
-                      [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedDPValueQty.touched || submitted) 
-                      && businessDetailsForm.controls.ProposedDPValueQty.errors 
-                       }">
+                      [ngClass]="{ 'is-invalid': formErrors.ProposedDPValueQty }">
                     </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">DP Quantity <span class="error-label">*</span></label>
                   <span>
                     <input type="text" formControlName="ProposedDPGrnQty" class="form-control input-sm" maxlength="12" 
-                    [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedDPGrnQty.touched || submitted) && businessDetailsForm.controls.ProposedDPGrnQty.errors }">
+                    [ngClass]="{ 'is-invalid': formErrors.ProposedDPGrnQty }">
                   </span>
                 </div>
               </div>
@@ -204,14 +202,14 @@
                     <label class="text">JW Business <span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="ProposedJWValueQty" class="form-control input-sm" maxlength="12" 
-                      [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedJWValueQty.touched || submitted) && businessDetailsForm.controls.ProposedJWValueQty.errors }">
+                      [ngClass]="{ 'is-invalid': formErrors.ProposedJWValueQty }">
                     </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                   <label class="text">JW Quantity <span class="error-label">*</span></label>
                   <span>
                     <input type="text" formControlName="ProposedJWGrnQty" class="form-control input-sm" maxlength="12" 
-                    [ngClass]="{ 'is-invalid': (businessDetailsForm.controls.ProposedJWGrnQty.touched || submitted) && businessDetailsForm.controls.ProposedJWGrnQty.errors }">
+                    [ngClass]="{ 'is-invalid': formErrors.ProposedJWGrnQty }">
                   </span>
                 </div>
               </div>
@@ -246,4 +244,4 @@
             </div>
         </div>
     </div>
-  </div>
+</div>

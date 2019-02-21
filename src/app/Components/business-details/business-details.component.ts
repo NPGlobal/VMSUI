@@ -14,6 +14,7 @@ declare var $: any;
   styleUrls: ['./business-details.component.css']
 })
 export class BusinessDetailsComponent implements OnInit {
+  NumericPattern = '^[0-9]*$';
   vendorcode: string;
   divisionList: any[];
   departmentList: any[];
@@ -21,6 +22,7 @@ export class BusinessDetailsComponent implements OnInit {
   submitted = false;
   businessList: VendorBusinessDetails[]; // For added Business List
   businessObj: VendorBusinessDetails; // For form value save and update
+  editedVendorBusiness: any; // For Check of Vendor Business Edited Value
   businessDetailsForm: FormGroup;
 
   // paging variables
@@ -31,7 +33,6 @@ export class BusinessDetailsComponent implements OnInit {
   pagedItems: any[];
 
   constructor(
-    // private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
@@ -39,6 +40,42 @@ export class BusinessDetailsComponent implements OnInit {
     private _vendorBusiService: VendorBusinessService) {
     this.CreateNewVendorBusiness();
   }
+  ValidationMessages = {
+    'divisionCode': {
+      'required': ''
+    },
+    'deptCode': {
+      'required': ''
+    },
+    'ProposedDPValueQty': {
+      'required': '',
+      'maxlength': 'Should not exceed 14 characters',
+      'pattern': 'Only numbers allowed'
+    },
+    'ProposedDPGrnQty': {
+      'required': '',
+      'maxlength': 'Should not exceed 14 characters',
+      'pattern': 'Only numbers allowed'
+    },
+    'ProposedJWValueQty': {
+      'required': '',
+      'maxlength': 'Should not exceed 14 characters',
+      'pattern': 'Only numbers allowed'
+    },
+    'ProposedJWGrnQty': {
+      'required': '',
+      'maxlength': 'Should not exceed 14 characters',
+      'pattern': 'Only numbers allowed'
+    }
+  };
+  formErrors = {
+    'divisionCode': '',
+    'deptCode': '',
+    'ProposedDPValueQty': '',
+    'ProposedDPGrnQty': '',
+    'ProposedJWValueQty': '',
+    'ProposedJWGrnQty': ''
+  };
   ngOnInit() {
     this.openModal();
     this._route.parent.paramMap.subscribe((data) => {
@@ -46,6 +83,29 @@ export class BusinessDetailsComponent implements OnInit {
       this.GetVendorBusiness(this.currentPage);
     });
     this.GetDivisions();
+    this.businessDetailsForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors();
+    });
+  }
+
+  logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
+      } else {
+        this.formErrors[key] = '';
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
+          const messages = this.ValidationMessages[key];
+          for (const errorkey in abstractControl.errors) {
+            if (errorkey) {
+              this.formErrors[key] += messages[errorkey] + ' ';
+            }
+          }
+        }
+      }
+    });
   }
 
   CreateNewVendorBusiness() {
@@ -60,6 +120,37 @@ export class BusinessDetailsComponent implements OnInit {
     this.businessObj.ProposedJWGrnQty = null;
     this.businessObj.Status = 'A';
     this.businessObj.Remarks = '';
+  }
+
+  InitializeFormControls() {
+    this.businessDetailsForm = this._fb.group({
+      VendorBusinessDetailsID: [this.businessObj.VendorBusinessDetailsID],
+      divisionCode: [this.businessObj.divisionCode, Validators.required],
+      deptCode: [this.businessObj.deptCode, Validators.required],
+      // ActualDPValueQty: [this.businessObj.ActualDPValueQty, [Validators.required, Validators.maxLength(14)]],
+      // ActualDPGrnQty: [this.businessObj.ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
+      // ActualJWValueQty: [this.businessObj.ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
+      // ActualJWGrnQty: [this.businessObj.ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedDPValueQty: [this.businessObj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedJWValueQty: [this.businessObj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedJWGrnQty: [this.businessObj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
+      Status: [this.businessObj.Status],
+      remarks: ''
+    });
+  }
+
+  openModal() {
+    this.InitializeFormControls();
+  }
+
+  dismiss() {
+    this.submitted = false;
+    this.CreateNewVendorBusiness();
+    this.InitializeFormControls();
+    this.logValidationErrors();
+    this.departmentList = null;
+    this.editedVendorBusiness = undefined;
   }
 
   GetVendorBusiness(index: number) {
@@ -77,11 +168,13 @@ export class BusinessDetailsComponent implements OnInit {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.businessList;
   }
+
   GetDivisions() {
     this._mddService.GetMasterDataDetails('Division', '-1').subscribe((result) => {
       this.divisionList = result.data.Table;
     });
   }
+
   GetDepartment() {
     if (this.businessDetailsForm.get('divisionCode').value === '') {
       this.departmentList = [];
@@ -99,45 +192,36 @@ export class BusinessDetailsComponent implements OnInit {
       });
     }
   }
-  InitializeFormControls() {
-    this.businessDetailsForm = this._fb.group({
-      VendorBusinessDetailsID: ['0'],
-      divisionCode: ['', Validators.required],
-      deptCode: ['', Validators.required],
-      // ActualDPValueQty: [this.businessObj.ActualDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualDPGrnQty: [this.businessObj.ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualJWValueQty: [this.businessObj.ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualJWGrnQty: [this.businessObj.ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPValueQty: [this.businessObj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWValueQty: [this.businessObj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWGrnQty: [this.businessObj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      status: true,
-      remarks: ''
-    });
-  }
 
-  openModal() {
-    this.InitializeFormControls();
-  }
-  dismiss() {
-    this.CreateNewVendorBusiness();
-    this.InitializeFormControls();
-    this.submitted = false;
-    this.departmentList = null;
-  }
   SaveBusinessDetails() {
     this.submitted = true;
     if (this.businessDetailsForm.invalid) {
+      this.logValidationErrors();
       return;
+    }
+    // console.log(JSON.stringify (this.editedVendorBusiness));
+    if (this.editedVendorBusiness !== undefined) {
+      if (
+        this.businessDetailsForm.get('divisionCode').value === this.editedVendorBusiness.divisionCode
+        && this.businessDetailsForm.get('deptCode').value === this.editedVendorBusiness.deptCode
+        && this.businessDetailsForm.get('ProposedDPValueQty').value === this.editedVendorBusiness.ProposedDPValueQty
+        && this.businessDetailsForm.get('ProposedDPGrnQty').value === this.editedVendorBusiness.ProposedDPGrnQty
+        && this.businessDetailsForm.get('ProposedJWValueQty').value === this.editedVendorBusiness.ProposedJWValueQty
+        && this.businessDetailsForm.get('ProposedJWGrnQty').value === this.editedVendorBusiness.ProposedJWGrnQty
+      ) {
+        alert('There is nothing to change for save.');
+        return;
+      }
     }
     this.sendFormData();
   }
+
   DeleteBusinessDetails() {
     this.sendFormData();
   }
+  
   sendFormData() {
-    const st = this.businessDetailsForm.get('status').value;
+    const st = this.businessDetailsForm.get('Status').value;
     // console.log(JSON.stringify(this.businessDetailsForm.value));
     this.businessObj = new VendorBusinessDetails();
     this.businessObj.VendorBusinessDetailsID = this.businessDetailsForm.get('VendorBusinessDetailsID').value;
@@ -154,7 +238,7 @@ export class BusinessDetailsComponent implements OnInit {
     this.businessObj.ProposedDPValueQty = this.businessDetailsForm.get('ProposedDPValueQty').value;
     this.businessObj.ProposedJWGrnQty = this.businessDetailsForm.get('ProposedJWGrnQty').value;
     this.businessObj.ProposedJWValueQty = this.businessDetailsForm.get('ProposedJWValueQty').value;
-    this.businessObj.Status = this.businessDetailsForm.get('status').value;
+    this.businessObj.Status = st;
     this.businessObj.Remarks = this.businessDetailsForm.get('remarks').value;
     this.businessObj.CreatedBy = 999999;
 
@@ -166,7 +250,7 @@ export class BusinessDetailsComponent implements OnInit {
             this.totalItems = data.VendorBusinessCount[0].TotalVendors;
             this.GetVendorsBusinessList();
             alert(data.Msg[0].Message);
-            if (st === true) {
+            if (st === 'A') {
               $('#myModal').modal('toggle');
             } else {
               $('#deleteModal').modal('toggle');
@@ -184,59 +268,15 @@ export class BusinessDetailsComponent implements OnInit {
     }
   }
   GetBusinessDetails(vobj: VendorBusinessDetails) {
-    this.businessDetailsForm = this._fb.group({
-      VendorBusinessDetailsID: [vobj.VendorBusinessDetailsID],
-      divisionCode: [vobj.divisionCode, Validators.required],
-      deptCode: [vobj.deptCode, Validators.required],
-      // ActualDPValueQty: [data.Table[0].ActualDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualDPGrnQty: [data.Table[0].ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualJWValueQty: [data.Table[0].ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualJWGrnQty: [data.Table[0].ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPValueQty: [vobj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPGrnQty: [vobj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWValueQty: [vobj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWGrnQty: [vobj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      status: true, // vobj.Status = 'A' ? true : false,
-      remarks: ''
-    });
+    this.editedVendorBusiness = vobj;
+    this.businessObj = vobj;
+    vobj.Status = 'A';
+    this.InitializeFormControls();
     this.GetDepartment();
   }
   DeleteBusinessDetailPopup(vobj: VendorBusinessDetails) {
-    this.businessDetailsForm = this._fb.group({
-      VendorBusinessDetailsID: [vobj.VendorBusinessDetailsID],
-      divisionCode: [vobj.divisionCode, Validators.required],
-      deptCode: [vobj.deptCode, Validators.required],
-      // ActualDPValueQty: [data.Table[0].ActualDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualDPGrnQty: [data.Table[0].ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualJWValueQty: [data.Table[0].ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      // ActualJWGrnQty: [data.Table[0].ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPValueQty: [vobj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPGrnQty: [vobj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWValueQty: [vobj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWGrnQty: [vobj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      status: false,
-      remarks: ''
-    });
+    vobj.Status = 'D';
+    this.businessObj = vobj;
+    this.InitializeFormControls();
   }
-  // This function is used for get data from database.
-  // GetBusinessDetails(x) {
-  //   this._vendorBusiService.GetBusinessDetails(x).subscribe((data) => {
-  //     this.businessDetailsForm = this._fb.group({
-  //       VendorBusinessDetailsID: [data.Table[0].VendorBusinessDetailsID],
-  //       divisionCode: [data.Table[0].DivisionCode, Validators.required],
-  //       deptCode: [data.Table[0].DeptCode, Validators.required],
-  //       // ActualDPValueQty: [data.Table[0].ActualDPValueQty, [Validators.required, Validators.maxLength(14)]],
-  //       // ActualDPGrnQty: [data.Table[0].ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-  //       // ActualJWValueQty: [data.Table[0].ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
-  //       // ActualJWGrnQty: [data.Table[0].ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-  //       ProposedDPValueQty: [data.Table[0].ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
-  //       ProposedDPGrnQty: [data.Table[0].ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-  //       ProposedJWValueQty: [data.Table[0].ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
-  //       ProposedJWGrnQty: [data.Table[0].ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-  //       status: data.Table[0].Status = 'A' ? true : false,
-  //       remarks: data.Table[0].Remarks
-  //     });
-  //     this.GetDepartment();
-  //   });
-  // }
 }
