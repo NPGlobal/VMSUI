@@ -1,0 +1,23 @@
+.modal-dialog {
+    max-width: 1100px;
+    font-weight: 500;
+}
+
+.error-label{
+    color:red;
+    font-size: 90%;
+    font-weight: 400;
+}
+.err{
+    margin-bottom:0% 
+}
+
+.table > tbody > tr > td{
+    font-family: verdana;
+    color: #000000;
+    font-size: 13px;
+    /*font-weight: 700;*/
+}
+
+input[type="text"],select{margin-bottom:0px !important;}
+.modal label{font-size: 13px;}

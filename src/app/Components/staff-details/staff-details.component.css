@@ -1,15 +1,16 @@
-#ashu{margin:0px;width:100%}
-#ashu .col-md-66{padding:0px;width:50%;float:left;}
-#ashu .col{padding:0px;}
-#ashu .col-md-12,.col-md-6{padding-left:0px;}
-
 .error-label{
     color:red;
     font-size: 90%;
     font-weight: 400;
-
 }
-
 .err{
     margin-bottom:0% 
 }
+.table > tbody > tr > td{
+    font-family: verdana;
+    color: #000000;
+    font-size: 13px;
+    /*font-weight: 700;*/
+}
+input[type="text"],select{margin-bottom:0px !important;}
+.modal label{font-size: 13px;}

@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './Components/page-not-found/page-not-foun
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
 import { DocumentComponent } from './Components/document/document.component';
+import { BankDetailsComponent } from './Components/bank-details/bank-details.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,8 @@ const routes: Routes = [
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
       { path: 'business', component: BusinessDetailsComponent },
-      { path: 'document', component: DocumentComponent }
+      { path: 'document', component: DocumentComponent },
+      { path: 'bank', component: BankDetailsComponent }
     ]
   },
   {
@@ -36,7 +38,9 @@ const routes: Routes = [
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
       { path: 'business', component: BusinessDetailsComponent },
-      { path: 'document', component: DocumentComponent }
+      { path: 'document', component: DocumentComponent },
+      { path: 'bank', component: BankDetailsComponent }
+
     ]
   },
   {

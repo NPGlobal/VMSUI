@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,7 +11,7 @@ import { AddVendorComponent } from './Components/add-vendor/add-vendor.component
 import { PersonalDetailsComponent } from './Components/personal-details/personal-details.component';
 import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Vendor } from './Models/vendor';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
@@ -19,6 +19,9 @@ import { ProductionDetailsComponent } from './Components/production-details/prod
 import { DocumentComponent } from './Components/document/document.component';
 import { VendorRegistrationComponent } from './Components/vendor-registration/vendor-registration.component';
 import { AddressFormComponent } from './Components/address-form/address-form.component';
+import { HttpErrorInterceptor } from './Interceptors/http-error-interceptor';
+import { CustomErrorHandlerService } from './Services/custom-error-handler.service';
+import { BankDetailsComponent } from './Components/bank-details/bank-details.component';
 
 
 @NgModule({
@@ -35,7 +38,8 @@ import { AddressFormComponent } from './Components/address-form/address-form.com
     ProductionDetailsComponent,
     DocumentComponent,
     VendorRegistrationComponent,
-    AddressFormComponent
+    AddressFormComponent,
+    BankDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +49,18 @@ import { AddressFormComponent } from './Components/address-form/address-form.com
     HttpClientModule,
     AngularFontAwesomeModule
   ],
-  providers: [Vendor],
+  providers: [
+    {
+      provide: ErrorHandler,
+      useClass: CustomErrorHandlerService
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    },
+    Vendor
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

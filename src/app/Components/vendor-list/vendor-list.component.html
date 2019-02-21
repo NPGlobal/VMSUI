@@ -28,7 +28,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let vendor of pagedItems;index as i;">
-        <th scope="row">{{vendor.RowNumber}}</th>
+        <td>{{vendor.RowNumber}}</td>
         <td>{{vendor.VendorName}}</td>
         <td>{{vendor.VendorShortName}}</td>
         <td>{{vendor.VendorCode}}</td>
@@ -38,7 +38,7 @@
           <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit"></i></a>
         </td>
       </tr>
-      <tr *ngIf="pagedItems.length === 0">
+      <tr *ngIf="pagedItems && pagedItems.length === 0">
         <td colspan="7">
           <h6>No Record Found</h6>
         </td>

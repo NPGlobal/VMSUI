@@ -160,8 +160,12 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 /*
 ============= Added by Ashutosh for collapse form and its sections
 */
-.slider,.detailslider 
-{
-  padding: 0 18px;max-height: 500px;overflow: hidden;transition: max-height 0.2s ease-out;
+.slider, .detailslider {
+  padding: 0 18px;
+  /* max-height: 500px; */
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
 }
-.slider.closed,.detailslider.closed {max-height: 0;}
+.slider.closed, .detailslider.closed {
+  max-height: 0;
+}
