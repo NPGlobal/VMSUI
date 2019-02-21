@@ -33,6 +33,7 @@ export class PersonalDetailsComponent implements OnInit {
   ReferenceVendorList: Vendor[] = [];
 
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
+  NumberPattern: '^[1-9][0-9]{5}$';
 
   Address: VendorAddress;
 
@@ -45,6 +46,8 @@ export class PersonalDetailsComponent implements OnInit {
   HasPHSelected: boolean;
 
   submitted = false;
+  StateCodeLabel: string;
+
   ValidationMessages = {
     'PANNo': {
       'minlength': 'Invalid PAN number',
@@ -70,7 +73,10 @@ export class PersonalDetailsComponent implements OnInit {
       'required': ''
     },
     'PIN': {
-      'required': ''
+      'required': '',
+      'minlength': 'Invalid PIN number',
+      'maxlength': 'Invalid PIN number',
+      'pattern': 'Invalid PIN number'
     },
     'PrimaryContactName': {
       'required': ''
@@ -170,6 +176,12 @@ export class PersonalDetailsComponent implements OnInit {
         }
       }
     });
+  }
+
+  SetStateCodeLabel() {
+    const state = this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
+
+    this.StateCodeLabel = state === null || state === undefined ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
   SavePersonalDetails() {
@@ -297,6 +309,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.GetPHList();
 
         this.InitializeFormControls();
+        this.SetStateCodeLabel();
       }
 
       this.IsAddressSaved = false;
@@ -363,7 +376,8 @@ export class PersonalDetailsComponent implements OnInit {
         CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
         StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
-        PIN: [this.vendor.RegisteredOfficeAddress.PIN, [Validators.required]],
+        PIN: [this.vendor.RegisteredOfficeAddress.PIN,
+        [Validators.required, Validators.pattern('^[0-9]{1,6}$'), Validators.minLength(6), Validators.maxLength(6)]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
         PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
         PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone, [Validators.required]],
@@ -560,24 +574,23 @@ export class PersonalDetailsComponent implements OnInit {
 
   SetValidationForGSTControls() {
     if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
         [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
 
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([Validators.required]);
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators(
-        [Validators.required]
-      );
+
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
     } else {
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
 
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([]);
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
+
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
     }
   }
