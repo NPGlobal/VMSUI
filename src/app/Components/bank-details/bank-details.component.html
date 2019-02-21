@@ -1,49 +1,37 @@
-<form *ngIf="BankDetailsForm" class="form-inline" [formGroup]="BankDetailsForm" (ngSubmit)="SaveVendorBankDetails()" novalidate>
+<form *ngIf="BankDetailsForm" class="form-inline slider" [formGroup]="BankDetailsForm"
+  (ngSubmit)="SaveVendorBankDetails()" novalidate>
 
-  <div class="row col-md-12">
-    <div class="form-group col-md-9">
-      <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
-      <input type="text" class="form-control col-md-11  input-sm" formControlName="NameAsPerBankAccount">
-    </div>
+  <div class="content-heading" align="left">Bank Details</div>
+  <div class="form-group col-md-6">
+    <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
   </div>
-
-  <div class="form-group col-md-4">
+  <div class="form-group col-md-3">
     <label class="text" for="BankName">Bank Name</label>
     <input type="text" class="form-control col-md-12  input-sm" formControlName="BankName">
   </div>
-  <div class="form-group col-md-4">
+  <div class="form-group col-md-3">
     <label class="text" for="BranchName">Branch Name</label>
     <input type="text" class="form-control col-md-12  input-sm" formControlName="BranchName">
-  </div>
-  <div style="margin-top: 10px;" class="form-group col-md-4">
-    <div>
-      <label class="text radio-inline">
-        <input type="checkbox" formControlName="isECSenabled">
-        <span style="margin-left:5px;">ECS enabled</span>
-      </label>
-    </div>
   </div>
 
   <div class="form-group col-md-4">
     <label class="text" for="AccountNo">Account No</label>
-    <input type="text" class="form-control col-md-12  input-sm" formControlName="AccountNo">
+    <input type="text" class="form-control col-md-12  input-sm" formControlName="AccountNo"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.AccountNo}">
   </div>
   <div class="form-group col-md-4">
     <label class="text" for="AccountType">Account Type</label>
     <select type="text" class="form-control col-md-12  input-sm" formControlName="AccountType">
       <option value="-1" selected="selected">Select</option>
-      <option value="Saving">Saving</option>
-      <option value="Current">Current</option>
+      <option *ngFor="let type of AccountType" value="{{type.accountType}}">{{type.accountType}}</option>
     </select>
   </div>
   <div class="form-group col-md-4">
     <label class="text" for="CurrencyCode">Currency<i class="mandatory">*</i></label>
     <select type="text" class="form-control col-md-12  input-sm" (blur)="logValidationErrors()"
       [ngClass]="{'is-invalid': formErrors.CurrencyCode}" formControlName="CurrencyCode">
-      <option value="EUR">Euro</option>
-      <option selected="selected" value="INR">Indian Rupee</option>
-      <option value="AED">UAE Dirham</option>
-      <option value="USD">US Dollar</option>
+      <option *ngFor="let currency of CurrencyList" value="{{currency.CurrencyCode}}">{{currency.Currency}}</option>
     </select>
   </div>
 
@@ -69,11 +57,19 @@
     <label class="text" for="RemittanceInfavourof">Remittance Infavourof</label>
     <input type="text" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
   </div>
-  <div class="col-md-4"></div>
+  <div style="margin-top: 10px;" class="form-group col-md-4">
+    <div>
+      <label class="text radio-inline">
+        <input type="checkbox" formControlName="isECSenabled">
+        <span style="margin-left:5px;">ECS enabled</span>
+      </label>
+    </div>
+  </div>
+
 
   <div class="col-md-12">
     <hr>
-    <div class="page-footer md-auto mr-auto">
+    <div class="page-footer md-auto mr-auto" style="margin-bottom: 10px">
       <button type="submit" class="mr-3 btn btn-primary">Save</button>
       <button [routerLink]="['/vendor']" type="button" class="btn">Cancel</button>
     </div>
