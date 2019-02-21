@@ -17,19 +17,26 @@ export class BankDetailsComponent implements OnInit {
   submitted = false;
   VendorCode: string;
   SaveOnlyBankDetails = true;
+  AccountNumberValidation = '^[0-9]*$';
+  AlphanumericPattern = '^[a-zA-Z0-9]*$';
 
   ValidationMessages = {
     'CurrencyCode': {
       'required': ''
     },
     'PaymentTerms': {
-      'required': ''
+      'required': '',
+      'pattern': ''
+    },
+    'AccountNo': {
+      'pattern': ''
     }
   };
 
   formErrors = {
     'CurrencyCode': '',
-    'PaymentTerms': ''
+    'PaymentTerms': '',
+    'AccountNo': ''
   };
 
 
@@ -54,10 +61,10 @@ export class BankDetailsComponent implements OnInit {
       BankName: [this.vendor.BankName],
       BranchName: [this.vendor.BranchName],
       isECSenabled: [this.vendor.isECSenabled],
-      AccountNo: [this.vendor.BankAcctNo],
-      AccountType: [this.vendor.accountType],
-      CurrencyCode: [this.vendor.CurrencyCode, Validators.required],
-      PaymentTerms: [this.vendor.PaymentTerms, Validators.required],
+      AccountNo: [this.vendor.BankAcctNo, Validators.pattern(this.AccountNumberValidation)],
+      AccountType: [this.vendor.accountType === null ? '-1' : this.vendor.accountType],
+      CurrencyCode: [this.vendor.CurrencyCode === null ? 'INR' : this.vendor.CurrencyCode, Validators.required],
+      PaymentTerms: [this.vendor.PaymentTerms, [Validators.required, Validators.pattern(this.AlphanumericPattern)]],
       IFSCCode: [this.vendor.IFSCCode],
       MICRNo: [this.vendor.MICRNo],
       SWIFTCode: [this.vendor.SwiftCode],
