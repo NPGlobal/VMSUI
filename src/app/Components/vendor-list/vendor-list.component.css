@@ -8,3 +8,24 @@
     font-size: 13px;
     /*font-weight: 700;*/
 }
+
+input[type=text] {
+  background-image: url('src/assets/images/searchicon.png');
+  background-position: 5px 5px; 
+  background-repeat: no-repeat;
+  display:block;
+  margin: 0 0 0 auto;
+  width: 35px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  padding: 5px 0px 5px 30px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+  }
+  
+  input[type=text]:focus {
+    width: 50%;
+  }
