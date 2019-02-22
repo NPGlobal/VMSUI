@@ -37,8 +37,13 @@ export class PersonalDetailsComponent implements OnInit {
 
   Address: VendorAddress;
 
-  @ViewChild('modalOpenButton')
-  modalOpenButton: ElementRef;
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
+
+  @ViewChild('addModalOpenButton')
+  addModalOpenButton: ElementRef;
 
   HasAllCollapsed: boolean;
   IsAddressSaved = false;
@@ -106,9 +111,11 @@ export class PersonalDetailsComponent implements OnInit {
     this.vendor = new Vendor();
     this.vendor.RegisteredOfficeAddress = new VendorAddress();
     this.HasAllCollapsed = true;
+    this.PopUpMessage = '';
   }
 
   ngOnInit() {
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
@@ -198,6 +205,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     if (this.personalDetailsForm.invalid) {
       this.LogValidationErrors();
+      this.PopUpMessage = 'Please fill required fields.';
+      this.alertButton.click();
       return;
     }
 
@@ -290,30 +299,30 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
-        alert('Saved Succesfully!!');
+        this.PopUpMessage = 'Saved Succesfully!!';
+        this.alertButton.click();
         this.IsAddressSaved = true;
         this.Editvendor(this.VendorCode);
+      } else {
+        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.alertButton.click();
       }
     });
   }
 
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
-      if (!this.IsAddressSaved) {
-        this.vendor = result.data.Vendor[0];
-      }
+      this.vendor = result.data.Vendor[0];
 
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
 
-      if (!this.IsAddressSaved) {
-        this.GetPHList();
+      this.GetPHList();
 
-        this.InitializeFormControls();
+      this.InitializeFormControls();
 
-        this.SetStateCodeLabel();
-      }
+      this.SetStateCodeLabel();
 
       this.IsAddressSaved = false;
     });
@@ -321,13 +330,15 @@ export class PersonalDetailsComponent implements OnInit {
 
   OpenAddressModal(vendorAddress: VendorAddress) {
     this.Address = vendorAddress;
-    const el = this.modalOpenButton.nativeElement as HTMLElement;
+    const el = this.addModalOpenButton.nativeElement as HTMLElement;
     el.click();
   }
 
   FillPHLists() {
     this.PHList = [];
     this.StoreList = [];
+    this.SavedPHStoreList = [];
+    this.SelectedPHStoreList = [];
     if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {

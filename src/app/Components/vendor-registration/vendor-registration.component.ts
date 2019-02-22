@@ -25,6 +25,11 @@ export class VendorRegistrationComponent implements OnInit {
   submitted = false;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
 
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
+
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
 
@@ -61,6 +66,9 @@ export class VendorRegistrationComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.PopUpMessage = '';
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+
     this._vendorService.GetPHList().subscribe(result => {
       this.AllPHList = result.data.Table;
       this.PHList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'P');
@@ -76,7 +84,6 @@ export class VendorRegistrationComponent implements OnInit {
 
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
       this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A');
-      console.log(this.ReferenceVendorList.length);
     });
 
     this.InitializeFormControls();
@@ -119,6 +126,7 @@ export class VendorRegistrationComponent implements OnInit {
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
               this.formErrors[key] += messages[errorkey] + ' ';
+              break;
             }
           }
         }
@@ -164,7 +172,8 @@ export class VendorRegistrationComponent implements OnInit {
     }
 
     if (!this.RegistrationForm.get('IsDirectVendor').value && !this.RegistrationForm.get('IsJWVendor').value) {
-      alert('Please select Vendor Type.');
+      this.PopUpMessage = 'Please select Vendor Type.';
+      this.alertButton.click();
       return;
     }
 
@@ -192,7 +201,8 @@ export class VendorRegistrationComponent implements OnInit {
       } else if (statusObj.Status === 2) {
         this.CodeExists = true;
       } else {
-        alert('We are facing some technical issues. Please contact administrator.');
+        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.alertButton.click();
       }
     });
   }

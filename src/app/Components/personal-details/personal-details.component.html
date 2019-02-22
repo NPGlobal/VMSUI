@@ -664,7 +664,23 @@
     </div>
 </form>
 
-<button #modalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+<button #addModalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
     data-toggle="modal" style="display:none;">
 </button>
 <app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form>
+
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+                <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>

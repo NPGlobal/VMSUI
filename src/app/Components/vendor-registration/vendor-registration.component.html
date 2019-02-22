@@ -22,24 +22,22 @@
               </div>
               <div class="form-group col-md-4">
                 <label for="VendorCode">Short Name<i class="mandatory">*</i></label>
-                &nbsp;&nbsp;
-                <span class="help-block mandatory" *ngIf="formErrors.VendorCode">
-                  {{formErrors.VendorCode}}
-                </span>
-                <span class="mandatory" *ngIf="CodeExists">
-                  (Producer Already Exists)
-                </span>
                 <input type="text" [ngClass]="{'is-invalid': formErrors.VendorCode}"
                   class="form-control col-md-12  input-sm" formControlName="VendorCode" (blur)="logValidationErrors()">
+                <span class="error-block mandatory" *ngIf="formErrors.VendorCode">
+                  {{formErrors.VendorCode}}
+                </span>
+                <span class="error-block mandatory" *ngIf="CodeExists">
+                  <small>(Producer Already Exists)</small>
+                </span>
               </div>
               <div class="form-group col-md-4">
                 <label for="PANNo">PAN</label>
-                &nbsp;&nbsp;
-                <span class="help-block mandatory" *ngIf="formErrors.PANNo">
-                  {{formErrors.PANNo}}
-                </span>
                 <input type="text" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control col-md-12  input-sm"
                   formControlName="PANNo" (blur)="logValidationErrors()">
+                <span class="error-block mandatory" *ngIf="formErrors.PANNo">
+                  {{formErrors.PANNo}}
+                </span>
               </div>
             </div>
           </div>
@@ -139,6 +137,23 @@
           </div>
         </form>
 
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>
