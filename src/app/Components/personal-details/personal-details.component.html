@@ -1,7 +1,7 @@
 <form *ngIf="personalDetailsForm" class="form-inline" [formGroup]="personalDetailsForm"
     (ngSubmit)="SavePersonalDetails()" novalidate>
     <div class="main-div">
-        <div class="content-heading">
+        <div class="content-heading expand-all">
             <a href="javascript:void(0)" (click)="ToggleAllContainers()" class="glyphicon-expand">
                 <span>{{HasAllCollapsed ? '+' : '-'}}</span>
             </a>{{HasAllCollapsed ? 'Expand' : 'Collapse'}} All
@@ -170,7 +170,7 @@
                         (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
                         class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Registered Office Address
+                    </a>GST Registration Detail
                 </div>
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
@@ -294,8 +294,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
-                                    class="form-control input-sm">
+                                <select (change)="SetStateCodeLabel()" [ngClass]="{'is-invalid': formErrors.StateCode}"
+                                    formControlName="StateCode" class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
                                         {{state.MDDName}}
@@ -305,9 +305,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="text">State Code</label>
-                            <span>
-                                <label>{{0}}</label>
-                            </span>
+                            <small class="ml-2">{{StateCodeLabel}}</small>
                         </div>
 
                     </div>
