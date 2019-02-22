@@ -1,10 +1,12 @@
 <div class="top-margin container" style="margin-left: 0px;">
-  <div class="float-left">
+  <div class="float-left col-md-6">
     <h2>Producers</h2>
   </div>
-  <div class="float-right">
-    <i class="fa fa-search"></i>&nbsp;
-    <input type="search" placeholder="Search" (keyup)="SearchVendor($event.target.value)">&nbsp;&nbsp;
+  <div class="float-right row col-md-6">
+    <input type="text" placeholder="Search" (keyup)="SearchVendor($event.target.value)" name="search">
+
+    <!-- <i class="fa fa-search"></i>&nbsp;
+    <input type="search" placeholder="Search" (keyup)="SearchVendor($event.target.value)"> -->&nbsp;&nbsp;
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
       data-keyboard="false">
       <i class="fa fa-plus"></i>
