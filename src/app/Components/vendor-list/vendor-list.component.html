@@ -20,7 +20,9 @@
         <!-- <th scope="col">Serial</th> -->
         <th scope="col">Producer Name</th>
         <th scope="col">Short Name</th>
-        <!-- <th scope="col">Producer Code</th> -->
+        <th>Ref Vendor</th>
+        <th scope="col">GST No</th>
+        <th scope="col">PAN No</th>
         <th scope="col">Created On</th>
         <!-- <th scope="col">Status</th> -->
         <th scope="col">Actions</th>
@@ -31,7 +33,9 @@
         <!-- <td>{{vendor.RowNumber}}</td> -->
         <td>{{vendor.VendorName}}</td>
         <td>{{vendor.VendorShortName}}</td>
-        <!-- <td>{{vendor.VendorCode}}</td> -->
+        <td>{{vendor.MasterVendorName}}</td>
+        <td>{{vendor.GSTNo}}</td>
+        <td>{{vendor.PANNo}}</td>
         <td>{{vendor.CreatedOn | date:'medium'}}</td>
         <!-- <td>{{vendor.Status}}</td> -->
         <td>
