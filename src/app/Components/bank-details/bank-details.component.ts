@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { VendorService } from 'src/app/Services/vendor.service';
@@ -20,6 +20,9 @@ export class BankDetailsComponent implements OnInit {
   AccountType: any[];
   CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
+
+  @ViewChild('modalOpenButton')
+  modalOpenButton: ElementRef;
 
   ValidationMessages = {
     'CurrencyCode': {
@@ -131,7 +134,9 @@ export class BankDetailsComponent implements OnInit {
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       const StatusObj = data;
       if (StatusObj.Status === 0) {
-        alert('Saved Succesfully!!');
+        // alert('Saved Succesfully!!');
+        const el = this.modalOpenButton.nativeElement as HTMLElement;
+        el.click();
         this.Editvendor(this.VendorCode);
       }
     });

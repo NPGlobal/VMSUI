@@ -10,7 +10,6 @@
     <table class="table table-striped table-bordered table-hover">
       <thead>
         <tr>
-          <th scope="col">Sr No</th>
           <th scope="col">Name</th>
           <th scope="col">Department</th>
           <th scope="col">Designation</th>
@@ -22,7 +21,6 @@
       <tbody>
           <tr><td colspan="7" *ngIf="totalItems === 0">No Record Found</td></tr>
           <tr *ngFor="let vendor of pagedItems;index as i;">
-            <td>{{vendor.RowNumber}}</td>
             <td>{{vendor.ContactName}}</td>
             <td>{{vendor.Department}}</td>
             <td>{{vendor.Designation}}</td>
@@ -34,11 +32,6 @@
 
               <a title="Delete Staff" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteStaffDetailPopup(vendor)" 
               data-target="#deleteModal"><i class="fa fa-remove"></i></a>
-            </td>
-          </tr>
-          <tr *ngIf="pagedItems && pagedItems.length === 0">
-            <td colspan="7">
-              <h6>No Record Found</h6>
             </td>
           </tr>
       </tbody>
@@ -90,7 +83,7 @@
                     <span>
                       <select formControlName="dept" class="form-control input-sm" (change)="GetVendorDesignation($event)"
                         [ngClass]="{ 'is-invalid': formErrors.dept }">      
-                        <option value="">Select Department</option>
+                        <option [ngValue]="null">Select Department</option>
                         <option *ngFor="let option of deptList" value={{option.DeptCode}}>
                           {{option.DeptName}}
                         </option>
@@ -101,7 +94,7 @@
                     <label class="text">Designation <span class="error-label">*</span></label>
                     <span>
                       <select formControlName="designation" class="form-control input-sm" [ngClass]="{ 'is-invalid': formErrors.designation }">
-                        <option value="">Select Designation</option>
+                        <option [ngValue]="null">Select Designation</option>
                         <option *ngFor="let option of designationList" 
                         [attr.data-maxnumber]="option.Max_Allowed"
                         value={{option.VendorConfigID}}>
@@ -184,6 +177,28 @@
               <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
               <button class="btn btn-primary" (click)="DeleteStaffDetails()">Yes</button>
           </div>
+      </div>
+  </div>
+</div>
+
+<button #modalOpenMsgButton id="modalOpenMsgButton" type="button" data-target="#myMsgModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
+<!-- Message Modal-->
+<div class="modal fade" id="myMsgModal">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">{{ActionMessage}}</h5>
+              <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+              </button> -->
+              <button class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
+          </div>
+          <!-- <div class="modal-body">{{ActionMessage}}</div> -->
+          <!-- <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          </div> -->
       </div>
   </div>
 </div>
