@@ -62,7 +62,6 @@
   </nav>
 </div>
 
-
 <!-- Model -->
 <div class="modal popup" id="myModal">
   <!-- modal-dialog -->
@@ -78,6 +77,11 @@
       <div class="modal-body">
         <form [formGroup]="techDetailsForm" (ngSubmit)="SaveTechDetails()" novalidate>
             <input type="hidden" name="id" formControlName="id">
+            <!-- <input type="button" formControlName="modalOpenButton" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+            data-toggle="modal" style="display:none;">
+            </button> -->
+           
+
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
@@ -162,13 +166,6 @@
             </div>
           </div>
 
-
-          <!-- </div> -->
-          <!-- <div class="col-md-12 form-group page-footer">
-              <button type="submit" class="mr-3 btn btn-primary">Save</button>
-              <button type="button" class="btn" (click)="closeModalDialog()">Cancel</button>
-            </div> -->
-
           <!-- Modal footer -->
           <div class="modal-footer col-md-12  page-footer">
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
@@ -196,5 +193,23 @@
               <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
           </div>
       </div>
+  </div>
+</div>
+
+<!-- Hidden button to open alert modal -->
+<button #modalOpenButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+data-toggle="modal" style="display:none;">
+</button>
+
+<!-- Modal to open alert modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{modalBody}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
   </div>
 </div>

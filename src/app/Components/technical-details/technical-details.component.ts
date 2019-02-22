@@ -1,4 +1,4 @@
-import { Component, OnInit , SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { VendorTech } from 'src/app/Models/VendorTech';
@@ -35,7 +35,10 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   isLine = 0;
   isEfficiency = 0;
   isDisable = false;
-  x: number;
+  modalBody: string;
+  obj1: JSON;
+  obj2: JSON;
+  flag: boolean;
   Action: string;
   ExistingVendorTech: FormGroup;
   ValidationMessages = {
@@ -44,7 +47,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     },
     'techSpec': {
       'required': '',
-     },
+    },
     'techLineNo': {
       'required': ''
     },
@@ -65,6 +68,9 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     'unitCount': ''
   };
 
+  @ViewChild('modalOpenButton')
+  modalOpenButton: ElementRef;
+
   unitCountList(n: number): any[] {
     return Array(n);
   }
@@ -82,7 +88,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     });
     this.GetVendorDepartments();
     // this.formControlValueChanged();
-   }
+  }
   ngOnChanges(changes: SimpleChanges) {
     this.openModal();
     this.GetTechDetails(this.techDetailsForm.controls.id);
@@ -144,10 +150,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   }
 
   SaveTechDetails() {
-    // this.techDetailsForm.valueChanges.subscribe(() => {
-    //   console.log('username');
-    //   console.log('Password');
-    // });
+    const el = this.modalOpenButton.nativeElement as HTMLElement;
     this.submitted = true;
     console.log(JSON.stringify(this.techDetailsForm.value));
     if (this.techDetailsForm.invalid) {
@@ -168,205 +171,232 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.VendorTech.CreatedBy = 999999;
     // In case of edit,if user submit without making any changes.
     if (this.VendorTech.VendorTechDetailsID > 0) {
-      // alert(Object.entries(this.ExistingVendorTech.value).toString());
-      // alert(Object.entries(this.ExistingVendorTech.value));
-      // alert(Object.entries(this.techDetailsForm.value).toString());
-      // alert(Object.entries(this.techDetailsForm.value));
+      this.obj1 = this.ExistingVendorTech.value;
+      this.obj2 = this.techDetailsForm.value;
+      this.flag = true;
+
       // tslint:disable-next-line:triple-equals
-    // if (Object.entries(this.ExistingVendorTech.value).toString() === Object.entries(this.techDetailsForm.value).toString()) {
-      if (Object.entries(this.ExistingVendorTech.value).toString() === (this.techDetailsForm.value).toString()) {
-      alert('There is nothing to change');
-      return;
-    }}
-    try {
-      this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
-        if (data.Msg != null) {
-          if (data.Msg[0].Result === 0) {
-            this.VendorTech = new VendorTech();
-            this.vendortechList = data.VendorTech;
-            this.totalItems = data.VendorTechCount[0].TotalVendors;
-            this.InitializeFormControls();
-            this.GetVendorsTechList();
-            this.techSpecList = [];
-            alert(data.Msg[0].Message);
-            $('#myModal').modal('toggle');
-            this.dismiss();
+      if (Object.keys(this.obj1).length == Object.keys(this.obj2).length) {
+        for (const key in this.obj1) {
+          // tslint:disable-next-line:triple-equals
+          if (this.obj1[key] == this.obj2[key]) {
+            continue;
           } else {
-            alert(data.Msg[0].Message);
+            this.flag = false;
+            break;
           }
-        } else {
-          alert('There are some technical error. Please contact administrator.');
         }
-      });
-    } catch {
-      alert('There are some technical error. Please contact administrator.');
+      } else {
+        this.flag = false;
+      }
+      //  if (Object.entries(this.ExistingVendorTech.value).toString() === Object.entries(this.techDetailsForm.value).toString()) {
+     if (this.flag === true) {
+      this.modalBody = 'There is nothing to change';
+      el.click();
+      return;
     }
   }
-  checkValidation() {
-    // tslint:disable-next-line:triple-equals
-    if (this.isLine == 1) {
-      this.techDetailsForm.controls['techLineNo'].setValidators(Validators.required);
+    try {
+  this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
+    if (data.Msg != null) {
+      if (data.Msg[0].Result === 0) {
+        this.VendorTech = new VendorTech();
+        this.vendortechList = data.VendorTech;
+        this.totalItems = data.VendorTechCount[0].TotalVendors;
+        this.InitializeFormControls();
+        this.GetVendorsTechList();
+        this.techSpecList = [];
+        //  alert(data.Msg[0].Message);
+        // const el = this.modalOpenButton.nativeElement as HTMLElement;
+        this.modalBody = data.Msg[0].Message;
+        // el.click();
+        $('#myModal').modal('toggle');
+        this.dismiss();
+      } else {
+        this.modalBody = data.Msg[0].Message;
+        // alert(data.Msg[0].Message);
+      }
     } else {
-      this.techDetailsForm.controls['techLineNo'].clearValidators();
+      this.modalBody = 'There are some technical error. Please contact administrator.';
+      //  alert('There are some technical error. Please contact administrator.');
     }
-    // tslint:disable-next-line:triple-equals
-    if (this.isEfficiency == 1) {
-      this.techDetailsForm.controls['efficiency'].setValidators([Validators.pattern(this.efficiencyPattern), Validators.required]);
-    } else {
-      this.techDetailsForm.controls['efficiency'].clearValidators();
-    }
-    this.techDetailsForm.controls['techLineNo'].updateValueAndValidity();
-    this.techDetailsForm.controls['efficiency'].updateValueAndValidity();
+  });
+} catch {
+  this.modalBody = 'There are some technical error. Please contact administrator.';
+  // alert('There are some technical error. Please contact administrator.');
+}
+el.click();
   }
-  openModal() {
-    // tslint:disable-next-line:triple-equals
+checkValidation() {
+  // tslint:disable-next-line:triple-equals
+  if (this.isLine == 1) {
+    this.techDetailsForm.controls['techLineNo'].setValidators(Validators.required);
+  } else {
+    this.techDetailsForm.controls['techLineNo'].clearValidators();
+  }
+  // tslint:disable-next-line:triple-equals
+  if (this.isEfficiency == 1) {
+    this.techDetailsForm.controls['efficiency'].setValidators([Validators.pattern(this.efficiencyPattern), Validators.required]);
+  } else {
+    this.techDetailsForm.controls['efficiency'].clearValidators();
+  }
+  this.techDetailsForm.controls['techLineNo'].updateValueAndValidity();
+  this.techDetailsForm.controls['efficiency'].updateValueAndValidity();
+}
+openModal() {
+  // tslint:disable-next-line:triple-equals
+  this.techDetailsForm = this._fb.group({
+    id: ['0'],
+    dept: ['', Validators.required],
+    techSpec: ['', Validators.required],
+    techLineNo: [''],
+    // efficiency: ['', [Validators.pattern(this.efficiencyPattern)]],
+    efficiency: [''],
+    unitCount: ['', Validators.required],
+    status: true,
+    remarks: '',
+  });
+  this.isDisable = false;
+  this.techDetailsForm.valueChanges.subscribe((data) => {
+    this.LogValidationErrors(this.techDetailsForm);
+  });
+  this.LogValidationErrors();
+}
+dismiss() {
+  this.techDetailsForm = this._fb.group({
+    id: ['0'],
+    dept: [''],
+    techSpec: [''],
+    techLineNo: [''],
+    efficiency: [''],
+    unitCount: [''],
+    status: true,
+    remarks: ''
+  });
+  this.isLine = 0;
+  this.isEfficiency = 0;
+  this.submitted = false;
+  this.techSpecList = [];
+  this.isDisable = false;
+  this.LogValidationErrors();
+}
+GetTechDetails(x) {
+  this.isDisable = true;
+  this._vendorService.GetTechDetails(x).subscribe((data) => {
+    this.techDetailsForm.reset();
     this.techDetailsForm = this._fb.group({
-      id: ['0'],
-      dept: ['', Validators.required],
-      techSpec: ['', Validators.required],
-      techLineNo: [''],
-      // efficiency: ['', [Validators.pattern(this.efficiencyPattern)]],
-      efficiency: [''],
-      unitCount: ['', Validators.required],
-      status: true,
-      remarks: '',
+      id: [data.Table[0].VendorTechDetailsID],
+      dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
+      techSpec: [data.Table[0].VendorTechConfigID, Validators.required],
+      techLineNo: [data.Table[0].TechLineNo],
+      efficiency: [data.Table[0].Efficiency],
+      unitCount: [data.Table[0].UnitCount, Validators.required],
+      status: data.Table[0].Status = 'A' ? true : false,
+      remarks: data.Table[0].Remarks
     });
-    this.isDisable = false;
-    this.techDetailsForm.valueChanges.subscribe((data) => {
+    this.isEfficiency = this.techDetailsForm.get('efficiency').value > 0 ? 1 : 0;
+    this.isLine = this.techDetailsForm.get('techLineNo').value > 0 ? 1 : 0;
+    this.GetVendorTechSpec();
+    this.ExistingVendorTech = Object.assign({}, this.techDetailsForm);
+    this.techDetailsForm.valueChanges.subscribe((data1) => {
       this.LogValidationErrors(this.techDetailsForm);
     });
-    this.LogValidationErrors();
-  }
-  dismiss() {
-    this.techDetailsForm = this._fb.group({
-      id: ['0'],
-      dept: [''],
-      techSpec: [''],
-      techLineNo: [''],
-      efficiency: [''],
-      unitCount: [''],
-      status: true,
-      remarks: ''
-    });
-    this.isLine = 0;
-    this.isEfficiency = 0;
-    this.submitted = false;
-    this.techSpecList = [];
-    this.isDisable = false;
-    this.LogValidationErrors();
-  }
-  GetTechDetails(x) {
-    this.isDisable = true;
-    this._vendorService.GetTechDetails(x).subscribe((data) => {
-      this.techDetailsForm.reset();
-      this.techDetailsForm = this._fb.group({
-        id: [data.Table[0].VendorTechDetailsID],
-        dept: [data.Table[0].VendorDept_MDDCode, Validators.required],
-        techSpec: [data.Table[0].VendorTechConfigID, Validators.required],
-        techLineNo: [data.Table[0].TechLineNo],
-        efficiency: [data.Table[0].Efficiency],
-        unitCount: [data.Table[0].UnitCount, Validators.required],
-        status: data.Table[0].Status = 'A' ? true : false,
-        remarks: data.Table[0].Remarks
-      });
-      this.isEfficiency = this.techDetailsForm.get('efficiency').value > 0 ? 1 : 0;
-      this.isLine = this.techDetailsForm.get('techLineNo').value > 0 ? 1 : 0;
-      this.GetVendorTechSpec();
-      this.ExistingVendorTech = Object.assign({}, this.techDetailsForm);
-      this.techDetailsForm.valueChanges.subscribe((data1) => {
-        this.LogValidationErrors(this.techDetailsForm);
-      });
-    });
-    }
+  });
+}
 
-    DeleteTechDetailsPopup(vendor) {
-      this.techDetailsForm = this._fb.group({
-        Id: [vendor.VendorTechDetailsId],
-        dept: [vendor.Department, Validators.required],
-        techSpec: [vendor.VendorTechConfigID, Validators.required],
-        techLineNo: [vendor.TechLineNo],
-        efficiency: [vendor.Efficiency],
-        unitCount: [vendor.UnitCount, Validators.required],
-       // VendorConfigID: [vendor.VendorTechConfigID],
-        status: vendor.Status = 'A' ? true : false,
-        remarks: vendor.Remarks
-      });
+DeleteTechDetailsPopup(vendor) {
+  this.techDetailsForm = this._fb.group({
+    Id: [vendor.VendorTechDetailsId],
+    dept: [vendor.Department, Validators.required],
+    techSpec: [vendor.VendorTechConfigID, Validators.required],
+    techLineNo: [vendor.TechLineNo],
+    efficiency: [vendor.Efficiency],
+    unitCount: [vendor.UnitCount, Validators.required],
+    // VendorConfigID: [vendor.VendorTechConfigID],
+    status: vendor.Status = 'A' ? true : false,
+    remarks: vendor.Remarks
+  });
 }
 
 
-  DeleteTechDetails() {
- //  if (confirm('Are you sure ? If yes,This record will no longer be available in the system.')) {
-        this.VendorTech = new VendorTech();
-        this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('Id').value;
-        this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
-        this.VendorTech.VendorCode = this.vendorcode;
-        this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value !== null ?
-        this.techDetailsForm.get('techLineNo').value : '0';
-        this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value > 0 ?
-         this.techDetailsForm.get('efficiency').value : '0';
-        this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
-        this.VendorTech.Status = false;
-        this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
-        this.VendorTech.CreatedBy = 999999;
-        try {
-        this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
-          if (data.Msg != null) {
-            if (data.Msg[0].Result === 0) {
-              this.VendorTech = new VendorTech();
-              this.vendortechList = data.VendorTech;
-              this.totalItems = data.VendorTechCount[0].TotalVendors;
-              this.InitializeFormControls();
-              this.GetVendorsTechList();
-              this.techSpecList = [];
-              alert(data.Msg[0].Message);
-              $('#deleteModal').modal('toggle');
-              this.dismiss();
-            } else {
-              alert(data.Msg[0].Message);
-            }
-          } else {
-            alert('There are some technical error. Please contact administrator.');
-          }
-        });
-      } catch {
-        alert('There are some technical error. Please contact administrator.');
-      }
-  //  }
-  }
-  LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
-    Object.keys(group.controls).forEach((key: string) => {
-      const abstractControl = group.get(key);
-      if (abstractControl instanceof FormGroup) {
-        this.LogValidationErrors(abstractControl);
+DeleteTechDetails() {
+  const el = this.modalOpenButton.nativeElement as HTMLElement;
+  //  if (confirm('Are you sure ? If yes,This record will no longer be available in the system.')) {
+  this.VendorTech = new VendorTech();
+  this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('Id').value;
+  this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
+  this.VendorTech.VendorCode = this.vendorcode;
+  this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value !== null ?
+    this.techDetailsForm.get('techLineNo').value : '0';
+  this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value > 0 ?
+    this.techDetailsForm.get('efficiency').value : '0';
+  this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
+  this.VendorTech.Status = false;
+  this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
+  this.VendorTech.CreatedBy = 999999;
+  try {
+    this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
+      if (data.Msg != null) {
+        if (data.Msg[0].Result === 0) {
+          this.VendorTech = new VendorTech();
+          this.vendortechList = data.VendorTech;
+          this.totalItems = data.VendorTechCount[0].TotalVendors;
+          this.InitializeFormControls();
+          this.GetVendorsTechList();
+          this.techSpecList = [];
+          this.modalBody = data.Msg[0].Message;
+          // alert(data.Msg[0].Message);
+          $('#deleteModal').modal('toggle');
+          this.dismiss();
+        } else {
+          this.modalBody = data.Msg[0].Message;
+          //  alert(data.Msg[0].Message);
+        }
       } else {
-        this.formErrors[key] = '';
-        if (this.submitted || (abstractControl && !abstractControl.valid &&
-          (abstractControl.touched || abstractControl.dirty))) {
-          const messages = this.ValidationMessages[key];
-          for (const errorkey in abstractControl.errors) {
-            if (errorkey) {
-              this.formErrors[key] += messages[errorkey] + ' ';
-            }
+        this.modalBody = 'There are some technical error. Please contact administrator.';
+        //  alert('There are some technical error. Please contact administrator.');
+      }
+    });
+  } catch {
+    this.modalBody = 'There are some technical error. Please contact administrator.';
+    // alert('There are some technical error. Please contact administrator.');
+  }
+  el.click();
+}
+LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
+  Object.keys(group.controls).forEach((key: string) => {
+    const abstractControl = group.get(key);
+    if (abstractControl instanceof FormGroup) {
+      this.LogValidationErrors(abstractControl);
+    } else {
+      this.formErrors[key] = '';
+      if (this.submitted || (abstractControl && !abstractControl.valid &&
+        (abstractControl.touched || abstractControl.dirty))) {
+        const messages = this.ValidationMessages[key];
+        for (const errorkey in abstractControl.errors) {
+          if (errorkey) {
+            this.formErrors[key] += messages[errorkey] + ' ';
           }
         }
       }
-    });
+    }
+  });
+}
+specChange(event) {
+  this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
+  this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
+  this.checkValidation();
+  // tslint:disable-next-line:triple-equals
+  if (this.isLine == 0) {
+    this.techDetailsForm.controls.techLineNo.patchValue('');
+  } else {
+    this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
   }
-  specChange(event) {
-    this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
+  // tslint:disable-next-line:triple-equals
+  if (this.isEfficiency == 0) {
+    this.techDetailsForm.controls.efficiency.patchValue('');
+  } else {
     this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
-    this.checkValidation();
-    // tslint:disable-next-line:triple-equals
-    if (this.isLine == 0) {
-      this.techDetailsForm.controls.techLineNo.patchValue('');
-    } else {
-      this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
-    }
-    // tslint:disable-next-line:triple-equals
-    if (this.isEfficiency == 0) {
-      this.techDetailsForm.controls.efficiency.patchValue('');
-    } else {
-      this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
-    }
   }
+}
 }
