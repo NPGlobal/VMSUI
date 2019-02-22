@@ -150,7 +150,7 @@
                                         <label class="text">Selected PH/Store</label>
                                         <select [ngClass]="{'is-invalid': !HasPHSelected}"
                                             formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 4: 10)"
+                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 4: 11)"
                                             multiple="multiple">
                                             <option *ngFor="let PHStore of SelectedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
@@ -224,8 +224,8 @@
                                 </span>
                             </label>
                             <span>
-                                <input formControlName="GSTIN" type="text" [ngClass]="{'is-invalid': formErrors.GSTIN}"
-                                    class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" formControlName="GSTIN" type="text"
+                                    [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -245,8 +245,8 @@
                                     class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.GSTDate}" formControlName="GSTDate"
-                                    type="date" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate}"
+                                    formControlName="GSTDate" type="date" class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
@@ -257,8 +257,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.Address1}" formControlName="Address1"
-                                    type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address1}"
+                                    formControlName="Address1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -283,7 +283,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
+                                <select (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
                                     class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
@@ -297,8 +298,9 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select (change)="SetStateCodeLabel()" [ngClass]="{'is-invalid': formErrors.StateCode}"
-                                    formControlName="StateCode" class="form-control input-sm">
+                                <select (blur)="LogValidationErrors()" (change)="SetStateCodeLabel()"
+                                    [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
+                                    class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
                                         {{state.MDDName}}
@@ -308,7 +310,7 @@
                         </div>
                         <div class="col-md-4">
                             <span class="stateCodeLabel">State Code
-                                <small class="ml-2">{{StateCodeLabel}}</small>
+                                <small *ngIf="StateCodeLabel" class="ml-2">{{StateCodeLabel}}</small>
                             </span>
                         </div>
 
@@ -323,8 +325,8 @@
                                 {{formErrors.PIN}}
                             </span>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.PIN}" formControlName="PIN" type="text"
-                                    class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PIN}"
+                                    formControlName="PIN" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -351,7 +353,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
                                     formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
                             </span>
                         </div>
@@ -371,7 +374,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
                                     formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
                             </span>
                         </div>

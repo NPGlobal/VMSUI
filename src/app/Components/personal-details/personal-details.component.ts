@@ -50,14 +50,14 @@ export class PersonalDetailsComponent implements OnInit {
 
   ValidationMessages = {
     'PANNo': {
-      'minlength': 'Invalid PAN number',
-      'maxlength': 'Invalid PAN number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'GSTIN': {
       'required': '',
-      'minlength': 'Invalid GST number',
-      'maxlength': 'Invalid GST number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'GSTDate': {
@@ -74,8 +74,8 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'PIN': {
       'required': '',
-      'minlength': 'Invalid PIN number',
-      'maxlength': 'Invalid PIN number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Invalid PIN number'
     },
     'PrimaryContactName': {
@@ -182,7 +182,8 @@ export class PersonalDetailsComponent implements OnInit {
     const state = this.StateList === undefined ? new MasterDataDetails() :
       this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
 
-    this.StateCodeLabel = state.MDDShortName === undefined ? '' : state.MDDShortName + '.' + state.MDDName;
+    this.StateCodeLabel = (state === undefined ||
+      state.MDDShortName === undefined || state.MDDShortName === null) ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
   SavePersonalDetails() {
@@ -196,7 +197,7 @@ export class PersonalDetailsComponent implements OnInit {
     }
 
     if (this.personalDetailsForm.invalid) {
-      this.logValidationErrors();
+      this.LogValidationErrors();
       return;
     }
 
@@ -379,7 +380,7 @@ export class PersonalDetailsComponent implements OnInit {
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
         StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
         PIN: [this.vendor.RegisteredOfficeAddress.PIN,
-        [Validators.required, Validators.pattern('^[0-9]{1,6}$'), Validators.minLength(6), Validators.maxLength(6)]],
+        [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(6), Validators.maxLength(6)]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
         PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
         PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone, [Validators.required]],
@@ -417,7 +418,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.SetValidationForGSTControls();
 
     this.personalDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.personalDetailsForm);
+      this.LogValidationErrors(this.personalDetailsForm);
     });
   }
 
@@ -560,11 +561,11 @@ export class PersonalDetailsComponent implements OnInit {
     }
   }
 
-  logValidationErrors(group: FormGroup = this.personalDetailsForm): void {
+  LogValidationErrors(group: FormGroup = this.personalDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
-        this.logValidationErrors(abstractControl);
+        this.LogValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
         if (this.submitted || (abstractControl && !abstractControl.valid &&
@@ -572,7 +573,7 @@ export class PersonalDetailsComponent implements OnInit {
           const messages = this.ValidationMessages[key];
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
-              this.formErrors[key] = messages[errorkey];
+              this.formErrors[key] += messages[errorkey] + ' ';
             }
           }
         }
