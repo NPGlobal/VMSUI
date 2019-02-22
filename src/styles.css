@@ -169,3 +169,42 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 .slider.closed, .detailslider.closed {
   max-height: 0;
 }
+
+
+.col-md-22 {
+  float:left;position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 768px){
+  .col-md-22 {
+    flex: 0 0 19.666667%;
+    max-width: 19.666667%;
+  }
+}
+.mandatory {
+  color: red;
+}
+
+@media (max-width: 320px){
+  .navbar-dark .navbar-brand{width:50%;}
+  .navbar-dark .navbar-brand img {width:60%;}
+  p.header{display: none;}
+  ul.usericon{margin-top:15px;}
+  ul.usericon a.dropdown-toggle{font-size:13px;}
+  ul.usericon a.dropdown-toggle img{width:30%;}
+
+  .usericon li .dropdown-menu{left: 60%;min-width: 7rem;padding: 0 0 0.2rem 5px;}
+  .usericon li a{font-size:12px;}
+
+  .container h2{font-size:1.2rem;}
+  .nav-tabs{width:110%;}
+  .nav-link{padding: 0.3rem 0.3rem;font-size: 12px;}
+  .content-heading{margin-bottom: 10px;padding: 10px;}
+  a.glyphicon-expand{font-size: 15px;}
+  .pl-4, .px-4{padding-left:0px;}
+  .detail-page{width:95%}
+  .expand-all{width:95%}
+}
