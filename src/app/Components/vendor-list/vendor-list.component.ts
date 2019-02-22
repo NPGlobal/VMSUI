@@ -65,6 +65,14 @@ export class VendorListComponent implements OnInit {
         this.isSorted = !this.isSorted;
         this.pagedItems.reverse();
       }
+    } else if (ColumnName === 'RefVendor') {
+      if (this.isSorted) {
+        this.isSorted = !this.isSorted;
+        this.pagedItems =  Object.assign([], this.temp);
+      } else {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
+      }
     } else {
       if (this.isSorted) {
         this.isSorted = !this.isSorted;

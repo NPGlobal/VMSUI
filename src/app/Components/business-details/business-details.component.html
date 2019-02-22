@@ -1,9 +1,9 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
-    data-target="#myModal" data-backdrop="static" data-keyboard="false">
-    <i class="fa fa-plus"></i>
-    <span title="Add new" class="py-4">Add</span>
-  </button>
+  data-target="#myModal" data-backdrop="static" data-keyboard="false">
+      <i class="fa fa-plus"></i>
+      <span title="Add new" class="py-4">Add</span>
+    </button>
 </div>
 
 <div class="clearfix"></div>
@@ -226,21 +226,42 @@
 </div>
 
 <!-- Delete Modal-->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
-        <button class="btn btn-primary" (click)="DeleteBusinessDetails()">Yes</button>
-      </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
+                <button class="btn btn-primary" (click)="DeleteBusinessDetails()">Yes</button>
+            </div>
+        </div>
     </div>
+</div>
+
+<button #modalOpenMsgButton id="modalOpenMsgButton" type="button" data-target="#myMsgModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
+<!-- Message Modal-->
+<div class="modal fade" id="myMsgModal">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">{{ActionMessage}}</h5>
+              <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+              </button> -->
+              <button class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
+          </div>
+          <!-- <div class="modal-body">{{ActionMessage}}</div> -->
+          <!-- <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          </div> -->
+      </div>
   </div>
 </div>

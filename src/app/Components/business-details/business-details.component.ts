@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PagerService } from 'src/app/Services/pager.service';
@@ -24,6 +24,11 @@ export class BusinessDetailsComponent implements OnInit {
   businessObj: VendorBusinessDetails; // For form value save and update
   editedVendorBusiness: any; // For Check of Vendor Business Edited Value
   businessDetailsForm: FormGroup;
+
+  ActionMessage: string;
+  @ViewChild('modalOpenMsgButton')
+  modalOpenMsgButton: ElementRef;
+  el: any;
 
   // paging variables
   totalItems = 0;
@@ -78,6 +83,7 @@ export class BusinessDetailsComponent implements OnInit {
   };
   ngOnInit() {
     this.openModal();
+    this.el = this.modalOpenMsgButton.nativeElement as HTMLElement;
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorBusiness(this.currentPage);
@@ -209,7 +215,8 @@ export class BusinessDetailsComponent implements OnInit {
         && this.businessDetailsForm.get('ProposedJWValueQty').value === this.editedVendorBusiness.ProposedJWValueQty
         && this.businessDetailsForm.get('ProposedJWGrnQty').value === this.editedVendorBusiness.ProposedJWGrnQty
       ) {
-        alert('There is nothing to change for save.');
+        this.ActionMessage = 'There is nothing to change for save.';
+        this.el.click();
         return;
       }
     }
@@ -249,7 +256,8 @@ export class BusinessDetailsComponent implements OnInit {
             this.businessList = data.VendorBusiness;
             this.totalItems = data.VendorBusinessCount[0].TotalVendors;
             this.GetVendorsBusinessList();
-            alert(data.Msg[0].Message);
+            this.ActionMessage = data.Msg[0].Message;
+            this.el.click();
             if (st === 'A') {
               $('#myModal').modal('toggle');
             } else {
@@ -257,14 +265,17 @@ export class BusinessDetailsComponent implements OnInit {
             }
             this.dismiss();
           } else {
-            alert(data.Msg[0].Message);
+            this.ActionMessage = data.Msg[0].Message;
+            this.el.click();
           }
         } else {
-          alert('There are some technical error. Please contact administrator.');
+          this.ActionMessage = 'There are some technical error. Please contact administrator.';
+          this.el.click();
         }
       });
     } catch {
-      alert('There are some technical error. Please contact administrator.');
+          this.ActionMessage = 'There are some technical error. Please contact administrator.';
+          this.el.click();
     }
   }
   GetBusinessDetails(vobj: VendorBusinessDetails) {
