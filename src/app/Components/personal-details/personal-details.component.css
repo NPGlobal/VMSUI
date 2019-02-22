@@ -11,3 +11,7 @@
 @media (max-width: 320px){
 	.main-div label.text{font-size: 12px;}
 }
+
+.stateCodeLabel {
+	font-weight: 600;
+}

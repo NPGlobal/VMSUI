@@ -109,18 +109,20 @@
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="col-sm-6 PHandStore form-group">
+                                    <div class="col-sm-6 mt-1 mb-1 PHandStore form-group">
                                         <label class="text">PH/FO</label>
-                                        <select formControlName="PHList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" size="3" multiple="multiple">
+                                        <select formControlName="PHList"
+                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
+                                            class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
                                                 {{ PH.OrgUnitName }}</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">Store</label>
-                                        <select formControlName="StoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" size="3" multiple="multiple">
+                                        <select formControlName="StoreList"
+                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
+                                            class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
                                                 {{ Store.OrgUnitName }}</option>
                                         </select>
@@ -136,9 +138,10 @@
 
                                 </div>
                                 <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-                                    <div *ngIf="SavedPHStoreList.length > 0" class="col-sm-6 PHandStore form-group">
+                                    <div *ngIf="SavedPHStoreList.length > 0"
+                                        class="mt-1 mb-1 col-sm-6 PHandStore form-group">
                                         <label class="text">Saved PH/Store</label>
-                                        <select class="form-control input-sm" size="3" multiple="multiple">
+                                        <select class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let PHStore of SavedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                         </select>
@@ -147,7 +150,7 @@
                                         <label class="text">Selected PH/Store</label>
                                         <select [ngClass]="{'is-invalid': !HasPHSelected}"
                                             formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 3: 9)"
+                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 4: 10)"
                                             multiple="multiple">
                                             <option *ngFor="let PHStore of SelectedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
@@ -304,8 +307,9 @@
                             </span>
                         </div>
                         <div class="col-md-4">
-                            <label class="text">State Code</label>
-                            <small class="ml-2">{{StateCodeLabel}}</small>
+                            <span class="stateCodeLabel">State Code
+                                <small class="ml-2">{{StateCodeLabel}}</small>
+                            </span>
                         </div>
 
                     </div>
@@ -552,7 +556,8 @@
                         <span>{{personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Other Registration Detail
                 </div>
-                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
                         <div class="col-md-2">
                             <label class="text">Associated With Us Since</label>
@@ -574,7 +579,7 @@
                                 </select>
                             </span>
                         </div>
-                    <!-- </div>
+                        <!-- </div>
                     <div class="col-md-12 form-group"> -->
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
@@ -604,7 +609,8 @@
                         <span>{{personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Top 5 Customers
                 </div>
-                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value}">
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
                         <div class="col-md-22">
                             <label class="text">Customer1</label>
@@ -624,7 +630,7 @@
                                 <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                    <!-- </div>
+                        <!-- </div>
                     <div class="col-md-12 form-group"> -->
                         <div class="col-md-22">
                             <label class="text">Customer4</label>

@@ -179,9 +179,10 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   SetStateCodeLabel() {
-    const state = this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
+    const state = this.StateList === undefined ? new MasterDataDetails() :
+      this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
 
-    this.StateCodeLabel = state === null || state === undefined ? '' : state.MDDShortName + '.' + state.MDDName;
+    this.StateCodeLabel = state.MDDShortName === undefined ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
   SavePersonalDetails() {
@@ -309,6 +310,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.GetPHList();
 
         this.InitializeFormControls();
+
         this.SetStateCodeLabel();
       }
 
@@ -354,9 +356,9 @@ export class PersonalDetailsComponent implements OnInit {
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
-        PHList: new FormControl(''),
-        StoreList: [''],
-        SelectedPHStoreList: [''],
+        PHList: [[]],
+        StoreList: [[]],
+        SelectedPHStoreList: [[]],
         Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
         IsExpanded: true,
         IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
@@ -465,6 +467,10 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
+
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue([]);
   }
 
   MoveToPHList(event: any) {
@@ -487,6 +493,10 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
+
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue([]);
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -515,18 +525,22 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   NoPHandStore() {
-    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
-      return false;
-    } else {
+    if ((this.personalDetailsForm.get('PersonalDetails.PHList').value === '' ||
+      this.personalDetailsForm.get('PersonalDetails.PHList').value.length === 0) &&
+      (this.personalDetailsForm.get('PersonalDetails.StoreList').value === '' ||
+        this.personalDetailsForm.get('PersonalDetails.StoreList').value.length === 0)) {
       return true;
+    } else {
+      return false;
     }
   }
 
   NoSelectedPHOrStore() {
-    if (this.SelectedPHStoreList.length > 0) {
-      return false;
-    } else {
+    if (this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value === '' ||
+      this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value.length === 0) {
       return true;
+    } else {
+      return false;
     }
   }
 
@@ -558,7 +572,7 @@ export class PersonalDetailsComponent implements OnInit {
           const messages = this.ValidationMessages[key];
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
-              this.formErrors[key] += messages[errorkey] + ' ';
+              this.formErrors[key] = messages[errorkey];
             }
           }
         }
@@ -593,5 +607,9 @@ export class PersonalDetailsComponent implements OnInit {
 
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
     }
+  }
+
+  UnselectOptions(control: FormControl) {
+    control.patchValue([]);
   }
 }
