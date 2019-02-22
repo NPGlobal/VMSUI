@@ -130,8 +130,8 @@
                 <label class="text">Division<span class="error-label">*</span></label>
                 <span>
                   <select name="Division" [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division" class="form-control input-sm"
-                    (change)="GetDepartment($event)"
-                    [ngClass]="{ 'is-invalid': (ProductionDetailsForm.controls.Division.touched || submitted) && ProductionDetailsForm.controls.Division.errors }">
+                    (change)="GetDepartment($event)" >
+                    
                     <option value="">Select Division</option>
                     <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
                       {{option.MDDName}}

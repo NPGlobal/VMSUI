@@ -3,8 +3,10 @@
 }
 
 form {
-    margin-top: 10px;
-    padding-top: 20px;
+    margin: 20px;
+   
+}
+.form-inline {
     border: 1px solid #bdbcbc;
     background-color: #f4f4f4;
 }
