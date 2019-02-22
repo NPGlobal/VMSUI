@@ -1,6 +1,6 @@
 <div class="Container">
   <!-- The Modal -->
-  <div class="modal" id="myModal">
+  <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
 
@@ -82,7 +82,7 @@
                 <div class="col-sm-6 PHandStore">
                   <label>PH</label>
                   <span>
-                    <select onfocusout="event.target.value = ''" formControlName="PHList" class="form-control input-sm"
+                    <select (blur)="UnselectOption($event)" formControlName="PHList" class="form-control input-sm"
                       size="4" multiple="multiple">
                       <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
                     </select>
@@ -91,8 +91,8 @@
                 <div class="col-sm-6 PHandStore">
                   <label>Store</label>
                   <span>
-                    <select onfocusout="event.target.value = ''" formControlName="StoreList"
-                      class="form-control input-sm" size="4" multiple="multiple">
+                    <select (blur)="UnselectOption($event)" formControlName="StoreList" class="form-control input-sm"
+                      size="4" multiple="multiple">
                       <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">{{ Store.OrgUnitName }}
                       </option>
                     </select>
@@ -111,8 +111,8 @@
               <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
                 <label class="text">Selected PH/Store </label>
                 <span>
-                  <select onfocusout="event.target.value = ''" [ngClass]="{'is-invalid': !HasPHSelected}"
-                    formControlName="SelectedPHStoreList" class="form-control input-sm" size="11" multiple="multiple">
+                  <select [ngClass]="{'is-invalid': !HasPHSelected}" formControlName="SelectedPHStoreList"
+                    class="form-control input-sm" size="11" multiple="multiple">
                     <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">
                       {{ PHStore.OrgUnitName }}</option>
                   </select>
@@ -126,8 +126,8 @@
 
           <div class="modal-footer col-md-12  page-footer">
             <div class="mr-auto ml-auto">
-              <button type="submit" (click)="logValidationErrors()" class="mr-3 btn btn-danger">Register</button>
-              <button #modalCloseButton type="button" class="btn" (click)="dismiss()"
+              <button type="submit" (click)="logValidationErrors()" class="mr-3 btn btn-primary">Register</button>
+              <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
                 data-dismiss="modal">Cancel</button>
             </div>
           </div>

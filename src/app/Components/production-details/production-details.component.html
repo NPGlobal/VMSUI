@@ -83,8 +83,8 @@
               <tbody>
                 <tr>
                   <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
-                    {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
-                    {{vendor.Address3}}
+                      {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
+                      {{vendor.Address3}}
                   </td>
                   <td>{{vendor.Phone}}</td>
                   <td>{{vendor.StateCode}}</td>
@@ -125,9 +125,9 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Division<span class="error-label">*</span></label>
                 <span>
-                  <select name="Division" [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division"
-                    class="form-control input-sm" (change)="GetDepartment($event)"
-                    [ngClass]="{ 'is-invalid': (ProductionDetailsForm.controls.Division.touched || submitted) && ProductionDetailsForm.controls.Division.errors }">
+                  <select name="Division" [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division" class="form-control input-sm"
+                    (change)="GetDepartment($event)" >
+                    
                     <option value="">Select Division</option>
                     <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
                       {{option.MDDName}}
@@ -138,8 +138,7 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Department<span class="error-label">*</span></label>
                 <span>
-                  <select name="Department" formControlName="Department" class="form-control input-sm"
-                    [attr.disabled]="isDisable===true ? 'true' : null"
+                  <select name="Department" formControlName="Department" class="form-control input-sm" [attr.disabled]="isDisable===true ? 'true' : null"
                     [ngClass]="{ 'is-invalid': (ProductionDetailsForm.controls.Department.touched || submitted) && ProductionDetailsForm.controls.Department.errors }">
                     <option value="">Select Department</option>
                     <option *ngFor="let option of departmentList" value={{option.MDDCode}}>
@@ -155,14 +154,14 @@
           <hr>
           <!-- <fieldset>
             <legend>Production Unit/s:</legend> -->
-          <div class="form-group col-lg-12">
-            <div class="row">
-              <div class="col-lg-4 col-md-4">
-                <label class="text">Approved Production Units<span class="error-label">*</span></label>
-                <span>
-                  <input type="text" name="approvedProductionUnits" formControlName="approvedProductionUnits"
-                    class="form-control input-sm"
-                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.approvedProductionUnits.touched ||
+            <div class="form-group col-lg-12">
+              <div class="row">
+                <div class="col-lg-4 col-md-4">
+                  <label class="text">Approved Production Units<span class="error-label">*</span></label>
+                  <span>
+                    <input type="text" name="approvedProductionUnits" formControlName="approvedProductionUnits"
+                      class="form-control input-sm"
+                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.approvedProductionUnits.touched ||
                        ProductionDetailsForm.controls.approvedProductionUnits.dirty || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.errors }" />
                 </span>
                 <span

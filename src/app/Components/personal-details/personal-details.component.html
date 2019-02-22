@@ -1,7 +1,7 @@
 <form *ngIf="personalDetailsForm" class="form-inline" [formGroup]="personalDetailsForm"
     (ngSubmit)="SavePersonalDetails()" novalidate>
     <div class="main-div">
-        <div class="content-heading">
+        <div class="content-heading expand-all">
             <a href="javascript:void(0)" (click)="ToggleAllContainers()" class="glyphicon-expand">
                 <span>{{HasAllCollapsed ? '+' : '-'}}</span>
             </a>{{HasAllCollapsed ? 'Expand' : 'Collapse'}} All
@@ -170,7 +170,7 @@
                         (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
                         class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Registered Office Address
+                    </a>GST Registration Detail
                 </div>
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
@@ -294,8 +294,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
-                                    class="form-control input-sm">
+                                <select (change)="SetStateCodeLabel()" [ngClass]="{'is-invalid': formErrors.StateCode}"
+                                    formControlName="StateCode" class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
                                         {{state.MDDName}}
@@ -305,9 +305,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="text">State Code</label>
-                            <span>
-                                <label>{{0}}</label>
-                            </span>
+                            <small class="ml-2">{{StateCodeLabel}}</small>
                         </div>
 
                     </div>
@@ -449,16 +447,14 @@
                         <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Factory/Sister Concern Address
                 </div>
-                <div class="slider" [ngClass]="{
-                      closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
-                  }">
+                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('Address').controls.IsExpanded.value}">
 
                     <div class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
                                 (click)="OpenAddressModal(CreateNewAddress())">
                                 <i class="fa fa-plus"></i>
-                                <span title="Add new" class="py-4">Add new address</span>
+                                <span title="Add new" class="py-4">Add New Address</span>
                             </button>
                         </span>
                     </div>
@@ -556,12 +552,10 @@
                         <span>{{personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Other Registration Detail
                 </div>
-                <div class="slider" [ngClass]="{
-                  closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value
-              }">
+                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
-                        <div class="col-md-4">
-                            <label class="text">Associated With Fabindia Since</label>
+                        <div class="col-md-2">
+                            <label class="text">Associated With Us Since</label>
                             <span>
                                 <select formControlName="AssociatedSinceYear" class="form-control input-sm">
                                     <option [ngValue]="0">Select</option>
@@ -569,7 +563,7 @@
                                 </select>
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label class="text">Nature Of Enterprise</label>
                             <span>
                                 <select *ngIf="VendorTypeList" formControlName="VendorType_MDDCode"
@@ -580,8 +574,8 @@
                                 </select>
                             </span>
                         </div>
-                    </div>
-                    <div class="col-md-12 form-group">
+                    <!-- </div>
+                    <div class="col-md-12 form-group"> -->
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
                             <span>
@@ -610,37 +604,35 @@
                         <span>{{personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Top 5 Customers
                 </div>
-                <div class="slider" [ngClass]="{
-                  closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value
-              }">
+                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer1</label>
                             <span>
                                 <input formControlName="OtherCustomer1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer2</label>
                             <span>
                                 <input formControlName="OtherCustomer2" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer3</label>
                             <span>
                                 <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <div class="col-md-4">
+                    <!-- </div>
+                    <div class="col-md-12 form-group"> -->
+                        <div class="col-md-22">
                             <label class="text">Customer4</label>
                             <span>
                                 <input formControlName="OtherCustomer4" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer5</label>
                             <span>
                                 <input formControlName="OtherCustomer5" type="text" class="form-control input-sm" />

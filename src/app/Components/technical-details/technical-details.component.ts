@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , SimpleChanges, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { VendorTech } from 'src/app/Models/VendorTech';
@@ -17,7 +17,7 @@ declare var $: any;
   templateUrl: './technical-details.component.html',
   styleUrls: ['./technical-details.component.css']
 })
-export class TechnicalDetailsComponent implements OnInit {
+export class TechnicalDetailsComponent implements OnInit, OnChanges {
   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   vendortechList: VendorTech[];
   vendorcode: string;
@@ -35,11 +35,40 @@ export class TechnicalDetailsComponent implements OnInit {
   isLine = 0;
   isEfficiency = 0;
   isDisable = false;
+  x: number;
   Action: string;
   ExistingVendorTech: FormGroup;
+  ValidationMessages = {
+    'dept': {
+      'required': ''
+    },
+    'techSpec': {
+      'required': '',
+     },
+    'techLineNo': {
+      'required': ''
+    },
+    'efficiency': {
+      'required': '',
+      'pattern': 'Please enter a valid Efficiency'
+    },
+    'unitCount': {
+      'required': ''
+    }
+  };
+
+  formErrors = {
+    'dept': '',
+    'techSpec': '',
+    'techLineNo': '',
+    'efficiency': '',
+    'unitCount': ''
+  };
+
   unitCountList(n: number): any[] {
     return Array(n);
   }
+
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -53,8 +82,11 @@ export class TechnicalDetailsComponent implements OnInit {
     });
     this.GetVendorDepartments();
     // this.formControlValueChanged();
+   }
+  ngOnChanges(changes: SimpleChanges) {
+    this.openModal();
+    this.GetTechDetails(this.techDetailsForm.controls.id);
   }
-
   GetVendorTech(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
@@ -119,6 +151,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.submitted = true;
     console.log(JSON.stringify(this.techDetailsForm.value));
     if (this.techDetailsForm.invalid) {
+      this.LogValidationErrors();
       return;
     }
     this.VendorTech = new VendorTech();
@@ -127,7 +160,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.VendorCode = this.vendorcode;
     this.VendorTech.TechLineNo = (this.techDetailsForm.get('techLineNo').value !== null)
       ? this.techDetailsForm.get('techLineNo').value : '0';
-    this.VendorTech.Efficiency = (this.techDetailsForm.get('efficiency').value > 0)
+    this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value > 0
       ? this.techDetailsForm.get('efficiency').value : '0';
     this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
     this.VendorTech.Status = this.techDetailsForm.get('status').value;
@@ -135,7 +168,13 @@ export class TechnicalDetailsComponent implements OnInit {
     this.VendorTech.CreatedBy = 999999;
     // In case of edit,if user submit without making any changes.
     if (this.VendorTech.VendorTechDetailsID > 0) {
-    if (Object.entries(this.ExistingVendorTech.value).toString() === Object.entries(this.techDetailsForm.value).toString()) {
+      // alert(Object.entries(this.ExistingVendorTech.value).toString());
+      // alert(Object.entries(this.ExistingVendorTech.value));
+      // alert(Object.entries(this.techDetailsForm.value).toString());
+      // alert(Object.entries(this.techDetailsForm.value));
+      // tslint:disable-next-line:triple-equals
+    // if (Object.entries(this.ExistingVendorTech.value).toString() === Object.entries(this.techDetailsForm.value).toString()) {
+      if (Object.entries(this.ExistingVendorTech.value).toString() === (this.techDetailsForm.value).toString()) {
       alert('There is nothing to change');
       return;
     }}
@@ -193,6 +232,10 @@ export class TechnicalDetailsComponent implements OnInit {
       remarks: '',
     });
     this.isDisable = false;
+    this.techDetailsForm.valueChanges.subscribe((data) => {
+      this.LogValidationErrors(this.techDetailsForm);
+    });
+    this.LogValidationErrors();
   }
   dismiss() {
     this.techDetailsForm = this._fb.group({
@@ -210,6 +253,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.submitted = false;
     this.techSpecList = [];
     this.isDisable = false;
+    this.LogValidationErrors();
   }
   GetTechDetails(x) {
     this.isDisable = true;
@@ -229,22 +273,42 @@ export class TechnicalDetailsComponent implements OnInit {
       this.isLine = this.techDetailsForm.get('techLineNo').value > 0 ? 1 : 0;
       this.GetVendorTechSpec();
       this.ExistingVendorTech = Object.assign({}, this.techDetailsForm);
+      this.techDetailsForm.valueChanges.subscribe((data1) => {
+        this.LogValidationErrors(this.techDetailsForm);
+      });
     });
-  }
+    }
 
-  DeleteTechDetails(vendor) {
-    if (confirm('Are you sure ? If yes,This record will no longer be available in the system.')) {
-      this.VendorTech = new VendorTech();
-      this.VendorTech.VendorTechDetailsID = vendor.VendorTechDetailsId;
-      this.VendorTech.VendorTechConfigID = vendor.VendorTechConfigID;
-      this.VendorTech.VendorCode = this.vendorcode;
-      this.VendorTech.TechLineNo = vendor.TechLineNo !== null ? vendor.TechLineNo : '0';
-      this.VendorTech.Efficiency = vendor.Efficiency > 0 ? vendor.Efficiency : '0';
-      this.VendorTech.UnitCount = vendor.UnitCount;
-      this.VendorTech.Status = false;
-      this.VendorTech.Remarks = vendor.Remarks;
-      this.VendorTech.CreatedBy = vendor.CreatedBy;
-      try {
+    DeleteTechDetailsPopup(vendor) {
+      this.techDetailsForm = this._fb.group({
+        Id: [vendor.VendorTechDetailsId],
+        dept: [vendor.Department, Validators.required],
+        techSpec: [vendor.VendorTechConfigID, Validators.required],
+        techLineNo: [vendor.TechLineNo],
+        efficiency: [vendor.Efficiency],
+        unitCount: [vendor.UnitCount, Validators.required],
+       // VendorConfigID: [vendor.VendorTechConfigID],
+        status: vendor.Status = 'A' ? true : false,
+        remarks: vendor.Remarks
+      });
+}
+
+
+  DeleteTechDetails() {
+ //  if (confirm('Are you sure ? If yes,This record will no longer be available in the system.')) {
+        this.VendorTech = new VendorTech();
+        this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('Id').value;
+        this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
+        this.VendorTech.VendorCode = this.vendorcode;
+        this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value !== null ?
+        this.techDetailsForm.get('techLineNo').value : '0';
+        this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value > 0 ?
+         this.techDetailsForm.get('efficiency').value : '0';
+        this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
+        this.VendorTech.Status = false;
+        this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
+        this.VendorTech.CreatedBy = 999999;
+        try {
         this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
           if (data.Msg != null) {
             if (data.Msg[0].Result === 0) {
@@ -255,6 +319,7 @@ export class TechnicalDetailsComponent implements OnInit {
               this.GetVendorsTechList();
               this.techSpecList = [];
               alert(data.Msg[0].Message);
+              $('#deleteModal').modal('toggle');
               this.dismiss();
             } else {
               alert(data.Msg[0].Message);
@@ -266,9 +331,27 @@ export class TechnicalDetailsComponent implements OnInit {
       } catch {
         alert('There are some technical error. Please contact administrator.');
       }
-    }
+  //  }
   }
-
+  LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.LogValidationErrors(abstractControl);
+      } else {
+        this.formErrors[key] = '';
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
+          const messages = this.ValidationMessages[key];
+          for (const errorkey in abstractControl.errors) {
+            if (errorkey) {
+              this.formErrors[key] += messages[errorkey] + ' ';
+            }
+          }
+        }
+      }
+    });
+  }
   specChange(event) {
     this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
     this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
