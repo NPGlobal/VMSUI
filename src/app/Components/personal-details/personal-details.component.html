@@ -346,8 +346,94 @@
                     <hr>
 
                     <!-- Contact -->
-
                     <div class="form-group col-md-12">
+                        <fieldset>
+                          <legend>Primary Info</legend>
+                          <div class="row">
+                            <div class="col-md-22">
+                              <label class="text">Contact Name<i class="mandatory">*</i></label>
+                              <span>
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                    formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Phone No.<i class="mandatory">*</i></label>
+                              <span>
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                    formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Fax</label>
+                                <span>
+                                    <input formControlName="PrimaryContactFax" type="text" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Email</label>
+                              <span>
+                                <input formControlName="PrimaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Website</label>
+                              <span>
+                                <input formControlName="PrimaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <hr style="border:none;">
+                      <div class="form-group col-md-12">
+                        <fieldset>
+                          <legend>Secondary Info</legend>
+                          <div class="row">
+                            <div class="col-md-22">
+                              <label class="text">Contact Name</label>
+                              <span>
+                                <input formControlName="SecondaryContactName" type="text"
+                                    class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Phone No.</label>
+                              <span>
+                                <input formControlName="SecondaryContactPhone" type="text"
+                                    class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Fax</label>
+                              <span>
+                                    <input formControlName="SecondaryContactFax" type="text"
+                                        class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Email</label>
+                              <span>
+                                <input formControlName="SecondaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Website</label>
+                              <span>
+                                <input formControlName="SecondaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <hr style="border:none;">
+                    <!-- <div class="form-group col-md-12">
                         <div class="col-md-6">
                             <label class="text">Primary Contact Name
                                 <i class="mandatory">*</i>
@@ -440,7 +526,7 @@
                                     class="form-control input-sm" />
                             </span>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
