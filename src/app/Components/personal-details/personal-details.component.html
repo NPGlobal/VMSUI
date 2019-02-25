@@ -41,14 +41,16 @@
                                 <label class="text">PAN No.</label>&nbsp;&nbsp;
                                 <span>
                                     <input type="text" formControlName="PANNo"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
                                         [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <div class="masterVendorLabelDiv" for="Ref_VendorCode">Reference Producer Name</div>
+                                <div for="Ref_VendorCode">Reference Producer Name</div>
                                 <select type="text" class="form-control col-md-12 input-sm"
+                                    [attr.disabled]="personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disabled ? '' : null"
                                     formControlName="Ref_VendorCode">
                                     <option value="-1" selected="selected">Select</option>
                                     <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName
@@ -56,7 +58,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <div class="masterVendorLabelDiv">Master Producer Name
+                                <div>Master Producer Name
                                     <small>(Parent/sister company)</small>
                                 </div>
                                 <select type="text" class="form-control col-md-12 input-sm"
@@ -173,7 +175,7 @@
                         (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
                         class="glyphicon-expand">
                         <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>GST Registration Detail
+                    </a>Registration Detail
                 </div>
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
@@ -185,6 +187,7 @@
                             <div class="col-md-2">
                                 <label class="radio-inline">
                                     <input [value]="true" type="radio" formControlName="IsGSTRegistered"
+                                        [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                         (change)="SetValidationForGSTControls($event)" />
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
@@ -192,6 +195,7 @@
                             <div class="col-md-2">
                                 <label class="radio-inline">
                                     <input [value]="false" type="radio" formControlName="IsGSTRegistered"
+                                        [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                         (change)="SetValidationForGSTControls($event)" />
                                     <span style="margin-left:5px;">No</span>
                                 </label>
@@ -225,6 +229,7 @@
                             </label>
                             <span>
                                 <input (blur)="LogValidationErrors()" formControlName="GSTIN" type="text"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? '' : null"
                                     [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                         </div>
@@ -246,6 +251,7 @@
                             </label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate}"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? '' : null"
                                     formControlName="GSTDate" type="date" class="form-control input-sm" />
                             </span>
                         </div>
@@ -348,91 +354,94 @@
                     <!-- Contact -->
                     <div class="form-group col-md-12">
                         <fieldset>
-                          <legend>Primary Info</legend>
-                          <div class="row">
-                            <div class="col-md-22">
-                              <label class="text">Contact Name<i class="mandatory">*</i></label>
-                              <span>
-                                <input (blur)="LogValidationErrors()"
-                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
-                                    formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
-                                </span>
+                            <legend>Primary Info</legend>
+                            <div class="row">
+                                <div class="col-md-22">
+                                    <label class="text">Contact Name<i class="mandatory">*</i></label>
+                                    <span>
+                                        <input (blur)="LogValidationErrors()"
+                                            [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                            formControlName="PrimaryContactName" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Phone No.<i class="mandatory">*</i></label>
+                                    <span>
+                                        <input (blur)="LogValidationErrors()"
+                                            [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                            formControlName="PrimaryContactPhone" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Fax</label>
+                                    <span>
+                                        <input formControlName="PrimaryContactFax" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Email</label>
+                                    <span>
+                                        <input formControlName="PrimaryContactEmail" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Website</label>
+                                    <span>
+                                        <input formControlName="PrimaryContactWebsite" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
                             </div>
-                            <div class="col-md-22">
-                              <label class="text">Phone No.<i class="mandatory">*</i></label>
-                              <span>
-                                <input (blur)="LogValidationErrors()"
-                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
-                                    formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
-                                </span>
-                            </div>
-                            <div class="col-md-22">
-                              <label class="text">Fax</label>
-                                <span>
-                                    <input formControlName="PrimaryContactFax" type="text" class="form-control input-sm" />
-                                </span>
-                            </div>
-                            <div class="col-md-22">
-                              <label class="text">Email</label>
-                              <span>
-                                <input formControlName="PrimaryContactEmail" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                            </div>
-                            <div class="col-md-22">
-                              <label class="text">Website</label>
-                              <span>
-                                <input formControlName="PrimaryContactWebsite" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                            </div>
-                          </div>
                         </fieldset>
-                      </div>
-                      <hr style="border:none;">
-                      <div class="form-group col-md-12">
+                    </div>
+                    <hr style="border:none;">
+                    <div class="form-group col-md-12">
                         <fieldset>
-                          <legend>Secondary Info</legend>
-                          <div class="row">
-                            <div class="col-md-22">
-                              <label class="text">Contact Name</label>
-                              <span>
-                                <input formControlName="SecondaryContactName" type="text"
-                                    class="form-control input-sm" />
-                                </span>
+                            <legend>Secondary Info</legend>
+                            <div class="row">
+                                <div class="col-md-22">
+                                    <label class="text">Contact Name</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactName" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Phone No.</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactPhone" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Fax</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactFax" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Email</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactEmail" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Website</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactWebsite" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
                             </div>
-                            <div class="col-md-22">
-                              <label class="text">Phone No.</label>
-                              <span>
-                                <input formControlName="SecondaryContactPhone" type="text"
-                                    class="form-control input-sm" />
-                                </span>
-                            </div>
-                            <div class="col-md-22">
-                              <label class="text">Fax</label>
-                              <span>
-                                    <input formControlName="SecondaryContactFax" type="text"
-                                        class="form-control input-sm" />
-                                </span>
-                            </div>
-                            <div class="col-md-22">
-                              <label class="text">Email</label>
-                              <span>
-                                <input formControlName="SecondaryContactEmail" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                            </div>
-                            <div class="col-md-22">
-                              <label class="text">Website</label>
-                              <span>
-                                <input formControlName="SecondaryContactWebsite" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                            </div>
-                          </div>
                         </fieldset>
-                      </div>
-                      <hr style="border:none;">
+                    </div>
+                    <hr style="border:none;">
                     <!-- <div class="form-group col-md-12">
                         <div class="col-md-6">
                             <label class="text">Primary Contact Name

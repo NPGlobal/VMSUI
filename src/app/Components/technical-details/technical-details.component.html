@@ -1,9 +1,9 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
-  data-target="#myModal" data-backdrop="static" data-keyboard="false">
-      <i class="fa fa-plus"></i>
-      <span title="Add new" class="py-4">Add</span>
-    </button>
+    data-target="#myModal" data-backdrop="static" data-keyboard="false">
+    <i class="fa fa-plus"></i>
+    <span title="Add new" class="py-4">Add</span>
+  </button>
 </div>
 <div class="clearfix"></div>
 <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
@@ -19,22 +19,25 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td colspan="7" *ngIf="totalItems === 0">No Record Found</td></tr>
-        <tr *ngFor="let vendor of pagedItems;index as i;">
-          <td>{{vendor.Department}}</td>
-          <td>{{vendor.TechName}}</td>
-          <td>{{vendor.TechLineNo}}</td>
-          <td>{{vendor.Efficiency}}</td>
-          <td>{{vendor.UnitCount}}</td>
-          <td>
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetTechDetails(vendor.VendorTechDetailsId)" 
-           data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+      <tr>
+        <td colspan="7" *ngIf="totalItems === 0">No Record Found</td>
+      </tr>
+      <tr *ngFor="let vendor of pagedItems;index as i;">
+        <td>{{vendor.Department}}</td>
+        <td>{{vendor.TechName}}</td>
+        <td>{{vendor.TechLineNo}}</td>
+        <td>{{vendor.Efficiency}}</td>
+        <td>{{vendor.UnitCount}}</td>
+        <td>
+          <a title="Edit" href="javascript:void(0)" data-toggle="modal"
+            (click)="GetTechDetails(vendor.VendorTechDetailsId)" data-target="#myModal" data-backdrop="static"
+            data-keyboard="false"><i class="fa fa-edit"></i></a>
 
-           <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor)" 
-           data-target="#deleteModal"><i class="fa fa-remove"></i></a>
-          
-          </td>
-        </tr>
+          <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+            (click)="DeleteTechDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i></a>
+
+        </td>
+      </tr>
     </tbody>
   </table>
   <nav aria-label="..." class="" *ngIf="totalItems!==0">
@@ -74,20 +77,21 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form [formGroup]="techDetailsForm" (ngSubmit)="SaveTechDetails()" novalidate>
-            <input type="hidden" name="id" formControlName="id">
-            <!-- <input type="button" formControlName="modalOpenButton" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+          <input type="hidden" name="id" formControlName="id">
+          <!-- <input type="button" formControlName="modalOpenButton" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
             data-toggle="modal" style="display:none;">
             </button> -->
-           
+
 
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
                 <label class="text">Machine Type <span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="dept" class="form-control input-sm" (change)="GetVendorTechSpec($event)" (blur)="LogValidationErrors()" 
-                  [attr.disabled]="isDisable===true ? 'true' : null" [ngClass]="{ 'is-invalid': formErrors.dept }">
-                   <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
+                  <select formControlName="dept" class="form-control input-sm" (change)="GetVendorTechSpec($event)"
+                    (blur)="LogValidationErrors()" [attr.disabled]="isDisable===true ? 'true' : null"
+                    [ngClass]="{ 'is-invalid': formErrors.dept }">
+                    <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
                             <p *ngIf="staffDetailsForm.controls.dept.errors.required">Department is required</p>
                           </div> -->
                     <option value="">Select</option>
@@ -100,14 +104,13 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Machine Name <span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="techSpec" class="form-control input-sm" (change)="specChange($event)" (blur)="LogValidationErrors()"
-                  [attr.disabled]="isDisable===true ? 'true' : null" [ngClass]="{ 'is-invalid': formErrors.techSpec }">
-                  <option value="" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
-                    <option *ngFor="let option of techSpecList" 
-                    [attr.data-line]="option.isLine"
-                    [attr.data-efficiency]="option.isEfficiency"
-                    [attr.data-maxnumber]="option.Max_Allowed"
-                    value={{option.VendorConfigID}}>
+                  <select formControlName="techSpec" class="form-control input-sm" (change)="specChange($event)"
+                    (blur)="LogValidationErrors()" [attr.disabled]="isDisable===true ? 'true' : null"
+                    [ngClass]="{ 'is-invalid': formErrors.techSpec }">
+                    <option value="" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
+                    <option *ngFor="let option of techSpecList" [attr.data-line]="option.isLine"
+                      [attr.data-efficiency]="option.isEfficiency" [attr.data-maxnumber]="option.Max_Allowed"
+                      value={{option.VendorConfigID}}>
                       {{option.TechSpec}}
                     </option>
                   </select>
@@ -121,18 +124,21 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Tech Line No. <span class="error-label">*</span></label>
                 <span>
-                  <input type="text" formControlName="techLineNo"  class="form-control input-sm" maxlength="50" (blur)="LogValidationErrors()"
-                  [attr.disabled]="true" [ngClass]="{ 'is-invalid': formErrors.techLineNo }">
-                 </span>
-               </div>
+                  <input type="text" formControlName="techLineNo" class="form-control input-sm" maxlength="50"
+                    (blur)="LogValidationErrors()" [attr.disabled]="true"
+                    [ngClass]="{ 'is-invalid': formErrors.techLineNo }">
+                </span>
+              </div>
               <div class="col-lg-6 col-md-6">
                 <label class="text">Efficiency</label>
                 <span>
-                  <input type="text" formControlName="efficiency" class="form-control input-sm" maxlength="8" (blur)="LogValidationErrors()"
-                    [attr.disabled]="isEfficiency == 0 ? 'true' : null" [pattern]="efficiencyPattern" [ngClass]="{ 'is-invalid': formErrors.efficiency }" >   
-                 </span>
-                 
-                  <span [ngClass]="{ 'error-label': formErrors.efficiency }" *ngIf="formErrors.efficiency" > {{formErrors.efficiency}}</span>
+                  <input type="text" formControlName="efficiency" class="form-control input-sm" maxlength="8"
+                    (blur)="LogValidationErrors()" [attr.disabled]="isEfficiency == 0 ? 'true' : null"
+                    [pattern]="efficiencyPattern" [ngClass]="{ 'is-invalid': formErrors.efficiency && isEfficiency}">
+                </span>
+
+                <span [ngClass]="{ 'error-label': formErrors.efficiency }" *ngIf="formErrors.efficiency">
+                  {{formErrors.efficiency}}</span>
               </div>
             </div>
           </div>
@@ -141,10 +147,10 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Unit Count<span class="error-label">*</span></label>
                 <select formControlName="unitCount" class="form-control input-sm" (blur)="LogValidationErrors()"
-                [ngClass]="{ 'is-invalid': formErrors.unitCount }">
-                    <option value="">Select</option>
-                    <option *ngFor="let option of unitCountList(200); let i = index;" value={{i+1}}>{{i+1}}</option>
-                  </select>
+                  [ngClass]="{ 'is-invalid': formErrors.unitCount }">
+                  <option value="">Select</option>
+                  <option *ngFor="let option of unitCountList(200); let i = index;" value={{i+1}}>{{i+1}}</option>
+                </select>
                 <!-- <span><input type="text" name="unitCount" formControlName="unitCount" class="form-control input-sm"
                     [ngClass]="{ 'is-invalid': (techDetailsForm.controls.unitCount.touched || submitted) && techDetailsForm.controls.unitCount.errors }" /></span> -->
               </div>
@@ -167,7 +173,8 @@
           <!-- Modal footer -->
           <div class="modal-footer col-md-12  page-footer">
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+            <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
+              data-dismiss="modal">Cancel</button>
           </div>
         </form>
       </div>
@@ -176,27 +183,28 @@
 </div>
 
 <!-- Delete Modal-->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
-              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-              </button>
-          </div>
-          <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-          <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
-              <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
+      <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
+        <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Hidden button to open alert modal -->
 <button #modalOpenButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
-data-toggle="modal" style="display:none;">
+  data-toggle="modal" style="display:none;">
 </button>
 
 <!-- Modal to open alert modal -->

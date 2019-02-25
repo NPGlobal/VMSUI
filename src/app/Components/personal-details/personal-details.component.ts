@@ -302,7 +302,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.PopUpMessage = 'Saved Succesfully!!';
         this.alertButton.click();
         this.IsAddressSaved = true;
-        // this.Editvendor(this.VendorCode);
+        this.Editvendor(this.VendorCode);
       } else {
         this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
         this.alertButton.click();
@@ -310,10 +310,10 @@ export class PersonalDetailsComponent implements OnInit {
     });
   }
   dismissMsg() {
-    if (this.PopUpMessage === 'Saved Succesfully!!') {
-      const absUrl = window.location.href;
-      window.location.href = absUrl;
-    }
+    // if (this.PopUpMessage === 'Saved Succesfully!!') {
+    //   const absUrl = window.location.href;
+    //   window.location.href = absUrl;
+    // }
   }
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
@@ -367,17 +367,19 @@ export class PersonalDetailsComponent implements OnInit {
     this.PopulateYears();
     const disablePan = this.vendor.PANNo === '' ? false : true;
     const disableRef = this.vendor.Ref_VendorCode === '-1' ? false : true;
+    const isGSTControlsDisabled = this.vendor.isGSTRegistered ? true : false;
+
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [{value: this.vendor.PANNo, disabled: disablePan}, [
+        PANNo: [{ value: this.vendor.PANNo, disabled: this.vendor.PANNo === '' ? false : true }, [
           Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
         PHList: [[]],
         StoreList: [[]],
         SelectedPHStoreList: [[]],
-        Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: disableRef }],
+        Ref_VendorCode: [this.vendor.Ref_VendorCode],
         IsExpanded: true,
         IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
         IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }],
@@ -432,11 +434,43 @@ export class PersonalDetailsComponent implements OnInit {
       })
     });
 
-    this.SetValidationForGSTControls();
+    this.personalDetailsForm.updateValueAndValidity();
+
+    this.DisableControls(disablePan, isGSTControlsDisabled, disableRef);
+
+    if (!isGSTControlsDisabled) {
+      this.SetValidationForGSTControls();
+    }
 
     this.personalDetailsForm.valueChanges.subscribe((data) => {
       this.LogValidationErrors(this.personalDetailsForm);
     });
+  }
+
+  DisableControls(disablePan: boolean,
+    isGSTControlsDisabled: boolean,
+    disableRef: boolean) {
+    if (disablePan) {
+      this.personalDetailsForm.get('PersonalDetails.PANNo').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.PANNo').enable();
+    }
+
+    if (disableRef) {
+      this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').enable();
+    }
+
+    if (isGSTControlsDisabled) {
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
+    } else {
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
+    }
   }
 
   FormatDate(date: Date) {
@@ -605,25 +639,27 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   SetValidationForGSTControls() {
-    if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
-        [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
+    if (!this.vendor.isGSTRegistered) {
+      if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
+          [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
 
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([Validators.required]);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([Validators.required]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
 
-      this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
-    } else {
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
+      } else {
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
 
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([]);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
-      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
 
-      this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
+      }
     }
   }
 
