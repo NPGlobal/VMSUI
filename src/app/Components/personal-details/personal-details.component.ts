@@ -368,21 +368,23 @@ export class PersonalDetailsComponent implements OnInit {
     const disablePan = this.vendor.PANNo === '' ? false : true;
     const disableRef = this.vendor.Ref_VendorCode === '-1' ? false : true;
     const isGSTControlsDisabled = this.vendor.isGSTRegistered ? true : false;
+    const isDPDisabled = this.vendor.IsDirectVendor ? true : false;
+    const isJWDisabled = this.vendor.IsJWVendor ? true : false;
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [{ value: this.vendor.PANNo, disabled: this.vendor.PANNo === '' ? false : true }, [
+        PANNo: [this.vendor.PANNo, [
           Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
         PHList: [[]],
         StoreList: [[]],
         SelectedPHStoreList: [[]],
         Ref_VendorCode: [this.vendor.Ref_VendorCode],
         IsExpanded: true,
-        IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
-        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }],
+        IsJWVendor: [this.vendor.IsJWVendor],
+        IsDirectVendor: [this.vendor.IsDirectVendor],
         NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
         IsInsured: [this.vendor.isInsured]
       }),
@@ -436,7 +438,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.personalDetailsForm.updateValueAndValidity();
 
-    this.DisableControls(disablePan, isGSTControlsDisabled, disableRef);
+    this.DisableControls(disablePan, isGSTControlsDisabled, disableRef, isDPDisabled, isJWDisabled);
 
     if (!isGSTControlsDisabled) {
       this.SetValidationForGSTControls();
@@ -449,7 +451,9 @@ export class PersonalDetailsComponent implements OnInit {
 
   DisableControls(disablePan: boolean,
     isGSTControlsDisabled: boolean,
-    disableRef: boolean) {
+    disableRef: boolean,
+    isDPDisabled: boolean,
+    isJWDisabled: boolean) {
     if (disablePan) {
       this.personalDetailsForm.get('PersonalDetails.PANNo').disable();
     } else {
@@ -460,6 +464,18 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disable();
     } else {
       this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').enable();
+    }
+
+    if (isDPDisabled) {
+      this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').enable();
+    }
+
+    if (isJWDisabled) {
+      this.personalDetailsForm.get('PersonalDetails.IsJWVendor').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.IsJWVendor').enable();
     }
 
     if (isGSTControlsDisabled) {

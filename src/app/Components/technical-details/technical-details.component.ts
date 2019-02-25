@@ -40,6 +40,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   obj2: JSON;
   flag: boolean;
   Action: string;
+  searchText = '';
   ExistingVendorTech: FormGroup;
   machineItems: Array<{MachineType: string, MachineName: string, UnitCount: string, Efficiency: string}> = [];
   ValidationMessages = {
@@ -94,9 +95,15 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.openModal();
     this.GetTechDetails(this.techDetailsForm.controls.id);
   }
+
+  SearchTechDetails(searchText = '') {
+    this.searchText = searchText;
+    this.GetVendorTech(1);
+  }
+
   GetVendorTech(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+    this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).subscribe(data => {
       this.vendortechList = data.VendorTech;
       this.totalItems = data.VendorTechCount[0].TotalVendors;
       this.GetVendorsTechList();
@@ -114,7 +121,12 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   GetVendorTechSpec() {
     if (this.techDetailsForm.get('dept').value === '') {
       this.techSpecList = [];
-      this.techDetailsForm.controls.techSpec.patchValue('');
+     // this.techDetailsForm.controls.techSpec.patchValue('');
+     this.isLine = 0;
+     this.isEfficiency = 0;
+     this.techDetailsForm.controls.techSpec.patchValue('');
+     this.techDetailsForm.controls.techLineNo.patchValue('');
+     this.techDetailsForm.controls.efficiency.patchValue('');
     } else {
       // Added by SHubhi
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('dept').value, this.vendorcode, 'TechSpec').subscribe((data) => {

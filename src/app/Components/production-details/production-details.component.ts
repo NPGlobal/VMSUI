@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PagerService } from 'src/app/Services/pager.service';
@@ -34,11 +34,11 @@ export class ProductionDetailsComponent implements OnInit {
   vendorProductionList: VendorProduction[]; // For added Production List
   VendorProduction: VendorProduction; // For form value save and update
   totalItems: number;
+  searchText = '';
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
   pagedItems: any[] = [];
-
   ProductionDetailsForm: FormGroup;
   divisionList: any[];
   departmentList: any[];
@@ -57,9 +57,14 @@ export class ProductionDetailsComponent implements OnInit {
        this.GetVendorProduction(this.currentPage);
     });
   }
+  SearchProductionDetails(searchText = '') {
+    this.searchText = searchText;
+    this.GetVendorProduction(1);
+  }
    GetVendorProduction(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(result => {
+    this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
+    .subscribe(result => {
       if (result.data.Table.length > 0) {
         this.vendorProductionList = result.data.Table;
         console.log(this.vendorProductionList);
