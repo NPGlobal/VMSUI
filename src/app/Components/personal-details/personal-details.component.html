@@ -94,6 +94,7 @@
                             <div class="col-md-2">
                                 <label class="radio-inline">
                                     <input type="checkbox" formControlName="IsDirectVendor"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsDirectVendor').disabled ? '' : null"
                                         (change)="SetPHListValidation()" />
                                     <span style="margin-left:5px;" class="text">DP</span>
                                 </label>
@@ -102,6 +103,7 @@
                             <div class="col-md-1">
                                 <label class="radio-inline">
                                     <input type="checkbox" formControlName="IsJWVendor"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsJWVendor').disabled ? '' : null"
                                         (change)="SetPHListValidation()" />
                                     <span style="margin-left:5px;" class="text">JW</span>
                                 </label>
