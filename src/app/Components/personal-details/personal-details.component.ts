@@ -37,8 +37,13 @@ export class PersonalDetailsComponent implements OnInit {
 
   Address: VendorAddress;
 
-  @ViewChild('modalOpenButton')
-  modalOpenButton: ElementRef;
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
+
+  @ViewChild('addModalOpenButton')
+  addModalOpenButton: ElementRef;
 
   HasAllCollapsed: boolean;
   IsAddressSaved = false;
@@ -50,14 +55,14 @@ export class PersonalDetailsComponent implements OnInit {
 
   ValidationMessages = {
     'PANNo': {
-      'minlength': 'Invalid PAN number',
-      'maxlength': 'Invalid PAN number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'GSTIN': {
       'required': '',
-      'minlength': 'Invalid GST number',
-      'maxlength': 'Invalid GST number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'GSTDate': {
@@ -74,8 +79,8 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'PIN': {
       'required': '',
-      'minlength': 'Invalid PIN number',
-      'maxlength': 'Invalid PIN number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Invalid PIN number'
     },
     'PrimaryContactName': {
@@ -106,9 +111,11 @@ export class PersonalDetailsComponent implements OnInit {
     this.vendor = new Vendor();
     this.vendor.RegisteredOfficeAddress = new VendorAddress();
     this.HasAllCollapsed = true;
+    this.PopUpMessage = '';
   }
 
   ngOnInit() {
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
@@ -179,9 +186,11 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   SetStateCodeLabel() {
-    const state = this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
+    const state = this.StateList === undefined ? new MasterDataDetails() :
+      this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
 
-    this.StateCodeLabel = state === null || state === undefined ? '' : state.MDDShortName + '.' + state.MDDName;
+    this.StateCodeLabel = (state === undefined ||
+      state.MDDShortName === undefined || state.MDDShortName === null) ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
   SavePersonalDetails() {
@@ -195,7 +204,9 @@ export class PersonalDetailsComponent implements OnInit {
     }
 
     if (this.personalDetailsForm.invalid) {
-      this.logValidationErrors();
+      this.LogValidationErrors();
+      this.PopUpMessage = 'Please fill required fields.';
+      this.alertButton.click();
       return;
     }
 
@@ -288,29 +299,34 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
-        alert('Saved Succesfully!!');
+        this.PopUpMessage = 'Saved Succesfully!!';
+        this.alertButton.click();
         this.IsAddressSaved = true;
-        this.Editvendor(this.VendorCode);
+        // this.Editvendor(this.VendorCode);
+      } else {
+        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.alertButton.click();
       }
     });
   }
-
+  dismissMsg() {
+    if (this.PopUpMessage === 'Saved Succesfully!!') {
+      const absUrl = window.location.href;
+      window.location.href = absUrl;
+    }
+  }
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
-      if (!this.IsAddressSaved) {
-        this.vendor = result.data.Vendor[0];
-      }
-
+      this.vendor = result.data.Vendor[0];
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
 
-      if (!this.IsAddressSaved) {
-        this.GetPHList();
+      this.GetPHList();
 
-        this.InitializeFormControls();
-        this.SetStateCodeLabel();
-      }
+      this.InitializeFormControls();
+
+      this.SetStateCodeLabel();
 
       this.IsAddressSaved = false;
     });
@@ -318,13 +334,15 @@ export class PersonalDetailsComponent implements OnInit {
 
   OpenAddressModal(vendorAddress: VendorAddress) {
     this.Address = vendorAddress;
-    const el = this.modalOpenButton.nativeElement as HTMLElement;
+    const el = this.addModalOpenButton.nativeElement as HTMLElement;
     el.click();
   }
 
   FillPHLists() {
     this.PHList = [];
     this.StoreList = [];
+    this.SavedPHStoreList = [];
+    this.SelectedPHStoreList = [];
     if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {
@@ -347,17 +365,19 @@ export class PersonalDetailsComponent implements OnInit {
   InitializeFormControls() {
 
     this.PopulateYears();
-
+    const disablePan = this.vendor.PANNo === '' ? false : true;
+    const disableRef = this.vendor.Ref_VendorCode === '-1' ? false : true;
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [this.vendor.PANNo, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
-        PHList: new FormControl(''),
-        StoreList: [''],
-        SelectedPHStoreList: [''],
-        Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
+        PANNo: [{value: this.vendor.PANNo, disabled: disablePan}, [
+          Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
+        PHList: [[]],
+        StoreList: [[]],
+        SelectedPHStoreList: [[]],
+        Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: disableRef }],
         IsExpanded: true,
         IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
         IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }],
@@ -377,7 +397,7 @@ export class PersonalDetailsComponent implements OnInit {
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
         StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
         PIN: [this.vendor.RegisteredOfficeAddress.PIN,
-        [Validators.required, Validators.pattern('^[0-9]{1,6}$'), Validators.minLength(6), Validators.maxLength(6)]],
+        [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(6), Validators.maxLength(6)]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
         PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
         PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone, [Validators.required]],
@@ -415,7 +435,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.SetValidationForGSTControls();
 
     this.personalDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.personalDetailsForm);
+      this.LogValidationErrors(this.personalDetailsForm);
     });
   }
 
@@ -465,6 +485,10 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
+
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue([]);
   }
 
   MoveToPHList(event: any) {
@@ -487,6 +511,10 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
+
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue([]);
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -515,18 +543,22 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   NoPHandStore() {
-    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
-      return false;
-    } else {
+    if ((this.personalDetailsForm.get('PersonalDetails.PHList').value === '' ||
+      this.personalDetailsForm.get('PersonalDetails.PHList').value.length === 0) &&
+      (this.personalDetailsForm.get('PersonalDetails.StoreList').value === '' ||
+        this.personalDetailsForm.get('PersonalDetails.StoreList').value.length === 0)) {
       return true;
+    } else {
+      return false;
     }
   }
 
   NoSelectedPHOrStore() {
-    if (this.SelectedPHStoreList.length > 0) {
-      return false;
-    } else {
+    if (this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value === '' ||
+      this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value.length === 0) {
       return true;
+    } else {
+      return false;
     }
   }
 
@@ -546,11 +578,11 @@ export class PersonalDetailsComponent implements OnInit {
     }
   }
 
-  logValidationErrors(group: FormGroup = this.personalDetailsForm): void {
+  LogValidationErrors(group: FormGroup = this.personalDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
-        this.logValidationErrors(abstractControl);
+        this.LogValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
         if (this.submitted || (abstractControl && !abstractControl.valid &&
@@ -593,5 +625,9 @@ export class PersonalDetailsComponent implements OnInit {
 
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
     }
+  }
+
+  UnselectOptions(control: FormControl) {
+    control.patchValue([]);
   }
 }

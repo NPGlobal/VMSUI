@@ -109,18 +109,20 @@
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="col-sm-6 PHandStore form-group">
+                                    <div class="col-sm-6 mt-1 mb-1 PHandStore form-group">
                                         <label class="text">PH/FO</label>
-                                        <select formControlName="PHList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" size="3" multiple="multiple">
+                                        <select formControlName="PHList"
+                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
+                                            class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
                                                 {{ PH.OrgUnitName }}</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">Store</label>
-                                        <select formControlName="StoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" size="3" multiple="multiple">
+                                        <select formControlName="StoreList"
+                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
+                                            class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
                                                 {{ Store.OrgUnitName }}</option>
                                         </select>
@@ -136,9 +138,10 @@
 
                                 </div>
                                 <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-                                    <div *ngIf="SavedPHStoreList.length > 0" class="col-sm-6 PHandStore form-group">
+                                    <div *ngIf="SavedPHStoreList.length > 0"
+                                        class="mt-1 mb-1 col-sm-6 PHandStore form-group">
                                         <label class="text">Saved PH/Store</label>
-                                        <select class="form-control input-sm" size="3" multiple="multiple">
+                                        <select class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let PHStore of SavedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                         </select>
@@ -147,7 +150,7 @@
                                         <label class="text">Selected PH/Store</label>
                                         <select [ngClass]="{'is-invalid': !HasPHSelected}"
                                             formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 3: 9)"
+                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 4: 11)"
                                             multiple="multiple">
                                             <option *ngFor="let PHStore of SelectedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
@@ -221,8 +224,8 @@
                                 </span>
                             </label>
                             <span>
-                                <input formControlName="GSTIN" type="text" [ngClass]="{'is-invalid': formErrors.GSTIN}"
-                                    class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" formControlName="GSTIN" type="text"
+                                    [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -242,8 +245,8 @@
                                     class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.GSTDate}" formControlName="GSTDate"
-                                    type="date" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate}"
+                                    formControlName="GSTDate" type="date" class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
@@ -254,8 +257,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.Address1}" formControlName="Address1"
-                                    type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address1}"
+                                    formControlName="Address1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -280,7 +283,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
+                                <select (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
                                     class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
@@ -294,8 +298,9 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select (change)="SetStateCodeLabel()" [ngClass]="{'is-invalid': formErrors.StateCode}"
-                                    formControlName="StateCode" class="form-control input-sm">
+                                <select (blur)="LogValidationErrors()" (change)="SetStateCodeLabel()"
+                                    [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
+                                    class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
                                         {{state.MDDName}}
@@ -304,8 +309,9 @@
                             </span>
                         </div>
                         <div class="col-md-4">
-                            <label class="text">State Code</label>
-                            <small class="ml-2">{{StateCodeLabel}}</small>
+                            <span class="stateCodeLabel">State Code
+                                <small *ngIf="StateCodeLabel" class="ml-2">{{StateCodeLabel}}</small>
+                            </span>
                         </div>
 
                     </div>
@@ -319,8 +325,8 @@
                                 {{formErrors.PIN}}
                             </span>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.PIN}" formControlName="PIN" type="text"
-                                    class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PIN}"
+                                    formControlName="PIN" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -340,14 +346,101 @@
                     <hr>
 
                     <!-- Contact -->
-
                     <div class="form-group col-md-12">
+                        <fieldset>
+                          <legend>Primary Info</legend>
+                          <div class="row">
+                            <div class="col-md-22">
+                              <label class="text">Contact Name<i class="mandatory">*</i></label>
+                              <span>
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                    formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Phone No.<i class="mandatory">*</i></label>
+                              <span>
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                    formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Fax</label>
+                                <span>
+                                    <input formControlName="PrimaryContactFax" type="text" class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Email</label>
+                              <span>
+                                <input formControlName="PrimaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Website</label>
+                              <span>
+                                <input formControlName="PrimaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <hr style="border:none;">
+                      <div class="form-group col-md-12">
+                        <fieldset>
+                          <legend>Secondary Info</legend>
+                          <div class="row">
+                            <div class="col-md-22">
+                              <label class="text">Contact Name</label>
+                              <span>
+                                <input formControlName="SecondaryContactName" type="text"
+                                    class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Phone No.</label>
+                              <span>
+                                <input formControlName="SecondaryContactPhone" type="text"
+                                    class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Fax</label>
+                              <span>
+                                    <input formControlName="SecondaryContactFax" type="text"
+                                        class="form-control input-sm" />
+                                </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Email</label>
+                              <span>
+                                <input formControlName="SecondaryContactEmail" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                            <div class="col-md-22">
+                              <label class="text">Website</label>
+                              <span>
+                                <input formControlName="SecondaryContactWebsite" type="text"
+                                    class="form-control input-sm" />
+                            </span>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <hr style="border:none;">
+                    <!-- <div class="form-group col-md-12">
                         <div class="col-md-6">
                             <label class="text">Primary Contact Name
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
                                     formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
                             </span>
                         </div>
@@ -367,7 +460,8 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <input [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
                                     formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
                             </span>
                         </div>
@@ -432,7 +526,7 @@
                                     class="form-control input-sm" />
                             </span>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
@@ -552,7 +646,8 @@
                         <span>{{personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Other Registration Detail
                 </div>
-                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
                         <div class="col-md-2">
                             <label class="text">Associated With Us Since</label>
@@ -574,7 +669,7 @@
                                 </select>
                             </span>
                         </div>
-                    <!-- </div>
+                        <!-- </div>
                     <div class="col-md-12 form-group"> -->
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
@@ -604,7 +699,8 @@
                         <span>{{personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Top 5 Customers
                 </div>
-                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value}">
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
                         <div class="col-md-22">
                             <label class="text">Customer1</label>
@@ -624,7 +720,7 @@
                                 <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                    <!-- </div>
+                        <!-- </div>
                     <div class="col-md-12 form-group"> -->
                         <div class="col-md-22">
                             <label class="text">Customer4</label>
@@ -649,12 +745,28 @@
 
         <div class="col-md-12 page-footer">
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button [routerLink]="['/vendor']" type="button" class="btn">Cancel</button>
+            <button [routerLink]="['/vendor']" type="button" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
 </form>
 
-<button #modalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+<button #addModalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
     data-toggle="modal" style="display:none;">
 </button>
 <app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form>
+
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+                <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="dismissMsg()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
