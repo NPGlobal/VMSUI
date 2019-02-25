@@ -11,3 +11,7 @@
 }
 input[type="text"],select{margin-bottom:0px !important;}
 .modal label{font-size: 13px;}
+
+.toRight {
+    margin-left:78%;
+}
