@@ -188,6 +188,28 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   color: red;
 }
 
+
+.SearchBox {
+  background-image: url('src/assets/images/searchicon.png');
+  background-position: 5px 5px; 
+  background-repeat: no-repeat;
+  display:block;
+  margin: 0 0 0 auto;
+  width: 35px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  padding: 5px 0px 5px 30px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+  }
+  .SearchBox:hover {
+    width: 50%;
+  }
+  
+
 @media (max-width: 320px){
   .navbar-dark .navbar-brand{width:50%;}
   .navbar-dark .navbar-brand img {width:60%;}
