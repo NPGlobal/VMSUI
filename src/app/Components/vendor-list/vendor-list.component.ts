@@ -17,7 +17,6 @@ export class VendorListComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
-  temp: any[];
   isSorted = false;
   searchText = '';
 
@@ -45,14 +44,13 @@ export class VendorListComponent implements OnInit {
   GetVendorsList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendors;
-    this.temp = Object.assign([], this.pagedItems);
   }
 
   SortVendorList(ColumnName: string) {
     if (ColumnName === 'ProducerName') {
       if (this.isSorted) {
         this.isSorted = !this.isSorted;
-        this.pagedItems =  Object.assign([], this.temp);
+        this.pagedItems.reverse();
       } else {
         this.isSorted = !this.isSorted;
         this.pagedItems.sort((a, b) => a.VendorName.localeCompare(b.VendorName));
@@ -60,7 +58,7 @@ export class VendorListComponent implements OnInit {
     } else if (ColumnName === 'ShortName') {
       if (this.isSorted) {
         this.isSorted = !this.isSorted;
-        this.pagedItems =  Object.assign([], this.temp);
+        this.pagedItems.reverse();
       } else {
         this.isSorted = !this.isSorted;
         this.pagedItems.reverse();
@@ -68,7 +66,7 @@ export class VendorListComponent implements OnInit {
     } else if (ColumnName === 'RefVendor') {
       if (this.isSorted) {
         this.isSorted = !this.isSorted;
-        this.pagedItems =  Object.assign([], this.temp);
+        this.pagedItems.reverse();
       } else {
         this.isSorted = !this.isSorted;
         this.pagedItems.sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
@@ -76,7 +74,7 @@ export class VendorListComponent implements OnInit {
     } else {
       if (this.isSorted) {
         this.isSorted = !this.isSorted;
-        this.pagedItems =  Object.assign([], this.temp);
+        this.pagedItems.reverse();
       } else {
         this.isSorted = !this.isSorted;
         this.pagedItems.sort((a, b) => a.CreatedOn.localeCompare(b.CreatedOn));
