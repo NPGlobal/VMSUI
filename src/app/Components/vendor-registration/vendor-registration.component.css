@@ -1,5 +1,5 @@
 .modal-lg {
-    max-width: 1100px;
+    max-width: 840px;
 }
 
 .mandatory {
@@ -22,4 +22,12 @@
 
 form {
     margin: 10px;
+}
+
+.error-block {    
+    padding-left: 5px;
+    font-weight: normal;
+    font-size: small;
+    position: fixed;
+    margin-top: -15px;
 }

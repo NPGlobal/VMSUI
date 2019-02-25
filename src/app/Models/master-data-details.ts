@@ -4,4 +4,5 @@ export class MasterDataDetails {
     MDDShortName: string;
     MDDName: string;
     CompanyCode: string;
+    IsDeleted: string;
 }

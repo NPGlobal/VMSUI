@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
@@ -17,8 +17,8 @@ export class VendorListComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[];
+  isSorted = false;
   searchText = '';
-
 
   constructor(private _http: HttpClient,
     private _vendorService: VendorService,
@@ -44,5 +44,41 @@ export class VendorListComponent implements OnInit {
   GetVendorsList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendors;
+  }
+
+  SortVendorList(ColumnName: string) {
+    if (ColumnName === 'ProducerName') {
+      if (this.isSorted) {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.reverse();
+      } else {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.sort((a, b) => a.VendorName.localeCompare(b.VendorName));
+      }
+    } else if (ColumnName === 'ShortName') {
+      if (this.isSorted) {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.reverse();
+      } else {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.reverse();
+      }
+    } else if (ColumnName === 'RefVendor') {
+      if (this.isSorted) {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.reverse();
+      } else {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
+      }
+    } else {
+      if (this.isSorted) {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.reverse();
+      } else {
+        this.isSorted = !this.isSorted;
+        this.pagedItems.sort((a, b) => a.CreatedOn.localeCompare(b.CreatedOn));
+      }
+    }
   }
 }

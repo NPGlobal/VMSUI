@@ -1,7 +1,7 @@
 <form *ngIf="personalDetailsForm" class="form-inline" [formGroup]="personalDetailsForm"
     (ngSubmit)="SavePersonalDetails()" novalidate>
     <div class="main-div">
-        <div class="content-heading">
+        <div class="content-heading expand-all">
             <a href="javascript:void(0)" (click)="ToggleAllContainers()" class="glyphicon-expand">
                 <span>{{HasAllCollapsed ? '+' : '-'}}</span>
             </a>{{HasAllCollapsed ? 'Expand' : 'Collapse'}} All
@@ -38,24 +38,19 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <label class="text">GST Registration No.</label>
-                                <span>
-                                    <input type="text" formControlName="GSTIN"
-                                        [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
-                                </span>
-                            </div>
-                            <div class="col-md-6">
                                 <label class="text">PAN No.</label>&nbsp;&nbsp;
                                 <span>
                                     <input type="text" formControlName="PANNo"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
                                         [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <div class="masterVendorLabelDiv" for="Ref_VendorCode">Reference Producer Name</div>
+                                <div for="Ref_VendorCode">Reference Producer Name</div>
                                 <select type="text" class="form-control col-md-12 input-sm"
+                                    [attr.disabled]="personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disabled ? '' : null"
                                     formControlName="Ref_VendorCode">
                                     <option value="-1" selected="selected">Select</option>
                                     <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName
@@ -63,7 +58,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <div class="masterVendorLabelDiv">Master Producer Name
+                                <div>Master Producer Name
                                     <small>(Parent/sister company)</small>
                                 </div>
                                 <select type="text" class="form-control col-md-12 input-sm"
@@ -72,6 +67,22 @@
                                     <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">
                                         {{item.MasterVendorName }}</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <div class="col-md-6">
+                                <span>
+                                    <label class="text">Insured
+                                        <input type="checkbox" formControlName="IsInsured" class="ml-2" />
+                                    </label>
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text">Name of Insurance Company</label>
+                                <span>
+                                    <input type="text" formControlName="NameofInsuranceCompany"
+                                        class="form-control input-sm" />
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -83,6 +94,7 @@
                             <div class="col-md-2">
                                 <label class="radio-inline">
                                     <input type="checkbox" formControlName="IsDirectVendor"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsDirectVendor').disabled ? '' : null"
                                         (change)="SetPHListValidation()" />
                                     <span style="margin-left:5px;" class="text">DP</span>
                                 </label>
@@ -91,6 +103,7 @@
                             <div class="col-md-1">
                                 <label class="radio-inline">
                                     <input type="checkbox" formControlName="IsJWVendor"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsJWVendor').disabled ? '' : null"
                                         (change)="SetPHListValidation()" />
                                     <span style="margin-left:5px;" class="text">JW</span>
                                 </label>
@@ -100,18 +113,20 @@
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
                                 <div class="col-sm-5">
-                                    <div class="col-sm-6 PHandStore form-group">
+                                    <div class="col-sm-6 mt-1 mb-1 PHandStore form-group">
                                         <label class="text">PH/FO</label>
-                                        <select formControlName="PHList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" size="3" multiple="multiple">
+                                        <select formControlName="PHList"
+                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
+                                            class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
                                                 {{ PH.OrgUnitName }}</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-6 PHandStore form-group">
                                         <label class="text">Store</label>
-                                        <select formControlName="StoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" size="3" multiple="multiple">
+                                        <select formControlName="StoreList"
+                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
+                                            class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
                                                 {{ Store.OrgUnitName }}</option>
                                         </select>
@@ -127,9 +142,10 @@
 
                                 </div>
                                 <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-                                    <div *ngIf="SavedPHStoreList.length > 0" class="col-sm-6 PHandStore form-group">
+                                    <div *ngIf="SavedPHStoreList.length > 0"
+                                        class="mt-1 mb-1 col-sm-6 PHandStore form-group">
                                         <label class="text">Saved PH/Store</label>
-                                        <select class="form-control input-sm" size="3" multiple="multiple">
+                                        <select class="form-control input-sm" size="4" multiple="multiple">
                                             <option *ngFor="let PHStore of SavedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                         </select>
@@ -138,7 +154,7 @@
                                         <label class="text">Selected PH/Store</label>
                                         <select [ngClass]="{'is-invalid': !HasPHSelected}"
                                             formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 3: 9)"
+                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 4: 11)"
                                             multiple="multiple">
                                             <option *ngFor="let PHStore of SelectedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
@@ -153,18 +169,18 @@
             </div>
             <hr>
 
-            <!-- GST Registration Details -->
+            <!-- Vendor Registered Office Address -->
 
-            <div class="col" formGroupName="GSTRegistrationDetails">
+            <div class="col" formGroupName="RegisteredOfficeAddress">
                 <div class="content-heading">
                     <a href="javascript:void(0)"
-                        (click)="ToggleContainer(personalDetailsForm.get('GSTRegistrationDetails'))"
+                        (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
                         class="glyphicon-expand">
-                        <span>{{personalDetailsForm.get('GSTRegistrationDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>GST Registration Details
+                        <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Registration Detail
                 </div>
                 <div class="slider" [ngClass]="{
-                      closed: !personalDetailsForm.get('GSTRegistrationDetails').controls.IsExpanded.value
+                      closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
                   }">
 
                     <div class="col-md-12 form-group">
@@ -172,14 +188,16 @@
                             <label class="text">GST Registered</label>
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input value="true" type="radio" formControlName="IsGSTRegistered"
+                                    <input [value]="true" type="radio" formControlName="IsGSTRegistered"
+                                        [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                         (change)="SetValidationForGSTControls($event)" />
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
                             </div>
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input value="false" type="radio" formControlName="IsGSTRegistered"
+                                    <input [value]="false" type="radio" formControlName="IsGSTRegistered"
+                                        [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                         (change)="SetValidationForGSTControls($event)" />
                                     <span style="margin-left:5px;">No</span>
                                 </label>
@@ -189,13 +207,13 @@
                             <label class="text">Reverse Change Mechanism Applied</label>
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input value="true" type="radio" formControlName="IsRCM">
+                                    <input [value]="true" type="radio" formControlName="IsRCM" />
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
                             </div>
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input value="false" type="radio" formControlName="IsRCM">
+                                    <input [value]="false" type="radio" formControlName="IsRCM" />
                                     <span style="margin-left:5px;">No</span>
                                 </label>
                             </div>
@@ -204,16 +222,24 @@
 
                     <div class="form-group col-md-12">
                         <div class="col-md-4">
-                            <label class="text">GST No</label><i class="mandatory">*</i>
+                            <label class="text">GST No
+                                <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
+                                    class="mandatory">*</i>
+                                <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
+                                    {{formErrors.GSTIN}}
+                                </span>
+                            </label>
                             <span>
-                                <input formControlName="GSTIN" type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" formControlName="GSTIN" type="text"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? '' : null"
+                                    [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                         </div>
 
                         <div class="col-md-4">
                             <div class="checkbox">
-                                <label>
-                                    <input value="True" type="checkbox" formControlName="IsProvisional">
+                                <label class="text">
+                                    <input value="true" type="checkbox" formControlName="IsProvisional">
                                     &nbsp;
                                     Provisional
                                 </label>
@@ -221,85 +247,26 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="text">GST Date</label>
+                            <label class="text">GST Date
+                                <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
+                                    class="mandatory">*</i>
+                            </label>
                             <span>
-                                <input formControlName="GSTDate" type="date" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate}"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? '' : null"
+                                    formControlName="GSTDate" type="date" class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
 
                     <div class="form-group col-md-12">
                         <div class="col-md-4">
-                            <label class="text">Country</label>
+                            <label class="text">Address1
+                                <i class="mandatory">*</i>
+                            </label>
                             <span>
-                                <select class="form-control input-sm">
-                                    <option [ngValue]="null">Select</option>
-                                    <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
-                                        {{country.MDDName}}</option>
-                                </select>
-                            </span>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="text">GST Registered for State</label>
-                            <span>
-                                <select class="form-control input-sm">
-                                    <option [ngValue]="null">Select</option>
-                                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}
-                                    </option>
-                                </select>
-                            </span>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="text">State Code</label>
-                            <label></label>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <div class="col-md-4">
-                            <label class="text">City</label><i class="mandatory">*</i>
-                            <span>
-                                <input type="text" class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="text">PIN</label><i class="mandatory">*</i>
-                            <span>
-                                <input type="text" class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-4">
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <hr>
-
-            <!-- Vendor Registered Office Address -->
-
-            <div class="col" formGroupName="RegisteredOfficeAddress">
-                <div class="content-heading">
-                    <a href="javascript:void(0)"
-                        (click)="ToggleContainer(personalDetailsForm.get('RegisteredOfficeAddress'))"
-                        class="glyphicon-expand">
-                        <span>{{personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value ? '-' : '+'}}</span>
-                    </a>Registered Office Address
-                </div>
-                <div class="slider" [ngClass]="{
-                      closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
-                  }">
-
-                    <div class="form-group col-md-12">
-                        <div class="col-md-4">
-                            <label class="text">Address1</label>
-                            <span>
-                                <input formControlName="Address1" type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address1}"
+                                    formControlName="Address1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -320,9 +287,13 @@
 
                     <div class="form-group col-md-12">
                         <div class="col-md-4">
-                            <label class="text">Country</label>
+                            <label class="text">Country
+                                <i class="mandatory">*</i>
+                            </label>
                             <span>
-                                <select formControlName="CountryCode" class="form-control input-sm">
+                                <select (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
+                                    class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
                                         {{country.MDDName}}</option>
@@ -331,9 +302,13 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="text">State</label>
+                            <label class="text">State
+                                <i class="mandatory">*</i>
+                            </label>
                             <span>
-                                <select formControlName="StateCode" class="form-control input-sm">
+                                <select (blur)="LogValidationErrors()" (change)="SetStateCodeLabel()"
+                                    [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
+                                    class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">
                                         {{state.MDDName}}
@@ -341,20 +316,25 @@
                                 </select>
                             </span>
                         </div>
-
                         <div class="col-md-4">
-                            <label class="text">Same for Factory/Sister concern</label>
-                            <span>
-                                <input class="ml-2" formControlName="IsSameForAll" type="checkbox" />
+                            <span class="stateCodeLabel">State Code
+                                <small *ngIf="StateCodeLabel" class="ml-2">{{StateCodeLabel}}</small>
                             </span>
                         </div>
+
                     </div>
 
                     <div class="form-group col-md-12">
                         <div class="col-md-4">
-                            <label class="text">Pincode</label>
+                            <label class="text">Pincode
+                                <i class="mandatory">*</i>
+                            </label>
+                            <span class="help-block mandatory" *ngIf="formErrors.PIN">
+                                {{formErrors.PIN}}
+                            </span>
                             <span>
-                                <input formControlName="PIN" type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PIN}"
+                                    formControlName="PIN" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -364,16 +344,115 @@
                                 <input formControlName="CityCode" type="text" class="form-control input-sm" />
                             </span>
                         </div>
+                        <div class="col-md-4">
+                            <label class="text">Same Address for Factory</label>
+                            <span>
+                                <input class="ml-2" formControlName="IsSameForAll" type="checkbox" />
+                            </span>
+                        </div>
                     </div>
                     <hr>
 
                     <!-- Contact -->
-
                     <div class="form-group col-md-12">
+                        <fieldset>
+                            <legend>Primary Info</legend>
+                            <div class="row">
+                                <div class="col-md-22">
+                                    <label class="text">Contact Name<i class="mandatory">*</i></label>
+                                    <span>
+                                        <input (blur)="LogValidationErrors()"
+                                            [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                            formControlName="PrimaryContactName" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Phone No.<i class="mandatory">*</i></label>
+                                    <span>
+                                        <input (blur)="LogValidationErrors()"
+                                            [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                            formControlName="PrimaryContactPhone" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Fax</label>
+                                    <span>
+                                        <input formControlName="PrimaryContactFax" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Email</label>
+                                    <span>
+                                        <input formControlName="PrimaryContactEmail" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Website</label>
+                                    <span>
+                                        <input formControlName="PrimaryContactWebsite" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <hr style="border:none;">
+                    <div class="form-group col-md-12">
+                        <fieldset>
+                            <legend>Secondary Info</legend>
+                            <div class="row">
+                                <div class="col-md-22">
+                                    <label class="text">Contact Name</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactName" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Phone No.</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactPhone" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Fax</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactFax" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Email</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactEmail" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                                <div class="col-md-22">
+                                    <label class="text">Website</label>
+                                    <span>
+                                        <input formControlName="SecondaryContactWebsite" type="text"
+                                            class="form-control input-sm" />
+                                    </span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <hr style="border:none;">
+                    <!-- <div class="form-group col-md-12">
                         <div class="col-md-6">
-                            <label class="text">Primary Contact Name</label>
+                            <label class="text">Primary Contact Name
+                                <i class="mandatory">*</i>
+                            </label>
                             <span>
-                                <input formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
+                                    formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -388,10 +467,13 @@
 
                     <div class="form-group col-md-12">
                         <div class="col-md-6">
-                            <label class="text">Primary Phone No.</label>
+                            <label class="text">Primary Phone No.
+                                <i class="mandatory">*</i>
+                            </label>
                             <span>
-                                <input formControlName="PrimaryContactPhone" type="text"
-                                    class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
+                                    formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -455,7 +537,7 @@
                                     class="form-control input-sm" />
                             </span>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
@@ -470,16 +552,14 @@
                         <span>{{personalDetailsForm.get('Address').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Factory/Sister Concern Address
                 </div>
-                <div class="slider" [ngClass]="{
-                      closed: !personalDetailsForm.get('Address').controls.IsExpanded.value
-                  }">
+                <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('Address').controls.IsExpanded.value}">
 
                     <div class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
                                 (click)="OpenAddressModal(CreateNewAddress())">
                                 <i class="fa fa-plus"></i>
-                                <span title="Add new" class="py-4">Add new address</span>
+                                <span title="Add new" class="py-4">Add New Address</span>
                             </button>
                         </span>
                     </div>
@@ -577,12 +657,11 @@
                         <span>{{personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Other Registration Detail
                 </div>
-                <div class="slider" [ngClass]="{
-                  closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value
-              }">
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
-                        <div class="col-md-4">
-                            <label class="text">Associated With Fabindia Since</label>
+                        <div class="col-md-2">
+                            <label class="text">Associated With Us Since</label>
                             <span>
                                 <select formControlName="AssociatedSinceYear" class="form-control input-sm">
                                     <option [ngValue]="0">Select</option>
@@ -590,7 +669,7 @@
                                 </select>
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label class="text">Nature Of Enterprise</label>
                             <span>
                                 <select *ngIf="VendorTypeList" formControlName="VendorType_MDDCode"
@@ -601,8 +680,8 @@
                                 </select>
                             </span>
                         </div>
-                    </div>
-                    <div class="col-md-12 form-group">
+                        <!-- </div>
+                    <div class="col-md-12 form-group"> -->
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
                             <span>
@@ -631,37 +710,36 @@
                         <span>{{personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
                     </a>Top 5 Customers
                 </div>
-                <div class="slider" [ngClass]="{
-                  closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value
-              }">
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('CustomerDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer1</label>
                             <span>
                                 <input formControlName="OtherCustomer1" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer2</label>
                             <span>
                                 <input formControlName="OtherCustomer2" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer3</label>
                             <span>
                                 <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <div class="col-md-4">
+                        <!-- </div>
+                    <div class="col-md-12 form-group"> -->
+                        <div class="col-md-22">
                             <label class="text">Customer4</label>
                             <span>
                                 <input formControlName="OtherCustomer4" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-22">
                             <label class="text">Customer5</label>
                             <span>
                                 <input formControlName="OtherCustomer5" type="text" class="form-control input-sm" />
@@ -678,12 +756,28 @@
 
         <div class="col-md-12 page-footer">
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button [routerLink]="['/vendor']" type="button" class="btn">Cancel</button>
+            <button [routerLink]="['/vendor']" type="button" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
 </form>
 
-<button #modalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+<button #addModalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
     data-toggle="modal" style="display:none;">
 </button>
 <app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form>
+
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+                <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="dismissMsg()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>

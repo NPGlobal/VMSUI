@@ -1,11 +1,10 @@
 <div class="top-margin container" style="margin-left: 0px;">
-  <div class="float-left">
+  <div class="float-left col-md-6">
     <h2>Producers</h2>
   </div>
-  <div class="float-right">
-    <i class="fa fa-search"></i>&nbsp;
-    <input type="search" placeholder="Search" (keyup)="SearchVendor($event.target.value)">&nbsp;&nbsp;
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
+  <div class="float-right row col-md-6">
+    <input type="text" placeholder="Search" (keyup)="SearchVendor($event.target.value)" name="search">
+    <button type="button" class="ml-2 btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
       data-keyboard="false">
       <i class="fa fa-plus"></i>
       <span title="Add new" class="py-4">Add</span>
@@ -17,23 +16,27 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
-        <th scope="col">Serial</th>
-        <th scope="col">Producer Name</th>
-        <th scope="col">Short Name</th>
-        <th scope="col">Producer Code</th>
-        <th scope="col">Created On</th>
-        <th scope="col">Status</th>
+        <!-- <th scope="col">Serial</th> -->
+        <th scope="col" (click)="SortVendorList(ProducerName)">Producer Name <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="SortVendorList(SortName)">Short Name <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="SortVendorList(RefVendor)">Ref Vendor <i class="fa fa-sort"></i></th>
+        <th scope="col">GST No</th>
+        <th scope="col">PAN No</th>
+        <th scope="col" (click)="SortVendorList(CreatedOn)">Created On <i class="fa fa-sort"></i></th>
+        <!-- <th scope="col">Status</th> -->
         <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let vendor of pagedItems;index as i;">
-        <td>{{vendor.RowNumber}}</td>
+        <!-- <td>{{vendor.RowNumber}}</td> -->
         <td>{{vendor.VendorName}}</td>
         <td>{{vendor.VendorShortName}}</td>
-        <td>{{vendor.VendorCode}}</td>
+        <td>{{vendor.MasterVendorName}}</td>
+        <td>{{vendor.GSTNo}}</td>
+        <td>{{vendor.PANNo}}</td>
         <td>{{vendor.CreatedOn | date:'medium'}}</td>
-        <td>{{vendor.Status}}</td>
+        <!-- <td>{{vendor.Status}}</td> -->
         <td>
           <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit"></i></a>
         </td>

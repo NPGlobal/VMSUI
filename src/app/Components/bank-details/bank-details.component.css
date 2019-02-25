@@ -1,0 +1,17 @@
+.mandatory {
+    color: red;
+}
+
+form {
+    margin: 20px;
+   
+}
+.form-inline {
+    border: 1px solid #bdbcbc;
+    background-color: #f4f4f4;
+}
+
+.text {
+    font-weight: 400;
+    font-size:14px;
+}

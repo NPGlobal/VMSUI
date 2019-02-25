@@ -26,11 +26,11 @@ export class DocumentComponent implements OnInit {
   vendDocList: VendorDocument[];
 
   // paging variables
-  totalItems: number;
+  totalItems = 0;
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
-  pagedItems: any[];
+  pagedItems: any[] = [];
 
   formData: FormData;
 

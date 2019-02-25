@@ -42,6 +42,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   Action: string;
   searchText = '';
   ExistingVendorTech: FormGroup;
+  machineItems: Array<{MachineType: string, MachineName: string, UnitCount: string, Efficiency: string}> = [];
   ValidationMessages = {
     'dept': {
       'required': ''
@@ -330,7 +331,53 @@ DeleteTechDetailsPopup(vendor) {
   });
 }
 
-
+AddMachine() {
+  const machineType = $('#divMachine').find('select:eq(0) option:selected').text().trim(); // this.techDetailsForm.get('dept').value;
+  const machineName = $('#divMachine').find('select:eq(1) option:selected').text().trim(); // this.techDetailsForm.get('techSpec').value;
+  const unitCount = $('#divMachine').find('select:eq(2)').val(); // this.techDetailsForm.get('unitCount').value;
+  const efficiency = $('#divMachine').find('input[type="text"]').val().trim(); // this.techDetailsForm.get('unitCount').value;
+  if (this.techDetailsForm.get('dept').value !== '' && this.techDetailsForm.get('techSpec').value !== '' &&
+  this.techDetailsForm.get('unitCount').value !== '') {
+    this.AddRow(machineType, machineName, unitCount, efficiency);
+  } else {
+    const el = this.modalOpenButton.nativeElement as HTMLElement;
+    this.modalBody = 'Please select data for add.';
+    el.click();
+  }
+  if (this.machineItems.length > 0) {
+    $('.table-small').removeClass('hide');
+  } else {
+    $('.table-small').addClass('hide');
+  }
+}
+AddRow(x , y, z, a) {
+  let add = 0;
+  if (this.machineItems.length > 0) {
+    const strArray = this.machineItems.find((obj) => obj.MachineType === x && obj.MachineName === y);
+    if (strArray === undefined) {
+      this.machineItems.push({ MachineType: x, MachineName: y, UnitCount: z, Efficiency: a });
+        add = 1;
+    }
+    if (add === 0) {
+      const el = this.modalOpenButton.nativeElement as HTMLElement;
+      this.modalBody = 'This data is already exists.';
+      el.click();
+    }
+  } else {
+    this.machineItems.push({ MachineType: x, MachineName: y, UnitCount: z, Efficiency: a });
+  }
+}
+DeleteMachine (x) {
+  const strArray = this.machineItems.find((obj) => obj.MachineType === x.MachineType && obj.MachineName === x.MachineName);
+  if (strArray === undefined) {
+    // this.machineItems.splice(strArray, 1);
+  }
+  if (this.machineItems.length > 0) {
+    $('.table-small').removeClass('hide');
+  } else {
+    $('.table-small').addClass('hide');
+  }
+}
 DeleteTechDetails() {
   const el = this.modalOpenButton.nativeElement as HTMLElement;
   //  if (confirm('Are you sure ? If yes,This record will no longer be available in the system.')) {

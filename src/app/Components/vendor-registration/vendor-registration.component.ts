@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { Vendor } from 'src/app/Models/vendor';
@@ -24,6 +24,11 @@ export class VendorRegistrationComponent implements OnInit {
   HasPHSelected: boolean;
   submitted = false;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
+
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
 
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
@@ -61,6 +66,9 @@ export class VendorRegistrationComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.PopUpMessage = '';
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+
     this._vendorService.GetPHList().subscribe(result => {
       this.AllPHList = result.data.Table;
       this.PHList = result.data.Table.filter(x => x.OrgUnitTypeCode === 'P');
@@ -76,7 +84,6 @@ export class VendorRegistrationComponent implements OnInit {
 
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
       this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A');
-      console.log(this.ReferenceVendorList.length);
     });
 
     this.InitializeFormControls();
@@ -97,7 +104,7 @@ export class VendorRegistrationComponent implements OnInit {
       PANNo: ['', [Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       StoreList: [''],
-      SelectedPHStoreList: null,
+      SelectedPHStoreList: [[]],
       PHListCSV: '',
       Ref_VendorCode: '-1',
       IsJWVendor: [false],
@@ -119,6 +126,7 @@ export class VendorRegistrationComponent implements OnInit {
           for (const errorkey in abstractControl.errors) {
             if (errorkey) {
               this.formErrors[key] += messages[errorkey] + ' ';
+              break;
             }
           }
         }
@@ -137,27 +145,38 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   NoPHandStore() {
-    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
-      return false;
-    } else {
+    if ((this.RegistrationForm.get('PHList').value === '' || this.RegistrationForm.get('PHList').value.length === 0) &&
+      (this.RegistrationForm.get('StoreList').value === '' || this.RegistrationForm.get('StoreList').value.length === 0)) {
       return true;
+    } else {
+      return false;
     }
   }
 
   NoSelectedPHOrStore() {
-    if (this.SelectedPHStoreList.length > 0) {
-      return false;
-    } else {
+    if (this.RegistrationForm.get('SelectedPHStoreList').value === '' ||
+      this.RegistrationForm.get('SelectedPHStoreList').value.length === 0) {
       return true;
+    } else {
+      return false;
     }
   }
 
   SaveVendorPrimaryInfo() {
     this.submitted = true;
-    if (this.RegistrationForm.invalid) {
+
+    if (this.RegistrationForm.invalid ||
+      (this.RegistrationForm.get('IsJWVendor').value && !this.HasPHSelected)) {
       this.logValidationErrors();
       return;
     }
+
+    if (!this.RegistrationForm.get('IsDirectVendor').value && !this.RegistrationForm.get('IsJWVendor').value) {
+      this.PopUpMessage = 'Please select Vendor Type.';
+      this.alertButton.click();
+      return;
+    }
+
     const el = this.modalCloseButton.nativeElement as HTMLElement;
     let statusObj: any;
     const vendor = new Vendor();
@@ -181,9 +200,11 @@ export class VendorRegistrationComponent implements OnInit {
         this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
       } else if (statusObj.Status === 2) {
         this.CodeExists = true;
+      } else {
+        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.alertButton.click();
       }
     });
-    console.log(JSON.stringify(vendor));
   }
 
   MoveToSelectedPHList() {
@@ -209,6 +230,10 @@ export class VendorRegistrationComponent implements OnInit {
     }
 
     this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+
+    this.RegistrationForm.get('PHList').patchValue([]);
+    this.RegistrationForm.get('StoreList').patchValue([]);
+    this.RegistrationForm.get('SelectedPHStoreList').patchValue([]);
   }
 
   MoveToPHList() {
@@ -230,6 +255,10 @@ export class VendorRegistrationComponent implements OnInit {
     this.DeleteFromArray(values, 'SelectedPH');
 
     this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+
+    this.RegistrationForm.get('PHList').patchValue([]);
+    this.RegistrationForm.get('StoreList').patchValue([]);
+    this.RegistrationForm.get('SelectedPHStoreList').patchValue([]);
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -258,16 +287,23 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SetPHListValidation() {
-    this.PHList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'P');
-    this.StoreList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'S');
-    this.SelectedPHStoreList = [];
+
     if (this.RegistrationForm.get('IsJWVendor').value) {
-      this.HasPHSelected = false;
-    } else if (this.RegistrationForm.get('IsDirectVendor').value) {
-      this.HasPHSelected = true;
+      this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     } else {
+      this.PHList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'P');
+      this.StoreList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'S');
+      this.SelectedPHStoreList = [];
+      this.HasPHSelected = true;
+    }
+
+    if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
     }
+  }
+
+  UnselectOptions(control: FormControl) {
+    control.patchValue([]);
   }
 
 }

@@ -33,11 +33,17 @@ export class PersonalDetailsComponent implements OnInit {
   ReferenceVendorList: Vendor[] = [];
 
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
+  NumberPattern: '^[1-9][0-9]{5}$';
 
   Address: VendorAddress;
 
-  @ViewChild('modalOpenButton')
-  modalOpenButton: ElementRef;
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
+
+  @ViewChild('addModalOpenButton')
+  addModalOpenButton: ElementRef;
 
   HasAllCollapsed: boolean;
   IsAddressSaved = false;
@@ -45,22 +51,56 @@ export class PersonalDetailsComponent implements OnInit {
   HasPHSelected: boolean;
 
   submitted = false;
+  StateCodeLabel: string;
+
   ValidationMessages = {
     'PANNo': {
-      'minlength': 'Invalid PAN number',
-      'maxlength': 'Invalid PAN number',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
     },
     'GSTIN': {
-      'minlength': 'Invalid GST number',
-      'maxlength': 'Invalid GST number',
+      'required': '',
+      'minlength': '',
+      'maxlength': '',
       'pattern': 'Cannot contains special characters'
-    }
+    },
+    'GSTDate': {
+      'required': ''
+    },
+    'Address1': {
+      'required': ''
+    },
+    'CountryCode': {
+      'required': ''
+    },
+    'StateCode': {
+      'required': ''
+    },
+    'PIN': {
+      'required': '',
+      'minlength': '',
+      'maxlength': '',
+      'pattern': 'Invalid PIN number'
+    },
+    'PrimaryContactName': {
+      'required': ''
+    },
+    'PrimaryContactPhone': {
+      'required': ''
+    },
   };
 
   formErrors = {
     'PANNo': '',
-    'GSTIN': ''
+    'GSTIN': '',
+    'GSTDate': '',
+    'Address1': '',
+    'CountryCode': '',
+    'StateCode': '',
+    'PIN': '',
+    'PrimaryContactName': '',
+    'PrimaryContactPhone': ''
   };
 
   constructor(private _vendorService: VendorService,
@@ -71,9 +111,11 @@ export class PersonalDetailsComponent implements OnInit {
     this.vendor = new Vendor();
     this.vendor.RegisteredOfficeAddress = new VendorAddress();
     this.HasAllCollapsed = true;
+    this.PopUpMessage = '';
   }
 
   ngOnInit() {
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
@@ -124,6 +166,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   GetMasterDataDetails(MDHCode: string) {
     this._mDDService.GetMasterDataDetails(MDHCode, '-1').subscribe((result) => {
+      let lst: MasterDataDetails[];
       switch (MDHCode) {
         case 'VendorType': {
           this.VendorTypeList = result.data.Table;
@@ -134,11 +177,20 @@ export class PersonalDetailsComponent implements OnInit {
           break;
         }
         case 'STATE': {
-          this.StateList = result.data.Table;
+          lst = result.data.Table;
+          this.StateList = lst.filter(x => x.IsDeleted === 'N');
           break;
         }
       }
     });
+  }
+
+  SetStateCodeLabel() {
+    const state = this.StateList === undefined ? new MasterDataDetails() :
+      this.StateList.filter(x => x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value)[0];
+
+    this.StateCodeLabel = (state === undefined ||
+      state.MDDShortName === undefined || state.MDDShortName === null) ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
   SavePersonalDetails() {
@@ -152,7 +204,9 @@ export class PersonalDetailsComponent implements OnInit {
     }
 
     if (this.personalDetailsForm.invalid) {
-      this.logValidationErrors();
+      this.LogValidationErrors();
+      this.PopUpMessage = 'Please fill required fields.';
+      this.alertButton.click();
       return;
     }
 
@@ -162,6 +216,9 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
     vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value;
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
+    vendor.isInsured = this.personalDetailsForm.get('PersonalDetails.IsInsured').value;
+    vendor.NameofInsuranceCompany = this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value;
+    vendor.IsDirectVendor = this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value;
     vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
     vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
     vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value;
@@ -176,6 +233,11 @@ export class PersonalDetailsComponent implements OnInit {
         return element.OrgUnitCode;
       }).join() : '';
 
+    vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
+    vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value;
+    vendor.isRCM = this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').value;
+    vendor.isProvisional = this.personalDetailsForm.get('RegisteredOfficeAddress.IsProvisional').value;
+    vendor.GSTDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
     vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.RegisteredOfficeAddress.CompanyCode = '10';
     vendor.RegisteredOfficeAddress.PIN = this.personalDetailsForm.get('RegisteredOfficeAddress.PIN').value;
@@ -237,28 +299,34 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.Status === 0) {
-        alert('Saved Succesfully!!');
+        this.PopUpMessage = 'Saved Succesfully!!';
+        this.alertButton.click();
         this.IsAddressSaved = true;
         this.Editvendor(this.VendorCode);
+      } else {
+        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.alertButton.click();
       }
     });
   }
-
+  dismissMsg() {
+    // if (this.PopUpMessage === 'Saved Succesfully!!') {
+    //   const absUrl = window.location.href;
+    //   window.location.href = absUrl;
+    // }
+  }
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
-      if (!this.IsAddressSaved) {
-        this.vendor = result.data.Vendor[0];
-      }
-
+      this.vendor = result.data.Vendor[0];
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
 
-      if (!this.IsAddressSaved) {
-        this.GetPHList();
+      this.GetPHList();
 
-        this.InitializeFormControls();
-      }
+      this.InitializeFormControls();
+
+      this.SetStateCodeLabel();
 
       this.IsAddressSaved = false;
     });
@@ -266,13 +334,15 @@ export class PersonalDetailsComponent implements OnInit {
 
   OpenAddressModal(vendorAddress: VendorAddress) {
     this.Address = vendorAddress;
-    const el = this.modalOpenButton.nativeElement as HTMLElement;
+    const el = this.addModalOpenButton.nativeElement as HTMLElement;
     el.click();
   }
 
   FillPHLists() {
     this.PHList = [];
     this.StoreList = [];
+    this.SavedPHStoreList = [];
+    this.SelectedPHStoreList = [];
     if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
       for (let i = 0; i < this.AllPHList.length; ++i) {
@@ -295,41 +365,46 @@ export class PersonalDetailsComponent implements OnInit {
   InitializeFormControls() {
 
     this.PopulateYears();
+    const disablePan = this.vendor.PANNo === '' ? false : true;
+    const disableRef = this.vendor.Ref_VendorCode === '-1' ? false : true;
+    const isGSTControlsDisabled = this.vendor.isGSTRegistered ? true : false;
+    const isDPDisabled = this.vendor.IsDirectVendor ? true : false;
+    const isJWDisabled = this.vendor.IsJWVendor ? true : false;
 
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [this.vendor.PANNo, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
-        GSTIN: [this.vendor.GSTIN, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]],
-        PHList: new FormControl(''),
-        StoreList: [''],
-        SelectedPHStoreList: [''],
-        Ref_VendorCode: [{ value: this.vendor.Ref_VendorCode, disabled: true }],
+        PANNo: [this.vendor.PANNo, [
+          Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
+        PHList: [[]],
+        StoreList: [[]],
+        SelectedPHStoreList: [[]],
+        Ref_VendorCode: [this.vendor.Ref_VendorCode],
         IsExpanded: true,
-        IsJWVendor: [{ value: this.vendor.IsJWVendor, disabled: this.vendor.IsJWVendor ? true : false }],
-        IsDirectVendor: [{ value: this.vendor.IsDirectVendor, disabled: this.vendor.IsDirectVendor ? true : false }]
-      }),
-      GSTRegistrationDetails: this._fb.group({
-        IsGSTRegistered: [this.vendor.IsGSTRegistered, [Validators.required]],
-        IsRCM: [this.vendor.IsRCM],
-        GSTIN: [this.vendor.GSTIN],
-        GSTDate: [this.vendor.GSTDate],
-        IsProvisional: [this.vendor.IsProvisional],
-        IsExpanded: false
+        IsJWVendor: [this.vendor.IsJWVendor],
+        IsDirectVendor: [this.vendor.IsDirectVendor],
+        NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
+        IsInsured: [this.vendor.isInsured]
       }),
       RegisteredOfficeAddress: this._fb.group({
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1],
+        IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
+        IsRCM: [{ value: this.vendor.isRCM, disabled: true }],
+        GSTIN: [this.vendor.GSTIN],
+        GSTDate: [this.FormatDate(this.vendor.GSTDate)],
+        IsProvisional: [this.vendor.isProvisional],
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
         Address2: [this.vendor.RegisteredOfficeAddress.Address2],
         Address3: [this.vendor.RegisteredOfficeAddress.Address3],
-        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode],
+        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
-        StateCode: [this.vendor.RegisteredOfficeAddress.StateCode],
-        PIN: [this.vendor.RegisteredOfficeAddress.PIN],
+        StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
+        PIN: [this.vendor.RegisteredOfficeAddress.PIN,
+        [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(6), Validators.maxLength(6)]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
-        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName],
-        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone],
+        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
+        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone, [Validators.required]],
         PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax],
         PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail],
         PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite],
@@ -361,10 +436,74 @@ export class PersonalDetailsComponent implements OnInit {
       })
     });
 
+    this.personalDetailsForm.updateValueAndValidity();
+
+    this.DisableControls(disablePan, isGSTControlsDisabled, disableRef, isDPDisabled, isJWDisabled);
+
+    if (!isGSTControlsDisabled) {
+      this.SetValidationForGSTControls();
+    }
 
     this.personalDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.personalDetailsForm);
+      this.LogValidationErrors(this.personalDetailsForm);
     });
+  }
+
+  DisableControls(disablePan: boolean,
+    isGSTControlsDisabled: boolean,
+    disableRef: boolean,
+    isDPDisabled: boolean,
+    isJWDisabled: boolean) {
+    if (disablePan) {
+      this.personalDetailsForm.get('PersonalDetails.PANNo').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.PANNo').enable();
+    }
+
+    if (disableRef) {
+      this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').enable();
+    }
+
+    if (isDPDisabled) {
+      this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').enable();
+    }
+
+    if (isJWDisabled) {
+      this.personalDetailsForm.get('PersonalDetails.IsJWVendor').disable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.IsJWVendor').enable();
+    }
+
+    if (isGSTControlsDisabled) {
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
+    } else {
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
+    }
+  }
+
+  FormatDate(date: Date) {
+    const d = new Date(date),
+      year = d.getFullYear();
+    let month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate();
+
+    if (month.length < 2) {
+      month = '0' + month;
+
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
   }
 
   ToggleContainer(formGroup: FormGroup) {
@@ -396,6 +535,10 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
+
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue([]);
   }
 
   MoveToPHList(event: any) {
@@ -418,6 +561,10 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
+
+    this.personalDetailsForm.get('PersonalDetails.PHList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue([]);
+    this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue([]);
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -446,18 +593,22 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   NoPHandStore() {
-    if (this.PHList.length !== 0 && this.StoreList.length !== 0) {
-      return false;
-    } else {
+    if ((this.personalDetailsForm.get('PersonalDetails.PHList').value === '' ||
+      this.personalDetailsForm.get('PersonalDetails.PHList').value.length === 0) &&
+      (this.personalDetailsForm.get('PersonalDetails.StoreList').value === '' ||
+        this.personalDetailsForm.get('PersonalDetails.StoreList').value.length === 0)) {
       return true;
+    } else {
+      return false;
     }
   }
 
   NoSelectedPHOrStore() {
-    if (this.SelectedPHStoreList.length > 0) {
-      return false;
-    } else {
+    if (this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value === '' ||
+      this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').value.length === 0) {
       return true;
+    } else {
+      return false;
     }
   }
 
@@ -468,7 +619,6 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(!this.HasAllCollapsed);
-    this.personalDetailsForm.get('GSTRegistrationDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
   }
 
   OnAddressSaved(IsSaved: boolean) {
@@ -478,11 +628,11 @@ export class PersonalDetailsComponent implements OnInit {
     }
   }
 
-  logValidationErrors(group: FormGroup = this.personalDetailsForm): void {
+  LogValidationErrors(group: FormGroup = this.personalDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
-        this.logValidationErrors(abstractControl);
+        this.LogValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
         if (this.submitted || (abstractControl && !abstractControl.valid &&
@@ -504,15 +654,32 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue('');
   }
 
-  SetValidationForGSTControls($event) {
-    if (this.personalDetailsForm.get('GSTRegistrationDetails.IsGSTRegistered').value) {
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTIN').setValidators([Validators.required]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTDate').setValidators([Validators.required]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.IsRCM').patchValue(false);
-    } else {
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTIN').setValidators([]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.GSTDate').setValidators([]);
-      this.personalDetailsForm.get('GSTRegistrationDetails.IsRCM').patchValue(true);
+  SetValidationForGSTControls() {
+    if (!this.vendor.isGSTRegistered) {
+      if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
+          [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
+
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([Validators.required]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
+
+        this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
+      } else {
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
+
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([]);
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
+        this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
+
+        this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
+      }
     }
+  }
+
+  UnselectOptions(control: FormControl) {
+    control.patchValue([]);
   }
 }
