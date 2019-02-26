@@ -7,8 +7,10 @@ VendorTechDetailsID: number;
 TechLineNo: number;
 Efficiency: number;
 UnitCount: number;
-Status: boolean;
+Status: string;
 Remarks: string;
 CreatedBy: number;
 isDisable: boolean;
+MachineName: string;
+MachineType: string;
 }

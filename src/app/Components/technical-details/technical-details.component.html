@@ -1,7 +1,7 @@
 <div class="col-lg-12 col-sm-12 row col-md-12">
   <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchTechDetails($event.target.value)"
     name="search">
-  <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
+  <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="EditTechDetails(null)"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
     <i class="fa fa-plus"></i>
     <span title="Add new" class="py-4">Add</span>
@@ -21,77 +21,6 @@
       </tr>
     </thead>
     <tbody>
-      <!-- <tr>
-        <td rowspan="2">-</td>
-        <td>Finishing</td>
-        <td>Diesel Fired Steam Boiler</td>
-        <td>90</td>
-        <td>17</td>
-        <td rowspan="2">
-          <a title="Edit" href="javascript:void(0)" data-toggle="modal"
-            (click)="GetTechDetails(vendor.VendorTechDetailsId)" data-target="#myModal" data-backdrop="static"
-            data-keyboard="false"><i class="fa fa-edit"></i></a>
-
-          <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-            (click)="DeleteTechDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i></a>
-
-        </td>
-      </tr>
-      <tr>
-        <td>Cutting</td>
-        <td>Band Knives</td>
-        <td>90</td>
-        <td>17</td>
-      </tr>
-      <tr>
-        <td rowspan="3">Line 1<br>Default Efficiency: 80</td>
-        <td>Finishing</td>
-        <td>Diesel Fired Steam Boiler</td>
-        <td>90</td>
-        <td>17</td>
-        <td rowspan="3">
-          <a data-target="#myModal" data-toggle="modal" href="javascript:void(0)" title="Edit">
-            <i class="fa fa-edit"></i></a>
-          <a class="ml-2" data-target="#deleteModal" data-toggle="modal" href="javascript:void(0)"
-            title="Delete Machine"><i class="fa fa-remove"></i></a>
-        </td>
-      </tr>
-      <tr>
-        <td>Cutting</td>
-        <td>Band Knives</td>
-        <td>88</td>
-        <td>10</td>
-      </tr>
-      <tr>
-        <td>Dying / Processing</td>
-        <td>03 Needle Overlock M/c.</td>
-        <td>88</td>
-        <td>10</td>
-      </tr>
-      <tr>
-        <td rowspan="2">Line 2<br>Default Efficiency: 60</td>
-        <td>Finishing</td>
-        <td>Others (steam bottle)</td>
-        <td>90</td>
-        <td>17</td>
-        <td rowspan="2">
-          <a data-target="#myModal" data-toggle="modal" href="javascript:void(0)" title="Edit">
-            <i class="fa fa-edit"></i></a>
-          <a class="ml-2" data-target="#deleteModal" data-toggle="modal" href="javascript:void(0)"
-            title="Delete Machine"><i class="fa fa-remove"></i></a>
-        </td>
-      </tr>
-      <tr>
-        <td>Cutting</td>
-        <td>Others (Eastman)</td>
-        <td>88</td>
-        <td>10</td>
-      </tr> -->
-
-      <tr>
-        <td colspan="7" *ngIf="totalItems === 0">No Record Found</td>
-      </tr>
-
       <ng-container *ngFor="let vendor of pagedItems;index as i;">
         <ng-container *ngFor="let item of vendor.VendorTechDetailsList;index as j;">
           <tr>
@@ -103,12 +32,13 @@
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetailsList.length : 0)">
-              <a title="Edit" href="javascript:void(0)" data-toggle="modal"
-                (click)="GetTechDetails(vendor.VendorTechDetailsId)" data-target="#myModal" data-backdrop="static"
-                data-keyboard="false"><i class="fa fa-edit"></i></a>
+              <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
+                data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
+              </a>
 
               <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i></a>
+                (click)="DeleteTechDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i>
+              </a>
 
             </td>
           </tr>
@@ -139,7 +69,7 @@
   </nav>
 </div>
 
-<!-- Model -->
+<!-- Modal -->
 <div class="modal fade" id="myModal">
   <!-- modal-dialog -->
   <div class="modal-dialog modal-lg" role="document">
@@ -153,49 +83,31 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form [formGroup]="techDetailsForm" (ngSubmit)="SaveTechDetails()" novalidate>
-          <input type="hidden" name="id" formControlName="id">
-          <!-- <input type="button" formControlName="modalOpenButton" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
-            data-toggle="modal" style="display:none;">
-            </button> -->
+          <!-- <input type="hidden" name="id" formControlName="id"> -->
 
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
-              <!-- <div class="col-lg-3 col-md-3">
-                    <label class="text">Tech Line No. <span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="techLineNo"  class="form-control input-sm" maxlength="50" (blur)="LogValidationErrors()"
-                      [attr.disabled]="true" [ngClass]="{ 'is-invalid': formErrors.techLineNo }">
-                     </span>
-                   </div>
-                   <div class="col-lg-3 col-md-3">
-                      <label class="text">Efficiency (Default)</label>
-                      <span>
-                        <input type="text" formControlName="efficiency" class="form-control input-sm" maxlength="8" (blur)="LogValidationErrors()"
-                          [attr.disabled]="isEfficiency == 0 ? 'true' : null" [pattern]="efficiencyPattern" [ngClass]="{ 'is-invalid': formErrors.efficiency }" >   
-                       </span>
-                        <span [ngClass]="{ 'error-label': formErrors.efficiency }" *ngIf="formErrors.efficiency" > {{formErrors.efficiency}}</span>
-                    </div> -->
               <div class="col-lg-3 col-md-3">
                 <label class="text">Tech Line No. <span class="error-label">*</span></label>
                 <span>
-                  <input type="text" formControlName="techLineNo" class="form-control input-sm" maxlength="50"
-                    (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.techLineNo }">
+                  <input type="text" formControlName="TechLineNo" class="form-control input-sm" maxlength="50"
+                    (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.TechLineNo }">
                 </span>
               </div>
               <div class="col-lg-3 col-md-3">
                 <label class="text">Efficiency (Default)</label>
                 <span>
-                  <input type="text" formControlName="efficiency" class="form-control input-sm" maxlength="8"
+                  <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     (blur)="LogValidationErrors()" [pattern]="efficiencyPattern"
-                    [ngClass]="{ 'is-invalid': formErrors.efficiency }">
+                    [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
-                <span [ngClass]="{ 'error-label': formErrors.efficiency }" *ngIf="formErrors.efficiency">
-                  {{formErrors.efficiency}}</span>
+                <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
+                  {{formErrors.DefaultEfficiency}}</span>
               </div>
               <div class="col-lg-6 col-md-6">
                 <label class="text">Remarks</label>
                 <span>
-                  <input type="text" formControlName="remarks" class="form-control input-sm" />
+                  <input type="text" formControlName="Remarks" class="form-control input-sm" />
                 </span>
               </div>
             </div>
@@ -203,29 +115,28 @@
 
           <div id="divMachine" class="form-group col-lg-12 col-md-12">
             <div class="row">
+
               <div class="col-lg-3 col-md-3">
                 <label class="text">Machine Type <span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="dept" class="form-control input-sm" (change)="GetVendorTechSpec($event)"
-                    (blur)="LogValidationErrors()" [attr.disabled]="isDisable===true ? 'true' : null"
-                    [ngClass]="{ 'is-invalid': formErrors.dept }">
-                    <!-- <div *ngIf="staffDetailsForm.controls.dept.errors" class="invalid-feedback">
-                            <p *ngIf="staffDetailsForm.controls.dept.errors.required">Department is required</p>
-                          </div> -->
-                    <option value="">Select</option>
+                  <select formControlName="Department" class="form-control input-sm"
+                    (change)="GetVendorTechSpec($event)" (blur)="LogValidationErrors()"
+                    [ngClass]="{ 'is-invalid': formErrors.Department }">
+                    <option [ngValue]="null">Select</option>
                     <option *ngFor="let option of deptList" value={{option.DeptCode}}>
                       {{option.DeptName}}
                     </option>
                   </select>
                 </span>
               </div>
+
               <div class="col-lg-4 col-md-4">
                 <label class="text">Machine Name <span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="techSpec" class="form-control input-sm" (change)="specChange($event)"
-                    (blur)="LogValidationErrors()" [attr.disabled]="isDisable===true ? 'true' : null"
-                    [ngClass]="{ 'is-invalid': formErrors.techSpec }">
-                    <option value="" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
+                  <select formControlName="VendorTechConfigID" class="form-control input-sm"
+                    (change)="specChange($event)" (blur)="LogValidationErrors()"
+                    [ngClass]="{ 'is-invalid': formErrors.VendorTechConfigID }">
+                    <option [ngValue]="null" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
                     <option *ngFor="let option of techSpecList" [attr.data-line]="option.isLine"
                       [attr.data-efficiency]="option.isEfficiency" [attr.data-maxnumber]="option.Max_Allowed"
                       value={{option.VendorConfigID}}>
@@ -234,29 +145,36 @@
                   </select>
                 </span>
               </div>
+
               <div class="col-lg-2 col-md-2">
                 <label class="text">Unit Count<span class="error-label">*</span></label>
-                <select formControlName="unitCount" class="form-control input-sm" (blur)="LogValidationErrors()"
-                  [ngClass]="{ 'is-invalid': formErrors.unitCount }">
-                  <option value="">Select</option>
+                <select formControlName="UnitCount" class="form-control input-sm" (blur)="LogValidationErrors()"
+                  [ngClass]="{ 'is-invalid': formErrors.UnitCount }">
+                  <option [ngValue]="null">Select</option>
                   <option *ngFor="let option of unitCountList(200); let i = index;" value={{i+1}}>{{i+1}}</option>
                 </select>
               </div>
+
               <div class="col-lg-2 col-md-2">
                 <label class="text">Efficiency</label>
                 <span>
-                  <input type="text" class="form-control input-sm" /></span>
+                  <input type="text" formControlName="Efficiency" class="form-control input-sm" />
+                </span>
               </div>
+
               <div class="col-lg-1 col-md-1">
-                <button type="button" class="btn btn-primary" (click)="AddMachine()"
+                <button type="submit" class="btn btn-primary" (click)="AddMachine()"
                   style="font-size: 12px;margin-top: 1.7rem;">
                   <i class="fa fa-plus"></i>
                 </button>
               </div>
+
             </div>
           </div>
+
           <div class="form-group col-lg-12 col-md-12">
-            <table class="table table-striped table-bordered table-hover table-small hide">
+            <table class="table table-striped table-bordered table-hover table-small"
+              [hidden]="vendorTechDefault.VendorTechDetails === null && vendorTechDefault.VendorTechDetails.length === 0">
               <thead>
                 <tr>
                   <th>Machine Type</th>
@@ -267,7 +185,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let m of machineItems;">
+                <tr *ngFor="let m of vendorTechDefault.VendorTechDetails;">
                   <td>{{m.MachineType}}</td>
                   <td>{{m.MachineName}}</td>
                   <td>{{m.Efficiency}}</td>
@@ -281,15 +199,14 @@
               </tbody>
             </table>
           </div>
-
-
-          <!-- Modal footer -->
-          <div class="modal-footer col-md-12  page-footer">
-            <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
-              data-dismiss="modal">Cancel</button>
-          </div>
         </form>
+
+        <!-- Modal footer -->
+        <div class="modal-footer col-md-12  page-footer">
+          <button type="button" class="mr-3 btn btn-primary">Save</button>
+          <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
+            data-dismiss="modal">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -316,7 +233,7 @@
 </div>
 
 <!-- Hidden button to open alert modal -->
-<button #modalOpenButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+<button #alertModalButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
   data-toggle="modal" style="display:none;">
 </button>
 
@@ -326,7 +243,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{modalBody}}</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
         <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
       </div>
     </div>
