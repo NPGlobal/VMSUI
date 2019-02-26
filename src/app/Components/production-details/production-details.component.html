@@ -1,6 +1,6 @@
-<div class="col-lg-12 col-sm-12 col-md-12">
-    <i class="fa fa-search toRight"></i>&nbsp;
-    <input type="search" placeholder="Search" class="right" (keyup)="SearchProductionDetails($event.target.value)">&nbsp;&nbsp;
+<div class="col-lg-12 col-sm-12 col-md-12 row">
+  <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchProductionDetails($event.target.value)"
+    name="search">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
     <i class="fa fa-plus"></i>
@@ -25,7 +25,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td></tr>
+      <tr>
+        <td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td>
+      </tr>
       <ng-container *ngFor="let vendor of pagedItems;index as i;">
         <div class="panel-group"></div>
         <tr>
@@ -67,8 +69,8 @@
               <tbody>
                 <tr>
                   <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
-                      {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
-                      {{vendor.Address3}}
+                    {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
+                    {{vendor.Address3}}
                   </td>
                   <td>{{vendor.Phone}}</td>
                   <td>{{vendor.StateCode}}</td>
@@ -184,19 +186,19 @@
                   <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors}"
                     *ngIf="(ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors">
                     </span> -->
-                </div>
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Address Line 2</label>
-                  <span><input type="text" name="address2" formControlName="address2" maxlength="49"
-                      class="form-control input-sm" /></span>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Address Line 3</label>
-                  <span><input type="text" name="address3" formControlName="address3" maxlength="49"
-                      class="form-control input-sm" /></span>
-                </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 2</label>
+                <span><input type="text" name="address2" formControlName="address2" maxlength="49"
+                    class="form-control input-sm" /></span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 3</label>
+                <span><input type="text" name="address3" formControlName="address3" maxlength="49"
+                    class="form-control input-sm" /></span>
               </div>
             </div>
+          </div>
 
             <div class="form-group col-lg-12">
               <div class="row">
@@ -307,8 +309,8 @@
 
           <!-- Modal footer -->
           <div class="modal-footer col-md-12  page-footer">
-            <button type="submit" class="mr-3 btn btn-danger">Save</button>
-            <button #modalCloseButton type="button" class="btn" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()" data-dismiss="modal">Cancel</button>
           </div>
         </form>
       </div>

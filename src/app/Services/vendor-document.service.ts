@@ -13,8 +13,9 @@ export class VendorDocumentService {
   // origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
-  GetVendorDocumentsByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorDoc/GetVendorDocumentsByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
+  GetVendorDocumentsByVendorCode(vcode: string, pageIndex: number, Limit: number, searchText?: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorDoc/GetVendorDocumentsByVendorCode/10/'
+    + vcode + '/' + pageIndex + '/' + Limit + '/' + searchText;
     return this._http.get<any>(apiUrl);
   }
  // Get Vendor Business Information for Edit

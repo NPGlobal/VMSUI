@@ -263,7 +263,6 @@ export class ProductionDetailsComponent implements OnInit {
   }
 
   GetDivisions() {
-    // debugger;
     this._mddService.GetMasterDataDetails('Division', '-1').subscribe((result) => {
       this.divisionList = result.data.Table;
     });
@@ -283,6 +282,7 @@ export class ProductionDetailsComponent implements OnInit {
     const el = this.modalOpenButton.nativeElement as HTMLElement;
     this.submitted = true;
     if (this.ProductionDetailsForm.invalid) {
+      this.LogValidationErrors();
       return;
     }
     this.VendorProduction = new VendorProduction();

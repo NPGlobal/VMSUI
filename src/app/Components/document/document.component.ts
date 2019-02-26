@@ -22,7 +22,7 @@ export class DocumentComponent implements OnInit {
   submitted = false;
   docDetailsForm: FormGroup;
   vendorDocument: VendorDocument;
-
+  searchText = '';
   vendDocList: VendorDocument[];
 
   // paging variables
@@ -66,7 +66,8 @@ export class DocumentComponent implements OnInit {
 
   GetVendorDocuments(index: number) {
     this.currentPage = index;
-    this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(result => {
+    this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
+    .subscribe(result => {
       if (result.data.VendorDoc.length > 0) {
         this.vendDocList = result.data.VendorDoc;
         this.totalItems = result.data.VendorDocCount[0].TotalVendors;
@@ -176,6 +177,11 @@ export class DocumentComponent implements OnInit {
       // FileName: [vDoc.FileName, Validators.required]
     });
     this.GetDocument();
+  }
+
+  SearchDocuments(searchText = '') {
+    this.searchText = searchText;
+    this.GetVendorDocuments(1);
   }
   // GetDocDetails(vDoc: VendorDocument) {
   //   const x =  vDoc.VendorDocDetailsID;

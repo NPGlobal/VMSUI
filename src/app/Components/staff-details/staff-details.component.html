@@ -1,4 +1,5 @@
-<div class="col-lg-12 col-sm-12 col-md-12">
+<div class="col-lg-12 col-sm-12 col-md-12 row">
+    <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchStaffDetails($event.target.value)" name="search">
     <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
         <i class="fa fa-plus"></i>
@@ -93,7 +94,8 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Designation <span class="error-label">*</span></label>
                     <span>
-                      <select formControlName="designation" class="form-control input-sm" [ngClass]="{ 'is-invalid': formErrors.designation }">
+                      <select formControlName="designation" class="form-control input-sm" (change)="GetVendorPriority($event)"
+                      [ngClass]="{ 'is-invalid': formErrors.designation }">
                         <option [ngValue]="null">Select Designation</option>
                         <option *ngFor="let option of designationList" 
                         [attr.data-maxnumber]="option.Max_Allowed"
@@ -145,8 +147,19 @@
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
-                      <span><input type="text" formControlName="priority" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid': formErrors.priority }" /></span>
+                      <!-- <span><input type="text" formControlName="priority" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid': formErrors.priority }" /></span> -->
+                        <span>
+                          <select formControlName="priority" class="form-control input-sm"
+                          [ngClass]="{ 'is-invalid': formErrors.priority }">
+                            <option [ngValue]="null">Select Priority</option>
+                            <option *ngFor="let option of priorityList" 
+                            [attr.data-maxnumber]="option.Max_Allowed"
+                            value={{option.VendorConfigID}}>
+                              {{option.Max_Allowed}}
+                            </option>
+                          </select>
+                        </span>
                         <span [ngClass]='error-label' *ngIf="formErrors.priority">{{formErrors.priority}}</span>                     
                   </div>
               </div>

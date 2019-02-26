@@ -10,6 +10,7 @@ import { Vendor } from 'src/app/Models/vendor';
 import { load } from '@angular/core/src/render3';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { and } from '@angular/router/src/utils/collection';
+import { VendorTechDefault } from 'src/app/Models/vendorTechDefault';
 declare var $: any;
 
 @Component({
@@ -25,6 +26,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   techDetailsForm: FormGroup;
   deptList: any[];
   techSpecList: any[];
+  techDefault: VendorTechDefault[];
   status = true;
   submitted = false;
   totalItems: number;
@@ -103,15 +105,21 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
 
   GetVendorTech(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).subscribe(data => {
-      this.vendortechList = data.VendorTech;
-      this.totalItems = data.VendorTechCount[0].TotalVendors;
+    this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).
+    subscribe(result => {
+      // tslint:disable-next-line:no-debugger
+      // this.vendortechList = data.VendorTech;
+       this.totalItems = result.TotalCount;
+      // this.totalItems = 100;
+       this.techDefault  = result.data;
       this.GetVendorsTechList();
     });
   }
   GetVendorsTechList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.vendortechList;
+    // tslint:disable-next-line:no-debugger
+    debugger;
+    this.pagedItems = this.techDefault;
   }
   GetVendorDepartments() {
     this._vendorService.GetVendorDeptTech('10', '-1', this.vendorcode, 'Department').subscribe((data) => {

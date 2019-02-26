@@ -16,12 +16,15 @@ export class StaffDetailsComponent implements OnInit {
   NumericPattern = '^[0-9]*$';
   deptList: any[];
   designationList: any[];
+  priorityList: any[];
+  priorityListTemp: any[];
   submitted = false;
   vendorstaffList: VendorStaff[]; // For added Staff List
   VendorStaff: VendorStaff; // For form value save and update
   editedVendorStaff: any; // For Check of Vendor Staff Edited Value
   staffDetailsForm: FormGroup;
   ActionMessage: string;
+  MaxPriority: number;
   @ViewChild('modalOpenMsgButton')
   modalOpenMsgButton: ElementRef;
   el: any;
@@ -34,6 +37,7 @@ export class StaffDetailsComponent implements OnInit {
   pagedItems: any[];
 
   _originalValue: string;
+  searchText = '';
 
   constructor(
     private _route: ActivatedRoute,
@@ -72,6 +76,9 @@ export class StaffDetailsComponent implements OnInit {
     'ContactPhone': '',
     'priority': ''
   };
+  PriorityList(n: number): any[] {
+    return Array(n);
+  }
   ngOnInit() {
     this.openModal();
     this.el = this.modalOpenMsgButton.nativeElement as HTMLElement;
@@ -83,6 +90,7 @@ export class StaffDetailsComponent implements OnInit {
     this.staffDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors();
     });
+    this.GetVendorStaffs(this.currentPage);
   }
   logValidationErrors(group: FormGroup = this.staffDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
@@ -146,7 +154,7 @@ export class StaffDetailsComponent implements OnInit {
   }
   GetVendorStaffs(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).subscribe(data => {
       if (data.VendorStaff.length > 0) {
         this.vendorstaffList = data.VendorStaff;
         this.totalItems = data.VendorStaffCount[0].TotalVendors;
@@ -174,6 +182,7 @@ export class StaffDetailsComponent implements OnInit {
       this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
         .subscribe((data) => {
           this.designationList = data;
+       //   this.MaxPriority = data.max_allowed;
           if (this.staffDetailsForm.get('designation').value !== null) {
             const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
             if (strArray === undefined) {
@@ -183,14 +192,20 @@ export class StaffDetailsComponent implements OnInit {
         });
     }
   }
-
-  // showPopUpMessage(msg: string) {
-  //   // alert('There is nothing to change for save.');
-  //   this.ActionMessage = msg;
-  //   const el = this.modalOpenMsgButton.nativeElement as HTMLElement;
-  //   // $('#modalOpenMsgButton').click();
-  //   el.click();
-  // }
+  GetVendorPriority($event) {
+    this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
+    .subscribe((data) => {
+      this.priorityListTemp = data;
+      this.priorityList = this.priorityListTemp.filter(book => book.VendorConfigID === this.staffDetailsForm.get('designation').value);
+     // this.MaxPriority = data.max_allowed;
+      if (this.staffDetailsForm.get('priority').value !== null) {
+        const strArray = this.priorityList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('priority').value);
+        if (strArray === undefined) {
+          this.staffDetailsForm.controls.priority.patchValue(null);
+        }
+      }
+    });
+  }
 
   SaveStaffDetails() {
     this.submitted = true;
@@ -282,5 +297,10 @@ export class StaffDetailsComponent implements OnInit {
     vobj.Status = 'D';
     this.VendorStaff = vobj;
     this.InitializeFormControls();
+  }
+
+  SearchStaffDetails(searchText = '') {
+    this.searchText = searchText;
+    this.GetVendorStaffs(1);
   }
 }
