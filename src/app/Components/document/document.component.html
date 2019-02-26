@@ -1,4 +1,6 @@
-<div class="col-lg-12 col-sm-12 col-md-12">
+<div class="col-lg-12 col-sm-12 col-md-12 row">
+  <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchDocuments($event.target.value)"
+    name="search">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
     <i class="fa fa-plus"></i>
@@ -18,16 +20,18 @@
       </tr>
     </thead>
     <tbody>
-        <tr><td colspan="4" *ngIf="pagedItems.length === 0">No Record Found</td></tr>
-        <tr *ngFor="let vendor of pagedItems;index as i;">
-          <td>{{vendor.VendAction}}</td>
-          <td>{{vendor.VendDoc}}</td>
-          <td>{{vendor.FileName}}</td>
-          <td>
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetDocDetails(vendor)" 
-          data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
-          </td>
-        </tr>
+      <tr>
+        <td colspan="4" *ngIf="pagedItems.length === 0">No Record Found</td>
+      </tr>
+      <tr *ngFor="let vendor of pagedItems;index as i;">
+        <td>{{vendor.VendAction}}</td>
+        <td>{{vendor.VendDoc}}</td>
+        <td>{{vendor.FileName}}</td>
+        <td>
+          <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetDocDetails(vendor)"
+            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+        </td>
+      </tr>
     </tbody>
   </table>
   <nav aria-label="..." class="" *ngIf="totalItems!==0">
@@ -108,7 +112,8 @@
                   <br />
                 </span> -->
                 <span>
-                  <input class="form-control input-sm" type="file" formControlName="FileName" (change)="OnFileChange($event)"/>
+                  <input class="form-control input-sm" type="file" formControlName="FileName"
+                    (change)="OnFileChange($event)" />
                   <br />
                 </span>
               </div>

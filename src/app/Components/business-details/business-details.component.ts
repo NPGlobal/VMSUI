@@ -36,6 +36,7 @@ export class BusinessDetailsComponent implements OnInit {
   pageSize = 20;
   pager: any = {};
   pagedItems: any[] = [];
+  searchText = '';
 
   constructor(
     private _route: ActivatedRoute,
@@ -161,7 +162,8 @@ export class BusinessDetailsComponent implements OnInit {
 
   GetVendorBusiness(index: number) {
     this.currentPage = index;
-    this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+    this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
+    .subscribe(data => {
       if (data.VendorBusiness.length > 0) {
         this.businessList = data.VendorBusiness;
         this.totalItems = data.VendorBusinessCount[0].TotalVendors;
@@ -289,5 +291,10 @@ export class BusinessDetailsComponent implements OnInit {
     vobj.Status = 'D';
     this.businessObj = vobj;
     this.InitializeFormControls();
+  }
+
+  SearchBusinessDetails(searchText = '') {
+    this.searchText = searchText;
+    this.GetVendorBusiness(1);
   }
 }

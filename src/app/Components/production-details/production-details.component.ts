@@ -67,7 +67,6 @@ export class ProductionDetailsComponent implements OnInit {
     .subscribe(result => {
       if (result.data.Table.length > 0) {
         this.vendorProductionList = result.data.Table;
-        console.log(this.vendorProductionList);
         this.totalItems = result.data.Table1.TotalVendors;
         this.GetVendorsProductionList();
       } else {
@@ -84,7 +83,6 @@ export class ProductionDetailsComponent implements OnInit {
   GetVendorsProductionList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendorProductionList;
-    // console.log(this.pagedItems);
   }
   InitializeFormControls() {
     this.ProductionDetailsForm = this._fb.group({
@@ -163,7 +161,6 @@ export class ProductionDetailsComponent implements OnInit {
   }
 
   GetDivisions() {
-    // debugger;
     this._mddService.GetMasterDataDetails('Division', '-1').subscribe((result) => {
       this.divisionList = result.data.Table;
     });
@@ -208,7 +205,6 @@ export class ProductionDetailsComponent implements OnInit {
     this.VendorProduction.CreatedBy = 999999;
     this.VendorProduction.Action = this.action;
 
-    console.log(JSON.stringify(this.VendorProduction));
     this._vendorService.SaveProductionInfo(this.VendorProduction).subscribe((result) => {
        if (result.data.Table[0].Result === 0) {
        this.VendorProduction = new VendorProduction();
@@ -254,7 +250,6 @@ this.isDisable = true;
         remarks: [result.data.Table[0].Remarks]
       });
       this.GetDepartment();
-     // this.GetStateList();
     });
   }
 }

@@ -24,8 +24,9 @@ export class VendorBusinessService {
     return this._http.get<any>(apiUrl);
   }
   // Get all Staff of a Vendor
-  GetVendorBusinessByVendorCode(vcode: string, pageIndex: number, Limit: number): Observable<any> {
-    const apiUrl = this.origin + 'api/VendorBusiness/GetVendorBusinessByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
+  GetVendorBusinessByVendorCode(vcode: string, pageIndex: number, Limit: number, searchText?: string): Observable<any> {
+    const apiUrl = this.origin + 'api/VendorBusiness/GetVendorBusinessByVendorCode/10/'
+    + vcode + '/' + pageIndex + '/' + Limit + '/' + searchText;
     return this._http.get<any>(apiUrl);
   }
 }

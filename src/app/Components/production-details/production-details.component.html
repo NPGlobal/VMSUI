@@ -1,6 +1,6 @@
-<div class="col-lg-12 col-sm-12 col-md-12">
-    <i class="fa fa-search toRight"></i>&nbsp;
-    <input type="search" placeholder="Search" class="right" (keyup)="SearchProductionDetails($event.target.value)">&nbsp;&nbsp;
+<div class="col-lg-12 col-sm-12 col-md-12 row">
+  <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchProductionDetails($event.target.value)"
+    name="search">
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
     <i class="fa fa-plus"></i>
@@ -25,7 +25,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td></tr>
+      <tr>
+        <td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td>
+      </tr>
       <ng-container *ngFor="let vendor of pagedItems;index as i;">
         <div class="panel-group"></div>
         <tr>
@@ -64,8 +66,8 @@
               <tbody>
                 <tr>
                   <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
-                      {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
-                      {{vendor.Address3}}
+                    {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
+                    {{vendor.Address3}}
                   </td>
                   <td>{{vendor.Phone}}</td>
                   <td>{{vendor.StateCode}}</td>
@@ -106,9 +108,9 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Division<span class="error-label">*</span></label>
                 <span>
-                  <select name="Division" [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division" class="form-control input-sm"
-                    (change)="GetDepartment($event)" >
-                    
+                  <select name="Division" [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division"
+                    class="form-control input-sm" (change)="GetDepartment($event)">
+
                     <option value="">Select Division</option>
                     <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
                       {{option.MDDName}}
@@ -119,7 +121,8 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Department<span class="error-label">*</span></label>
                 <span>
-                  <select name="Department" formControlName="Department" class="form-control input-sm" [attr.disabled]="isDisable===true ? 'true' : null"
+                  <select name="Department" formControlName="Department" class="form-control input-sm"
+                    [attr.disabled]="isDisable===true ? 'true' : null"
                     [ngClass]="{ 'is-invalid': (ProductionDetailsForm.controls.Department.touched || submitted) && ProductionDetailsForm.controls.Department.errors }">
                     <option value="">Select Department</option>
                     <option *ngFor="let option of departmentList" value={{option.MDDCode}}>
@@ -135,36 +138,36 @@
           <hr>
           <!-- <fieldset>
             <legend>Production Unit/s:</legend> -->
-            <div class="form-group col-lg-12">
-              <div class="row">
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Approved Production Units<span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" name="approvedProductionUnits" formControlName="approvedProductionUnits"
-                      class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.approvedProductionUnits.touched ||
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Approved Production Units<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="approvedProductionUnits" formControlName="approvedProductionUnits"
+                    class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.approvedProductionUnits.touched ||
                        ProductionDetailsForm.controls.approvedProductionUnits.dirty || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.errors }" />
-                  </span>
-                  <span
-                    [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.approvedProductionUnits.dirty || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.hasError('pattern')}"
-                    *ngIf="(ProductionDetailsForm.controls.approvedProductionUnits.dirty || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.hasError('pattern')">
-                    Only Numbers Allowed
-                  </span>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Sub Contracting Unit Name<span class="error-label">*</span></label>
-                  <span><input type="text" name="subContractingUnitName" formControlName="subContractingUnitName" maxlength="254"
-                      class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.subContractingUnitName.touched || submitted) && ProductionDetailsForm.get('subContractingUnitName').invalid }" /></span>
-                  <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.subContractingUnitName.touched || submitted) &&  ProductionDetailsForm.get('subContractingUnitName').invalid }"
+                </span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.approvedProductionUnits.dirty || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.hasError('pattern')}"
+                  *ngIf="(ProductionDetailsForm.controls.approvedProductionUnits.dirty || submitted) && ProductionDetailsForm.controls.approvedProductionUnits.hasError('pattern')">
+                  Only Numbers Allowed
+                </span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Sub Contracting Unit Name<span class="error-label">*</span></label>
+                <span><input type="text" name="subContractingUnitName" formControlName="subContractingUnitName"
+                    maxlength="254" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.subContractingUnitName.touched || submitted) && ProductionDetailsForm.get('subContractingUnitName').invalid }" /></span>
+                <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.subContractingUnitName.touched || submitted) &&  ProductionDetailsForm.get('subContractingUnitName').invalid }"
                         *ngIf="(ProductionDetailsForm.controls.subContractingUnitName.touched || submitted) && ProductionDetailsForm.get('subContractingUnitName').invalid ">
                          </span> -->
-                </div>
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Nature of Sub Contracting Unit<span class="error-label">*</span></label>
-                  <span><input type="text" name="natureOfSubContractingUnit" maxlength="99"
-                      formControlName="natureOfSubContractingUnit" class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.natureOfSubContractingUnit.touched || submitted) && ProductionDetailsForm.get('natureOfSubContractingUnit').invalid }" /></span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Nature of Sub Contracting Unit<span class="error-label">*</span></label>
+                <span><input type="text" name="natureOfSubContractingUnit" maxlength="99"
+                    formControlName="natureOfSubContractingUnit" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.natureOfSubContractingUnit.touched || submitted) && ProductionDetailsForm.get('natureOfSubContractingUnit').invalid }" /></span>
               </div>
             </div>
           </div>
@@ -174,66 +177,70 @@
           <!-- For Address -->
           <!-- <fieldset>
             <legend>Sub Contracting Unit Address:</legend> -->
-            <div class="form-group col-lg-12">
-              <div class="row">
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Address Line 1<span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" name="address1" formControlName="address1" class="form-control input-sm" maxlength="49"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors }" />
-                  </span>
-                  <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors}"
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 1<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="address1" formControlName="address1" class="form-control input-sm"
+                    maxlength="49"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors }" />
+                </span>
+                <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors}"
                     *ngIf="(ProductionDetailsForm.controls.address1.touched || submitted) && ProductionDetailsForm.controls.address1.errors">
                     </span> -->
-                </div>
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Address Line 2</label>
-                  <span><input type="text" name="address2" formControlName="address2" maxlength="49"
-                      class="form-control input-sm" /></span>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                  <label class="text">Address Line 3</label>
-                  <span><input type="text" name="address3" formControlName="address3" maxlength="49"
-                      class="form-control input-sm" /></span>
-                </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 2</label>
+                <span><input type="text" name="address2" formControlName="address2" maxlength="49"
+                    class="form-control input-sm" /></span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 3</label>
+                <span><input type="text" name="address3" formControlName="address3" maxlength="49"
+                    class="form-control input-sm" /></span>
               </div>
             </div>
+          </div>
 
-            <div class="form-group col-lg-12">
-              <div class="row">
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">Phone<span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" name="Phone" formControlName="Phone" class="form-control input-sm"  maxlength="10"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.Phone.touched || submitted) && ProductionDetailsForm.controls.Phone.errors }" />
-                  </span>
-                    <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.Phone.dirty || submitted) && ProductionDetailsForm.controls.Phone.hasError('pattern')}"
-                    *ngIf="(ProductionDetailsForm.controls.Phone.dirty || submitted) && ProductionDetailsForm.controls.Phone.hasError('pattern')">
-                    Please Enter a Valid Phone No.</span>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">State<span class="error-label">*</span></label>
-                  <span> <select name="StateCode" formControlName="StateCode" class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.StateCode.touched || submitted) && ProductionDetailsForm.get('StateCode').invalid }">
-                      <option value="">Select</option>
-                      <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
-                    </select>
-                  </span>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">City<span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" name="city" formControlName="city" class="form-control input-sm" maxlength="49"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.city.touched || submitted) && ProductionDetailsForm.controls.city.errors }" />
-                  </span>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">PinCode<span class="error-label">*</span></label>
-                  <span><input type="text" name="pincode" formControlName="pincode" class="form-control input-sm" maxlength="6"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.pincode.touched || submitted) && ProductionDetailsForm.get('pincode').invalid }" /></span>
-                      <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.pincode.dirty || submitted) && ProductionDetailsForm.controls.pincode.hasError('pattern')}"
-                      *ngIf="(ProductionDetailsForm.controls.pincode.touched || submitted) && ProductionDetailsForm.controls.pincode.hasError('pattern')">
-                      Please Enter a Valid PinCode</span>
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Phone<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="Phone" formControlName="Phone" class="form-control input-sm" maxlength="10"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.Phone.touched || submitted) && ProductionDetailsForm.controls.Phone.errors }" />
+                </span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.Phone.dirty || submitted) && ProductionDetailsForm.controls.Phone.hasError('pattern')}"
+                  *ngIf="(ProductionDetailsForm.controls.Phone.dirty || submitted) && ProductionDetailsForm.controls.Phone.hasError('pattern')">
+                  Please Enter a Valid Phone No.</span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">State<span class="error-label">*</span></label>
+                <span> <select name="StateCode" formControlName="StateCode" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.StateCode.touched || submitted) && ProductionDetailsForm.get('StateCode').invalid }">
+                    <option value="">Select</option>
+                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
+                  </select>
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">City<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="city" formControlName="city" class="form-control input-sm" maxlength="49"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.city.touched || submitted) && ProductionDetailsForm.controls.city.errors }" />
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">PinCode<span class="error-label">*</span></label>
+                <span><input type="text" name="pincode" formControlName="pincode" class="form-control input-sm"
+                    maxlength="6"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.pincode.touched || submitted) && ProductionDetailsForm.get('pincode').invalid }" /></span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.pincode.dirty || submitted) && ProductionDetailsForm.controls.pincode.hasError('pattern')}"
+                  *ngIf="(ProductionDetailsForm.controls.pincode.touched || submitted) && ProductionDetailsForm.controls.pincode.hasError('pattern')">
+                  Please Enter a Valid PinCode</span>
               </div>
             </div>
           </div>
@@ -242,51 +249,51 @@
           <hr>
           <!-- <fieldset>
             <legend>Capacity allocated to Fabindia :</legend> -->
-            <div class="form-group col-lg-12">
-              <div class="row">
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">Monthly Capacity<span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" formControlName="monthlyCapacity" class="form-control input-sm" maxlength="13"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.monthlyCapacity.touched || submitted) && ProductionDetailsForm.controls.monthlyCapacity.errors }" />
-                  </span>
-                  <span
-                    [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.monthlyCapacity.dirty || submitted) && ProductionDetailsForm.get('monthlyCapacity').hasError('pattern')}"
-                    *ngIf="(ProductionDetailsForm.controls.monthlyCapacity.dirty || submitted) && ProductionDetailsForm.controls.monthlyCapacity.hasError('pattern')">
-                    Only Numbers/Decimals Allowed
-                  </span>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">Minimal Capacity<span class="error-label">*</span></label>
-                  <span><input type="text" formControlName="minimalCapacity" class="form-control input-sm" maxlength="13"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.minimalCapacity.touched || submitted) && ProductionDetailsForm.get('minimalCapacity').invalid }" /></span>
-                  <span
-                    [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) &&  ProductionDetailsForm.get('minimalCapacity').hasError('pattern') }"
-                    *ngIf="(ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) && ProductionDetailsForm.get('minimalCapacity').hasError('pattern') ">
-                    Only Numbers/Decimals Allowed
-                  </span>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">Lean Months<span class="error-label">*</span></label>
-                  <span>
-                    <input type="text" formControlName="leanMonths" class="form-control input-sm"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.leanMonths.touched || submitted) && ProductionDetailsForm.controls.leanMonths.errors }" />
-                  </span>
-                  <span
-                    [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.leanMonths.dirty || submitted) && ProductionDetailsForm.get('leanMonths').hasError('pattern')}"
-                    *ngIf="(ProductionDetailsForm.controls.leanMonths.dirty || submitted) && ProductionDetailsForm.controls.leanMonths.hasError('pattern')">
-                    Only Numbers Allowed
-                  </span>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                  <label class="text">Lean Capacity<span class="error-label">*</span></label>
-                  <span><input type="text" formControlName="leanCapacity" class="form-control input-sm" maxlength="13"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.leanCapacity.touched || submitted) && ProductionDetailsForm.get('leanCapacity').invalid }" /></span>
-                  <span
-                    [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.leanCapacity.dirty || submitted) &&  ProductionDetailsForm.get('leanCapacity').hasError('pattern') }"
-                    *ngIf="(ProductionDetailsForm.controls.leanCapacity.dirty || submitted) && ProductionDetailsForm.get('leanCapacity').hasError('pattern')">
-                    Only Numbers/Decimals Allowed
-                  </span>
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Monthly Capacity<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" formControlName="monthlyCapacity" class="form-control input-sm" maxlength="13"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.monthlyCapacity.touched || submitted) && ProductionDetailsForm.controls.monthlyCapacity.errors }" />
+                </span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.monthlyCapacity.dirty || submitted) && ProductionDetailsForm.get('monthlyCapacity').hasError('pattern')}"
+                  *ngIf="(ProductionDetailsForm.controls.monthlyCapacity.dirty || submitted) && ProductionDetailsForm.controls.monthlyCapacity.hasError('pattern')">
+                  Only Numbers/Decimals Allowed
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Minimal Capacity<span class="error-label">*</span></label>
+                <span><input type="text" formControlName="minimalCapacity" class="form-control input-sm" maxlength="13"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.minimalCapacity.touched || submitted) && ProductionDetailsForm.get('minimalCapacity').invalid }" /></span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) &&  ProductionDetailsForm.get('minimalCapacity').hasError('pattern') }"
+                  *ngIf="(ProductionDetailsForm.controls.minimalCapacity.dirty || submitted) && ProductionDetailsForm.get('minimalCapacity').hasError('pattern') ">
+                  Only Numbers/Decimals Allowed
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Lean Months<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" formControlName="leanMonths" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.leanMonths.touched || submitted) && ProductionDetailsForm.controls.leanMonths.errors }" />
+                </span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.leanMonths.dirty || submitted) && ProductionDetailsForm.get('leanMonths').hasError('pattern')}"
+                  *ngIf="(ProductionDetailsForm.controls.leanMonths.dirty || submitted) && ProductionDetailsForm.controls.leanMonths.hasError('pattern')">
+                  Only Numbers Allowed
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Lean Capacity<span class="error-label">*</span></label>
+                <span><input type="text" formControlName="leanCapacity" class="form-control input-sm" maxlength="13"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.leanCapacity.touched || submitted) && ProductionDetailsForm.get('leanCapacity').invalid }" /></span>
+                <span
+                  [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.leanCapacity.dirty || submitted) &&  ProductionDetailsForm.get('leanCapacity').hasError('pattern') }"
+                  *ngIf="(ProductionDetailsForm.controls.leanCapacity.dirty || submitted) && ProductionDetailsForm.get('leanCapacity').hasError('pattern')">
+                  Only Numbers/Decimals Allowed
+                </span>
               </div>
             </div>
           </div>
@@ -296,15 +303,15 @@
           <hr>
           <!-- <fieldset>
             <legend>Remarks :</legend> -->
-            <div class="form-group col-lg-12">
-              <div class="row">
-                <div class="col-lg-12 col-md-12">
-                  <label class="text">Remarks</label>
-                  <span>
-                    <input type="text" formControlName="remarks" class="form-control input-sm" maxlength="511"
-                      [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.remarks.touched || submitted) && ProductionDetailsForm.controls.remarks.errors }" />
-                  </span>
-                  <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.remarks.touched || submitted) && ProductionDetailsForm.get('remarks').errors}"
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <label class="text">Remarks</label>
+                <span>
+                  <input type="text" formControlName="remarks" class="form-control input-sm" maxlength="511"
+                    [ngClass]="{ 'is-invalid err': (ProductionDetailsForm.controls.remarks.touched || submitted) && ProductionDetailsForm.controls.remarks.errors }" />
+                </span>
+                <!-- <span [ngClass]="{ 'error-label':(ProductionDetailsForm.controls.remarks.touched || submitted) && ProductionDetailsForm.get('remarks').errors}"
                     *ngIf="(ProductionDetailsForm.controls.remarks.touched || submitted) && ProductionDetailsForm.controls.remarks.errors">
                     </span> -->
               </div>

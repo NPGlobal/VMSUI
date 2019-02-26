@@ -34,6 +34,7 @@ export class StaffDetailsComponent implements OnInit {
   pagedItems: any[];
 
   _originalValue: string;
+  searchText = '';
 
   constructor(
     private _route: ActivatedRoute,
@@ -83,6 +84,7 @@ export class StaffDetailsComponent implements OnInit {
     this.staffDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors();
     });
+    this.GetVendorStaffs(this.currentPage);
   }
   logValidationErrors(group: FormGroup = this.staffDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
@@ -146,7 +148,7 @@ export class StaffDetailsComponent implements OnInit {
   }
   GetVendorStaffs(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize).subscribe(data => {
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).subscribe(data => {
       if (data.VendorStaff.length > 0) {
         this.vendorstaffList = data.VendorStaff;
         this.totalItems = data.VendorStaffCount[0].TotalVendors;
@@ -183,15 +185,6 @@ export class StaffDetailsComponent implements OnInit {
         });
     }
   }
-
-  // showPopUpMessage(msg: string) {
-  //   // alert('There is nothing to change for save.');
-  //   this.ActionMessage = msg;
-  //   const el = this.modalOpenMsgButton.nativeElement as HTMLElement;
-  //   // $('#modalOpenMsgButton').click();
-  //   el.click();
-  // }
-
   SaveStaffDetails() {
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {
@@ -282,5 +275,10 @@ export class StaffDetailsComponent implements OnInit {
     vobj.Status = 'D';
     this.VendorStaff = vobj;
     this.InitializeFormControls();
+  }
+
+  SearchStaffDetails(searchText = '') {
+    this.searchText = searchText;
+    this.GetVendorStaffs(1);
   }
 }
