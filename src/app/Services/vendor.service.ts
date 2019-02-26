@@ -145,4 +145,9 @@ export class VendorService {
     const apiUrl = this.origin + 'api/Vendor/GetAccountType';
     return this._http.get<any>(apiUrl);
   }
+
+  GetVendorExpertiseList() {
+    const apiUrl = this.origin + 'api/MasterDataDetails/GetMasterDataDetails/VendorExpe/-1';
+    return this._http.get<any>(apiUrl);
+  }
 }
