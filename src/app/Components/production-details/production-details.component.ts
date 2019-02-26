@@ -6,6 +6,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
 
 @Component({
@@ -281,6 +282,7 @@ export class ProductionDetailsComponent implements OnInit {
     const el = this.modalOpenButton.nativeElement as HTMLElement;
     this.submitted = true;
     if (this.ProductionDetailsForm.invalid) {
+      this.LogValidationErrors();
       return;
     }
     this.VendorProduction = new VendorProduction();
