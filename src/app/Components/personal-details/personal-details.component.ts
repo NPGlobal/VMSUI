@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Output, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
@@ -35,7 +35,7 @@ export class PersonalDetailsComponent implements OnInit {
   ReferenceVendorList: Vendor[] = [];
 
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
-  NumberPattern: '^[1-9][0-9]{5}$';
+  GSTPattern: string;
 
   Address: VendorAddress;
 
@@ -64,7 +64,7 @@ export class PersonalDetailsComponent implements OnInit {
       'required': '',
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Cannot contains special characters'
+      'pattern': 'Invalid GST number'
     },
     'GSTDate': {
       'required': ''
@@ -304,13 +304,13 @@ export class PersonalDetailsComponent implements OnInit {
 
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
-      if (StatusObj.Status === 0) {
-        this.PopUpMessage = 'Saved Succesfully!!';
+      if (StatusObj.data.Table[0].ResultCode === 0) {
+        this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
         this.alertButton.click();
         this.IsAddressSaved = true;
         this.Editvendor(this.VendorCode);
       } else {
-        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
         this.alertButton.click();
       }
     });
@@ -382,7 +382,7 @@ export class PersonalDetailsComponent implements OnInit {
         VendorName: [this.vendor.VendorName],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [
-          Validators.pattern(this.AlphanumericPattern), Validators.maxLength(10), Validators.minLength(10)]],
+          Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.maxLength(10), Validators.minLength(10)]],
         PHList: [[]],
         StoreList: [[]],
         SelectedPHStoreList: [[]],
@@ -668,7 +668,8 @@ export class PersonalDetailsComponent implements OnInit {
     if (!this.vendor.isGSTRegistered) {
       if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
-          [Validators.required, Validators.pattern(this.AlphanumericPattern), Validators.maxLength(15), Validators.minLength(15)]);
+          [Validators.required, this.GSTINValidator(),
+          Validators.maxLength(15), Validators.minLength(15)]);
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
 
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').setValidators([Validators.required]);
@@ -691,6 +692,35 @@ export class PersonalDetailsComponent implements OnInit {
 
   UnselectOptions(control: FormControl) {
     control.patchValue([]);
+  }
+
+
+  GSTINValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const status = this.CheckGSTFormat(control.value);
+      if (!status) {
+        return { 'pattern': status };
+      }
+      return null;
+    };
+  }
+
+  CheckGSTFormat(g: string): boolean {
+    let status = false;
+    const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+    if (g !== null && g.length >= 2) {
+      const firstTwo = g.substr(0, 2);
+      status = this.StateList.find(x => x.MDDShortName === firstTwo) !== undefined;
+    }
+
+    if (status && g !== null && g.length > 2) {
+      const lastcharacters = g.substr(2, g.length);
+      status = reg.test(lastcharacters);
+    } else {
+      status = false;
+    }
+
+    return status;
   }
 
   onChange(expertise: string, isChecked: boolean) {

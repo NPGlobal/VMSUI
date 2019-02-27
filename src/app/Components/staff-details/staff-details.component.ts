@@ -23,7 +23,7 @@ export class StaffDetailsComponent implements OnInit {
   editedVendorStaff: any; // For Check of Vendor Staff Edited Value
   staffDetailsForm: FormGroup;
   ActionMessage: string;
-  MaxPriority: number;
+  MaxPriority = 0;
   @ViewChild('modalOpenMsgButton')
   modalOpenMsgButton: ElementRef;
   el: any;
@@ -136,13 +136,13 @@ export class StaffDetailsComponent implements OnInit {
       remarks: [this.VendorStaff.Remarks]
     });
     this.staffDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors();
-    });
-  }
+      this.logValidationErrors(this.staffDetailsForm);
+    }); }
   openModal() {
     this.InitializeFormControls();
   }
   dismiss() {
+    this.MaxPriority = 0;
     this.submitted = false;
     this.CreateNewVendorStaff();
     this.InitializeFormControls();
@@ -175,7 +175,9 @@ export class StaffDetailsComponent implements OnInit {
   GetVendorDesignation() {
     if (this.staffDetailsForm.get('dept').value === null) {
       this.designationList = [];
+      this.MaxPriority = 0;
       this.staffDetailsForm.controls.designation.patchValue(null);
+      this.staffDetailsForm.controls.priority.patchValue(null);
     } else {
       this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
         .subscribe((data) => {
@@ -186,15 +188,21 @@ export class StaffDetailsComponent implements OnInit {
             if (strArray === undefined) {
               this.staffDetailsForm.controls.designation.patchValue(null);
             }
-          }
-        });
+             }
+             this.staffDetailsForm.controls.priority.patchValue(null);
+             this.MaxPriority = 0;
+          });
     }
   }
   GetVendorPriority() {
+    this.staffDetailsForm.controls.priority.patchValue(null);
+    if (this.staffDetailsForm.get('designation').value !== null) {
     // tslint:disable-next-line:triple-equals
     this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
     this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
-  }
+    } else {
+      this.priorityListTemp = [];
+      this.MaxPriority = 0; }}
   SaveStaffDetails() {
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {

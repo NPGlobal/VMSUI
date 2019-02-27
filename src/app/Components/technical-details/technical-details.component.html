@@ -182,6 +182,7 @@
                   <th>Machine Name</th>
                   <th>Efficiency</th>
                   <th>Unit Count</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -191,10 +192,12 @@
                   <td>{{m.MachineName}}</td>
                   <td>{{m.Efficiency}}</td>
                   <td>{{m.UnitCount}}</td>
+                  <td>{{m.Status}}</td>
                   <td>
-                    <a title="Edit Machine" href="javascript:void(0)"><i class="fa fa-edit"></i></a>
-                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)">
-                      <i class="fa fa-remove"></i></a>
+                    <!-- <a title="Edit Machine" href="javascript:void(0)"><i class="fa fa-edit"></i></a> -->
+                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2"
+                      (click)="DeleteMachine(m)"><i class="fa fa-remove"></i>
+                    </a>
                   </td>
                 </tr>
               </tbody>
