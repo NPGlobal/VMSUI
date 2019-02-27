@@ -151,7 +151,9 @@
                           <select formControlName="priority" class="form-control input-sm"
                           [ngClass]="{ 'is-invalid': formErrors.priority }">
                             <option [ngValue]="null">Select Priority</option>
+                            <ng-container *ngIf="MaxPriority>0">
                             <option *ngFor="let number of PriorityList(MaxPriority); let i = index;" value={{i+1}}>{{i+1}}</option>
+                          </ng-container>
                           </select>
                         </span>
                         <span [ngClass]='error-label' *ngIf="formErrors.priority">{{formErrors.priority}}</span>                     
