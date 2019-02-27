@@ -117,7 +117,7 @@
               <div class="form-group col-md-4">
                 <label class="text">Selected PH/Store </label>
                 <span>
-                  <select [ngClass]="{'is-invalid': !HasPHSelected}" formControlName="SelectedPHStoreList"
+                  <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}" formControlName="SelectedPHStoreList"
                     class="form-control input-sm" size="11" multiple="multiple">
                     <option *ngFor="let PHStore of SelectedPHStoreList" [value]="PHStore.OrgUnitCode">
                       {{ PHStore.OrgUnitName }}</option>
