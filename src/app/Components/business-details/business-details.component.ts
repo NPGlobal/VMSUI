@@ -90,9 +90,6 @@ export class BusinessDetailsComponent implements OnInit {
       this.GetVendorBusiness(this.currentPage);
     });
     this.GetDivisions();
-    this.businessDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors();
-    });
   }
 
   logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
@@ -145,6 +142,10 @@ export class BusinessDetailsComponent implements OnInit {
       Status: [this.businessObj.Status],
       remarks: ''
     });
+
+    this.businessDetailsForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.businessDetailsForm);
+    });
   }
 
   openModal() {
@@ -163,13 +164,13 @@ export class BusinessDetailsComponent implements OnInit {
   GetVendorBusiness(index: number) {
     this.currentPage = index;
     this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
-    .subscribe(data => {
-      if (data.VendorBusiness.length > 0) {
-        this.businessList = data.VendorBusiness;
-        this.totalItems = data.VendorBusinessCount[0].TotalVendors;
-        this.GetVendorsBusinessList();
-      }
-    });
+      .subscribe(data => {
+        if (data.VendorBusiness.length > 0) {
+          this.businessList = data.VendorBusiness;
+          this.totalItems = data.VendorBusinessCount[0].TotalVendors;
+          this.GetVendorsBusinessList();
+        }
+      });
   }
 
   GetVendorsBusinessList() {
@@ -276,8 +277,8 @@ export class BusinessDetailsComponent implements OnInit {
         }
       });
     } catch {
-          this.ActionMessage = 'There are some technical error. Please contact administrator.';
-          this.el.click();
+      this.ActionMessage = 'There are some technical error. Please contact administrator.';
+      this.el.click();
     }
   }
   GetBusinessDetails(vobj: VendorBusinessDetails) {
