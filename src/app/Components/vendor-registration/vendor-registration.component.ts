@@ -195,13 +195,13 @@ export class VendorRegistrationComponent implements OnInit {
 
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
       statusObj = result;
-      if (statusObj.Status === 0) {
+      if (statusObj.data.Table[0].ResultCode === 0) {
         el.click();
         this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
-      } else if (statusObj.Status === 2) {
+      } else if (statusObj.data.Table[0].ResultCode === 2) {
         this.CodeExists = true;
       } else {
-        this.PopUpMessage = 'We are facing some technical issues. Please contact administrator.';
+        this.PopUpMessage = statusObj.data.Table[0].ResultMessage;
         this.alertButton.click();
       }
     });
@@ -305,5 +305,4 @@ export class VendorRegistrationComponent implements OnInit {
   UnselectOptions(control: FormControl) {
     control.patchValue([]);
   }
-
 }
