@@ -749,6 +749,28 @@
                 </div>
             </div>
 
+              <!-- Top expertise and weekness -->
+
+             <!-- <div class="col" formGroupName="ExpertiseDetails">
+                <div class="content-heading">
+                    <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('ExpertiseDetails'))"
+                        class="glyphicon-expand">
+                        <span>{{personalDetailsForm.get('ExpertiseDetails').controls.IsExpanded.value ? '-' : '+'}}</span>
+                    </a>Vendor's Expertise & Weaknesses
+                </div>
+                <div class="slider"
+                    [ngClass]="{closed: !personalDetailsForm.get('ExpertiseDetails').controls.IsExpanded.value}">
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-22">
+                            <label formArrayName="ExpertiseList" *ngFor="let expertise of form.controls.ExpertiseList.controls; let i = index">
+                                <input type="checkbox" [formControlName]="i">
+                                {{orders[i].name}}
+                              </label>
+                        </div>                        
+                    </div> 
+                </div>
+            </div> -->
+
         </div>
         <hr>
 

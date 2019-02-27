@@ -24,4 +24,5 @@ export class VendorProduction {
     Remarks: string;
     Action: string;
     isDisable: boolean;
+    Status: boolean;
 }

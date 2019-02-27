@@ -94,7 +94,8 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Designation <span class="error-label">*</span></label>
                     <span>
-                      <select formControlName="designation" class="form-control input-sm" [ngClass]="{ 'is-invalid': formErrors.designation }">
+                     <select formControlName="designation" class="form-control input-sm" (change)="GetVendorPriority($event)"
+                      [ngClass]="{ 'is-invalid': formErrors.designation }">
                         <option [ngValue]="null">Select Designation</option>
                         <option *ngFor="let option of designationList" 
                         [attr.data-maxnumber]="option.Max_Allowed"
@@ -141,13 +142,19 @@
                 <span><input type="text" formControlName="remarks" class="form-control input-sm" /></span>
               </div>
             </div>
-
-            <div class="form-group col-lg-12">
+          <div class="form-group col-lg-12">
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
-                      <span><input type="text" formControlName="priority" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid': formErrors.priority }" /></span>
+                        <span>
+                          <select formControlName="priority" class="form-control input-sm"
+                          [ngClass]="{ 'is-invalid': formErrors.priority }">
+                            <option [ngValue]="null">Select Priority</option>
+                            <ng-container *ngIf="MaxPriority>0">
+                            <option *ngFor="let number of PriorityList(MaxPriority); let i = index;" value={{i+1}}>{{i+1}}</option>
+                          </ng-container>
+                          </select>
+                        </span>
                         <span [ngClass]='error-label' *ngIf="formErrors.priority">{{formErrors.priority}}</span>                     
                   </div>
               </div>

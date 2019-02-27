@@ -41,4 +41,5 @@ export class Vendor {
     PaymentTerms: string;
     isInsured: boolean;
     NameofInsuranceCompany: string;
+    VendorExpertise : string;
 }
