@@ -94,7 +94,7 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Designation <span class="error-label">*</span></label>
                     <span>
-                      <select formControlName="designation" class="form-control input-sm" (change)="GetVendorPriority($event)"
+                     <select formControlName="designation" class="form-control input-sm" (change)="GetVendorPriority($event)"
                       [ngClass]="{ 'is-invalid': formErrors.designation }">
                         <option [ngValue]="null">Select Designation</option>
                         <option *ngFor="let option of designationList" 
@@ -147,17 +147,11 @@
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
-                      <!-- <span><input type="text" formControlName="priority" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid': formErrors.priority }" /></span> -->
                         <span>
                           <select formControlName="priority" class="form-control input-sm"
                           [ngClass]="{ 'is-invalid': formErrors.priority }">
                             <option [ngValue]="null">Select Priority</option>
-                            <option *ngFor="let option of priorityList" 
-                            [attr.data-maxnumber]="option.Max_Allowed"
-                            value={{option.VendorConfigID}}>
-                              {{option.Max_Allowed}}
-                            </option>
+                            <option *ngFor="let number of PriorityList(MaxPriority); let i = index;" value={{i+1}}>{{i+1}}</option>
                           </select>
                         </span>
                         <span [ngClass]='error-label' *ngIf="formErrors.priority">{{formErrors.priority}}</span>                     
