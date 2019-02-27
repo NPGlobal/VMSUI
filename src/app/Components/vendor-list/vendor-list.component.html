@@ -28,8 +28,9 @@
       </thead>
     
     <tbody>
-      <tr style="background-color:#FFFFFF;">
-          <img style="margin-left: 120%;" *ngIf="loading" src="assets/images/giphy.gif"/>
+      <tr *ngIf="loading">
+        <td colspan="7">
+          <img src="assets/images/giphy.gif"/></td>
       </tr>
        <tr *ngFor="let vendor of pagedItems;index as i;">
         <!-- <td>{{vendor.RowNumber}}</td> -->
