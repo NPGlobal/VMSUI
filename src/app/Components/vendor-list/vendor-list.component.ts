@@ -19,6 +19,7 @@ export class VendorListComponent implements OnInit {
   pagedItems: any[];
   isSorted = false;
   searchText = '';
+  loading: boolean;
 
   constructor(private _http: HttpClient,
     private _vendorService: VendorService,
@@ -28,8 +29,10 @@ export class VendorListComponent implements OnInit {
     this.GetVendors(this.currentPage);
   }
   GetVendors(index: number) {
+    this.loading = true;
     this.currentPage = index;
     this._vendorService.GetVendors(this.currentPage, this.pageSize, this.searchText).subscribe(result => {
+      this.loading = false;
       this.vendors = result.data.Vendors;
       this.totalItems = result.data.VendorsCount[0].TotalVendors;
       this.GetVendorsList();
