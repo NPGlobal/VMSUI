@@ -5,4 +5,5 @@ export class MasterDataDetails {
     MDDName: string;
     CompanyCode: string;
     IsDeleted: string;
+    Checked: boolean;
 }

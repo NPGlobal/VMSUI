@@ -135,10 +135,14 @@ export class BusinessDetailsComponent implements OnInit {
       // ActualDPGrnQty: [this.businessObj.ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
       // ActualJWValueQty: [this.businessObj.ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
       // ActualJWGrnQty: [this.businessObj.ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPValueQty: [this.businessObj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWValueQty: [this.businessObj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWGrnQty: [this.businessObj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedDPValueQty: [this.businessObj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14),
+      Validators.pattern(this.NumericPattern)]],
+      ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14),
+      Validators.pattern(this.NumericPattern)]],
+      ProposedJWValueQty: [this.businessObj.ProposedJWValueQty,
+      [Validators.required, Validators.maxLength(14), Validators.pattern(this.NumericPattern)]],
+      ProposedJWGrnQty: [this.businessObj.ProposedJWGrnQty, [Validators.required,
+      Validators.maxLength(14), Validators.pattern(this.NumericPattern)]],
       Status: [this.businessObj.Status],
       remarks: ''
     });

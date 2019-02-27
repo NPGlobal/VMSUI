@@ -137,7 +137,8 @@ export class StaffDetailsComponent implements OnInit {
     });
     this.staffDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors(this.staffDetailsForm);
-    }); }
+    });
+  }
   openModal() {
     this.InitializeFormControls();
   }
@@ -152,15 +153,16 @@ export class StaffDetailsComponent implements OnInit {
   }
   GetVendorStaffs(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).subscribe(data => {
-      if (data.VendorStaff.length > 0) {
-        this.vendorstaffList = data.VendorStaff;
-        this.totalItems = data.VendorStaffCount[0].TotalVendors;
-        this.GetVendorsStaffList();
-      } else {
-        this.pagedItems = undefined;
-      }
-    });
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
+      .subscribe(data => {
+        if (data.VendorStaff.length > 0) {
+          this.vendorstaffList = data.VendorStaff;
+          this.totalItems = data.VendorStaffCount[0].TotalVendors;
+          this.GetVendorsStaffList();
+        } else {
+          this.pagedItems = undefined;
+        }
+      });
   }
   GetVendorsStaffList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
@@ -188,21 +190,23 @@ export class StaffDetailsComponent implements OnInit {
             if (strArray === undefined) {
               this.staffDetailsForm.controls.designation.patchValue(null);
             }
-             }
-             this.staffDetailsForm.controls.priority.patchValue(null);
-             this.MaxPriority = 0;
-          });
+          }
+          this.staffDetailsForm.controls.priority.patchValue(null);
+          this.MaxPriority = 0;
+        });
     }
   }
   GetVendorPriority() {
     this.staffDetailsForm.controls.priority.patchValue(null);
     if (this.staffDetailsForm.get('designation').value !== null) {
-    // tslint:disable-next-line:triple-equals
-    this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
-    this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
+      // tslint:disable-next-line:triple-equals
+      this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
+      this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
     } else {
       this.priorityListTemp = [];
-      this.MaxPriority = 0; }}
+      this.MaxPriority = 0;
+    }
+  }
   SaveStaffDetails() {
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {

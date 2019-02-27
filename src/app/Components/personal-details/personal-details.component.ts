@@ -33,7 +33,7 @@ export class PersonalDetailsComponent implements OnInit {
   SelectedPHStoreList: OrgUnit[] = [];
   SavedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
-
+  vendorExpe_MDDCode: string[] = [];
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   GSTPattern: string;
 
@@ -302,6 +302,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.IsSameForAll = this.personalDetailsForm.get('RegisteredOfficeAddress.IsSameForAll').value;
 
+    console.log(vendor);
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.data.Table[0].ResultCode === 0) {
@@ -327,6 +328,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
+      this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode.split(',');
 
       this.GetPHList();
 
@@ -442,9 +444,12 @@ export class PersonalDetailsComponent implements OnInit {
       ExpertiseDetails: this._fb.group({
         IsExpanded: false,
         ExpertiseList: new FormArray([]),
-        VendorWeaknesses: ['']
+        VendorWeaknesses: [this.vendor.Vendor_Weakness]
       })
     });
+
+    this.updateExpertise();
+
 
     this.personalDetailsForm.updateValueAndValidity();
 
@@ -742,5 +747,15 @@ export class PersonalDetailsComponent implements OnInit {
       ex += this.expertiseArray[i] + ',';
     }
     return ex + '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
+  }
+
+  updateExpertise() {
+    for (let i = 0; i < this.vendorExpe_MDDCode.length; i++) {
+      for (let j = 0; j < this.ExpertiseList.length; j++) {
+        if (this.vendorExpe_MDDCode[i] === this.ExpertiseList[j].MDDCode) {
+          this.ExpertiseList[j].Checked = true;
+        }
+      }
+    }
   }
 }

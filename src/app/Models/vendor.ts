@@ -42,5 +42,6 @@ export class Vendor {
     isInsured: boolean;
     NameofInsuranceCompany: string;
     VendorExpertise: string;
-    VendorWeaknesses: string;
+    Vendor_Weakness: string;
+    VendorExpe_MDDCode: string;
 }
