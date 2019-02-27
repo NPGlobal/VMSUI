@@ -15,8 +15,8 @@ export class VendorService {
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
-    const apiUrl = this.origin + 'api/Vendor/GetVendors/' + pageIndex + '/' + Limit + '/' + searchText;
-    return this._http.get<any>(apiUrl);
+     const apiUrl = this.origin + 'api/Vendor/GetVendors/' + pageIndex + '/' + Limit + '/' + searchText;
+     return this._http.get<any>(apiUrl);
   }
 
   GetVendorByCode(code: string): Observable<any> {

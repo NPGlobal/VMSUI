@@ -112,7 +112,7 @@ export class StaffDetailsComponent implements OnInit {
   CreateNewVendorStaff() {
     this.VendorStaff = new VendorStaff();
     // this.VendorStaff.VendorStaffConfigId = '';
-    // this.VendorStaff.VendorStaffDetailsId = '';
+    // this.VendorStaff.VendorStaffDetailsId = '';s
     // this.VendorStaff.dept = '';
     this.VendorStaff.designation = '';
     this.VendorStaff.VendorCode = '';
@@ -140,7 +140,8 @@ export class StaffDetailsComponent implements OnInit {
     });
     this.staffDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors(this.staffDetailsForm);
-    }); }
+    });
+  }
   openModal() {
     this.InitializeFormControls();
   }
@@ -190,15 +191,17 @@ export class StaffDetailsComponent implements OnInit {
             const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
             if (strArray === undefined) {
               this.staffDetailsForm.controls.designation.patchValue(null);
-            }
+            } else { this.GetVendorPriority(); }
              }
+             if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
              this.staffDetailsForm.controls.priority.patchValue(null);
-             this.MaxPriority = 0;
+             this.MaxPriority = 0; }
           });
     }
   }
   GetVendorPriority() {
-    this.staffDetailsForm.controls.priority.patchValue(null);
+    if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
+     this.staffDetailsForm.controls.priority.patchValue(null); }
     if (this.staffDetailsForm.get('designation').value !== null) {
     // tslint:disable-next-line:triple-equals
     this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
