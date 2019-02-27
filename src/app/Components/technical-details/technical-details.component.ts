@@ -31,6 +31,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   vendorTechDefault: VendorTechDefault;
   submitted = false;
   vendorcode: string;
+  maxTechLineNo: string;
 
   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
@@ -121,6 +122,10 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
       subscribe(result => {
         this.totalItems = result.TotalCount;
         this.TechDefaultLst = result.data;
+        // this.maxTechLineNo = this.TechDefaultLst.reduce(function (prev, current) {
+        //   return (prev.TechLineNo > current.TechLineNo) ? prev : current;
+        // }).TechLineNo;
+        this.maxTechLineNo = (Number(this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo) + 1).toString();
         this.GetVendorsTechList();
       });
   }
@@ -133,8 +138,15 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   EditTechDetails(techDefault: VendorTechDefault) {
     if (techDefault === null) {
       techDefault = new VendorTechDefault();
-      this.vendorTechDefault = techDefault;
+      techDefault.TechLineNo = this.maxTechLineNo;
     }
+
+    if (techDefault !== null && (techDefault.TechLineNo === '' || techDefault.TechLineNo === null)) {
+      techDefault = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?  new VendorTechDefault() : techDefault;
+      techDefault.VendorTechDetails = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?  [] : techDefault.VendorTechDetails;
+      techDefault.TechLineNo = null;
+    }
+    this.vendorTechDefault = techDefault;
     this.InitializeFormControls();
   }
 
@@ -199,6 +211,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     //   this.LogValidationErrors();
     //   return;
     // }
+
     // this.VendorTech = new VendorTech();
     // this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('id').value;
     // this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
@@ -238,36 +251,39 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     //     return;
     //   }
     // }
-    // try {
-    //   this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
-    //     if (data.Msg != null) {
-    //       if (data.Msg[0].Result === 0) {
-    //         this.VendorTech = new VendorTech();
-    //         this.vendortechList = data.VendorTech;
-    //         this.totalItems = data.VendorTechCount[0].TotalVendors;
-    //         this.InitializeFormControls();
-    //         this.GetVendorsTechList();
-    //         this.techSpecList = [];
-    //         //  alert(data.Msg[0].Message);
-    //         // const el = this.modalOpenButton.nativeElement as HTMLElement;
-    //         this.modalBody = data.Msg[0].Message;
-    //         // el.click();
-    //         $('#myModal').modal('toggle');
-    //         this.dismiss();
-    //       } else {
-    //         this.modalBody = data.Msg[0].Message;
-    //         // alert(data.Msg[0].Message);
-    //       }
-    //     } else {
-    //       this.modalBody = 'There are some technical error. Please contact administrator.';
-    //       //  alert('There are some technical error. Please contact administrator.');
-    //     }
-    //   });
-    // } catch {
-    //   this.modalBody = 'There are some technical error. Please contact administrator.';
-    //   // alert('There are some technical error. Please contact administrator.');
-    // }
-    // el.click();
+    try {
+      if (this.vendorTechDefault.VendorTechDetails !== null && this.vendorTechDefault.VendorTechDetails.length > 0) {
+
+        this.vendorTechDefault.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
+        this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
+        this.vendorTechDefault.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
+        this.vendorTechDefault.Status = 'A';
+        this.vendorTechDefault.VendorShortCode = this.vendorcode;
+
+        this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
+          if (result.Msg !== '') {
+            if (result.Status === 0) {
+              this.PopUpMessage = result.Msg;
+
+              this.totalItems = result.TotalCount;
+              this.TechDefaultLst = result.data;
+              this.maxTechLineNo = (Number(this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo) + 1).toString();
+              this.GetVendorsTechList();
+              // this.dismiss();
+            } else {
+              this.PopUpMessage = result.Msg;
+            }
+          } else {
+            this.PopUpMessage = 'There are some technical error. Please contact administrator.';
+          }
+        });
+      } else {
+        return;
+      }
+    } catch {
+      this.PopUpMessage = 'There are some technical error. Please contact administrator.';
+    }
+    this.alertButton.click();
   }
 
   // checkValidation() {
@@ -294,7 +310,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.submitted = false;
     this.techSpecList = [];
     // this.isDisable = false;
-    this.LogValidationErrors();
+    // this.LogValidationErrors();
   }
 
   DeleteTechDetailsPopup(vendor) {
@@ -323,36 +339,44 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
       const vTech = new VendorTech();
       vTech.VendorTechDetailsID = 0;
       vTech.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
-      const defaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
-      const remarks = this.techDetailsForm.get('Remarks').value;
+      vTech.VendorShortCode = this.vendorcode;
       vTech.dept = this.techDetailsForm.get('Department').value;
       vTech.VendorTechConfigID = this.techDetailsForm.get('VendorTechConfigID').value;
       vTech.UnitCount = this.techDetailsForm.get('UnitCount').value;
       vTech.Efficiency = this.techDetailsForm.get('Efficiency').value;
-      vTech.MachineName = this.deptList.filter(function (el) {
-        return el.DeptCode === vTech.dept;
-      })[0].DeptName;
-
-      vTech.MachineType = this.techSpecList.filter(function (el) {
+      vTech.MachineName = this.techSpecList.filter(function (el) {
         return el.VendorConfigID === Number(vTech.VendorTechConfigID);
       })[0].TechSpec;
 
+      vTech.MachineType = this.deptList.filter(function (el) {
+        return el.DeptCode === vTech.dept;
+      })[0].DeptName;
+
       vTech.Status = 'A';
 
-      this.vendorTechDefault.VendorTechDetails.push(vTech);
+      let add = 0;
+      if (this.vendorTechDefault.VendorTechDetails.length > 0) {
+        const strArray = this.vendorTechDefault.VendorTechDetails
+          .find((obj) => obj.MachineType === vTech.MachineType && obj.MachineName === vTech.MachineName);
+        if (strArray === undefined) {
+          this.vendorTechDefault.VendorTechDetails.push(vTech);
+          add = 1;
+        }
+        if (add === 0) {
+          this.PopUpMessage = 'This data is already exists.';
+          this.alertButton.click();
+        }
+      } else {
+        this.vendorTechDefault.VendorTechDetails.push(vTech);
+      }
 
     } else {
       this.PopUpMessage = 'Please select data for add.';
       this.alertButton.click();
       return;
     }
-
-    // if (this.machineItems.length > 0) {
-    //   $('.table-small').removeClass('hide');
-    // } else {
-    //   $('.table-small').addClass('hide');
-    // }
   }
+
 
   // AddRow(x, y, z, a) {
   //   let add = 0;
@@ -429,23 +453,23 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   }
 
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
-    Object.keys(group.controls).forEach((key: string) => {
-      const abstractControl = group.get(key);
-      if (abstractControl instanceof FormGroup) {
-        this.LogValidationErrors(abstractControl);
-      } else {
-        this.formErrors[key] = '';
-        if (this.submitted || (abstractControl && !abstractControl.valid &&
-          (abstractControl.touched || abstractControl.dirty))) {
-          const messages = this.ValidationMessages[key];
-          for (const errorkey in abstractControl.errors) {
-            if (errorkey) {
-              this.formErrors[key] += messages[errorkey] + ' ';
-            }
-          }
-        }
-      }
-    });
+    // Object.keys(group.controls).forEach((key: string) => {
+    //   const abstractControl = group.get(key);
+    //   if (abstractControl instanceof FormGroup) {
+    //     this.LogValidationErrors(abstractControl);
+    //   } else {
+    //     this.formErrors[key] = '';
+    //     if (this.submitted || (abstractControl && !abstractControl.valid &&
+    //       (abstractControl.touched || abstractControl.dirty))) {
+    //       const messages = this.ValidationMessages[key];
+    //       for (const errorkey in abstractControl.errors) {
+    //         if (errorkey) {
+    //           this.formErrors[key] += messages[errorkey] + ' ';
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
   }
 
   specChange(event) {

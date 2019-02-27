@@ -3,8 +3,9 @@ import { VendorTech } from './VendorTech';
 export class VendorTechDefault {
     VendorTechDetailsID: number;
     VendorShortCode: string;
-    TechLineNo: number;
+    TechLineNo: string;
     DefaultEfficiency: number;
-    Status: boolean;
+    Status: string;
+    Remarks: string;
     VendorTechDetails: VendorTech[];
 }
