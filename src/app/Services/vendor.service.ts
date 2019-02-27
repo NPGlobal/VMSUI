@@ -9,9 +9,9 @@ import { Vendor } from '../Models/vendor';
 export class VendorService {
 
   // origin = 'http://172.16.7.60/VMSApi/';
-  origin = 'http://172.16.7.68/';
+  // origin = 'http://172.16.7.68/';
   // origin = 'http://172.16.7.69/';
-  // origin = 'https://localhost:44372/';
+  origin = 'https://localhost:44372/';
   constructor(private _http: HttpClient) { }
 
   GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
@@ -146,8 +146,4 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
-  GetVendorExpertiseList() {
-    const apiUrl = this.origin + 'api/MasterDataDetails/GetMasterDataDetails/VendorExpe/-1';
-    return this._http.get<any>(apiUrl);
-  }
 }

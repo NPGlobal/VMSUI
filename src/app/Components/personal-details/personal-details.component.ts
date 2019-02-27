@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Output, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
@@ -22,6 +22,8 @@ export class PersonalDetailsComponent implements OnInit {
   YearList: number[] = [];
   MasterVendorList: Vendor[] = [];
   VendorTypeList: MasterDataDetails[];
+  ExpertiseList: MasterDataDetails[];
+  expertiseArray: any[] = [];
   VendorCode: string;
   vendorAddresses: VendorAddress[];
 
@@ -47,7 +49,6 @@ export class PersonalDetailsComponent implements OnInit {
 
   HasAllCollapsed: boolean;
   IsAddressSaved = false;
-
   HasPHSelected: boolean;
 
   submitted = false;
@@ -138,6 +139,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.GetMasterDataDetails('VendorType');
     this.GetMasterDataDetails('COUNTRY');
     this.GetMasterDataDetails('STATE');
+    this.GetMasterDataDetails('VendorExpe');
   }
 
   CreateNewAddress(): any {
@@ -181,6 +183,10 @@ export class PersonalDetailsComponent implements OnInit {
           this.StateList = lst.filter(x => x.IsDeleted === 'N');
           break;
         }
+        case 'VendorExpe': {
+          this.ExpertiseList = result.data.Table;
+          break;
+        }
       }
     });
   }
@@ -209,9 +215,9 @@ export class PersonalDetailsComponent implements OnInit {
       this.alertButton.click();
       return;
     }
-
     let StatusObj: any;
     const vendor = new Vendor();
+    vendor.VendorExpertise = this.makeVendorExpertiseString();
     vendor.VendorCode = this.VendorCode;
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
     vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value;
@@ -363,7 +369,6 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   InitializeFormControls() {
-
     this.PopulateYears();
     const disablePan = this.vendor.PANNo === '' ? false : true;
     const disableRef = this.vendor.Ref_VendorCode === '-1' ? false : true;
@@ -433,6 +438,11 @@ export class PersonalDetailsComponent implements OnInit {
         OtherCustomer4: [this.vendor.OtherCustomer4],
         OtherCustomer5: [this.vendor.OtherCustomer5],
         IsExpanded: false
+      }),
+      ExpertiseDetails: this._fb.group({
+        IsExpanded: false,
+        ExpertiseList: new FormArray([]),
+        VendorWeaknesses: ['']
       })
     });
 
@@ -681,5 +691,26 @@ export class PersonalDetailsComponent implements OnInit {
 
   UnselectOptions(control: FormControl) {
     control.patchValue([]);
+  }
+
+  onChange(expertise: string, isChecked: boolean) {
+    if (isChecked) {
+      this.expertiseArray.push(expertise);
+    } else {
+      const index = this.expertiseArray.indexOf(expertise);
+
+      if (index > -1) {
+
+        this.expertiseArray.splice(index, 1);
+      }
+    }
+  }
+
+  makeVendorExpertiseString(): string {
+    let ex = '';
+    for (let i = 0; i < this.expertiseArray.length; i++) {
+      ex += this.expertiseArray[i] + ',';
+    }
+    return ex + '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
   }
 }
