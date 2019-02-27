@@ -21,8 +21,10 @@ export class BankDetailsComponent implements OnInit {
   CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
 
-  @ViewChild('modalOpenButton')
-  modalOpenButton: ElementRef;
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
 
   ValidationMessages = {
     'CurrencyCode': {
@@ -46,6 +48,7 @@ export class BankDetailsComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private _fb: FormBuilder, private _vendorService: VendorService) { }
 
   ngOnInit() {
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
@@ -115,6 +118,7 @@ export class BankDetailsComponent implements OnInit {
       return;
     }
 
+    let StatusObj: any;
     const vendor = this.vendor;
     vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.VendorCode = this.VendorCode;
@@ -131,16 +135,18 @@ export class BankDetailsComponent implements OnInit {
     vendor.SwiftCode = this.BankDetailsForm.get('SWIFTCode').value;
     vendor.accountType = this.BankDetailsForm.get('AccountType').value;
     vendor.isECSenabled = this.BankDetailsForm.get('isECSenabled').value;
-    this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
-      const StatusObj = data;
-      if (StatusObj.Status === 0) {
-        // alert('Saved Succesfully!!');
-        const el = this.modalOpenButton.nativeElement as HTMLElement;
-        el.click();
+
+    this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((result) => {
+      StatusObj = result;
+      if (StatusObj.data.Table[0].ResultCode === 0) {
+        this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
+        this.alertButton.click();
         this.Editvendor(this.VendorCode);
+      } else {
+        this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
+        this.alertButton.click();
       }
     });
-    console.log(JSON.stringify(vendor));
   }
 
   GetCurrencyList() {

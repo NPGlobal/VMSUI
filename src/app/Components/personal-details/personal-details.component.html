@@ -765,7 +765,7 @@
                         <div class="col-md-22" *ngFor="let expertise of ExpertiseList">
                             <span class="checkbox-inline">
                                 <label>
-                                    <input class="mr-2" type="checkbox" (change)="onChange(expertise.MDDCode, $event.target.checked)"
+                                    <input class="mr-2" type="checkbox" [attr.checked]="expertise.Checked" (change)="onChange(expertise.MDDCode, $event.target.checked)"
                                         value="{{expertise.MDDCode}}" />{{expertise.MDDName}}
                                 </label>
                             </span>
