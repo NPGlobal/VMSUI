@@ -140,8 +140,7 @@ export class StaffDetailsComponent implements OnInit {
     });
     this.staffDetailsForm.valueChanges.subscribe((data) => {
       this.logValidationErrors(this.staffDetailsForm);
-    });
-  }
+    }); }
   openModal() {
     this.InitializeFormControls();
   }

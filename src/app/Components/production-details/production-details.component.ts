@@ -214,8 +214,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.action = 'Insert';
     this.ProductionDetailsForm = this._fb.group({
       // id: ['0'],
-
-      Division: ['', Validators.required],
+     Division: ['', Validators.required],
       Department: ['', Validators.required],
       approvedProductionUnits: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
       subContractingUnitName: ['', Validators.required],
