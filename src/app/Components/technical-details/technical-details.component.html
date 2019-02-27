@@ -80,11 +80,12 @@
       <!-- modal-header -->
       <div class="modal-header">
         <h6 class="modal-title">Technical</h6>
-        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" (click)="dismiss()">&times;</button>
+        <button #modalCloseButton type="button" class="close" data-dismiss="modal" style="display: none;"></button>
       </div>
       <!-- modal-body -->
       <div class="modal-body">
-        <form [formGroup]="techDetailsForm" (ngSubmit)="AddMachine()" novalidate>
+        <form *ngIf="techDetailsForm" [formGroup]="techDetailsForm" (ngSubmit)="AddMachine()" novalidate>
           <!-- <input type="hidden" name="id" formControlName="id"> -->
 
           <div class="form-group col-lg-12 col-md-12">
@@ -195,8 +196,8 @@
                   <td>{{m.Status}}</td>
                   <td>
                     <!-- <a title="Edit Machine" href="javascript:void(0)"><i class="fa fa-edit"></i></a> -->
-                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2"
-                      (click)="DeleteMachine(m)"><i class="fa fa-remove"></i>
+                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
+                        class="fa fa-remove"></i>
                     </a>
                   </td>
                 </tr>
@@ -208,8 +209,7 @@
         <!-- Modal footer -->
         <div class="modal-footer col-md-12  page-footer">
           <button type="button" (click)="SaveTechDetails()" class="mr-3 btn btn-primary">Save</button>
-          <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
-            data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
         </div>
       </div>
     </div>

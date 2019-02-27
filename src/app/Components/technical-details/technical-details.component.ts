@@ -40,6 +40,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   techSpecList: any[];
   TechDefaultLst: VendorTechDefault[];
 
+
   // isLine = 0;
   // isEfficiency = 0;
   // isDisable = false;
@@ -83,6 +84,10 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   PopUpMessage: string;
   alertButton: any;
 
+  @ViewChild('modalCloseButton')
+  modalCloseButton: ElementRef;
+  modalClose: HTMLElement;
+
   unitCountList(n: number): any[] {
     return Array(n);
   }
@@ -91,21 +96,20 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService) {
-      // this.CreateNewVendorTech();
-    }
+    // this.CreateNewVendorTech();
+  }
 
   ngOnInit() {
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
+    this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
+
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorTech(this.currentPage);
     });
-
-    this.EditTechDetails(null);
     this.GetVendorDepartments();
-    // this.formControlValueChanged();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -128,6 +132,8 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
         //   return (prev.TechLineNo > current.TechLineNo) ? prev : current;
         // }).TechLineNo;
         this.maxTechLineNo = (Number(this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo) + 1).toString();
+
+        this.EditTechDetails(null);
         this.GetVendorsTechList();
       });
   }
@@ -146,11 +152,9 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
 
     if (techDefault !== null && (techDefault.TechLineNo === '' || techDefault.TechLineNo === null)) {
       techDefault = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?
-        new VendorTechDefault() : Object.assign({}, techDefault);
-      //   techDefault.VendorTechDetails = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?  [] :
-      // techDefault.VendorTechDetails;
-      //   techDefault.TechLineNo = null;
+        new VendorTechDefault() : techDefault;
     }
+
     this.vendorTechDefault = Object.assign({}, techDefault);
     this.InitializeFormControls();
   }
@@ -172,7 +176,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.techDetailsForm = this._fb.group({
       Department: [null],
       VendorTechConfigID: [null],
-      TechLineNo: [this.vendorTechDefault.TechLineNo],
+      TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
       DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
       UnitCount: [],
       Status: [this.vendorTechDefault.Status],
@@ -180,6 +184,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
       Efficiency: [null]
     });
   }
+
   dismiss() {
     this.submitted = false;
     this.techSpecList = [];
@@ -189,7 +194,9 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     // this.isEfficiency = 0;
     // this.isDisable = false;
     // this.LogValidationErrors();
+    this.modalClose.click();
   }
+
   GetVendorDepartments() {
     this._vendorService.GetVendorDeptTech('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
       this.deptList = data;
@@ -233,18 +240,23 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   SaveTechDetails() {
     this.sendFormData();
   }
+
   DeleteTechDetails() {
     this.sendFormData();
   }
+
   DeleteTechDetailsPopup(vobj: VendorTechDefault) {
     vobj.Status = 'D';
     this.vendorTechDefault = vobj;
     this.InitializeFormControls();
   }
+
   sendFormData() {
     const st = this.techDetailsForm.get('Status').value;
+
     try {
-      if (this.vendorTechDefault.VendorTechDetails !== null && this.vendorTechDefault.VendorTechDetails.length > 0) {
+      if ((this.vendorTechDefault.VendorTechDetails !== undefined || this.vendorTechDefault.VendorTechDetails !== null)
+        && this.vendorTechDefault.VendorTechDetails.length > 0) {
 
         this.vendorTechDefault.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
         this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
@@ -261,7 +273,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
               this.TechDefaultLst = result.data;
               this.maxTechLineNo = (Number(this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo) + 1).toString();
               this.GetVendorsTechList();
-              // this.dismiss();
+              this.dismiss();
             } else {
               this.PopUpMessage = result.Msg;
             }
@@ -270,14 +282,14 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
           }
         });
       } else {
-        return;
+        this.PopUpMessage = 'At least one machine should be added.';
       }
     } catch {
       this.PopUpMessage = 'There are some technical error. Please contact administrator.';
     }
     this.alertButton.click();
   }
-   // checkValidation() {
+  // checkValidation() {
   //   // tslint:disable-next-line:triple-equals
   //   if (this.isLine == 1) {
   //     this.techDetailsForm.controls['techLineNo'].setValidators(Validators.required);
@@ -294,7 +306,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   //   this.techDetailsForm.controls['efficiency'].updateValueAndValidity();
   // }
 
- 
+
 
   AddMachine() {
 
@@ -378,7 +390,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     //   }
   }
 
-  
+
 
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
     // Object.keys(group.controls).forEach((key: string) => {
