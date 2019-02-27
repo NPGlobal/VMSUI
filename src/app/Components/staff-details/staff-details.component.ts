@@ -16,12 +16,14 @@ export class StaffDetailsComponent implements OnInit {
   NumericPattern = '^[0-9]*$';
   deptList: any[];
   designationList: any[];
+  priorityListTemp: any[];
   submitted = false;
   vendorstaffList: VendorStaff[]; // For added Staff List
   VendorStaff: VendorStaff; // For form value save and update
   editedVendorStaff: any; // For Check of Vendor Staff Edited Value
   staffDetailsForm: FormGroup;
   ActionMessage: string;
+  MaxPriority: number;
   @ViewChild('modalOpenMsgButton')
   modalOpenMsgButton: ElementRef;
   el: any;
@@ -35,7 +37,6 @@ export class StaffDetailsComponent implements OnInit {
 
   _originalValue: string;
   searchText = '';
-
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -73,6 +74,9 @@ export class StaffDetailsComponent implements OnInit {
     'ContactPhone': '',
     'priority': ''
   };
+  PriorityList(n: any): any[] {
+    return Array(n);
+  }
   ngOnInit() {
     this.openModal();
     this.el = this.modalOpenMsgButton.nativeElement as HTMLElement;
@@ -176,15 +180,21 @@ export class StaffDetailsComponent implements OnInit {
       this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
         .subscribe((data) => {
           this.designationList = data;
+       //   this.MaxPriority = data.max_allowed;
           if (this.staffDetailsForm.get('designation').value !== null) {
             const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
             if (strArray === undefined) {
               this.staffDetailsForm.controls.designation.patchValue(null);
-            }
+             }
           }
-        });
+         });
     }
   }
+  GetVendorPriority() {
+    // tslint:disable-next-line:triple-equals
+    this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
+    this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
+    }
   SaveStaffDetails() {
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {
