@@ -302,7 +302,6 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.IsSameForAll = this.personalDetailsForm.get('RegisteredOfficeAddress.IsSameForAll').value;
 
-    console.log(vendor);
     this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
       StatusObj = data;
       if (StatusObj.data.Table[0].ResultCode === 0) {
@@ -328,7 +327,8 @@ export class PersonalDetailsComponent implements OnInit {
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
-      this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode.split(',');
+
+      this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
       this.GetPHList();
 
