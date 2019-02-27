@@ -205,14 +205,16 @@ export class ProductionDetailsComponent implements OnInit {
       remarks: [this.VendorProduction.Remarks],
       status: [this.VendorProduction.Status]
     });
+    this.ProductionDetailsForm.valueChanges.subscribe((data) => {
+      this.LogValidationErrors(this.ProductionDetailsForm);
+    });
   }
   openModal() {
     this.isDisable = false;
     this.action = 'Insert';
     this.ProductionDetailsForm = this._fb.group({
       // id: ['0'],
-
-      Division: ['', Validators.required],
+     Division: ['', Validators.required],
       Department: ['', Validators.required],
       approvedProductionUnits: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
       subContractingUnitName: ['', Validators.required],
@@ -231,6 +233,9 @@ export class ProductionDetailsComponent implements OnInit {
       pincode: ['', [Validators.required, Validators.pattern(this.PinPattern)]],
       remarks: [''],
       status: true
+    });
+    this.ProductionDetailsForm.valueChanges.subscribe((data) => {
+      this.LogValidationErrors(this.ProductionDetailsForm);
     });
   }
   dismiss() {
