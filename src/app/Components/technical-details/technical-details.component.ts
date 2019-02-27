@@ -147,15 +147,14 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     if (techDefault === null) {
       techDefault = new VendorTechDefault();
       techDefault.TechLineNo = this.maxTechLineNo;
-      techDefault.Status = 'A';
     }
 
     if (techDefault !== null && (techDefault.TechLineNo === '' || techDefault.TechLineNo === null)) {
       techDefault = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?
         new VendorTechDefault() : techDefault;
     }
-
-    this.vendorTechDefault = Object.assign({}, techDefault);
+    techDefault.Status = 'A';
+    this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
     this.InitializeFormControls();
   }
   // CreateNewVendorTech() {
