@@ -1,0 +1,9 @@
+.main-div {
+   background-color: #7d2d30;
+   margin: 0px;
+}
+h6, h6:hover {
+    color: aliceblue;
+    cursor: pointer;
+    text-align: center
+}
