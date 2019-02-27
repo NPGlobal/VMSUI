@@ -658,8 +658,7 @@ export class PersonalDetailsComponent implements OnInit {
     if (!this.vendor.isGSTRegistered) {
       if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
-          [Validators.required,
-          Validators.pattern(this.GSTPattern),
+          [Validators.required, this.GSTINValidator(),
           Validators.maxLength(15), Validators.minLength(15)]);
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
 
@@ -686,32 +685,29 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
 
-  GSTINValidator(min: number, max: number): ValidatorFn {
+  GSTINValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const status = this.CheckGSTFormat(control.value);
-      if (status) {
-        return { Status: status };
+      if (!status) {
+        return { 'pattern': status };
       }
       return null;
     };
   }
-  // GSTINValidator(control: FormControl) {
-  //   const value = control.value;
-  //   this.CheckGSTFormat(value);
-  //   return null;
-  // }
 
   CheckGSTFormat(g: string): boolean {
-    let status: boolean;
-    const reg = new RegExp('^([0][1-9]|[1-2][0-9]|[3][0-7])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
-    if (g.length >= 2) {
+    let status = false;
+    const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+    if (g !== null && g.length >= 2) {
       const firstTwo = g.substr(0, 2);
       status = this.StateList.find(x => x.MDDShortName === firstTwo) !== undefined;
     }
 
-    if (g.length > 2) {
+    if (status && g !== null && g.length > 2) {
       const lastcharacters = g.substr(2, g.length);
       status = reg.test(lastcharacters);
+    } else {
+      status = false;
     }
 
     return status;

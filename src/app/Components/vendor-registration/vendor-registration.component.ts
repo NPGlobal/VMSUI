@@ -101,7 +101,7 @@ export class VendorRegistrationComponent implements OnInit {
       VendorName: [''],
       MasterVendorId: [null, Validators.required],
       RefVendorName: [''],
-      PANNo: ['', [Validators.pattern(this.AlphanumericPattern), Validators.minLength(10), Validators.maxLength(10)]],
+      PANNo: ['', [Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.minLength(10), Validators.maxLength(10)]],
       PHList: [''],
       StoreList: [''],
       SelectedPHStoreList: [[]],
