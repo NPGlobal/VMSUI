@@ -18,7 +18,7 @@ declare var $: any;
   templateUrl: './technical-details.component.html',
   styleUrls: ['./technical-details.component.css']
 })
-export class TechnicalDetailsComponent implements OnInit, OnChanges {
+export class TechnicalDetailsComponent implements OnInit {
   // paging variables
   totalItems: number;
   currentPage = 1;
@@ -33,6 +33,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   vendorcode: string;
   maxTechLineNo: string;
   isTechDetailFormChanged: boolean;
+  vendorTech: VendorTech;
 
   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
@@ -124,11 +125,6 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.GetVendorDepartments();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    // this.openModal();
-    // this.GetTechDetails(this.techDetailsForm.controls.id);
-  }
-
   SearchTechDetails(searchText = '') {
     this.searchText = searchText;
     this.GetVendorTech(1);
@@ -171,11 +167,13 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   }
 
   InitializeFormControls() {
+    const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
     this.techDetailsForm = this._fb.group({
       Department: [null],
       VendorTechConfigID: [null],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
-      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency, Validators.pattern(this.efficiencyPattern)],
+      DefaultEfficiency: [{ value: this.vendorTechDefault.DefaultEfficiency, disabled: isDefaultEfficiencyDisabled },
+      Validators.pattern(this.efficiencyPattern)],
       UnitCount: [],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks],
@@ -315,8 +313,6 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   //   this.techDetailsForm.controls['efficiency'].updateValueAndValidity();
   // }
 
-
-
   AddMachine() {
 
     if (this.techDetailsForm.invalid) {
@@ -331,42 +327,49 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     if (this.techDetailsForm.get('Department').value !== null && this.techDetailsForm.get('VendorTechConfigID').value !== null &&
       this.techDetailsForm.get('UnitCount').value !== null) {
 
-      const vTech = new VendorTech();
-      vTech.VendorTechDetailsID = 0;
-      vTech.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
-      vTech.VendorShortCode = this.vendorcode;
-      vTech.dept = this.techDetailsForm.get('Department').value;
-      vTech.VendorTechConfigID = this.techDetailsForm.get('VendorTechConfigID').value;
-      vTech.UnitCount = this.techDetailsForm.get('UnitCount').value;
-      vTech.Efficiency = this.techDetailsForm.get('Efficiency').value;
-      vTech.MachineName = this.techSpecList.filter(function (el) {
-        return el.VendorConfigID === Number(vTech.VendorTechConfigID);
+      this.vendorTech = new VendorTech();
+      this.vendorTech.VendorTechDetailsID = 0;
+      this.vendorTech.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
+      this.vendorTech.VendorShortCode = this.vendorcode;
+      this.vendorTech.DeptCode = this.techDetailsForm.get('Department').value;
+      this.vendorTech.VendorTechConfigID = this.techDetailsForm.get('VendorTechConfigID').value;
+      this.vendorTech.UnitCount = this.techDetailsForm.get('UnitCount').value;
+      this.vendorTech.Efficiency = this.techDetailsForm.get('Efficiency').value;
+      this.vendorTech.MachineName = this.techSpecList.filter(function (el) {
+        return el.VendorConfigID === Number(this.vendorTech.VendorTechConfigID);
       })[0].TechSpec;
 
-      vTech.MachineType = this.deptList.filter(function (el) {
-        return el.DeptCode === vTech.dept;
+      this.vendorTech.MachineType = this.deptList.filter(function (el) {
+        return el.DeptCode === this.vendorTech.DeptCode;
       })[0].DeptName;
 
-      vTech.Status = 'A';
+      this.vendorTech.Status = 'A';
 
       let add = 0;
       if (this.vendorTechDefault.VendorTechDetails.length > 0) {
-        const strArray = this.vendorTechDefault.VendorTechDetails
-          .find((obj) => obj.MachineType === vTech.MachineType && obj.MachineName === vTech.MachineName);
-        if (strArray === undefined) {
-          this.vendorTechDefault.VendorTechDetails.push(vTech);
-          add = 1;
-          this.isTechDetailFormChanged = true;
-        }
-        if (add === 0) {
-          this.PopUpMessage = 'This data is already exists.';
-          this.alertButton.click();
+
+        const existingIndex = this.vendorTechDefault.VendorTechDetails.findIndex((x) =>
+          x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID);
+        if (existingIndex > 0) {
+          this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
+        } else {
+
+          const strArray = this.vendorTechDefault.VendorTechDetails.find((obj) =>
+            obj.MachineType === this.vendorTech.MachineType && obj.MachineName === this.vendorTech.MachineName);
+          if (strArray === undefined) {
+            this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
+            add = 1;
+            this.isTechDetailFormChanged = true;
+          }
+          if (add === 0) {
+            this.PopUpMessage = 'This data is already exists.';
+            this.alertButton.click();
+          }
         }
       } else {
-        this.vendorTechDefault.VendorTechDetails.push(vTech);
+        this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
         this.isTechDetailFormChanged = true;
       }
-
     } else {
       this.PopUpMessage = 'Please select data for add.';
       this.alertButton.click();
@@ -374,15 +377,18 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     }
   }
 
-  EditMachine(vTech: VendorTech) {
-    this.isTechDetailFormChanged = false;
-    this.techDetailsForm.get('Department').patchValue(this.deptList.filter(function (el) {
-      return el.DeptName === vTech.MachineType;
-    })[0].DeptCode);
+  EditMachine(vTech1: VendorTech) {
+
+    this.techDetailsForm.get('Department').patchValue(vTech1.DeptCode);
     this.GetVendorTechSpec();
-    this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech.VendorTechConfigID);
-    this.techDetailsForm.get('UnitCount').patchValue(vTech.UnitCount);
-    this.techDetailsForm.get('Efficiency').patchValue(vTech.Efficiency);
+    this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
+    this.techDetailsForm.get('UnitCount').patchValue(vTech1.UnitCount);
+    this.techDetailsForm.get('Efficiency').patchValue(vTech1.Efficiency);
+
+    vTech1.Status = 'A';
+
+    this.vendorTech = JSON.parse(JSON.stringify(vTech1));
+    this.isTechDetailFormChanged = false;
   }
 
   // AddRow(x, y, z, a) {
@@ -403,21 +409,13 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   // }
 
   DeleteMachine(m) {
-    // alert(m.Status);
     const strArray = this.vendorTechDefault.VendorTechDetails
       .find((obj) => obj.MachineType === m.MachineType && obj.MachineName === m.MachineName);
     if (strArray !== undefined) {
       const index = this.vendorTechDefault.VendorTechDetails.indexOf(strArray);
       this.vendorTechDefault.VendorTechDetails.splice(index, 1);
     }
-    //   if (this.machineItems.length > 0) {
-    //     $('.table-small').removeClass('hide');
-    //   } else {
-    //     $('.table-small').addClass('hide');
-    //   }
   }
-
-
 
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {

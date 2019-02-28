@@ -38,12 +38,14 @@
                 data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
               </a>
 
-              <a *ngIf="vendor.TechLineNo.length>0" title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i class="fa fa-trash"></i>
+              <a *ngIf="vendor.TechLineNo.length>0" title="Delete Machine" href="javascript:void(0)" class="ml-2"
+                data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i
+                  class="fa fa-trash"></i>
               </a>
 
-              <a *ngIf="vendor.TechLineNo.length>0" title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
+              <a *ngIf="vendor.TechLineNo.length>0" title="Deactivate Machine" href="javascript:void(0)" class="ml-2"
+                data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i
+                  class="fa fa-remove"></i>
               </a>
             </td>
           </tr>
@@ -89,8 +91,6 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form *ngIf="techDetailsForm" [formGroup]="techDetailsForm" (ngSubmit)="AddMachine()" novalidate>
-          <!-- <input type="hidden" name="id" formControlName="id"> -->
-
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-3 col-md-3">
@@ -104,6 +104,7 @@
                 <label class="text">Efficiency (Default)</label>
                 <span>
                   <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
+                    [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
                     (blur)="SetEfficiencyAsDefault()" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
