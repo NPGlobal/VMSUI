@@ -340,9 +340,10 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="text">City</label>
+                            <label class="text">City<i class="mandatory">*</i></label>
                             <span>
-                                <input formControlName="CityCode" type="text" class="form-control input-sm" />
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.CityCode}"
+                                formControlName="CityCode" type="text" class="form-control input-sm" />
                             </span>
                         </div>
                         <div class="col-md-4">
@@ -398,7 +399,8 @@
                                 <div class="col-md-22">
                                     <label class="text">Website</label>
                                     <span>
-                                        <input formControlName="PrimaryContactWebsite" type="text"
+                                        <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactWebsite}"
+                                        formControlName="PrimaryContactWebsite" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
@@ -413,7 +415,9 @@
                                 <div class="col-md-22">
                                     <label class="text">Contact Name</label>
                                     <span>
-                                        <input formControlName="SecondaryContactName" type="text"
+                                        <input (blur)="LogValidationErrors()"
+                                        [ngClass]="{'is-invalid': formErrors.SecondaryContactName}" 
+                                        formControlName="SecondaryContactName" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
@@ -447,7 +451,8 @@
                                 <div class="col-md-22">
                                     <label class="text">Website</label>
                                     <span>
-                                        <input formControlName="SecondaryContactWebsite" type="text"
+                                        <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactWebsite}"
+                                        formControlName="SecondaryContactWebsite" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
