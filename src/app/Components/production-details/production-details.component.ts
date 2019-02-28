@@ -34,7 +34,7 @@ export class ProductionDetailsComponent implements OnInit {
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   vendorProductionList: VendorProduction[]; // For added Production List
   VendorProduction: VendorProduction; // For form value save and update
-  totalItems: number;
+  totalItems = 0;
   searchText = '';
   currentPage = 1;
   pageSize = 20;
@@ -146,7 +146,7 @@ export class ProductionDetailsComponent implements OnInit {
       .subscribe(result => {
         //    if (result.data.Table.length > 0) {
         this.vendorProductionList = result.data.Table;
-        this.totalItems = result.data.Table1.TotalVendors;
+        this.totalItems = result.data.Table1[0].TotalVendors;
         this.GetVendorsProductionList();
         //    } else {
         //     this.totalItems = 0 ;

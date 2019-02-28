@@ -13,6 +13,7 @@ declare var $: any;
 })
 export class StaffDetailsComponent implements OnInit {
   vendorcode: string;
+  PhonePattern = '^[0-9]{10}$';
   NumericPattern = '^[0-9]*$';
   deptList: any[];
   designationList: any[];
@@ -59,7 +60,7 @@ export class StaffDetailsComponent implements OnInit {
     },
     'ContactPhone': {
       'maxlength': 'Should not exceed 10 characters',
-      'pattern': 'Only numbers allowed'
+      'pattern': 'Please enter a valid phone'
     },
     'priority': {
       'required': '',
@@ -132,9 +133,9 @@ export class StaffDetailsComponent implements OnInit {
       ContactName: [this.VendorStaff.ContactName, Validators.required],
       ContactEmail: [this.VendorStaff.ContactEmail, Validators.email],
       ContactPhone: [this.VendorStaff.ContactPhone, [
-        Validators.maxLength(10), Validators.pattern(this.NumericPattern)
+        Validators.maxLength(10), Validators.pattern(this.PhonePattern)
       ]],
-      priority: [this.VendorStaff.Priority, [Validators.required, Validators.pattern(this.NumericPattern)]],
+      priority: [this.VendorStaff.Priority, [Validators.required, Validators.pattern(this.PhonePattern)]],
       Status: [this.VendorStaff.Status],
       remarks: [this.VendorStaff.Remarks]
     });
