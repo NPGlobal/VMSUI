@@ -40,6 +40,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   techSpecList: any[];
   TechDefaultLst: VendorTechDefault[];
 
+
   // isLine = 0;
   // isEfficiency = 0;
   // isDisable = false;
@@ -83,6 +84,10 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   PopUpMessage: string;
   alertButton: any;
 
+  @ViewChild('modalCloseButton')
+  modalCloseButton: ElementRef;
+  modalClose: HTMLElement;
+
   unitCountList(n: number): any[] {
     return Array(n);
   }
@@ -90,20 +95,21 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
-    private _pager: PagerService) { }
+    private _pager: PagerService) {
+    // this.CreateNewVendorTech();
+  }
 
   ngOnInit() {
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
+    this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
+
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorTech(this.currentPage);
     });
-
-    this.EditTechDetails(null);
     this.GetVendorDepartments();
-    // this.formControlValueChanged();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -126,6 +132,8 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
         //   return (prev.TechLineNo > current.TechLineNo) ? prev : current;
         // }).TechLineNo;
         this.maxTechLineNo = (Number(this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo) + 1).toString();
+
+        this.EditTechDetails(null);
         this.GetVendorsTechList();
       });
   }
@@ -142,25 +150,50 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     }
 
     if (techDefault !== null && (techDefault.TechLineNo === '' || techDefault.TechLineNo === null)) {
-      techDefault = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?  new VendorTechDefault() : techDefault;
-      techDefault.VendorTechDetails = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?  [] : techDefault.VendorTechDetails;
-      techDefault.TechLineNo = null;
+      techDefault = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?
+        new VendorTechDefault() : techDefault;
     }
-    this.vendorTechDefault = techDefault;
+    techDefault.Status = 'A';
+    this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
     this.InitializeFormControls();
   }
-
+  // CreateNewVendorTech() {
+  //   this.vendorTechDefault = new VendorTechDefault();
+  //   // this.VendorStaff.VendorStaffConfigId = '';
+  //   // this.VendorStaff.VendorStaffDetailsId = '';
+  //   // this.VendorStaff.dept = '';
+  //   // this.VendorStaff.designation = '';
+  //   // this.VendorStaff.VendorCode = '';
+  //   // this.VendorStaff.ContactName = '';
+  //   // this.VendorStaff.ContactEmail = '';
+  //   // this.VendorStaff.ContactPhone = null;
+  //   // this.VendorStaff.Priority = null;
+  //   this.vendorTechDefault.Status = 'A';
+  //   this.vendorTechDefault.Remarks = '';
+  // }
   InitializeFormControls() {
     this.techDetailsForm = this._fb.group({
       Department: [null],
       VendorTechConfigID: [null],
-      TechLineNo: [this.vendorTechDefault.TechLineNo],
+      TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
       DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
       UnitCount: [],
-      Status: [],
-      Remarks: [],
+      Status: [this.vendorTechDefault.Status],
+      Remarks: [this.vendorTechDefault.Remarks],
       Efficiency: [null]
     });
+  }
+
+  dismiss() {
+    this.submitted = false;
+    this.techSpecList = [];
+    // this.CreateNewVendorTech();
+    this.InitializeFormControls();
+    // this.isLine = 0;
+    // this.isEfficiency = 0;
+    // this.isDisable = false;
+    // this.LogValidationErrors();
+    this.modalClose.click();
   }
 
   GetVendorDepartments() {
@@ -204,60 +237,30 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   }
 
   SaveTechDetails() {
-    // const el = this.modalOpenButton.nativeElement as HTMLElement;
-    // this.submitted = true;
-    // console.log(JSON.stringify(this.techDetailsForm.value));
-    // if (this.techDetailsForm.invalid) {
-    //   this.LogValidationErrors();
-    //   return;
-    // }
+    this.sendFormData();
+  }
 
-    // this.VendorTech = new VendorTech();
-    // this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('id').value;
-    // this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
-    // this.VendorTech.VendorCode = this.vendorcode;
-    // this.VendorTech.TechLineNo = (this.techDetailsForm.get('techLineNo').value !== null)
-    //   ? this.techDetailsForm.get('techLineNo').value : '0';
-    // this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value > 0
-    //   ? this.techDetailsForm.get('efficiency').value : '0';
-    // this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
-    // this.VendorTech.Status = this.techDetailsForm.get('status').value;
-    // this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
-    // this.VendorTech.CreatedBy = 999999;
-    // // In case of edit,if user submit without making any changes.
-    // if (this.VendorTech.VendorTechDetailsID > 0) {
-    //   this.obj1 = this.ExistingVendorTech.value;
-    //   this.obj2 = this.techDetailsForm.value;
-    //   this.flag = true;
+  DeleteTechDetails() {
+    this.sendFormData();
+  }
 
-    //   // tslint:disable-next-line:triple-equals
-    //   if (Object.keys(this.obj1).length == Object.keys(this.obj2).length) {
-    //     for (const key in this.obj1) {
-    //       // tslint:disable-next-line:triple-equals
-    //       if (this.obj1[key] == this.obj2[key]) {
-    //         continue;
-    //       } else {
-    //         this.flag = false;
-    //         break;
-    //       }
-    //     }
-    //   } else {
-    //     this.flag = false;
-    //   }
-    //   //  if (Object.entries(this.ExistingVendorTech.value).toString() === Object.entries(this.techDetailsForm.value).toString()) {
-    //   if (this.flag === true) {
-    //     this.modalBody = 'There is nothing to change';
-    //     el.click();
-    //     return;
-    //   }
-    // }
+  DeleteTechDetailsPopup(vobj: VendorTechDefault) {
+    vobj.Status = 'D';
+    this.vendorTechDefault = vobj;
+    this.InitializeFormControls();
+  }
+
+  sendFormData() {
+    const st = this.techDetailsForm.get('Status').value;
+
     try {
-      if (this.vendorTechDefault.VendorTechDetails !== null && this.vendorTechDefault.VendorTechDetails.length > 0) {
+      if ((this.vendorTechDefault.VendorTechDetails !== undefined || this.vendorTechDefault.VendorTechDetails !== null)
+        && this.vendorTechDefault.VendorTechDetails.length > 0) {
 
         this.vendorTechDefault.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
         this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
         this.vendorTechDefault.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
-        this.vendorTechDefault.Status = 'A';
+        this.vendorTechDefault.Status = st;
         this.vendorTechDefault.VendorShortCode = this.vendorcode;
 
         this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
@@ -269,7 +272,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
               this.TechDefaultLst = result.data;
               this.maxTechLineNo = (Number(this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo) + 1).toString();
               this.GetVendorsTechList();
-              // this.dismiss();
+              this.dismiss();
             } else {
               this.PopUpMessage = result.Msg;
             }
@@ -278,14 +281,13 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
           }
         });
       } else {
-        return;
+        this.PopUpMessage = 'At least one machine should be added.';
       }
     } catch {
       this.PopUpMessage = 'There are some technical error. Please contact administrator.';
     }
     this.alertButton.click();
   }
-
   // checkValidation() {
   //   // tslint:disable-next-line:triple-equals
   //   if (this.isLine == 1) {
@@ -303,29 +305,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   //   this.techDetailsForm.controls['efficiency'].updateValueAndValidity();
   // }
 
-  dismiss() {
-    this.InitializeFormControls();
-    // this.isLine = 0;
-    // this.isEfficiency = 0;
-    this.submitted = false;
-    this.techSpecList = [];
-    // this.isDisable = false;
-    // this.LogValidationErrors();
-  }
 
-  DeleteTechDetailsPopup(vendor) {
-    this.techDetailsForm = this._fb.group({
-      Id: [vendor.VendorTechDetailsId],
-      dept: [vendor.Department, Validators.required],
-      techSpec: [vendor.VendorTechConfigID, Validators.required],
-      techLineNo: [vendor.TechLineNo],
-      efficiency: [vendor.Efficiency],
-      unitCount: [vendor.UnitCount, Validators.required],
-      // VendorConfigID: [vendor.VendorTechConfigID],
-      status: vendor.Status = 'A' ? true : false,
-      remarks: vendor.Remarks
-    });
-  }
 
   AddMachine() {
 
@@ -377,7 +357,6 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     }
   }
 
-
   // AddRow(x, y, z, a) {
   //   let add = 0;
   //   if (this.machineItems.length > 0) {
@@ -395,62 +374,22 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   //   }
   // }
 
-  // DeleteMachine(x) {
-  //   const strArray = this.machineItems.find((obj) => obj.MachineType === x.MachineType && obj.MachineName === x.MachineName);
-  //   if (strArray === undefined) {
-  //     // this.machineItems.splice(strArray, 1);
-  //   }
-  //   if (this.machineItems.length > 0) {
-  //     $('.table-small').removeClass('hide');
-  //   } else {
-  //     $('.table-small').addClass('hide');
-  //   }
-  // }
-
-  DeleteTechDetails() {
-    // const el = this.modalOpenButton.nativeElement as HTMLElement;
-    // //  if (confirm('Are you sure ? If yes,This record will no longer be available in the system.')) {
-    // this.VendorTech = new VendorTech();
-    // this.VendorTech.VendorTechDetailsID = this.techDetailsForm.get('Id').value;
-    // this.VendorTech.VendorTechConfigID = this.techDetailsForm.get('techSpec').value;
-    // this.VendorTech.VendorCode = this.vendorcode;
-    // this.VendorTech.TechLineNo = this.techDetailsForm.get('techLineNo').value !== null ?
-    //   this.techDetailsForm.get('techLineNo').value : '0';
-    // this.VendorTech.Efficiency = this.techDetailsForm.get('efficiency').value > 0 ?
-    //   this.techDetailsForm.get('efficiency').value : '0';
-    // this.VendorTech.UnitCount = this.techDetailsForm.get('unitCount').value;
-    // this.VendorTech.Status = false;
-    // this.VendorTech.Remarks = this.techDetailsForm.get('remarks').value;
-    // this.VendorTech.CreatedBy = 999999;
-    // try {
-    //   this._vendorService.SaveTechInfo(this.VendorTech).subscribe((data) => {
-    //     if (data.Msg != null) {
-    //       if (data.Msg[0].Result === 0) {
-    //         this.VendorTech = new VendorTech();
-    //         this.vendortechList = data.VendorTech;
-    //         this.totalItems = data.VendorTechCount[0].TotalVendors;
-    //         this.InitializeFormControls();
-    //         this.GetVendorsTechList();
-    //         this.techSpecList = [];
-    //         this.modalBody = data.Msg[0].Message;
-    //         // alert(data.Msg[0].Message);
-    //         $('#deleteModal').modal('toggle');
-    //         this.dismiss();
-    //       } else {
-    //         this.modalBody = data.Msg[0].Message;
-    //         //  alert(data.Msg[0].Message);
-    //       }
-    //     } else {
-    //       this.modalBody = 'There are some technical error. Please contact administrator.';
-    //       //  alert('There are some technical error. Please contact administrator.');
-    //     }
-    //   });
-    // } catch {
-    //   this.modalBody = 'There are some technical error. Please contact administrator.';
-    //   // alert('There are some technical error. Please contact administrator.');
-    // }
-    // el.click();
+  DeleteMachine(m) {
+    // alert(m.Status);
+    const strArray = this.vendorTechDefault.VendorTechDetails
+      .find((obj) => obj.MachineType === m.MachineType && obj.MachineName === m.MachineName);
+    if (strArray !== undefined) {
+      const index = this.vendorTechDefault.VendorTechDetails.indexOf(strArray);
+      this.vendorTechDefault.VendorTechDetails.splice(index, 1);
+    }
+    //   if (this.machineItems.length > 0) {
+    //     $('.table-small').removeClass('hide');
+    //   } else {
+    //     $('.table-small').addClass('hide');
+    //   }
   }
+
+
 
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
     // Object.keys(group.controls).forEach((key: string) => {

@@ -748,10 +748,10 @@
                     </div>
                 </div>
             </div>
+            <hr>
+            <!-- Top expertise and weekness -->
 
-              <!-- Top expertise and weekness -->
-
-             <!-- <div class="col" formGroupName="ExpertiseDetails">
+            <div class="col" formGroupName="ExpertiseDetails">
                 <div class="content-heading">
                     <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('ExpertiseDetails'))"
                         class="glyphicon-expand">
@@ -760,17 +760,23 @@
                 </div>
                 <div class="slider"
                     [ngClass]="{closed: !personalDetailsForm.get('ExpertiseDetails').controls.IsExpanded.value}">
-                    <div class="col-md-12 form-group">
-                        <div class="col-md-22">
-                            <label formArrayName="ExpertiseList" *ngFor="let expertise of form.controls.ExpertiseList.controls; let i = index">
-                                <input type="checkbox" [formControlName]="i">
-                                {{orders[i].name}}
-                              </label>
-                        </div>                        
-                    </div> 
+                    <div class="col-md-12 form-group" style="margin-bottom: 15px;">
+                        <div class="col-md-12"><label class="text">Vendor Expertise</label></div>
+                        <div class="col-md-22" *ngFor="let expertise of ExpertiseList">
+                            <span class="checkbox-inline">
+                                <label>
+                                    <input class="mr-2" type="checkbox" [attr.checked]="expertise.Checked" (change)="onChange(expertise.MDDCode, $event.target.checked)"
+                                        value="{{expertise.MDDCode}}" />{{expertise.MDDName}}
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                            <label class="text mr-2">Vendor Weaknesses (If any)</label>
+                            <input class="input-sm col-md-6" type="text" formControlName="VendorWeaknesses">
+                    </div>
                 </div>
-            </div> -->
-
+            </div>
         </div>
         <hr>
 

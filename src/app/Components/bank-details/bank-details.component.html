@@ -79,25 +79,18 @@
 
 <!-- Saved Conformantion Modal -->
 
-<button #modalOpenButton type="button" data-target="#dataSaved" data-backdrop="static" data-keyboard="false"
-  data-toggle="modal" style="display:none;">
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
 </button>
 
-<div class="modal fade" id="dataSaved" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Saved Successfully!!</h5>
-        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
-        <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">Saved Successfully!!</div>
-          <div class="modal-footer">
-              <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
-          </div>
-    </div> -->
-  </div>
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+                <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="dismissMsg()">OK</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -156,15 +156,16 @@ export class StaffDetailsComponent implements OnInit {
   }
   GetVendorStaffs(index: number) {
     this.currentPage = index;
-    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).subscribe(data => {
-      if (data.VendorStaff.length > 0) {
-        this.vendorstaffList = data.VendorStaff;
-        this.totalItems = data.VendorStaffCount[0].TotalVendors;
-        this.GetVendorsStaffList();
-      } else {
-        this.pagedItems = undefined;
-      }
-    });
+    this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
+      .subscribe(data => {
+        if (data.VendorStaff.length > 0) {
+          this.vendorstaffList = data.VendorStaff;
+          this.totalItems = data.VendorStaffCount[0].TotalVendors;
+          this.GetVendorsStaffList();
+        } else {
+          this.pagedItems = undefined;
+        }
+      });
   }
   GetVendorsStaffList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);

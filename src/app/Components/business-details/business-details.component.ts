@@ -90,9 +90,6 @@ export class BusinessDetailsComponent implements OnInit {
       this.GetVendorBusiness(this.currentPage);
     });
     this.GetDivisions();
-    this.businessDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors();
-    });
   }
 
   logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
@@ -138,12 +135,20 @@ export class BusinessDetailsComponent implements OnInit {
       // ActualDPGrnQty: [this.businessObj.ActualDPGrnQty, [Validators.required, Validators.maxLength(14)]],
       // ActualJWValueQty: [this.businessObj.ActualJWValueQty, [Validators.required, Validators.maxLength(14)]],
       // ActualJWGrnQty: [this.businessObj.ActualJWGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPValueQty: [this.businessObj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWValueQty: [this.businessObj.ProposedJWValueQty, [Validators.required, Validators.maxLength(14)]],
-      ProposedJWGrnQty: [this.businessObj.ProposedJWGrnQty, [Validators.required, Validators.maxLength(14)]],
+      ProposedDPValueQty: [this.businessObj.ProposedDPValueQty, [Validators.required, Validators.maxLength(14),
+      Validators.pattern(this.NumericPattern)]],
+      ProposedDPGrnQty: [this.businessObj.ProposedDPGrnQty, [Validators.required, Validators.maxLength(14),
+      Validators.pattern(this.NumericPattern)]],
+      ProposedJWValueQty: [this.businessObj.ProposedJWValueQty,
+      [Validators.required, Validators.maxLength(14), Validators.pattern(this.NumericPattern)]],
+      ProposedJWGrnQty: [this.businessObj.ProposedJWGrnQty, [Validators.required,
+      Validators.maxLength(14), Validators.pattern(this.NumericPattern)]],
       Status: [this.businessObj.Status],
       remarks: ''
+    });
+
+    this.businessDetailsForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.businessDetailsForm);
     });
   }
 
@@ -163,13 +168,13 @@ export class BusinessDetailsComponent implements OnInit {
   GetVendorBusiness(index: number) {
     this.currentPage = index;
     this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
-    .subscribe(data => {
-      if (data.VendorBusiness.length > 0) {
-        this.businessList = data.VendorBusiness;
-        this.totalItems = data.VendorBusinessCount[0].TotalVendors;
-        this.GetVendorsBusinessList();
-      }
-    });
+      .subscribe(data => {
+        if (data.VendorBusiness.length > 0) {
+          this.businessList = data.VendorBusiness;
+          this.totalItems = data.VendorBusinessCount[0].TotalVendors;
+          this.GetVendorsBusinessList();
+        }
+      });
   }
 
   GetVendorsBusinessList() {
@@ -276,8 +281,8 @@ export class BusinessDetailsComponent implements OnInit {
         }
       });
     } catch {
-          this.ActionMessage = 'There are some technical error. Please contact administrator.';
-          this.el.click();
+      this.ActionMessage = 'There are some technical error. Please contact administrator.';
+      this.el.click();
     }
   }
   GetBusinessDetails(vobj: VendorBusinessDetails) {
