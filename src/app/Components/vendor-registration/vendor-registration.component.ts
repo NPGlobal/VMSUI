@@ -83,11 +83,15 @@ export class VendorRegistrationComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe((result) => {
       let lst: MasterVendor[];
       lst = result.data.MasterVendors;
-      this.MasterVendorList = lst.filter(x => x.Status.trim().toUpperCase() === 'A');
+      this.MasterVendorList = lst.filter(x => x.Status.trim().toUpperCase() === 'A')
+      .sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
     });
 
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
-      this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A');
+      // tslint:disable-next-line:no-debugger
+      debugger;
+      this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A')
+      .sort((a, b) => a.VendorName.localeCompare(b.VendorName));
     });
 
     this.InitializeFormControls();
@@ -187,9 +191,10 @@ export class VendorRegistrationComponent implements OnInit {
     const masterVendor = new MasterVendor();
     vendor.MasterVendorId = this.RegistrationForm.get('MasterVendorId').value;
     vendor.Ref_VendorCode = this.RegistrationForm.get('Ref_VendorCode').value;
-    vendor.VendorName = this.RegistrationForm.get('VendorName').value;
-    vendor.VendorCode = this.RegistrationForm.get('VendorCode').value;
-    vendor.PANNo = this.RegistrationForm.get('PANNo').value;
+    vendor.VendorName = this.RegistrationForm.get('VendorName').value.trim();
+    vendor.VendorCode = this.RegistrationForm.get('VendorCode').value.trim();
+    vendor.PANNo = this.RegistrationForm.get('PANNo').value === null ?
+    null : this.RegistrationForm.get('PANNo').value;
     vendor.IsDirectVendor = this.RegistrationForm.get('IsDirectVendor').value;
     vendor.IsJWVendor = this.RegistrationForm.get('IsJWVendor').value;
     vendor.SelectedPHListCSV = !vendor.IsJWVendor ? '' :
