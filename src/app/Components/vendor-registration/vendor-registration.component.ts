@@ -83,13 +83,11 @@ export class VendorRegistrationComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe((result) => {
       let lst: MasterVendor[];
       lst = result.data.MasterVendors;
-      this.MasterVendorList = lst.filter(x => x.Status.trim().toUpperCase() === 'A')
-      .sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
+      this.MasterVendorList = lst;
     });
 
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
-      this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A')
-      .sort((a, b) => a.VendorName.localeCompare(b.VendorName));
+      this.ReferenceVendorList = result.data.Vendors;
     });
 
     this.InitializeFormControls();
