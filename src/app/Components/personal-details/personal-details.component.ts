@@ -139,7 +139,6 @@ export class PersonalDetailsComponent implements OnInit {
     this.GetMasterDataDetails('VendorType');
     this.GetMasterDataDetails('COUNTRY');
     this.GetMasterDataDetails('STATE');
-    this.GetMasterDataDetails('VendorExpe');
   }
 
   CreateNewAddress(): any {
@@ -185,6 +184,7 @@ export class PersonalDetailsComponent implements OnInit {
         }
         case 'VendorExpe': {
           this.ExpertiseList = result.data.Table;
+          this.updateExpertise();
           break;
         }
       }
@@ -330,6 +330,7 @@ export class PersonalDetailsComponent implements OnInit {
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
+      this.GetMasterDataDetails('VendorExpe');
       this.GetPHList();
 
       this.InitializeFormControls();
@@ -444,12 +445,9 @@ export class PersonalDetailsComponent implements OnInit {
       ExpertiseDetails: this._fb.group({
         IsExpanded: false,
         ExpertiseList: new FormArray([]),
-        VendorWeaknesses: [this.vendor.Vendor_Weakness]
+        VendorWeaknesses: [this.vendor.Vendor_Weakness === null ? '' : this.vendor.Vendor_Weakness]
       })
     });
-
-    this.updateExpertise();
-
 
     this.personalDetailsForm.updateValueAndValidity();
 
@@ -729,28 +727,19 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   onChange(expertise: string, isChecked: boolean) {
-    if (isChecked) {
-      this.expertiseArray.push(expertise);
-    } else {
-      const index = this.expertiseArray.indexOf(expertise);
-
-      if (index > -1) {
-
-        this.expertiseArray.splice(index, 1);
-      }
-    }
+    this.ExpertiseList.find(x => x.MDDCode === expertise).Checked = isChecked;
   }
 
   makeVendorExpertiseString(): string {
     let ex = '';
-    if (this.expertiseArray !== null) {
-      for (let i = 0; i < this.expertiseArray.length; i++) {
-        ex += this.expertiseArray[i] + ',';
-      }
-      return ex + '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
-    } else {
-      return null;
-    }
+    ex = this.ExpertiseList.filter(function (el) {
+      return el.Checked;
+    }).map(function (val) {
+      return val.MDDCode;
+    }).join();
+
+    ex += '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
+    return ex;
   }
 
   updateExpertise() {
