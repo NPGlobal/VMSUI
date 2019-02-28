@@ -743,17 +743,23 @@ export class PersonalDetailsComponent implements OnInit {
 
   makeVendorExpertiseString(): string {
     let ex = '';
-    for (let i = 0; i < this.expertiseArray.length; i++) {
-      ex += this.expertiseArray[i] + ',';
+    if (this.expertiseArray !== null) {
+      for (let i = 0; i < this.expertiseArray.length; i++) {
+        ex += this.expertiseArray[i] + ',';
+      }
+      return ex + '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
+    } else {
+      return null;
     }
-    return ex + '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
   }
 
   updateExpertise() {
-    for (let i = 0; i < this.vendorExpe_MDDCode.length; i++) {
-      for (let j = 0; j < this.ExpertiseList.length; j++) {
-        if (this.vendorExpe_MDDCode[i] === this.ExpertiseList[j].MDDCode) {
-          this.ExpertiseList[j].Checked = true;
+    if (this.expertiseArray !== null && this.vendorExpe_MDDCode !== null) {
+      for (let i = 0; i < this.vendorExpe_MDDCode.length; i++) {
+        for (let j = 0; j < this.ExpertiseList.length; j++) {
+          if (this.vendorExpe_MDDCode[i] === this.ExpertiseList[j].MDDCode) {
+            this.ExpertiseList[j].Checked = true;
+          }
         }
       }
     }
