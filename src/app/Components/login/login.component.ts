@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
 
     if (this.LoginForm.invalid) {
+      this.logValidationErrors();
       return;
     }
     const userCredential = new Login();

@@ -253,6 +253,14 @@ export class PersonalDetailsComponent implements OnInit {
     if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value &&
       (this.SavedPHStoreList.length === 0 &&
         this.SelectedPHStoreList.length === 0)) {
+      this.PopUpMessage = 'Please fill required fields.';
+      this.alertButton.click();
+      this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
       this.HasPHSelected = false;
       return;
     }
@@ -261,7 +269,12 @@ export class PersonalDetailsComponent implements OnInit {
       this.LogValidationErrors();
       this.PopUpMessage = 'Please fill required fields.';
       this.alertButton.click();
-      this.ToggleAllContainers();
+      this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
+      this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
       return;
     }
     let StatusObj: any;
@@ -812,6 +825,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
     } else {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').patchValue('');
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators([]);
     }
   }
