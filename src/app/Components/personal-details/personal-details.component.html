@@ -73,14 +73,15 @@
                             <div class="col-md-6">
                                 <span>
                                     <label class="text">Insured
-                                        <input type="checkbox" formControlName="IsInsured" class="ml-2" />
+                                        <input type="checkbox" (change)="IfInsured($event.target.checked)" formControlName="IsInsured" class="ml-2" />
                                     </label>
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <label class="text">Name of Insurance Company</label>
                                 <span>
-                                    <input type="text" formControlName="NameofInsuranceCompany"
+                                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany}"
+                                    formControlName="NameofInsuranceCompany"
                                         class="form-control input-sm" />
                                 </span>
                             </div>
@@ -379,14 +380,18 @@
                                 <div class="col-md-22">
                                     <label class="text">Fax</label>
                                     <span>
-                                        <input formControlName="PrimaryContactFax" type="text"
+                                        <input (blur)="LogValidationErrors()"
+                                        [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}"
+                                        formControlName="PrimaryContactFax" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Email</label>
                                     <span>
-                                        <input formControlName="PrimaryContactEmail" type="text"
+                                        <input (blur)="LogValidationErrors()"
+                                        [ngClass]="{'is-invalid': formErrors.PrimaryContactEmail}"
+                                        formControlName="PrimaryContactEmail" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
@@ -415,21 +420,27 @@
                                 <div class="col-md-22">
                                     <label class="text">Phone No.</label>
                                     <span>
-                                        <input formControlName="SecondaryContactPhone" type="text"
+                                        <input (blur)="LogValidationErrors()"
+                                        [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}" 
+                                        formControlName="SecondaryContactPhone" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Fax</label>
                                     <span>
-                                        <input formControlName="SecondaryContactFax" type="text"
+                                        <input  (blur)="LogValidationErrors()"
+                                        [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}" 
+                                        formControlName="SecondaryContactFax" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Email</label>
                                     <span>
-                                        <input formControlName="SecondaryContactEmail" type="text"
+                                        <input (blur)="LogValidationErrors()"
+                                        [ngClass]="{'is-invalid': formErrors.SecondaryContactEmail}"
+                                         formControlName="SecondaryContactEmail" type="text"
                                             class="form-control input-sm" />
                                     </span>
                                 </div>

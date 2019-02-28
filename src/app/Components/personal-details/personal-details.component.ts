@@ -35,6 +35,8 @@ export class PersonalDetailsComponent implements OnInit {
   ReferenceVendorList: Vendor[] = [];
   vendorExpe_MDDCode: string[] = [];
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
+  PhonePattern = '^[0-9]{10}$';
+  EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';
   GSTPattern: string;
 
   Address: VendorAddress;
@@ -58,7 +60,7 @@ export class PersonalDetailsComponent implements OnInit {
     'PANNo': {
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Cannot contains special characters'
+      'pattern': 'Invalid Format'
     },
     'GSTIN': {
       'required': '',
@@ -88,8 +90,27 @@ export class PersonalDetailsComponent implements OnInit {
       'required': ''
     },
     'PrimaryContactPhone': {
-      'required': ''
+      'required': '',
+      'pattern': ''
     },
+    'PrimaryContactFax': {
+      'pattern': ''
+    },
+    'PrimaryContactEmail': {
+      'pattern': ''
+    },
+    'SecondaryContactPhone': {
+      'pattern': ''
+    },
+    'SecondaryContactFax': {
+      'pattern': ''
+    },
+    'SecondaryContactEmail': {
+      'pattern': ''
+    },
+    'NameofInsuranceCompany': {
+      'required': ''
+    }
   };
 
   formErrors = {
@@ -101,7 +122,13 @@ export class PersonalDetailsComponent implements OnInit {
     'StateCode': '',
     'PIN': '',
     'PrimaryContactName': '',
-    'PrimaryContactPhone': ''
+    'PrimaryContactPhone': '',
+    'PrimaryContactFax': '',
+    'PrimaryContactEmail': '',
+    'SecondaryContactPhone': '',
+    'SecondaryContactFax': '',
+    'SecondaryContactEmail': '',
+    'NameofInsuranceCompany': ''
   };
 
   constructor(private _vendorService: VendorService,
@@ -139,6 +166,8 @@ export class PersonalDetailsComponent implements OnInit {
     this.GetMasterDataDetails('VendorType');
     this.GetMasterDataDetails('COUNTRY');
     this.GetMasterDataDetails('STATE');
+    // this.GetMasterDataDetails('VendorExpe');
+
   }
 
   CreateNewAddress(): any {
@@ -412,14 +441,15 @@ export class PersonalDetailsComponent implements OnInit {
         [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(6), Validators.maxLength(6)]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
         PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
-        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone, [Validators.required]],
-        PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax],
-        PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail],
+        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone,
+        [Validators.required, Validators.pattern(this.PhonePattern)]],
+        PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax, [Validators.pattern(this.PhonePattern)]],
+        PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail, [Validators.pattern(this.EmailPattern)]],
         PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite],
         SecondaryContactName: [this.vendor.RegisteredOfficeAddress.SecondaryContactName],
-        SecondaryContactPhone: [this.vendor.RegisteredOfficeAddress.SecondaryContactPhone],
-        SecondaryContactFax: [this.vendor.RegisteredOfficeAddress.SecondaryContactFax],
-        SecondaryContactEmail: [this.vendor.RegisteredOfficeAddress.SecondaryContactEmail],
+        SecondaryContactPhone: [this.vendor.RegisteredOfficeAddress.SecondaryContactPhone, [Validators.pattern(this.PhonePattern)]],
+        SecondaryContactFax: [this.vendor.RegisteredOfficeAddress.SecondaryContactFax, [Validators.pattern(this.PhonePattern)]],
+        SecondaryContactEmail: [this.vendor.RegisteredOfficeAddress.SecondaryContactEmail, [Validators.pattern(this.EmailPattern)]],
         SecondaryContactWebsite: [this.vendor.RegisteredOfficeAddress.SecondaryContactWebsite],
         IsSameForAll: [false],
         IsExpanded: false
@@ -632,6 +662,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
     this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(!this.HasAllCollapsed);
+    this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(!this.HasAllCollapsed);
   }
 
   OnAddressSaved(IsSaved: boolean) {
@@ -751,6 +782,16 @@ export class PersonalDetailsComponent implements OnInit {
           }
         }
       }
+    }
+  }
+
+  IfInsured(isInsured: boolean) {
+    if (isInsured) {
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators(Validators.required);
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
+    } else {
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators([]);
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
     }
   }
 }
