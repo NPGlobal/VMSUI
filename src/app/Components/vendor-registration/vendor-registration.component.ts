@@ -88,8 +88,6 @@ export class VendorRegistrationComponent implements OnInit {
     });
 
     this._vendorService.GetVendors(-1, -1).subscribe((result) => {
-      // tslint:disable-next-line:no-debugger
-      debugger;
       this.ReferenceVendorList = result.data.Vendors.filter(x => x.Status.trim().toUpperCase() === 'A')
       .sort((a, b) => a.VendorName.localeCompare(b.VendorName));
     });
