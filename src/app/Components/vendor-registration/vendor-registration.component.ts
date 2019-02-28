@@ -54,7 +54,7 @@ export class VendorRegistrationComponent implements OnInit {
     'PANNo': {
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Cannot contains special characters'
+      'pattern': 'Invalid format'
     },
     'MasterVendorId': {
       'required': ''
