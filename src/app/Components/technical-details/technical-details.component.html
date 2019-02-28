@@ -34,16 +34,16 @@
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
-              <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
+              <a title="Edit Machine" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
                 data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
               </a>
 
-              <a *ngIf="vendor.TechLineNo !== null" title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i class="fa fa-remove"></i>
+              <a *ngIf="vendor.TechLineNo.length>0" title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i class="fa fa-trash"></i>
               </a>
 
-              <a *ngIf="vendor.TechLineNo !== null" title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-trash"></i>
+              <a *ngIf="vendor.TechLineNo.length>0" title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
               </a>
             </td>
           </tr>
@@ -200,7 +200,7 @@
                   <td>
                     <!-- <a title="Edit Machine" href="javascript:void(0)"><i class="fa fa-edit"></i></a> -->
                     <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
-                        class="fa fa-remove"></i>
+                        class="fa fa-trash"></i>
                     </a>
                   </td>
                 </tr>
