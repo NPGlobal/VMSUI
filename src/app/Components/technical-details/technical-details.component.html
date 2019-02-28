@@ -38,12 +38,14 @@
                 data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
               </a>
 
-              <a *ngIf="vendor.TechLineNo !== null" title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i class="fa fa-remove"></i>
+              <a *ngIf="vendor.TechLineNo !== null" title="Delete Machine" href="javascript:void(0)" class="ml-2"
+                data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i
+                  class="fa fa-remove"></i>
               </a>
 
-              <a *ngIf="vendor.TechLineNo !== null" title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-trash"></i>
+              <a *ngIf="vendor.TechLineNo !== null" title="Deactivate Machine" href="javascript:void(0)" class="ml-2"
+                data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i
+                  class="fa fa-trash"></i>
               </a>
             </td>
           </tr>
@@ -104,11 +106,11 @@
                 <label class="text">Efficiency (Default)</label>
                 <span>
                   <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
-                    (blur)="LogValidationErrors()" [pattern]="efficiencyPattern"
-                    [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
+                    (blur)="SetEfficiencyAsDefault()" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
-                  {{formErrors.DefaultEfficiency}}</span>
+                  {{formErrors.DefaultEfficiency}}
+                </span>
               </div>
               <div class="col-lg-6 col-md-6">
                 <label class="text">Remarks</label>
@@ -164,7 +166,11 @@
               <div class="col-lg-2 col-md-2">
                 <label class="text">Efficiency</label>
                 <span>
-                  <input type="text" formControlName="Efficiency" class="form-control input-sm" />
+                  <input type="text" formControlName="Efficiency" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid': formErrors.Efficiency }" />
+                </span>
+                <span [ngClass]="{ 'error-label': formErrors.Efficiency }" *ngIf="formErrors.Efficiency">
+                  {{formErrors.Efficiency}}
                 </span>
               </div>
 
@@ -198,9 +204,11 @@
                   <td>{{m.UnitCount}}</td>
                   <td>{{m.Status}}</td>
                   <td>
-                    <!-- <a title="Edit Machine" href="javascript:void(0)"><i class="fa fa-edit"></i></a> -->
-                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
-                        class="fa fa-remove"></i>
+                    <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
+                      <i class="fa fa-edit"></i>
+                    </a>
+                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)">
+                      <i class="fa fa-remove"></i>
                     </a>
                   </td>
                 </tr>
@@ -211,7 +219,8 @@
 
         <!-- Modal footer -->
         <div class="modal-footer col-md-12  page-footer">
-          <button type="button" (click)="SaveTechDetails()" class="mr-3 btn btn-primary">Save</button>
+          <button type="button" [disabled]="!isTechDetailFormChanged" (click)="SaveTechDetails()"
+            class="mr-3 btn btn-primary">Save</button>
           <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
         </div>
       </div>
@@ -234,7 +243,8 @@
       </div>
       <div class="modal-body">
         This record no longer will be available
-        {{vendorTechDefault!== undefined && vendorTechDefault.Status === 'D' ? '' : 'for allocation'}} in the system. Are you sure?
+        {{vendorTechDefault!== undefined && vendorTechDefault.Status === 'D' ? '' : 'for allocation'}} in the system.
+        Are you sure?
       </div>
       <div class="modal-footer">
         <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>

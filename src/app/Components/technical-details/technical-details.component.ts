@@ -32,6 +32,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   submitted = false;
   vendorcode: string;
   maxTechLineNo: string;
+  isTechDetailFormChanged: boolean;
 
   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
@@ -62,21 +63,25 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     'TechLineNo': {
       'required': ''
     },
-    'EfficiencyDefault': {
+    'DefaultEfficiency': {
       'required': '',
-      'pattern': 'Please enter numeric value less than 100'
+      'pattern': 'Enter valid efficiency'
     },
     'UnitCount': {
       'required': ''
+    },
+    'Efficiency': {
+      'pattern': 'Enter valid efficiency'
     }
   };
 
   formErrors = {
     'Department': '',
     'TechLineNo': '',
-    'EfficiencyDefault': '',
+    'DefaultEfficiency': '',
     'UnitCount': '',
-    'VendorTechConfigID': ''
+    'VendorTechConfigID': '',
+    'Efficiency': ''
   };
 
   @ViewChild('alertModalButton')
@@ -100,7 +105,6 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService) {
-    // this.CreateNewVendorTech();
   }
 
   ngOnInit() {
@@ -110,6 +114,8 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
 
     this.dltModalCloseButton = this.deleteModalClose.nativeElement as HTMLElement;
+
+    this.isTechDetailFormChanged = false;
 
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
@@ -169,16 +175,26 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
       Department: [null],
       VendorTechConfigID: [null],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
-      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
+      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency, Validators.pattern(this.efficiencyPattern)],
       UnitCount: [],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks],
-      Efficiency: [null]
+      Efficiency: [null, Validators.pattern(this.efficiencyPattern)]
     });
+
+    this.SetEfficiencyAsDefault();
+    this.techDetailsForm.valueChanges.subscribe((data) => {
+      this.LogValidationErrors(this.techDetailsForm);
+    });
+  }
+
+  SetEfficiencyAsDefault() {
+    this.techDetailsForm.get('Efficiency').patchValue(this.techDetailsForm.get('DefaultEfficiency').value);
   }
 
   dismiss() {
     this.submitted = false;
+    this.techDetailsForm.reset();
     this.techSpecList = [];
     // this.CreateNewVendorTech();
     this.InitializeFormControls();
@@ -303,6 +319,11 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
 
   AddMachine() {
 
+    if (this.techDetailsForm.invalid) {
+      this.LogValidationErrors();
+      return;
+    }
+
     if (this.vendorTechDefault.VendorTechDetails === undefined) {
       this.vendorTechDefault.VendorTechDetails = [];
     }
@@ -335,6 +356,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
         if (strArray === undefined) {
           this.vendorTechDefault.VendorTechDetails.push(vTech);
           add = 1;
+          this.isTechDetailFormChanged = true;
         }
         if (add === 0) {
           this.PopUpMessage = 'This data is already exists.';
@@ -342,6 +364,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
         }
       } else {
         this.vendorTechDefault.VendorTechDetails.push(vTech);
+        this.isTechDetailFormChanged = true;
       }
 
     } else {
@@ -349,6 +372,17 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
       this.alertButton.click();
       return;
     }
+  }
+
+  EditMachine(vTech: VendorTech) {
+    this.isTechDetailFormChanged = false;
+    this.techDetailsForm.get('Department').patchValue(this.deptList.filter(function (el) {
+      return el.DeptName === vTech.MachineType;
+    })[0].DeptCode);
+    this.GetVendorTechSpec();
+    this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech.VendorTechConfigID);
+    this.techDetailsForm.get('UnitCount').patchValue(vTech.UnitCount);
+    this.techDetailsForm.get('Efficiency').patchValue(vTech.Efficiency);
   }
 
   // AddRow(x, y, z, a) {
@@ -386,40 +420,26 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
 
 
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
-    // Object.keys(group.controls).forEach((key: string) => {
-    //   const abstractControl = group.get(key);
-    //   if (abstractControl instanceof FormGroup) {
-    //     this.LogValidationErrors(abstractControl);
-    //   } else {
-    //     this.formErrors[key] = '';
-    //     if (this.submitted || (abstractControl && !abstractControl.valid &&
-    //       (abstractControl.touched || abstractControl.dirty))) {
-    //       const messages = this.ValidationMessages[key];
-    //       for (const errorkey in abstractControl.errors) {
-    //         if (errorkey) {
-    //           this.formErrors[key] += messages[errorkey] + ' ';
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.LogValidationErrors(abstractControl);
+      } else {
+        this.formErrors[key] = '';
+        if (this.submitted || (abstractControl && !abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty))) {
+          const messages = this.ValidationMessages[key];
+          for (const errorkey in abstractControl.errors) {
+            if (errorkey) {
+              this.formErrors[key] += messages[errorkey] + ' ';
+            }
+          }
+        }
+      }
+    });
   }
 
   specChange(event) {
-    // this.isLine = event.target.selectedOptions[0].attributes['data-line'].value;
-    // this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
-    // this.checkValidation();
-    // // tslint:disable-next-line:triple-equals
-    // if (this.isLine == 0) {
-    //   this.techDetailsForm.controls.techLineNo.patchValue('');
-    // } else {
-    //   this.techDetailsForm.controls.techLineNo.patchValue(event.target.selectedOptions[0].attributes['data-maxnumber'].value);
-    // }
-    // // tslint:disable-next-line:triple-equals
-    // if (this.isEfficiency == 0) {
-    //   this.techDetailsForm.controls.efficiency.patchValue('');
-    // } else {
-    //   this.isEfficiency = event.target.selectedOptions[0].attributes['data-efficiency'].value;
-    // }
+    this.SetEfficiencyAsDefault();
   }
 }
