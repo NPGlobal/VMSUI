@@ -59,6 +59,9 @@ export class PersonalDetailsComponent implements OnInit {
   StateCodeLabel: string;
 
   ValidationMessages = {
+    'VendorName': {
+      'required': ''
+    },
     'PANNo': {
       'minlength': '',
       'maxlength': '',
@@ -130,6 +133,7 @@ export class PersonalDetailsComponent implements OnInit {
   };
 
   formErrors = {
+    'VendorName': '',
     'PANNo': '',
     'GSTIN': '',
     'GSTDate': '',
@@ -174,12 +178,8 @@ export class PersonalDetailsComponent implements OnInit {
       }
     });
 
-    this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
-      this.ReferenceVendorList = result.data.Vendors;
-    });
-
-    this._vendorService.GetMasterVendorList().subscribe(result => {
-      this.MasterVendorList = result.data.MasterVendors;
+    this._vendorService.GetMasterVendorList().subscribe(mvResult => {
+      this.MasterVendorList = mvResult.data.MasterVendors;
     });
 
     this.GetMasterDataDetails('VendorType');
@@ -392,6 +392,18 @@ export class PersonalDetailsComponent implements OnInit {
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
+      if (this.vendor.Ref_VendorCode === null) {
+        this._vendorService.GetVendors(-1, -1, '').subscribe((mvResult) => {
+          this.ReferenceVendorList = mvResult.data.Vendors;
+        });
+      } else {
+        this.ReferenceVendorList = [];
+        const tempVendor = new Vendor();
+        tempVendor.VendorCode = this.vendor.Ref_VendorCode;
+        tempVendor.VendorName = this.vendor.RefVendor_Name;
+        this.ReferenceVendorList.push(tempVendor);
+      }
+
       this.GetMasterDataDetails('VendorExpe');
       this.GetPHList();
 
@@ -444,7 +456,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
-        VendorName: [this.vendor.VendorName],
+        VendorName: [this.vendor.VendorName, [Validators.required]],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [
           Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.maxLength(10), Validators.minLength(10)]],
