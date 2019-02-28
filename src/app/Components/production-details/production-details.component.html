@@ -247,11 +247,14 @@
                     <input type="text" name="city" formControlName="city" class="form-control input-sm" maxlength="49"
                       [ngClass]="{ 'is-invalid err': formErrors.city }" (blur)="LogValidationErrors()" />
                   </span>
+                  <span [ngClass]="{ 'error-label':formErrors.city}"
+                  *ngIf="formErrors.city">
+                  {{formErrors.city}}</span>
                 </div>
                 <div class="col-lg-3 col-md-3">
                   <label class="text">PinCode<span class="error-label">*</span></label>
                   <span><input type="text" name="pincode" formControlName="pincode" class="form-control input-sm" maxlength="6"
-                      [ngClass]="{ 'is-invalid err': formErrors.city }" (blur)="LogValidationErrors()" /></span>
+                      [ngClass]="{ 'is-invalid err': formErrors.pincode }" (blur)="LogValidationErrors()" /></span>
                       <span [ngClass]="{ 'error-label':formErrors.pincode}"
                       *ngIf="formErrors.pincode">
                       {{formErrors.pincode}}</span>
@@ -366,7 +369,7 @@ data-toggle="modal" style="display:none;">
 <!-- Modal to open alert modal -->
 <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog" style="max-width: 500px !important;" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{modalBody}}</h5>

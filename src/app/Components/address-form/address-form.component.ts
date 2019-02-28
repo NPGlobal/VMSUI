@@ -37,6 +37,11 @@ export class AddressFormComponent implements OnInit, OnChanges {
   StateList: MasterDataDetails[] = [];
   submitted = false;
 
+  PhonePattern = '^[0-9]{10}$';
+  EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';
+  WebsitePattern = '^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$';
+  AlphabetPattern = '^[a-zA-Z ]*$';
+
   ValidationMessages = {
     'OrgUnitCode': {
       'required': ''
@@ -54,22 +59,57 @@ export class AddressFormComponent implements OnInit, OnChanges {
       'required': ''
     },
     'CityCode': {
-      'required': ''
+      'required': '',
+      'pattern': ''
     },
     'Address1': {
       'required': ''
     },
     'PrimaryContactName': {
-      'required': ''
+      'required': '',
+      'pattern': ''
     },
     'PrimaryContactPhone': {
-      'required': ''
-    }
+      'required': '',
+      'pattern': ''
+    },
+    'PrimaryContactFax': {
+      'pattern': ''
+    },
+    'PrimaryContactEmail': {
+      'pattern': ''
+    },
+    'PrimaryContactWebsite': {
+      'pattern': ''
+    },
+    'SecondaryContactName': {
+      'pattern': ''
+    },
+    'SecondaryContactPhone': {
+      'pattern': ''
+    },
+    'SecondaryContactFax': {
+      'pattern': ''
+    },
+    'SecondaryContactEmail': {
+      'pattern': ''
+    },
+    'SecondaryContactWebsite': {
+      'pattern': ''
+    },
   };
 
   formErrors = {
     'PrimaryContactName': '',
     'PrimaryContactPhone': '',
+    'PrimaryContactFax': '',
+    'PrimaryContactEmail': '',
+    'SecondaryContactPhone': '',
+    'SecondaryContactFax': '',
+    'SecondaryContactEmail': '',
+    'NameofInsuranceCompany': '',
+    'PrimaryContactWebsite': '',
+    'SecondaryContactWebsite': '',
     'OrgUnitCode': '',
     'PIN': '',
     'CountryCode': '',
@@ -115,21 +155,21 @@ export class AddressFormComponent implements OnInit, OnChanges {
       Address2: [this.Address.Address2],
       Address3: [this.Address.Address3],
       CountryCode: [this.Address.CountryCode, Validators.required],
-      CityCode: [this.Address.CityCode, Validators.required],
+      CityCode: [this.Address.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       StateCode: [this.Address.StateCode, Validators.required],
       PIN: [this.Address.PIN,
       [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
       AddressTypeCode: [this.Address.AddressTypeCode],
-      PrimaryContactName: [this.Address.PrimaryContactName, Validators.required],
-      PrimaryContactPhone: [this.Address.PrimaryContactPhone, Validators.required],
-      PrimaryContactFax: [this.Address.PrimaryContactFax],
-      PrimaryContactEmail: [this.Address.PrimaryContactEmail],
-      PrimaryContactWebsite: [this.Address.PrimaryContactWebsite],
-      SecondaryContactName: [this.Address.SecondaryContactName],
-      SecondaryContactPhone: [this.Address.SecondaryContactPhone],
-      SecondaryContactFax: [this.Address.SecondaryContactFax],
-      SecondaryContactEmail: [this.Address.SecondaryContactEmail],
-      SecondaryContactWebsite: [this.Address.SecondaryContactWebsite]
+      PrimaryContactName: [this.Address.PrimaryContactName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
+      PrimaryContactPhone: [this.Address.PrimaryContactPhone, [Validators.required, Validators.pattern(this.PhonePattern)]],
+      PrimaryContactFax: [this.Address.PrimaryContactFax, Validators.pattern(this.PhonePattern)],
+      PrimaryContactEmail: [this.Address.PrimaryContactEmail, Validators.pattern(this.EmailPattern)],
+      PrimaryContactWebsite: [this.Address.PrimaryContactWebsite, Validators.pattern(this.WebsitePattern)],
+      SecondaryContactName: [this.Address.SecondaryContactName, [Validators.pattern(this.AlphabetPattern)]],
+      SecondaryContactPhone: [this.Address.SecondaryContactPhone, Validators.pattern(this.PhonePattern)],
+      SecondaryContactFax: [this.Address.SecondaryContactFax, Validators.pattern(this.PhonePattern)],
+      SecondaryContactEmail: [this.Address.SecondaryContactEmail, Validators.pattern(this.EmailPattern)],
+      SecondaryContactWebsite: [this.Address.SecondaryContactWebsite, Validators.pattern(this.WebsitePattern)]
     });
     this.AddressForm.valueChanges.subscribe((data) => {
       this.LogValidationErrors(this.AddressForm);

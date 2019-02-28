@@ -37,6 +37,8 @@ export class PersonalDetailsComponent implements OnInit {
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   PhonePattern = '^[0-9]{10}$';
   EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';
+  WebsitePattern = '^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$';
+  AlphabetPattern = '^[a-zA-Z ]*$';
   GSTPattern: string;
 
   Address: VendorAddress;
@@ -80,6 +82,10 @@ export class PersonalDetailsComponent implements OnInit {
     'StateCode': {
       'required': ''
     },
+    'CityCode': {
+      'required': '',
+      'pattern': ''
+    },
     'PIN': {
       'required': '',
       'minlength': '',
@@ -87,7 +93,8 @@ export class PersonalDetailsComponent implements OnInit {
       'pattern': 'Invalid PIN number'
     },
     'PrimaryContactName': {
-      'required': ''
+      'required': '',
+      'pattern': ''
     },
     'PrimaryContactPhone': {
       'required': '',
@@ -99,6 +106,12 @@ export class PersonalDetailsComponent implements OnInit {
     'PrimaryContactEmail': {
       'pattern': ''
     },
+    'PrimaryContactWebsite': {
+      'pattern': ''
+    },
+    'SecondaryContactName': {
+      'pattern': ''
+    },
     'SecondaryContactPhone': {
       'pattern': ''
     },
@@ -106,6 +119,9 @@ export class PersonalDetailsComponent implements OnInit {
       'pattern': ''
     },
     'SecondaryContactEmail': {
+      'pattern': ''
+    },
+    'SecondaryContactWebsite': {
       'pattern': ''
     },
     'NameofInsuranceCompany': {
@@ -120,6 +136,7 @@ export class PersonalDetailsComponent implements OnInit {
     'Address1': '',
     'CountryCode': '',
     'StateCode': '',
+    'CityCode': '',
     'PIN': '',
     'PrimaryContactName': '',
     'PrimaryContactPhone': '',
@@ -128,7 +145,9 @@ export class PersonalDetailsComponent implements OnInit {
     'SecondaryContactPhone': '',
     'SecondaryContactFax': '',
     'SecondaryContactEmail': '',
-    'NameofInsuranceCompany': ''
+    'NameofInsuranceCompany': '',
+    'PrimaryContactWebsite': '',
+    'SecondaryContactWebsite': ''
   };
 
   constructor(private _vendorService: VendorService,
@@ -242,6 +261,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.LogValidationErrors();
       this.PopUpMessage = 'Please fill required fields.';
       this.alertButton.click();
+      this.ToggleAllContainers();
       return;
     }
     let StatusObj: any;
@@ -422,7 +442,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: true,
         IsJWVendor: [this.vendor.IsJWVendor],
         IsDirectVendor: [this.vendor.IsDirectVendor],
-        NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
+        NameofInsuranceCompany: [{ value: this.vendor.NameofInsuranceCompany, disabled: true }],
         IsInsured: [this.vendor.isInsured]
       }),
       RegisteredOfficeAddress: this._fb.group({
@@ -435,22 +455,23 @@ export class PersonalDetailsComponent implements OnInit {
         Address2: [this.vendor.RegisteredOfficeAddress.Address2],
         Address3: [this.vendor.RegisteredOfficeAddress.Address3],
         CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
-        CityCode: [this.vendor.RegisteredOfficeAddress.CityCode],
+        CityCode: [this.vendor.RegisteredOfficeAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
         StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
         PIN: [this.vendor.RegisteredOfficeAddress.PIN,
-        [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(6), Validators.maxLength(6)]],
+        [Validators.required, Validators.pattern('^[1-9][0-9]{5}$'), Validators.minLength(6), Validators.maxLength(6)]],
         AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
-        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName, [Validators.required]],
+        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName,
+        [Validators.required, Validators.pattern(this.AlphabetPattern)]],
         PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone,
         [Validators.required, Validators.pattern(this.PhonePattern)]],
         PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax, [Validators.pattern(this.PhonePattern)]],
         PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail, [Validators.pattern(this.EmailPattern)]],
-        PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite],
-        SecondaryContactName: [this.vendor.RegisteredOfficeAddress.SecondaryContactName],
+        PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite, Validators.pattern(this.WebsitePattern)],
+        SecondaryContactName: [this.vendor.RegisteredOfficeAddress.SecondaryContactName, Validators.pattern(this.AlphabetPattern)],
         SecondaryContactPhone: [this.vendor.RegisteredOfficeAddress.SecondaryContactPhone, [Validators.pattern(this.PhonePattern)]],
         SecondaryContactFax: [this.vendor.RegisteredOfficeAddress.SecondaryContactFax, [Validators.pattern(this.PhonePattern)]],
         SecondaryContactEmail: [this.vendor.RegisteredOfficeAddress.SecondaryContactEmail, [Validators.pattern(this.EmailPattern)]],
-        SecondaryContactWebsite: [this.vendor.RegisteredOfficeAddress.SecondaryContactWebsite],
+        SecondaryContactWebsite: [this.vendor.RegisteredOfficeAddress.SecondaryContactWebsite, Validators.pattern(this.WebsitePattern)],
         IsSameForAll: [false],
         IsExpanded: false
       }),
@@ -790,8 +811,8 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators(Validators.required);
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
     } else {
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators([]);
-      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
     }
   }
 }
