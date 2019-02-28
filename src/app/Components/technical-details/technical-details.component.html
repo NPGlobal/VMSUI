@@ -38,10 +38,13 @@
                 data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
               </a>
 
-              <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                (click)="DeleteTechDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i>
+              <a *ngIf="vendor.TechLineNo !== null" title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i class="fa fa-remove"></i>
               </a>
 
+              <a *ngIf="vendor.TechLineNo !== null" title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-trash"></i>
+              </a>
             </td>
           </tr>
         </ng-container>
@@ -222,14 +225,19 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
+        <h5 class="modal-title" id="exampleModalLabel">
+          Ready to {{vendorTechDefault!== undefined && vendorTechDefault.Status === 'D' ? 'Delete' : 'Deactivate'}}?
+        </h5>
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
-      <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
+      <div class="modal-body">
+        This record no longer will be available
+        {{vendorTechDefault!== undefined && vendorTechDefault.Status === 'D' ? '' : 'for allocation'}} in the system. Are you sure?
+      </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
         <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
       </div>
     </div>

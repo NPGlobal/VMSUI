@@ -88,6 +88,10 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
   modalCloseButton: ElementRef;
   modalClose: HTMLElement;
 
+  @ViewChild('deleteModalClose')
+  deleteModalClose: ElementRef;
+  dltModalCloseButton: HTMLElement;
+
   unitCountList(n: number): any[] {
     return Array(n);
   }
@@ -104,6 +108,8 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
     this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
+
+    this.dltModalCloseButton = this.deleteModalClose.nativeElement as HTMLElement;
 
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
@@ -157,20 +163,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
     this.InitializeFormControls();
   }
-  // CreateNewVendorTech() {
-  //   this.vendorTechDefault = new VendorTechDefault();
-  //   // this.VendorStaff.VendorStaffConfigId = '';
-  //   // this.VendorStaff.VendorStaffDetailsId = '';
-  //   // this.VendorStaff.dept = '';
-  //   // this.VendorStaff.designation = '';
-  //   // this.VendorStaff.VendorCode = '';
-  //   // this.VendorStaff.ContactName = '';
-  //   // this.VendorStaff.ContactEmail = '';
-  //   // this.VendorStaff.ContactPhone = null;
-  //   // this.VendorStaff.Priority = null;
-  //   this.vendorTechDefault.Status = 'A';
-  //   this.vendorTechDefault.Remarks = '';
-  // }
+
   InitializeFormControls() {
     this.techDetailsForm = this._fb.group({
       Department: [null],
@@ -194,6 +187,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     // this.isDisable = false;
     // this.LogValidationErrors();
     this.modalClose.click();
+    this.dltModalCloseButton.click();
   }
 
   GetVendorDepartments() {
@@ -244,9 +238,9 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     this.sendFormData();
   }
 
-  DeleteTechDetailsPopup(vobj: VendorTechDefault) {
-    vobj.Status = 'D';
-    this.vendorTechDefault = vobj;
+  DeleteTechDetailsPopup(vobj: VendorTechDefault, status: string) {
+    vobj.Status = status;
+    this.vendorTechDefault = JSON.parse(JSON.stringify(vobj));
     this.InitializeFormControls();
   }
 
@@ -254,7 +248,7 @@ export class TechnicalDetailsComponent implements OnInit, OnChanges {
     const st = this.techDetailsForm.get('Status').value;
 
     try {
-      if ((this.vendorTechDefault.VendorTechDetails !== undefined || this.vendorTechDefault.VendorTechDetails !== null)
+      if (this.vendorTechDefault.VendorTechDetails !== undefined && this.vendorTechDefault.VendorTechDetails !== null
         && this.vendorTechDefault.VendorTechDetails.length > 0) {
 
         this.vendorTechDefault.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
