@@ -85,6 +85,9 @@ export class StaffDetailsComponent implements OnInit {
       this.GetVendorStaffs(this.currentPage);
     });
     this.GetVendorDepartments();
+    this.staffDetailsForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors();
+    });
     this.GetVendorStaffs(this.currentPage);
   }
   logValidationErrors(group: FormGroup = this.staffDetailsForm): void {
@@ -109,7 +112,7 @@ export class StaffDetailsComponent implements OnInit {
   CreateNewVendorStaff() {
     this.VendorStaff = new VendorStaff();
     // this.VendorStaff.VendorStaffConfigId = '';
-    // this.VendorStaff.VendorStaffDetailsId = '';
+    // this.VendorStaff.VendorStaffDetailsId = '';s
     // this.VendorStaff.dept = '';
     this.VendorStaff.designation = '';
     this.VendorStaff.VendorCode = '';
@@ -184,29 +187,29 @@ export class StaffDetailsComponent implements OnInit {
       this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
         .subscribe((data) => {
           this.designationList = data;
-          //   this.MaxPriority = data.max_allowed;
+       //   this.MaxPriority = data.max_allowed;
           if (this.staffDetailsForm.get('designation').value !== null) {
             const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
             if (strArray === undefined) {
               this.staffDetailsForm.controls.designation.patchValue(null);
-            }
-          }
-          this.staffDetailsForm.controls.priority.patchValue(null);
-          this.MaxPriority = 0;
-        });
+            } else { this.GetVendorPriority(); }
+             }
+             if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
+             this.staffDetailsForm.controls.priority.patchValue(null);
+             this.MaxPriority = 0; }
+          });
     }
   }
   GetVendorPriority() {
-    this.staffDetailsForm.controls.priority.patchValue(null);
+    if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
+     this.staffDetailsForm.controls.priority.patchValue(null); }
     if (this.staffDetailsForm.get('designation').value !== null) {
-      // tslint:disable-next-line:triple-equals
-      this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
-      this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
+    // tslint:disable-next-line:triple-equals
+    this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
+    this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
     } else {
       this.priorityListTemp = [];
-      this.MaxPriority = 0;
-    }
-  }
+      this.MaxPriority = 0; }}
   SaveStaffDetails() {
     this.submitted = true;
     if (this.staffDetailsForm.invalid) {
@@ -237,7 +240,7 @@ export class StaffDetailsComponent implements OnInit {
     const st = this.staffDetailsForm.get('Status').value;
     this.VendorStaff = new VendorStaff();
     this.VendorStaff.VendorStaffDetailsId = (this.staffDetailsForm.get('VendorStaffDetailsId').value === null)
-      ? 0 : this.staffDetailsForm.get('VendorStaffDetailsId').value;
+    ? 0 : this.staffDetailsForm.get('VendorStaffDetailsId').value;
     this.VendorStaff.VendorStaffConfigId = this.staffDetailsForm.get('designation').value;
     this.VendorStaff.VendorCode = this.vendorcode;
     this.VendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
