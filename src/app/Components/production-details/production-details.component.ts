@@ -321,7 +321,7 @@ export class ProductionDetailsComponent implements OnInit {
           this.InitializeFormControls();
 
           this.vendorProductionList = result.data.Table1;
-          this.totalItems = result.data.Table2.TotalVendors;
+          this.totalItems = result.data.Table2[0].TotalVendors;
           this.GetVendorsProductionList();
           this.departmentList = [];
           this.modalBody = result.data.Table[0].Message;
@@ -423,7 +423,7 @@ export class ProductionDetailsComponent implements OnInit {
           if (result.data.Table[0].Result === 0) {
             this.VendorProduction = new VendorProduction();
             this.vendorProductionList = result.data.Table1;
-            this.totalItems = result.data.Table2.TotalVendors;
+            this.totalItems = result.data.Table2[0].TotalVendors;
             this.InitializeFormControls();
             this.GetVendorsProductionList();
             this.departmentList = [];
