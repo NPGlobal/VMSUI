@@ -167,7 +167,6 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   SaveVendorPrimaryInfo() {
-    debugger;
     this.submitted = true;
 
     if (this.RegistrationForm.invalid ||

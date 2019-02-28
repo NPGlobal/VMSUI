@@ -4,15 +4,15 @@
     <div class="content-heading" align="left">Bank Details</div>
     <div class="form-group col-md-3">
       <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
+      <input type="text" maxlength="199" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="BankName">Bank Name</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="BankName">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BankName">
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="BranchName">Branch Name</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="BranchName">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BranchName">
     </div>
     <div style="margin-top: 10px;" class="form-group col-md-3">
       <div>
@@ -25,7 +25,7 @@
 
     <div class="form-group col-md-3">
       <label class="text" for="AccountNo">Account No</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="AccountNo"
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="AccountNo"
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.AccountNo}">
     </div>
     <div class="form-group col-md-3">
@@ -44,25 +44,25 @@
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="PaymentTerms">Payment Terms<i class="mandatory">*</i></label>
-      <input type="text" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
+      <input type="text" maxlength="1999" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PaymentTerms}">
     </div>
 
     <div class="form-group col-md-3">
       <label class="text" for="IFSCCode">IFSC Code</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="IFSCCode">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="IFSCCode">
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="MICRNo">MICR No</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="MICRNo">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="MICRNo">
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="SWIFTCode">SWIFT Code</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="SWIFTCode">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="SWIFTCode">
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="RemittanceInfavourof">Remittance Infavourof</label>
-      <input type="text" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
     </div>
   </div>
 
