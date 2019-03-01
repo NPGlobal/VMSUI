@@ -191,19 +191,19 @@ export class StaffDetailsComponent implements OnInit {
    });
   }
   onDeptSelect(item: any) {
-    alert(item.DeptCode);
-    alert(item.DeptName);
-    alert(this.staffDetailsForm.get('deptSelectList').value);
-    console.log(item);
+  //  alert(item.DeptCode);
+  //  alert(item.DeptName);
+  //  alert(this.staffDetailsForm.get('deptSelectList').value);
+  //  console.log(item);
   }
   onDeptSelectAll(items: any) {
-    items.forEach(function (i) {
-      console.log(i);
-      this.dept += i.DeptCode;
-      alert(this.dept);
-    });
+   // items.forEach(function (i) {
+   //   console.log(i);
+    //  this.dept += i.DeptCode;
+    //  alert(this.dept);
+    // });
    // alert(items.DeptCode);
-    console.log(items);
+   // console.log(items);
   }
 //  this.sequenceService.GetSequences().subscribe(res => {
 //       this.sequences = res;
