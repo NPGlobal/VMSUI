@@ -229,3 +229,15 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   .detail-page{width:95%}
   .expand-all{width:95%}
 }
+
+
+.search{background-color: #fff;}
+.search input[type="text"]{margin-bottom: 0px;width: 100%;}
+.table > thead > tr.search, .table > thead > tr.search > th, 
+.table > thead > tr.search > td {
+  vertical-align: middle !important;
+  font-weight: normal !important;
+  text-align: left !important;
+  padding: 0px !important;
+  border:none !important;
+}
