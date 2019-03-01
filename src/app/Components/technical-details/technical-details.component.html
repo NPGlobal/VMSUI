@@ -127,6 +127,7 @@
                 <label class="text">Machine Type <span class="error-label">*</span></label>
                 <span>
                   <select formControlName="Department" class="form-control input-sm"
+                    [attr.disabled]="techDetailsForm.get('Department').disabled ? 'disabled': null"
                     (change)="GetVendorTechSpec($event)" (blur)="LogValidationErrors()"
                     [ngClass]="{ 'is-invalid': formErrors.Department }">
                     <option [ngValue]="null">Select</option>
@@ -141,6 +142,7 @@
                 <label class="text">Machine Name <span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendorTechConfigID" class="form-control input-sm"
+                  [attr.disabled]="techDetailsForm.get('VendorTechConfigID').disabled ? 'disabled': null"
                     (change)="specChange($event)" (blur)="LogValidationErrors()"
                     [ngClass]="{ 'is-invalid': formErrors.VendorTechConfigID }">
                     <option [ngValue]="null" data-line="0" data-efficiency="0" data-maxnumber=''>Select</option>
@@ -173,13 +175,11 @@
                 </span>
               </div>
 
-              <div class="col-lg-1 col-md-1">
-                <button type="submit" class="btn btn-primary" style="font-size: 12px;margin-top: 1.7rem;">
+              <div class="col-lg-2 col-md-2">
+                <button type="submit" class="btn btn-primary mt-4">
                   <i class="fa fa-plus"></i>
                 </button>
-              <!-- </div>
-              <div class="col-lg-1 col-md-1"> -->
-                <button type="button" class="btn btn-secondary" style="font-size: 12px;margin-top: 1.7rem;">
+                <button type="button" class="btn btn-secondary mt-4 ml-2" (click)="ResetMachine()">
                   <i class="fa fa-remove"></i>
                 </button>
               </div>
@@ -188,7 +188,7 @@
 
           <div class="form-group col-lg-12 col-md-12">
             <table class="table table-striped table-bordered table-hover table-small"
-              [hidden]="vendorTechDefault.VendorTechDetails === undefined || vendorTechDefault.VendorTechDetails.length === 0">
+              [hidden]="isTechDetailFormChanged">
               <thead>
                 <tr>
                   <th>Machine Type</th>
@@ -200,21 +200,23 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let m of vendorTechDefault.VendorTechDetails;">
-                  <td>{{m.MachineType}}</td>
-                  <td>{{m.MachineName}}</td>
-                  <td>{{m.Efficiency}}</td>
-                  <td>{{m.UnitCount}}</td>
-                  <td>{{m.Status}}</td>
-                  <td>
-                    <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
-                      <i class="fa fa-edit"></i>
-                    </a>
-                    <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
-                        class="fa fa-trash"></i>
-                    </a>
-                  </td>
-                </tr>
+                <ng-container *ngFor="let m of vendorTechDefault.VendorTechDetails">
+                  <tr *ngIf="m.Status !== 'D'">
+                    <td>{{m.MachineType}}</td>
+                    <td>{{m.MachineName}}</td>
+                    <td>{{m.Efficiency}}</td>
+                    <td>{{m.UnitCount}}</td>
+                    <td>{{m.Status}}</td>
+                    <td>
+                      <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
+                        <i class="fa fa-edit"></i>
+                      </a>
+                      <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
+                          class="fa fa-trash"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
           </div>
@@ -222,8 +224,10 @@
 
         <!-- Modal footer -->
         <div class="modal-footer col-md-12  page-footer">
-          <button type="button" [disabled]="!isTechDetailFormChanged" (click)="SaveTechDetails()"
-            class="mr-3 btn btn-primary">Save</button>
+          <button type="button" (click)="SaveTechDetails()"
+            [attr.disabled]="isTechDetailFormChanged ? 'disabled' : null" class="mr-3 btn btn-primary">
+            Save
+          </button>
           <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
         </div>
       </div>
@@ -263,8 +267,7 @@
 </button>
 
 <!-- Modal to open alert modal -->
-<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel"
-  aria-hidden="true">
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
