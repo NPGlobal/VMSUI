@@ -30,7 +30,6 @@ export class ProductionDetailsComponent implements OnInit {
   vendorcode: string;
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
-  CityPattern = '^[A-Za-z]+$';
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   vendorProductionList: VendorProduction[]; // For added Production List
@@ -44,11 +43,15 @@ export class ProductionDetailsComponent implements OnInit {
   ProductionDetailsForm: FormGroup;
   divisionList: any[];
   departmentList: any[];
+  SelectedDepartmentList: any[];
   status = true;
   submitted = false;
   action = 'Insert';
   modalBody: string;
   StateList: MasterDataDetails[] = [];
+
+  DropdownSettings = {};
+
   ValidationMessages = {
     'Division': {
       'required': ''
@@ -91,11 +94,10 @@ export class ProductionDetailsComponent implements OnInit {
       'pattern': 'Please enter a valid phone number'
     },
     'StateCode': {
-      'required': ''
+      'required': '',
     },
     'city': {
-      'required': '',
-      'pattern': 'Please enter a valid city'
+      'required': ''
     },
     'pincode': {
       'required': '',
@@ -123,6 +125,11 @@ export class ProductionDetailsComponent implements OnInit {
   @ViewChild('modalOpenButton')
   modalOpenButton: ElementRef;
   ngOnInit() {
+
+    this.DropDownSettings();
+    this.SelectedDepartmentList = [
+     // { MDDCode: 'BW', MDDName: 'Bandhej Western' },
+    ];
     // this.openModal();
     this.openModal();
     this.GetStateList();
@@ -216,7 +223,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.action = 'Insert';
     this.ProductionDetailsForm = this._fb.group({
       // id: ['0'],
-     Division: ['', Validators.required],
+      Division: ['', Validators.required],
       Department: ['', Validators.required],
       approvedProductionUnits: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
       subContractingUnitName: ['', Validators.required],
@@ -231,7 +238,7 @@ export class ProductionDetailsComponent implements OnInit {
       address3: [''],
       Phone: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: ['', Validators.required],
-      city: ['', [Validators.required, Validators.pattern(this.CityPattern)]],
+      city: ['', Validators.required],
       pincode: ['', [Validators.required, Validators.pattern(this.PinPattern)]],
       remarks: [''],
       status: true
@@ -323,7 +330,7 @@ export class ProductionDetailsComponent implements OnInit {
           this.InitializeFormControls();
 
           this.vendorProductionList = result.data.Table1;
-          this.totalItems = result.data.Table2[0].TotalVendors;
+          this.totalItems = result.data.Table2.TotalVendors;
           this.GetVendorsProductionList();
           this.departmentList = [];
           this.modalBody = result.data.Table[0].Message;
@@ -362,7 +369,7 @@ export class ProductionDetailsComponent implements OnInit {
         address3: [result.data.Table[0].Address3],
         Phone: [result.data.Table[0].Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
         StateCode: [result.data.Table[0].StateCode, Validators.required],
-        city: [result.data.Table[0].CityCode, [Validators.required, Validators.pattern(this.CityPattern)]],
+        city: [result.data.Table[0].CityCode, Validators.required],
         pincode: [result.data.Table[0].Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
         remarks: [result.data.Table[0].Remarks],
         status: result.data.Table[0].Status = 'A' ? true : false,
@@ -387,7 +394,7 @@ export class ProductionDetailsComponent implements OnInit {
       address3: [vendor.Address3],
       Phone: [vendor.Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: [vendor.StateCode, Validators.required],
-      city: [vendor.CityCode, [Validators.required, Validators.pattern(this.CityPattern)]],
+      city: [vendor.CityCode, Validators.required],
       pincode: [vendor.Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
       remarks: [vendor.Remarks],
       status: vendor.Status = 'A' ? true : false
@@ -421,11 +428,11 @@ export class ProductionDetailsComponent implements OnInit {
     this.VendorProduction.Status = false;
     try {
       this._vendorService.SaveProductionInfo(this.VendorProduction).subscribe((result) => {
-       if (result.data.Table[0].Message != null) {
+        if (result.data.Table[0].Message != null) {
           if (result.data.Table[0].Result === 0) {
             this.VendorProduction = new VendorProduction();
             this.vendorProductionList = result.data.Table1;
-            this.totalItems = result.data.Table2[0].TotalVendors;
+            this.totalItems = result.data.Table2.TotalVendors;
             this.InitializeFormControls();
             this.GetVendorsProductionList();
             this.departmentList = [];
@@ -448,4 +455,27 @@ export class ProductionDetailsComponent implements OnInit {
     }
     el.click();
   }
+
+  onItemSelect(item: any) {
+    console.log(item);
+  }
+  onSelectAll(items: any) {
+    console.log(items);
+  }
+
+  DropDownSettings() {
+    this.DropdownSettings = {
+      singleSelection: false,
+      idField: 'MDDCode',
+      textField: 'MDDName',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      limitSelection: 5,
+      noDataAvailablePlaceholderText: '',
+      allowSearchFilter: true
+    };
+  }
+
 }
+
