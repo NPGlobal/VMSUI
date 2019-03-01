@@ -33,6 +33,13 @@ export class VendorListComponent implements OnInit {
     private _pager: PagerService) { }
 
   ngOnInit() {
+    this.searchByName = '';
+    this.searchByShortName = '';
+    this.searchByRefVendor = '';
+    this.searchByGST = '';
+    this.searchByPAN = '';
+    this.searchByCreatedOn = '';
+
     this.GetVendors(this.currentPage);
   }
   GetVendors(index: number) {
@@ -50,11 +57,13 @@ export class VendorListComponent implements OnInit {
     this.searchText = searchText;
     this.GetVendors(1);
   }
+
   SearchVendorList() {
     this.searchText = this.searchByName + '~' + this.searchByShortName + '~' + this.searchByRefVendor + '~' +
-    this.searchByGST + '~' + this.searchByPAN + '~' + this.searchByCreatedOn;
+      this.searchByGST + '~' + this.searchByPAN + '~' + this.searchByCreatedOn;
     this.SearchVendor(this.searchText);
   }
+
   GetVendorsList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendors;

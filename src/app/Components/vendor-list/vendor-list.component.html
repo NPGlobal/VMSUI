@@ -2,9 +2,9 @@
   <div class="float-left col-md-6">
     <h2>Producers</h2>
   </div>
-  <div class="float-right row col-md-6">
-    <input type="text" class="SearchBox" placeholder="Search" (keyup)="SearchVendor($event.target.value)" name="search">
-    <button type="button" class="ml-2 btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
+  <div class="float-right">
+    <!-- <input type="text" class="SearchBox" placeholder="Search" (keyup)="SearchVendor($event.target.value)" name="search"> -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
       data-keyboard="false" (click)="OnRegistrationClick()">
       <i class="fa fa-plus"></i>
       <span title="Add new" class="py-4">Add</span>
@@ -12,7 +12,6 @@
   </div>
   
   <div class="clearfix"></div>
-  <p>{{searchText}}</p>
   <table class="table table-striped table-hover">
       <thead>
       <tr class="search">
