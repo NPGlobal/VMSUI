@@ -205,10 +205,9 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   -webkit-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
   }
-  .SearchBox:hover {
-    width: 300px;
-  }
+  .SearchBox:hover {width: 300px;}
   
+#msgModalLabel{font-size:18px;}
 
 @media (max-width: 320px){
   .navbar-dark .navbar-brand{width:50%;}
