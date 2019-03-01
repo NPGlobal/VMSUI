@@ -25,8 +25,8 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CommonModule } from '@angular/common';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 
 @NgModule({

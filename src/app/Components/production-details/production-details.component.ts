@@ -207,9 +207,9 @@ export class ProductionDetailsComponent implements OnInit {
       remarks: [this.VendorProduction.Remarks],
       status: [this.VendorProduction.Status]
     });
-    this.ProductionDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.ProductionDetailsForm);
-    });
+    // this.ProductionDetailsForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.ProductionDetailsForm);
+    // });
   }
   openModal() {
     this.isDisable = false;
@@ -236,9 +236,9 @@ export class ProductionDetailsComponent implements OnInit {
       remarks: [''],
       status: true
     });
-    this.ProductionDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.ProductionDetailsForm);
-    });
+    // this.ProductionDetailsForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.ProductionDetailsForm);
+    // });
   }
   dismiss() {
     this.ProductionDetailsForm = this._fb.group({

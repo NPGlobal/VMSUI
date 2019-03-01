@@ -533,9 +533,9 @@ export class PersonalDetailsComponent implements OnInit {
       this.SetValidationForGSTControls();
     }
 
-    this.personalDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.personalDetailsForm);
-    });
+    // this.personalDetailsForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.personalDetailsForm);
+    // });
   }
 
   DisableControls(disablePan: boolean,

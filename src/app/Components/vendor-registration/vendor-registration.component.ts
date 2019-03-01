@@ -94,9 +94,9 @@ ngOnInit() {
 
   this.HasPHSelected = true;
   this.CodeExists = false;
-  this.RegistrationForm.valueChanges.subscribe((data) => {
-    this.logValidationErrors(this.RegistrationForm);
-  });
+  // this.RegistrationForm.valueChanges.subscribe((data) => {
+  //   this.logValidationErrors(this.RegistrationForm);
+  // });
 }
 
 // tslint:disable-next-line:use-life-cycle-interface
