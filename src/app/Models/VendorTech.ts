@@ -1,14 +1,16 @@
 export class VendorTech {
-dept: string;
+DeptCode: string;
 techSpec: string;
-VendorCode: string;
-VendorTechConfigID: number;
-VendorTechDetailsID: number;
-TechLineNo: number;
+VendorShortCode: string;
+VendorTechConfigID?: number;
+VendorTechDetailsID?: number;
+TechLineNo: string;
 Efficiency: number;
 UnitCount: number;
-Status: boolean;
+Status: string;
 Remarks: string;
 CreatedBy: number;
 isDisable: boolean;
+MachineName: string;
+MachineType: string;
 }

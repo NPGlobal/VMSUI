@@ -20,6 +20,7 @@ export class VendorListComponent implements OnInit {
   isSorted = false;
   searchText = '';
   loading: boolean;
+  RegistrationClick = true;
 
   constructor(private _http: HttpClient,
     private _vendorService: VendorService,
@@ -83,5 +84,9 @@ export class VendorListComponent implements OnInit {
         this.pagedItems.sort((a, b) => a.CreatedOn.localeCompare(b.CreatedOn));
       }
     }
+  }
+
+  OnRegistrationClick() {
+    this.RegistrationClick = !this.RegistrationClick;
   }
 }

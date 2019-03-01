@@ -82,21 +82,33 @@
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Designation<span class="error-label">*</span></label>
                     <span>
-                      <select formControlName="designation" class="form-control input-sm" (change)="GetVendorDepartment($event)"
+                      <select formControlName="designation" class="form-control input-sm" (change)="GetVendorDepartments($event)"
                         [ngClass]="{ 'is-invalid': formErrors.designation }">      
                         <option [ngValue]="null">Select Designation</option>
                         <option *ngFor="let option of designationList" 
                         [attr.data-maxnumber]="option.Max_Allowed"
-                        value={{option.VendorConfigID}}>
+                        value={{option.Designation}}>
                           {{option.Designation}}
                         </option>
                         </select>
                     </span>
                 </div>
                 <div class="col-lg-6 col-md-6">
+                  <label class="text">Technical Department<span class="error-label">*</span></label>
+                  <span>
+                <ng-multiselect-dropdown [placeholder]="dept"
+                                 [data]="deptList"
+                                 [(ngModel)]="deptSelectedItems"
+                                 [settings]="deptDropdownSettings"
+                                 (onSelect)="onDeptSelect($event)"
+                                 (onSelectAll)="onDeptSelectAll($event)">
+                </ng-multiselect-dropdown>
+              </span>
+            </div>
+                <!-- <div class="col-lg-6 col-md-6">
                     <label class="text">Technical Department<span class="error-label">*</span></label>
                     <span>
-                     <select formControlName="dept" class="form-control input-sm" (change)="GetVendorPriority($event)"
+                     <select formControlName="dept" class="form-control input-sm" 
                       [ngClass]="{ 'is-invalid': formErrors.dept }">
                         <option [ngValue]="null">Select Technical Department</option>
                         <option *ngFor="let option of deptList" value={{option.DeptCode}}>
@@ -104,7 +116,7 @@
                         </option>
                       </select>
                     </span>
-                </div>
+                </div> -->
               </div>
             </div>
             <!-- <div class="form-group col-lg-12 col-md-12">

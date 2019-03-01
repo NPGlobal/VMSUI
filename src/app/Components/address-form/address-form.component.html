@@ -101,15 +101,18 @@
                   </div>
                   <div class="col-md-22">
                     <label class="text">Fax</label>
-                    <input type="text" formControlName="PrimaryContactFax" class="form-control input-sm">
+                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}"
+                    formControlName="PrimaryContactFax" class="form-control input-sm">
                   </div>
                   <div class="col-md-22">
                     <label class="text">Email</label>
-                    <input type="email" formControlName="PrimaryContactEmail" class="form-control input-sm">
+                    <input type="email" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactEmail}"
+                     formControlName="PrimaryContactEmail" class="form-control input-sm">
                   </div>
                   <div class="col-md-22">
                     <label class="text">Website</label>
-                    <input type="text" formControlName="PrimaryContactWebsite" class="form-control input-sm">
+                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactWebsite}" 
+                    formControlName="PrimaryContactWebsite" class="form-control input-sm">
                   </div>
                 </div>
               </fieldset>
@@ -120,23 +123,28 @@
                 <div class="form-group row">
                   <div class="col-md-22">
                     <label class="text">Contact Name</label>
-                    <input formControlName="SecondaryContactName" type="text" class="form-control input-sm">
+                    <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactName}" 
+                    formControlName="SecondaryContactName" type="text" class="form-control input-sm">
                   </div>
                   <div class="col-md-22">
                     <label class="text">Phone No.</label>
-                    <input type="text" formControlName="SecondaryContactPhone" class="form-control input-sm">
+                    <input  type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}"
+                    formControlName="SecondaryContactPhone" class="form-control input-sm">
                   </div>
                   <div class="col-md-22">
                     <label class="text">Fax</label>
-                    <input type="text" formControlName="SecondaryContactFax" class="form-control input-sm">
+                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}"
+                    formControlName="SecondaryContactFax" class="form-control input-sm">
                   </div>
                   <div class="col-md-22">
                     <label class="text">Email</label>
-                    <input type="email" formControlName="SecondaryContactEmail" class="form-control input-sm">
+                    <input type="email" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactEmail}"
+                    formControlName="SecondaryContactEmail" class="form-control input-sm">
                   </div>
                   <div class="col-md-22">
                     <label class="text">Website</label>
-                    <input type="text" formControlName="SecondaryContactWebsite" class="form-control input-sm">
+                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactWebsite}"
+                    formControlName="SecondaryContactWebsite" class="form-control input-sm">
                   </div>
                 </div>
               </fieldset>

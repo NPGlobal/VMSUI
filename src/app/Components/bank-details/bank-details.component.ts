@@ -21,8 +21,10 @@ export class BankDetailsComponent implements OnInit {
   CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
 
-  @ViewChild('modalOpenButton')
-  modalOpenButton: ElementRef;
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
 
   ValidationMessages = {
     'CurrencyCode': {
@@ -46,15 +48,15 @@ export class BankDetailsComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private _fb: FormBuilder, private _vendorService: VendorService) { }
 
   ngOnInit() {
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
       if (this.VendorCode === null) {
+        this.vendor = new Vendor();
         this.InitializeFormControls();
       } else {
         this.Editvendor(this.VendorCode);
       }
-      this.vendor = new Vendor();
-      this.InitializeFormControls();
     });
     this.GetCurrencyList();
     this.GetAccountType();
@@ -112,47 +114,63 @@ export class BankDetailsComponent implements OnInit {
     this.submitted = true;
     if (this.BankDetailsForm.invalid) {
       this.logValidationErrors();
+      this.PopUpMessage = 'Please fill the required fields.';
+      this.alertButton.click();
       return;
     }
 
+    let StatusObj: any;
     const vendor = this.vendor;
     vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.VendorCode = this.VendorCode;
     vendor.SaveOnlyBankDetails = this.SaveOnlyBankDetails;
-    vendor.NameAsPerBankAccount = this.BankDetailsForm.get('NameAsPerBankAccount').value;
-    vendor.BankAcctNo = this.BankDetailsForm.get('AccountNo').value;
-    vendor.BankName = this.BankDetailsForm.get('BankName').value;
-    vendor.BranchName = this.BankDetailsForm.get('BranchName').value;
+    vendor.NameAsPerBankAccount = this.BankDetailsForm.get('NameAsPerBankAccount').value === null ?
+    null : this.BankDetailsForm.get('NameAsPerBankAccount').value.trim();
+    vendor.BankAcctNo = this.BankDetailsForm.get('AccountNo').value === null ?
+    null : this.BankDetailsForm.get('AccountNo').value.trim();
+    vendor.BankName = this.BankDetailsForm.get('BankName').value === null ?
+    null : this.BankDetailsForm.get('BankName').value.trim();
+    vendor.BranchName = this.BankDetailsForm.get('BranchName').value === null ?
+    null : this.BankDetailsForm.get('BranchName').value.trim();
     vendor.CurrencyCode = this.BankDetailsForm.get('CurrencyCode').value;
-    vendor.IFSCCode = this.BankDetailsForm.get('IFSCCode').value;
-    vendor.MICRNo = this.BankDetailsForm.get('MICRNo').value;
-    vendor.PaymentTerms = this.BankDetailsForm.get('PaymentTerms').value;
-    vendor.RemittanceInfavourof = this.BankDetailsForm.get('RemittanceInfavourof').value;
-    vendor.SwiftCode = this.BankDetailsForm.get('SWIFTCode').value;
-    vendor.accountType = this.BankDetailsForm.get('AccountType').value;
+    vendor.IFSCCode = this.BankDetailsForm.get('IFSCCode').value === null ?
+    null : this.BankDetailsForm.get('IFSCCode').value.trim();
+    vendor.MICRNo = this.BankDetailsForm.get('MICRNo').value === null ?
+    null : this.BankDetailsForm.get('MICRNo').value.trim();
+    vendor.PaymentTerms = this.BankDetailsForm.get('PaymentTerms').value === null ?
+    null : this.BankDetailsForm.get('PaymentTerms').value.trim();
+    vendor.RemittanceInfavourof = this.BankDetailsForm.get('RemittanceInfavourof').value === null ?
+    null : this.BankDetailsForm.get('RemittanceInfavourof').value.trim();
+    vendor.SwiftCode = this.BankDetailsForm.get('SWIFTCode').value === null ?
+    null : this.BankDetailsForm.get('SWIFTCode').value.trim();
+    vendor.accountType = this.BankDetailsForm.get('AccountType').value.trim();
     vendor.isECSenabled = this.BankDetailsForm.get('isECSenabled').value;
-    this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((data) => {
-      const StatusObj = data;
-      if (StatusObj.Status === 0) {
-        // alert('Saved Succesfully!!');
-        const el = this.modalOpenButton.nativeElement as HTMLElement;
-        el.click();
-        this.Editvendor(this.VendorCode);
-      }
-    });
-    console.log(JSON.stringify(vendor));
+    try {
+      this._vendorService.SaveVendorPersonalDetails(vendor).subscribe((result) => {
+        StatusObj = result;
+        if (StatusObj.data.Table[0].ResultCode === 0) {
+          this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
+          this.alertButton.click();
+          this.Editvendor(this.VendorCode);
+        } else {
+          this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
+          this.alertButton.click();
+        }
+      });
+    } catch {
+      this.PopUpMessage = 'There are some technical error. Please contact administrator.';
+      this.alertButton.click();
+    }
   }
 
   GetCurrencyList() {
     this._vendorService.GetCurrencyList().subscribe((result) => {
       this.CurrencyList = result.data.Table;
-      this.InitializeFormControls();
     });
   }
   GetAccountType() {
     this._vendorService.GetAccountType().subscribe((result) => {
       this.AccountType = result.data.Table;
-      this.InitializeFormControls();
     });
   }
 }

@@ -22,6 +22,11 @@ import { AddressFormComponent } from './Components/address-form/address-form.com
 import { HttpErrorInterceptor } from './Interceptors/http-error-interceptor';
 import { CustomErrorHandlerService } from './Services/custom-error-handler.service';
 import { BankDetailsComponent } from './Components/bank-details/bank-details.component';
+import { LoginComponent } from './Components/login/login.component';
+import { WelcomeComponent } from './Components/welcome/welcome.component';
+import { LoginModule } from './LoginModule/login.module';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
@@ -39,7 +44,9 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
     DocumentComponent,
     VendorRegistrationComponent,
     AddressFormComponent,
-    BankDetailsComponent
+    BankDetailsComponent,
+    LoginComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +54,10 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AngularFontAwesomeModule
+    AngularFontAwesomeModule,
+    LoginModule,
+    NgMultiSelectDropDownModule.forRoot(),
+    CommonModule,
   ],
   providers: [
     {
