@@ -137,7 +137,7 @@
                 </span>
               </div>
 
-              <div class="col-lg-4 col-md-4">
+              <div class="col-lg-3 col-md-3">
                 <label class="text">Machine Name <span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendorTechConfigID" class="form-control input-sm"
@@ -177,8 +177,12 @@
                 <button type="submit" class="btn btn-primary" style="font-size: 12px;margin-top: 1.7rem;">
                   <i class="fa fa-plus"></i>
                 </button>
+              <!-- </div>
+              <div class="col-lg-1 col-md-1"> -->
+                <button type="button" class="btn btn-secondary" style="font-size: 12px;margin-top: 1.7rem;">
+                  <i class="fa fa-remove"></i>
+                </button>
               </div>
-
             </div>
           </div>
 
@@ -259,12 +263,12 @@
 </button>
 
 <!-- Modal to open alert modal -->
-<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <h5 class="modal-title" id="msgModalLabel">{{PopUpMessage}}</h5>
         <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
       </div>
     </div>
