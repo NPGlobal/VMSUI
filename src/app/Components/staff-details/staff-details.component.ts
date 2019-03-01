@@ -170,35 +170,39 @@ export class StaffDetailsComponent implements OnInit {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendorstaffList;
   }
-  GetVendorDepartments() {
-    this._vendorService.GetVendorsDeptStaff('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
-      this.deptList = data;
-    });
-  }
 
-  GetVendorDesignation() {
-    if (this.staffDetailsForm.get('dept').value === null) {
-      this.designationList = [];
-      this.MaxPriority = 0;
-      this.staffDetailsForm.controls.designation.patchValue(null);
-      this.staffDetailsForm.controls.priority.patchValue(null);
-    } else {
-      this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
-        .subscribe((data) => {
-          this.designationList = data;
-       //   this.MaxPriority = data.max_allowed;
-          if (this.staffDetailsForm.get('designation').value !== null) {
-            const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
-            if (strArray === undefined) {
-              this.staffDetailsForm.controls.designation.patchValue(null);
-            } else { this.GetVendorPriority(); }
-             }
-             if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
-             this.staffDetailsForm.controls.priority.patchValue(null);
-             this.MaxPriority = 0; }
-          });
-    }
-  }
+  // GetVendorDesignation() {
+
+  // }
+  // GetVendorDepartments() {
+  //   this._vendorService.GetVendorsDeptStaff('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
+  //     this.deptList = data;
+  //   });
+  // }
+
+  // GetVendorDesignation() {
+  //   if (this.staffDetailsForm.get('dept').value === null) {
+  //     this.designationList = [];
+  //     this.MaxPriority = 0;
+  //     this.staffDetailsForm.controls.designation.patchValue(null);
+  //     this.staffDetailsForm.controls.priority.patchValue(null);
+  //   } else {
+  //     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
+  //       .subscribe((data) => {
+  //         this.designationList = data;
+  //      //   this.MaxPriority = data.max_allowed;
+  //         if (this.staffDetailsForm.get('designation').value !== null) {
+  //           const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
+  //           if (strArray === undefined) {
+  //             this.staffDetailsForm.controls.designation.patchValue(null);
+  //           } else { this.GetVendorPriority(); }
+  //            }
+  //            if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
+  //            this.staffDetailsForm.controls.priority.patchValue(null);
+  //            this.MaxPriority = 0; }
+  //         });
+  //   }
+  // }
   GetVendorPriority() {
     if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
      this.staffDetailsForm.controls.priority.patchValue(null); }

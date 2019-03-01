@@ -77,7 +77,37 @@
           <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
             <input type="hidden" formControlName="VendorStaffDetailsId">
 
-            <div class="form-group col-lg-12 col-md-12">
+              <div class="form-group col-lg-12 col-md-12">
+              <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <label class="text">Designation<span class="error-label">*</span></label>
+                    <span>
+                      <select formControlName="designation" class="form-control input-sm" (change)="GetVendorDepartment($event)"
+                        [ngClass]="{ 'is-invalid': formErrors.designation }">      
+                        <option [ngValue]="null">Select Designation</option>
+                        <option *ngFor="let option of designationList" 
+                        [attr.data-maxnumber]="option.Max_Allowed"
+                        value={{option.VendorConfigID}}>
+                          {{option.Designation}}
+                        </option>
+                        </select>
+                    </span>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <label class="text">Technical Department<span class="error-label">*</span></label>
+                    <span>
+                     <select formControlName="dept" class="form-control input-sm" (change)="GetVendorPriority($event)"
+                      [ngClass]="{ 'is-invalid': formErrors.dept }">
+                        <option [ngValue]="null">Select Technical Department</option>
+                        <option *ngFor="let option of deptList" value={{option.DeptCode}}>
+                          {{option.DeptName}}
+                        </option>
+                      </select>
+                    </span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Technical Department <span class="error-label">*</span></label>
@@ -106,7 +136,7 @@
                     </span>
                 </div>
               </div>
-            </div>
+            </div> -->
   
             <div class="form-group">
               <div class="col-lg-12 col-md-12">
