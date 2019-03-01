@@ -147,9 +147,9 @@ export class BusinessDetailsComponent implements OnInit {
       remarks: ''
     });
 
-    this.businessDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.businessDetailsForm);
-    });
+    // this.businessDetailsForm.valueChanges.subscribe((data) => {
+    //   this.logValidationErrors(this.businessDetailsForm);
+    // });
   }
 
   openModal() {

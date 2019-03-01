@@ -163,9 +163,9 @@ export class TechnicalDetailsComponent implements OnInit {
     });
 
     this.SetEfficiencyAsDefault();
-    this.techDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.techDetailsForm);
-    });
+    // this.techDetailsForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.techDetailsForm);
+    // });
   }
 
   SetEfficiencyAsDefault() {

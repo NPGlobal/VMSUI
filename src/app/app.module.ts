@@ -25,6 +25,8 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
+import { CommonModule } from '@angular/common';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 
 @NgModule({
@@ -53,7 +55,9 @@ import { LoginModule } from './LoginModule/login.module';
     ReactiveFormsModule,
     HttpClientModule,
     AngularFontAwesomeModule,
-    LoginModule
+    LoginModule,
+    NgMultiSelectDropDownModule.forRoot(),
+    CommonModule,
   ],
   providers: [
     {
