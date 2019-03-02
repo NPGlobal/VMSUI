@@ -1,5 +1,5 @@
 export class VendorTech {
-dept: string;
+DeptCode: string;
 techSpec: string;
 VendorShortCode: string;
 VendorTechConfigID?: number;

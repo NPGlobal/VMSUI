@@ -63,8 +63,7 @@ export class StaffDetailsComponent implements OnInit {
       'pattern': 'Please enter a valid phone'
     },
     'priority': {
-      'required': '',
-      'pattern': 'Only numbers allowed'
+      'required': ''
     }
   };
   formErrors = {
@@ -135,7 +134,7 @@ export class StaffDetailsComponent implements OnInit {
       ContactPhone: [this.VendorStaff.ContactPhone, [
         Validators.maxLength(10), Validators.pattern(this.PhonePattern)
       ]],
-      priority: [this.VendorStaff.Priority, [Validators.required, Validators.pattern(this.PhonePattern)]],
+      priority: [this.VendorStaff.Priority, Validators.required],
       Status: [this.VendorStaff.Status],
       remarks: [this.VendorStaff.Remarks]
     });

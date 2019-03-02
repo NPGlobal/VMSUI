@@ -31,6 +31,7 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
   vendorcode: string;
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
+  CityPattern = '^[A-Za-z]+$';
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   vendorProductionList: VendorProduction[]; // For added Production List
@@ -97,10 +98,11 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
       'pattern': 'Please enter a valid phone number'
     },
     'StateCode': {
-      'required': '',
+      'required': ''
     },
     'city': {
-      'required': ''
+      'required': '',
+      'pattern': 'Please enter a valid city'
     },
     'pincode': {
       'required': '',
@@ -238,7 +240,7 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
       address3: [''],
       Phone: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: ['', Validators.required],
-      city: ['', Validators.required],
+      city: ['', [Validators.required, Validators.pattern(this.CityPattern)]],
       pincode: ['', [Validators.required, Validators.pattern(this.PinPattern)]],
       remarks: [''],
       status: true
@@ -343,7 +345,7 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
           this.InitializeFormControls();
 
           this.vendorProductionList = result.data.Table1;
-          this.totalItems = result.data.Table2.TotalVendors;
+          this.totalItems = result.data.Table2[0].TotalVendors;
           this.GetVendorsProductionList();
           this.departmentList = [];
           this.modalBody = result.data.Table[0].Message;
@@ -382,7 +384,7 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
         address3: [result.data.Table[0].Address3],
         Phone: [result.data.Table[0].Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
         StateCode: [result.data.Table[0].StateCode, Validators.required],
-        city: [result.data.Table[0].CityCode, Validators.required],
+        city: [result.data.Table[0].CityCode, [Validators.required, Validators.pattern(this.CityPattern)]],
         pincode: [result.data.Table[0].Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
         remarks: [result.data.Table[0].Remarks],
         status: result.data.Table[0].Status = 'A' ? true : false,
@@ -408,7 +410,7 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
       address3: [vendor.Address3],
       Phone: [vendor.Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: [vendor.StateCode, Validators.required],
-      city: [vendor.CityCode, Validators.required],
+      city: [vendor.CityCode, [Validators.required, Validators.pattern(this.CityPattern)]],
       pincode: [vendor.Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
       remarks: [vendor.Remarks],
       status: vendor.Status = 'A' ? true : false
@@ -446,7 +448,7 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
           if (result.data.Table[0].Result === 0) {
             this.VendorProduction = new VendorProduction();
             this.vendorProductionList = result.data.Table1;
-            this.totalItems = result.data.Table2.TotalVendors;
+            this.totalItems = result.data.Table2[0].TotalVendors;
             this.InitializeFormControls();
             this.GetVendorsProductionList();
             this.departmentList = [];
