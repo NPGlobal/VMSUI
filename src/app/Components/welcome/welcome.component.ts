@@ -11,5 +11,9 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  Redirect() {
+    const url = window.location.origin + '/vendor';
+    // alert('hi');
+    window.location.href = url;
+  }
 }
