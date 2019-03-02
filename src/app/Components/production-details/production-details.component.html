@@ -148,7 +148,7 @@
                 <span>
                   <ng-multiselect-dropdown class="form-control input-sm dropdown" [placeholder]="'Select Department'"
                     [ngModelOptions]="{standalone: true}" [data]="departmentList" [(ngModel)]="SelectedDepartmentList"
-                    [settings]="DropdownSettings" (onSelect)="GetBusinessDetails($event)">
+                    [settings]="DropdownSettings" (onSelect)="GetBusinessDetails($event)" (onDeSelect)="RemoveBussinessDetails($event)">
                   </ng-multiselect-dropdown>
                 </span>
               </div>

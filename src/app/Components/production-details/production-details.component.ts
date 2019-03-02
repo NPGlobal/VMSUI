@@ -307,6 +307,14 @@ export class ProductionDetailsComponent implements OnInit, OnChanges {
 
   }
 
+  RemoveBussinessDetails(event: any) {
+    const index = this.BusinessProd.BusinessDetails.findIndex((obj) =>
+      obj.DeptCode === event.MDDCode);
+    if (index >= 0) {
+      this.BusinessProd.BusinessDetails.splice(index, 1);
+    }
+  }
+
   SaveProductionDetails() {
     const el = this.modalOpenButton.nativeElement as HTMLElement;
     this.submitted = true;
