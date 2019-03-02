@@ -77,9 +77,9 @@ export class BankDetailsComponent implements OnInit {
       SWIFTCode: [this.vendor.SwiftCode],
       RemittanceInfavourof: [this.vendor.RemittanceInfavourof]
     });
-    this.BankDetailsForm.valueChanges.subscribe((data) => {
-      this.logValidationErrors(this.BankDetailsForm);
-    });
+    // this.BankDetailsForm.valueChanges.subscribe((data) => {
+    //   this.logValidationErrors(this.BankDetailsForm);
+    // });
   }
 
   Editvendor(Code: string) {

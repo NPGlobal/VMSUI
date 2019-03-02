@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler } from '@angular/core';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './Components/layout/layout.component';
@@ -24,6 +24,8 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
+import { CommonModule } from '@angular/common';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { LoginModule } from './LoginModule/login.module';
     HttpClientModule,
     AngularFontAwesomeModule,
     LoginModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    CommonModule,
   ],
   providers: [
     {
