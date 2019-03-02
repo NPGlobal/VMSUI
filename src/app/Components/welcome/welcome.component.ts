@@ -12,8 +12,15 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
   }
   Redirect() {
-    const url = window.location.origin + '/vendor';
-    // alert('hi');
-    window.location.href = url;
+    // debugger;
+    if (typeof(Storage) !== undefined) {
+      if (sessionStorage.getItem('userid') !== null) {
+        const url = window.location.origin + '/vendor';
+        // alert('hi');
+        window.location.href = url;
+      }
+    } else {
+      // alert('Sorry! No Web Storage support..');
+    }
   }
 }

@@ -11,5 +11,13 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  LogoutUser() {
+    sessionStorage.removeItem('userid');
+    const url = window.location.origin;
+    window.location.href = url;
+  }
+  MoveToVendorList() {
+    const url = window.location.origin + '/vendor';
+    window.location.href = url;
+  }
 }
