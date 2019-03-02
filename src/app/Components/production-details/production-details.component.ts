@@ -1,12 +1,14 @@
 import { Component, OnInit, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import { BusinessProduction } from 'src/app/Models/business-production';
 import { Vendor } from 'src/app/Models/vendor';
+import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
 declare var $: any;
 
 @Component({
@@ -14,16 +16,15 @@ declare var $: any;
   templateUrl: './production-details.component.html',
   styleUrls: ['./production-details.component.css']
 })
-export class ProductionDetailsComponent implements OnInit {
+export class ProductionDetailsComponent implements OnInit, OnChanges {
   constructor(
     private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
     private _mddService: MasterDataDetailsService
-  ) {
+  ) { }
 
-  }
   isDisable = false;
   Division: string;
   Department: string;
@@ -41,13 +42,19 @@ export class ProductionDetailsComponent implements OnInit {
   pager: any = {};
   pagedItems: any[] = [];
   ProductionDetailsForm: FormGroup;
-  divisionList: any[];
-  departmentList: any[];
+  divisionList: MasterDataDetails[];
+  departmentList: MasterDataDetails[];
+  SelectedDepartmentList: any[];
   status = true;
   submitted = false;
   action = 'Insert';
   modalBody: string;
   StateList: MasterDataDetails[] = [];
+
+  BusinessProd: BusinessProduction;
+
+  DropdownSettings = {};
+
   ValidationMessages = {
     'Division': {
       'required': ''
@@ -121,6 +128,10 @@ export class ProductionDetailsComponent implements OnInit {
   @ViewChild('modalOpenButton')
   modalOpenButton: ElementRef;
   ngOnInit() {
+    this.BusinessProd = new BusinessProduction();
+    this.BusinessProd.BusinessDetails = [];
+    this.BusinessProd.ProductionDetails = [];
+    this.DropDownSettings();
     // this.openModal();
     this.openModal();
     this.GetStateList();
@@ -130,7 +141,7 @@ export class ProductionDetailsComponent implements OnInit {
       this.GetVendorProduction(this.currentPage);
     });
   }
-  // tslint:disable-next-line:use-life-cycle-interface
+
   ngOnChanges(changes: SimpleChanges) {
     this.openModal();
     this.GetProductionDetails(this.VendorProduction);
@@ -140,17 +151,15 @@ export class ProductionDetailsComponent implements OnInit {
     this.searchText = searchText;
     this.GetVendorProduction(1);
   }
+
   GetVendorProduction(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
       .subscribe(result => {
-        //    if (result.data.Table.length > 0) {
-        this.vendorProductionList = result.data.Table;
+        this.BusinessProd = new BusinessProduction();
+        this.BusinessProd.ProductionDetails = result.data.Table;
         this.totalItems = result.data.Table1[0].TotalVendors;
         this.GetVendorsProductionList();
-        //    } else {
-        //     this.totalItems = 0 ;
-        //  }
       });
   }
 
@@ -159,10 +168,12 @@ export class ProductionDetailsComponent implements OnInit {
       this.StateList = result.data.Table;
     });
   }
+
   GetVendorsProductionList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.vendorProductionList;
+    this.pagedItems = this.BusinessProd.ProductionDetails;
   }
+
   LogValidationErrors(group: FormGroup = this.ProductionDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -182,14 +193,13 @@ export class ProductionDetailsComponent implements OnInit {
       }
     });
   }
+
   InitializeFormControls() {
     this.ProductionDetailsForm = this._fb.group({
-      // id: ['0'],
       DivisionCode: [''],
       DeptCode: [''],
       approvedProductionUnits: [this.VendorProduction.ApprovedProductionCount],
       subContractingUnitName: [this.VendorProduction.SubContractingName],
-      // subContractingUnitAddress: [this.VendorProduction.subContractingUnitAddress],
       natureOfSubContractingUnit: [this.VendorProduction.NatureOfSubContracting],
       monthlyCapacity: [this.VendorProduction.MonthlyCapacity],
       minimalCapacity: [this.VendorProduction.MinimalCapacity],
@@ -209,16 +219,15 @@ export class ProductionDetailsComponent implements OnInit {
       this.LogValidationErrors(this.ProductionDetailsForm);
     });
   }
+
   openModal() {
     this.isDisable = false;
     this.action = 'Insert';
     this.ProductionDetailsForm = this._fb.group({
-      // id: ['0'],
-     Division: ['', Validators.required],
+      Division: ['', Validators.required],
       Department: ['', Validators.required],
       approvedProductionUnits: ['', [Validators.required, Validators.pattern(this.NumericPattern)]],
       subContractingUnitName: ['', Validators.required],
-      // subContractingUnitAddress: ['', Validators.required],
       natureOfSubContractingUnit: ['', Validators.required],
       monthlyCapacity: ['', [Validators.required, Validators.pattern(this.DecimalPattern)]],
       minimalCapacity: ['', [Validators.required, Validators.pattern(this.DecimalPattern)]],
@@ -283,6 +292,19 @@ export class ProductionDetailsComponent implements OnInit {
         });
     }
   }
+  GetBusinessDetails(event: any) {
+    const business = new VendorBusinessDetails();
+    business.VendorShortCode = this.vendorcode;
+    business.VendorBusinessDetailsID = 0;
+    business.DeptCode = event.MDDCode;
+    business.DeptName = event.MDDName;
+    if (this.BusinessProd.BusinessDetails === undefined) {
+      this.BusinessProd.BusinessDetails = [];
+    }
+    this.BusinessProd.BusinessDetails.push(business);
+
+  }
+
   SaveProductionDetails() {
     const el = this.modalOpenButton.nativeElement as HTMLElement;
     this.submitted = true;
@@ -294,7 +316,7 @@ export class ProductionDetailsComponent implements OnInit {
     // this.VendorProduction.id = this.ProductionDetailsForm.get('id').value;
     this.VendorProduction.DivisionCode = this.ProductionDetailsForm.get('Division').value;
     this.VendorProduction.DeptCode = this.ProductionDetailsForm.get('Department').value;
-    this.VendorProduction.VendorCode = this.vendorcode;
+    this.VendorProduction.VendorShortCode = this.vendorcode;
     this.VendorProduction.ApprovedProductionCount = this.ProductionDetailsForm.get('approvedProductionUnits').value;
     this.VendorProduction.SubContractingName = this.ProductionDetailsForm.get('subContractingUnitName').value;
     this.VendorProduction.NatureOfSubContracting = this.ProductionDetailsForm.get('natureOfSubContractingUnit').value;
@@ -367,6 +389,7 @@ export class ProductionDetailsComponent implements OnInit {
       });
       this.GetDepartment();
       // this.GetStateList();
+
     });
   }
   DeleteProductionDetailsPopup(vendor) {
@@ -398,7 +421,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.VendorProduction = new VendorProduction();
     this.VendorProduction.DivisionCode = this.ProductionDetailsForm.get('Division').value;
     this.VendorProduction.DeptCode = this.ProductionDetailsForm.get('Department').value;
-    this.VendorProduction.VendorCode = this.vendorcode;
+    this.VendorProduction.VendorShortCode = this.vendorcode;
     this.VendorProduction.ApprovedProductionCount = this.ProductionDetailsForm.get('approvedProductionUnits').value;
     this.VendorProduction.SubContractingName = this.ProductionDetailsForm.get('subContractingUnitName').value;
     this.VendorProduction.NatureOfSubContracting = this.ProductionDetailsForm.get('natureOfSubContractingUnit').value;
@@ -419,7 +442,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.VendorProduction.Status = false;
     try {
       this._vendorService.SaveProductionInfo(this.VendorProduction).subscribe((result) => {
-       if (result.data.Table[0].Message != null) {
+        if (result.data.Table[0].Message != null) {
           if (result.data.Table[0].Result === 0) {
             this.VendorProduction = new VendorProduction();
             this.vendorProductionList = result.data.Table1;
@@ -446,4 +469,21 @@ export class ProductionDetailsComponent implements OnInit {
     }
     el.click();
   }
+
+  DropDownSettings() {
+    this.DropdownSettings = {
+      singleSelection: false,
+      idField: 'MDDCode',
+      textField: 'MDDName',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      limitSelection: 100,
+      noDataAvailablePlaceholderText: '',
+      allowSearchFilter: true
+    };
+  }
+
+
+
 }

@@ -25,3 +25,8 @@ input[type="text"],select{margin-bottom:0px !important;}
 .toRight {
     margin-left:78%;
 }
+
+.dropdown {
+    border: none;
+    padding: 0px;
+}
