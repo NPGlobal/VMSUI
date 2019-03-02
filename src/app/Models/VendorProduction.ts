@@ -7,6 +7,9 @@ export class VendorProduction {
     DeptName: string;
 
     ApprovedProductionCount: number;
+    SubContractingName: string;
+    NatureOfSubContracting: string;
+
     Address1: string;
     Address2: string;
     Address3: string;
@@ -15,9 +18,6 @@ export class VendorProduction {
     StateName: string;
     CityCode: string;
     Pin: number;
-
-    SubContractingName: string;
-    NatureOfSubContracting: string;
 
     MonthlyCapacity: number;
     MinimalCapacity: number;

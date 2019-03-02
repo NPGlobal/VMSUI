@@ -18,15 +18,22 @@
     font-size: 13px;
     /*font-weight: 700;*/
 }
-
-input[type="text"],select{margin-bottom:0px !important;}
-.modal label{font-size: 13px;}
-
 .toRight {
     margin-left:78%;
 }
-
 .dropdown {
     border: none;
     padding: 0px;
 }
+
+
+fieldset legend{font-size: 15px;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0px 0px 5px 0px;}
+input[type="text"],select{margin-bottom:0px !important;}
+.modal label{font-size: 13px;}
+.table-small > thead > tr > th, .table-small > thead > tr > td, 
+.table-small > tbody > tr > th, .table-small > tbody > tr > td {
+    padding: 3px;
+    font-size: 12px;
+}
+
+.table-small .input-sm{height: 25px;padding: 3px 10px;width: 95% !important;}
