@@ -11,6 +11,7 @@ import { DocumentComponent } from './Components/document/document.component';
 import { BankDetailsComponent } from './Components/bank-details/bank-details.component';
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
+import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 
 const routes: Routes = [
   {
@@ -34,7 +35,8 @@ const routes: Routes = [
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
       { path: 'document', component: DocumentComponent },
-      { path: 'bank', component: BankDetailsComponent }
+      { path: 'bank', component: BankDetailsComponent },
+      { path: 'department', component: DepartmentMappingComponent }
     ]
   },
   {
@@ -46,7 +48,8 @@ const routes: Routes = [
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
       { path: 'document', component: DocumentComponent },
-      { path: 'bank', component: BankDetailsComponent }
+      { path: 'bank', component: BankDetailsComponent },
+      { path: 'department', component: DepartmentMappingComponent }
 
     ]
   },

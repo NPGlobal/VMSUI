@@ -1,4 +1,5 @@
 export class MasterDataDetails {
+    ParentMDDCode: string;
     MDDCode: string;
     MDHCode: string;
     MDDShortName: string;
