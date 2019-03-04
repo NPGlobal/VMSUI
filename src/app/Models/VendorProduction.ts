@@ -1,5 +1,6 @@
+import { VendorBusinessDetails } from './vendor-business-details';
+
 export class VendorProduction {
-    // id: number;
     CompanyCode: string;
     VendorShortCode: string;
     DivisionCode: string;
@@ -30,4 +31,6 @@ export class VendorProduction {
     Action: string;
     isDisable: boolean;
     CreatedBy: number;
+
+    BusinessDetails: VendorBusinessDetails[];
 }

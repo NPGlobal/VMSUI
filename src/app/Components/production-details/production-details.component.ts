@@ -7,7 +7,6 @@ import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { BusinessProduction } from 'src/app/Models/business-production';
-import { Vendor } from 'src/app/Models/vendor';
 import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
 declare var $: any;
 
@@ -144,6 +143,7 @@ export class ProductionDetailsComponent implements OnInit {
   // // status = true;
   // action = 'Insert';
   // modalBody: string;
+  ProductionList: VendorProduction[];
   BusinessProdData: BusinessProduction;
   BusinessProd: BusinessProduction; // It holds array for Business Form Data and Production Form Data.
   ProductionDetailsForm: FormGroup;
@@ -266,17 +266,15 @@ export class ProductionDetailsComponent implements OnInit {
     this.currentPage = index;
     this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
       .subscribe(result => {
-        this.BusinessProd = new BusinessProduction();
-        this.BusinessProd.ProductionDetails = result.data.Table;
-        this.BusinessProd.BusinessDetails = [];
-        this.totalItems = result.data.Table1[0].TotalVendors;
+        this.ProductionList = [];
+        this.ProductionList = result.data;
+        this.totalItems = result.TotalRows;
         this.GetVendorsProductionList();
-
       });
   }
   GetVendorsProductionList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.BusinessProd.ProductionDetails;
+    this.pagedItems = this.ProductionList;
   }
   SearchProductionDetails(searchText = '') {
     this.searchText = searchText;

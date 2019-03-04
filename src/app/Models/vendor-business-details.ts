@@ -5,6 +5,7 @@ export class VendorBusinessDetails {
     CompanyCode: string;
     VendorShortCode: string;
     DivisionCode: string;
+    DivisionName: string;
     DeptCode: string;
     DeptName: string;
 

@@ -28,30 +28,31 @@
       <tr>
         <td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td>
       </tr>
-      <ng-container *ngFor="let vendor of pagedItems;index as i;">
+      <ng-container *ngFor="let production of pagedItems;index as i;">
         <div class="panel-group"></div>
         <tr>
-          <td>{{vendor.DivisionName}}</td>
-          <td>{{vendor.DeptName}}</td>
-          <td>{{vendor.ApprovedProductionCount}}</td>
-          <td>{{vendor.SubContractingName}}</td>
-          <td>{{vendor.NatureOfSubContracting}}</td>
-          <td>{{vendor.MonthlyCapacity}}</td>
-          <td>{{vendor.MinimalCapacity}}</td>
-          <td>{{vendor.LeanMonths}}</td>
-          <td>{{vendor.LeanCapacity}}</td>
+          <td>{{production.DivisionName}}</td>
+          <td>{{production.DeptName}}</td>
+          <td>{{production.ApprovedProductionCount}}</td>
+          <td>{{production.SubContractingName}}</td>
+          <td>{{production.NatureOfSubContracting}}</td>
+          <td>{{production.MonthlyCapacity}}</td>
+          <td>{{production.MinimalCapacity}}</td>
+          <td>{{production.LeanMonths}}</td>
+          <td>{{production.LeanCapacity}}</td>
           <td>
-            <!-- <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor.VendorProductionDetailsId)" 
-            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a> -->
             <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor)"
-              data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+              data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
+            </a>
+
             <a class="ml-2" title="View Address" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
               data-toggle="collapse">
               <i class="fa fa-address-book"></i>
             </a>
 
-            <!-- <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteProductionDetailsPopup(vendor)" 
-            data-target="#deleteModal"><i class="fa fa-remove"></i></a> -->
+            <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+              (click)="DeleteProductionDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i>
+            </a>
           </td>
         </tr>
         <tr class="collapse" id="{{'Collapse' + (i + 1)}}">
@@ -59,23 +60,20 @@
             <table class="table table-hover table-sm">
               <thead class="table-warning">
                 <tr>
-                  <th>Address</th>
-                  <th>Phone</th>
-                  <th>State</th>
-                  <th>City</th>
-                  <th>PIN</th>
+                  <th>Financial Year</th>
+                  <th>ProposedDPGrnQty</th>
+                  <th>ProposedDPGrnQty</th>
+                  <th>ProposedDPGrnQty</th>
+                  <th>ProposedDPGrnQty</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
-                    {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
-                    {{vendor.Address3}}
-                  </td>
-                  <td>{{vendor.Phone}}</td>
-                  <td>{{vendor.StateCode}}</td>
-                  <td>{{vendor.CityCode}}</td>
-                  <td>{{vendor.Pin}}</td>
+                <tr *ngFor="let business of production.BusinessDetails;index as j">
+                  <td>{{business.FinancialYear}}</td>
+                  <td>{{business.ProposedDPGrnQty}}</td>
+                  <td>{{business.ProposedDPGrnQty}}</td>
+                  <td>{{business.ProposedDPGrnQty}}</td>
+                  <td>{{business.ProposedDPGrnQty}}</td>
                 </tr>
               </tbody>
             </table>
@@ -120,10 +118,6 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form [formGroup]="ProductionDetailsForm" novalidate>
-
-          <!-- <input type="hidden" name="id" formControlName="id"> -->
-          <!-- <input type="hidden" name="division" formControlName="division">
-          <input type="hidden" name="department" formControlName="department"> -->
 
           <div class="form-group col-lg-12">
             <div class="row">
@@ -306,7 +300,8 @@
           </fieldset>
 
         </form>
-        <div *ngIf="BusinessProdData && BusinessProdData.BusinessDetails && BusinessProdData.BusinessDetails.length !== 0"
+        <div
+          *ngIf="BusinessProdData && BusinessProdData.BusinessDetails && BusinessProdData.BusinessDetails.length !== 0"
           class="container">
           <fieldset>
             <legend>Business</legend>
@@ -335,8 +330,8 @@
                       <td><input class="form-control input-sm" [(ngModel)]="business.ProposedDPValueQty" type="text">
                       </td>
                       <td><input class="form-control input-sm" [(ngModel)]="business.ProposedJWGrnQty" type="text"></td>
-                      <td><input class="form-control input-sm"
-                          [(ngModel)]="business.ProposedJWValueQty" type="text"></td>
+                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedJWValueQty" type="text">
+                      </td>
                     </tr>
                   </ng-container>
                 </tbody>
