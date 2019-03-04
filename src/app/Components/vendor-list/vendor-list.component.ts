@@ -21,12 +21,25 @@ export class VendorListComponent implements OnInit {
   searchText = '';
   loading: boolean;
   RegistrationClick = true;
+  searchByName: string;
+  searchByShortName: string;
+  searchByRefVendor: string;
+  searchByGST: string;
+  searchByPAN: string;
+  searchByCreatedOn: string;
 
   constructor(private _http: HttpClient,
     private _vendorService: VendorService,
     private _pager: PagerService) { }
 
   ngOnInit() {
+    this.searchByName = '';
+    this.searchByShortName = '';
+    this.searchByRefVendor = '';
+    this.searchByGST = '';
+    this.searchByPAN = '';
+    this.searchByCreatedOn = '';
+
     this.GetVendors(this.currentPage);
   }
   GetVendors(index: number) {
@@ -43,6 +56,12 @@ export class VendorListComponent implements OnInit {
   SearchVendor(searchText = '') {
     this.searchText = searchText;
     this.GetVendors(1);
+  }
+
+  SearchVendorList() {
+    this.searchText = this.searchByName + '~' + this.searchByShortName + '~' + this.searchByRefVendor + '~' +
+      this.searchByGST + '~' + this.searchByPAN + '~' + this.searchByCreatedOn;
+    this.SearchVendor(this.searchText);
   }
 
   GetVendorsList() {

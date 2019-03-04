@@ -14,7 +14,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Vendor } from './Models/vendor';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
 import { DocumentComponent } from './Components/document/document.component';
 import { VendorRegistrationComponent } from './Components/vendor-registration/vendor-registration.component';
@@ -25,7 +24,8 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
-
+import { CommonModule } from '@angular/common';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,6 @@ import { LoginModule } from './LoginModule/login.module';
     TechnicalDetailsComponent,
     AddVendorComponent,
     PageNotFoundComponent,
-    BusinessDetailsComponent,
     ProductionDetailsComponent,
     DocumentComponent,
     VendorRegistrationComponent,
@@ -53,7 +52,9 @@ import { LoginModule } from './LoginModule/login.module';
     ReactiveFormsModule,
     HttpClientModule,
     AngularFontAwesomeModule,
-    LoginModule
+    LoginModule,
+    NgMultiSelectDropDownModule.forRoot(),
+    CommonModule,
   ],
   providers: [
     {

@@ -14,3 +14,8 @@
 }
 input[type="text"],select{margin-bottom:0px !important;}
 .modal label{font-size: 13px;}
+
+.dropdown {
+    border: none;
+    padding: 0px;
+}
