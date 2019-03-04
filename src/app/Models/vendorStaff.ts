@@ -1,6 +1,7 @@
 export class VendorStaff {
+    Department: string;
     dept: string;
-    designation: string;
+    Designation: string;
     VendorStaffConfigId: number;
     VendorStaffDetailsId: number;
     VendorCode: string;
