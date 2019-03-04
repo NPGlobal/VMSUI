@@ -28,31 +28,30 @@
       <tr>
         <td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td>
       </tr>
-      <ng-container *ngFor="let production of pagedItems;index as i;">
+      <ng-container *ngFor="let vendor of pagedItems;index as i;">
         <div class="panel-group"></div>
         <tr>
-          <td>{{production.DivisionName}}</td>
-          <td>{{production.DeptName}}</td>
-          <td>{{production.ApprovedProductionCount}}</td>
-          <td>{{production.SubContractingName}}</td>
-          <td>{{production.NatureOfSubContracting}}</td>
-          <td>{{production.MonthlyCapacity}}</td>
-          <td>{{production.MinimalCapacity}}</td>
-          <td>{{production.LeanMonths}}</td>
-          <td>{{production.LeanCapacity}}</td>
+          <td>{{vendor.DivisionName}}</td>
+          <td>{{vendor.DeptName}}</td>
+          <td>{{vendor.ApprovedProductionCount}}</td>
+          <td>{{vendor.SubContractingName}}</td>
+          <td>{{vendor.NatureOfSubContracting}}</td>
+          <td>{{vendor.MonthlyCapacity}}</td>
+          <td>{{vendor.MinimalCapacity}}</td>
+          <td>{{vendor.LeanMonths}}</td>
+          <td>{{vendor.LeanCapacity}}</td>
           <td>
+            <!-- <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor.VendorProductionDetailsId)" 
+            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a> -->
             <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor)"
-              data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
-            </a>
-
+              data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
             <a class="ml-2" title="View Address" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
               data-toggle="collapse">
               <i class="fa fa-address-book"></i>
             </a>
 
-            <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-              (click)="DeleteProductionDetailsPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i>
-            </a>
+            <!-- <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteProductionDetailsPopup(vendor)" 
+            data-target="#deleteModal"><i class="fa fa-remove"></i></a> -->
           </td>
         </tr>
         <tr class="collapse" id="{{'Collapse' + (i + 1)}}">
@@ -60,20 +59,23 @@
             <table class="table table-hover table-sm">
               <thead class="table-warning">
                 <tr>
-                  <th>Financial Year</th>
-                  <th>ProposedDPGrnQty</th>
-                  <th>ProposedDPGrnQty</th>
-                  <th>ProposedDPGrnQty</th>
-                  <th>ProposedDPGrnQty</th>
+                  <th>Address</th>
+                  <th>Phone</th>
+                  <th>State</th>
+                  <th>City</th>
+                  <th>PIN</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let business of production.BusinessDetails;index as j">
-                  <td>{{business.FinancialYear}}</td>
-                  <td>{{business.ProposedDPGrnQty}}</td>
-                  <td>{{business.ProposedDPGrnQty}}</td>
-                  <td>{{business.ProposedDPGrnQty}}</td>
-                  <td>{{business.ProposedDPGrnQty}}</td>
+                <tr>
+                  <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
+                    {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
+                    {{vendor.Address3}}
+                  </td>
+                  <td>{{vendor.Phone}}</td>
+                  <td>{{vendor.StateCode}}</td>
+                  <td>{{vendor.CityCode}}</td>
+                  <td>{{vendor.Pin}}</td>
                 </tr>
               </tbody>
             </table>
@@ -113,18 +115,24 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <button type="button" class="close" (click)="dismiss()">&times;</button>
+        <h6 class="modal-title">Production</h6>
+        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
       </div>
       <!-- modal-body -->
       <div class="modal-body">
-        <form [formGroup]="ProductionDetailsForm" novalidate>
+        <form [formGroup]="ProductionDetailsForm" (ngSubmit)="SaveProductionDetails()" novalidate>
+
+          <!-- <input type="hidden" name="id" formControlName="id"> -->
+          <!-- <input type="hidden" name="division" formControlName="division">
+          <input type="hidden" name="department" formControlName="department"> -->
+
 
           <div class="form-group col-lg-12">
             <div class="row">
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-6 col-md-6">
                 <label class="text">Division<span class="error-label">*</span></label>
                 <span>
-                  <select [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division"
+                  <select name="Division" [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division"
                     class="form-control input-sm" (change)="GetDepartment($event)" (blur)="LogValidationErrors()"
                     [ngClass]="{ 'is-invalid': formErrors.Division}">
 
@@ -135,218 +143,216 @@
                   </select>
                 </span>
               </div>
-              <div class="col-lg-4 col-md-4">
+              <div class="col-lg-6 col-md-6">
                 <label class="text">Department<span class="error-label">*</span></label>
                 <span>
                   <ng-multiselect-dropdown class="form-control input-sm dropdown" [placeholder]="'Select Department'"
                     [ngModelOptions]="{standalone: true}" [data]="departmentList" [(ngModel)]="SelectedDepartmentList"
-                    [settings]="DropdownSettings" (onSelect)="CreateBusinessForm($event)"
-                    (onDeSelect)="RemoveBussinessDetails($event)">
+                    [settings]="DropdownSettings" (onSelect)="GetBusinessDetails($event)">
                   </ng-multiselect-dropdown>
                 </span>
               </div>
             </div>
           </div>
 
-          <fieldset>
-            <legend>
-              <a class="ml-2" title="View Address" href="javascript:void(0)" [attr.data-target]="'#CollapseProduction'"
-                data-toggle="collapse">Production
-              </a>
-            </legend>
-            <div id="CollapseProduction" class="collapse col-lg-12 col-md-12">
-              <div class="form-group col-lg-12">
-                <div class="row">
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Approved Production Units<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="ApprovedProductionCount" class="form-control input-sm"
-                        (blur)="LogValidationErrors()"
-                        [ngClass]="{ 'is-invalid': formErrors.ApprovedProductionCount}" />
-                    </span>
-                    <span [ngClass]="{ 'error-label':formErrors.ApprovedProductionCount}"
-                      *ngIf="formErrors.ApprovedProductionCount">
-                      {{formErrors.ApprovedProductionCount}}</span>
-                  </div>
-
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Name of Sub Contracting Unit<span class="error-label">*</span></label>
-                    <span><input type="text" formControlName="SubContractingName" maxlength="254"
-                        class="form-control input-sm" (blur)="LogValidationErrors()"
-                        [ngClass]="{ 'is-invalid err': formErrors.SubContractingName }" /></span>
-                  </div>
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Nature of Sub Contracting Unit<span class="error-label">*</span></label>
-                    <span><input type="text" maxlength="99" (blur)="LogValidationErrors()"
-                        formControlName="NatureOfSubContracting" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.NatureOfSubContracting }" /></span>
-                  </div>
+          <div *ngIf="BusinessProd && BusinessProd.BusinessDetails && BusinessProd.BusinessDetails.length !== 0" class="container" style="overflow-y: scroll; max-height:185px;">
+            <div class="form-group col-lg-12">
+              <div class="row" *ngFor="let business of BusinessProd.BusinessDetails;index as i;">
+                <div class="col-lg-2 col-md-2">
+                  <label style="margin-top: 32px;" class="text">{{business.DeptName}}</label>
                 </div>
-              </div>
-
-              <hr>
-              <!-- For Address -->
-
-              <div class="form-group col-lg-12">
-                <div class="row">
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Address Line 1<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="Address1" class="form-control input-sm" maxlength="49"
-                        [ngClass]="{ 'is-invalid err': formErrors.Address1 }" (blur)="LogValidationErrors()" />
-                    </span>
-                  </div>
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Address Line 2</label>
-                    <span><input type="text" formControlName="Address2" maxlength="49"
-                        class="form-control input-sm" /></span>
-                  </div>
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Address Line 3</label>
-                    <span><input type="text" name="address3" formControlName="Address3" maxlength="49"
-                        class="form-control input-sm" /></span>
-                  </div>
+                <div class="col-lg-2 col-md-2">
+                  <label class="text">Financial Year<span class="error-label">*</span></label>
+                  <span>
+                    <input class="input-sm" (ngModel)="business.FinancialYear" type="date">
+                  </span>
                 </div>
-              </div>
-
-              <div class="form-group col-lg-12">
-                <div class="row">
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">Phone<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="Phone" class="form-control input-sm" maxlength="10"
-                        [ngClass]="{ 'is-invalid err': formErrors.Phone }" (blur)="LogValidationErrors()" />
-                    </span>
-                    <span [ngClass]="{ 'error-label':formErrors.Phone}" *ngIf="formErrors.Phone">
-                      {{formErrors.Phone}}</span>
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">State<span class="error-label">*</span></label>
-                    <span>
-                      <select formControlName="StateCode" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.StateCode }" (blur)="LogValidationErrors()">
-                        <option value="">Select</option>
-                        <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
-                      </select>
-                    </span>
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">City<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="CityCode" class="form-control input-sm" maxlength="49"
-                        [ngClass]="{ 'is-invalid err': formErrors.CityCode }" (blur)="LogValidationErrors()" />
-                    </span>
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">PinCode<span class="error-label">*</span></label>
-                    <span><input type="text" formControlName="Pin" class="form-control input-sm" maxlength="6"
-                        [ngClass]="{ 'is-invalid err': formErrors.Pin }" (blur)="LogValidationErrors()" /></span>
-                    <span [ngClass]="{ 'error-label':formErrors.Pin}" *ngIf="formErrors.Pin">
-                      {{formErrors.Pin}}</span>
-                  </div>
+                <div class="col-lg-2 col-md-2">
+                  <label class="text">DP Business<span class="error-label">*</span></label>
+                  <span>
+                    <input class="input-sm" (ngModel)="business.ProposedDPGrnQty" type="text">
+                  </span>
                 </div>
-              </div>
-
-              <hr>
-
-              <div class="form-group col-lg-12">
-                <div class="row">
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">Monthly Capacity<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="MonthlyCapacity" class="form-control input-sm" maxlength="13"
-                        [ngClass]="{ 'is-invalid err': formErrors.MonthlyCapacity }" (blur)="LogValidationErrors()" />
-                    </span>
-                    <span [ngClass]="{ 'error-label':formErrors.MonthlyCapacity}" *ngIf="formErrors.MonthlyCapacity">
-                      {{formErrors.MonthlyCapacity}}
-                    </span>
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">Minimal Capacity<span class="error-label">*</span></label>
-                    <span><input type="text" formControlName="MinimalCapacity" class="form-control input-sm"
-                        maxlength="13" [ngClass]="{ 'is-invalid err': formErrors.MinimalCapacity }"
-                        (blur)="LogValidationErrors()" /></span>
-                    <span [ngClass]="{ 'error-label':formErrors.MinimalCapacity }" *ngIf="formErrors.MinimalCapacity">
-                      {{formErrors.MinimalCapacity}}
-                    </span>
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">Lean Months<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="LeanMonths" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" />
-                    </span>
-                    <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
-                      *ngIf="formErrors.LeanMonths">{{formErrors.LeanMonths}}
-                    </span>
-                  </div>
-                  <div class="col-lg-3 col-md-3">
-                    <label class="text">Lean Capacity<span class="error-label">*</span></label>
-                    <span><input type="text" formControlName="LeanCapacity" class="form-control input-sm" maxlength="13"
-                        [ngClass]="{ 'is-invalid err': formErrors.LeanCapacity }"
-                        (blur)="LogValidationErrors()" /></span>
-                    <span [ngClass]="{ 'error-label':formErrors.LeanCapacity }" *ngIf="formErrors.LeanCapacity">
-                      {{formErrors.LeanCapacity}}</span>
-                  </div>
-                  <div class="col-lg-12 col-md-12">
-                    <label class="text">Remarks</label>
-                    <span>
-                      <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511" />
-                    </span>
-                  </div>
+                <div class="col-lg-2 col-md-2">
+                  <label class="text">DP Quantity<span class="error-label">*</span></label>
+                  <span>
+                    <input class="input-sm" (ngModel)="business.ProposedDPValueQty" type="text">
+                  </span>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                  <label class="text">JW Business<span class="error-label">*</span></label>
+                  <span>
+                    <input class="input-sm" (ngModel)="business.ProposedJWGrnQty" type="text">
+                  </span>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                  <label class="text">JW Quantity<span class="error-label">*</span></label>
+                  <span>
+                    <input class="input-sm" (ngModel)="BusinessProd.BusinessDetails[i].ProposedJWValueQty" type="text">
+                  </span>
                 </div>
               </div>
             </div>
-          </fieldset>
+          </div>
+          <hr>
 
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Approved Production Units<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="approvedProductionUnits" formControlName="approvedProductionUnits"
+                    class="form-control input-sm" (blur)="LogValidationErrors()"
+                    [ngClass]="{ 'is-invalid': formErrors.approvedProductionUnits}" />
+                </span>
+                <span [ngClass]="{ 'error-label':formErrors.approvedProductionUnits}"
+                  *ngIf="formErrors.approvedProductionUnits">
+                  {{formErrors.approvedProductionUnits}}</span>
+              </div>
+
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Sub Contracting Unit Name<span class="error-label">*</span></label>
+                <span><input type="text" name="subContractingUnitName" formControlName="subContractingUnitName"
+                    maxlength="254" class="form-control input-sm" (blur)="LogValidationErrors()"
+                    [ngClass]="{ 'is-invalid err': formErrors.subContractingUnitName }" /></span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Nature of Sub Contracting Unit<span class="error-label">*</span></label>
+                <span><input type="text" name="natureOfSubContractingUnit" maxlength="99" (blur)="LogValidationErrors()"
+                    formControlName="natureOfSubContractingUnit" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': formErrors.natureOfSubContractingUnit }" /></span>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+          <!-- For Address -->
+
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 1<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="address1" formControlName="address1" class="form-control input-sm"
+                    maxlength="49" [ngClass]="{ 'is-invalid err': formErrors.address1 }"
+                    (blur)="LogValidationErrors()" />
+                </span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 2</label>
+                <span><input type="text" name="address2" formControlName="address2" maxlength="49"
+                    class="form-control input-sm" /></span>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <label class="text">Address Line 3</label>
+                <span><input type="text" name="address3" formControlName="address3" maxlength="49"
+                    class="form-control input-sm" /></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Phone<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="Phone" formControlName="Phone" class="form-control input-sm" maxlength="10"
+                    [ngClass]="{ 'is-invalid err': formErrors.Phone }" (blur)="LogValidationErrors()" />
+                </span>
+                <span [ngClass]="{ 'error-label':formErrors.Phone}" *ngIf="formErrors.Phone">
+                  {{formErrors.Phone}}</span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">State<span class="error-label">*</span></label>
+                <span> <select name="StateCode" formControlName="StateCode" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': formErrors.StateCode }" (blur)="LogValidationErrors()">
+                    <option value="">Select</option>
+                    <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
+                  </select>
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">City<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" name="city" formControlName="city" class="form-control input-sm" maxlength="49"
+                    [ngClass]="{ 'is-invalid err': formErrors.city }" (blur)="LogValidationErrors()" />
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">PinCode<span class="error-label">*</span></label>
+                <span><input type="text" name="pincode" formControlName="pincode" class="form-control input-sm"
+                    maxlength="6" [ngClass]="{ 'is-invalid err': formErrors.city }"
+                    (blur)="LogValidationErrors()" /></span>
+                <span [ngClass]="{ 'error-label':formErrors.pincode}" *ngIf="formErrors.pincode">
+                  {{formErrors.pincode}}</span>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Monthly Capacity<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" formControlName="monthlyCapacity" class="form-control input-sm" maxlength="13"
+                    [ngClass]="{ 'is-invalid err': formErrors.monthlyCapacity }" (blur)="LogValidationErrors()" />
+                </span>
+                <span [ngClass]="{ 'error-label':formErrors.monthlyCapacity}" *ngIf="formErrors.monthlyCapacity">
+                  {{formErrors.monthlyCapacity}}
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Minimal Capacity<span class="error-label">*</span></label>
+                <span><input type="text" formControlName="minimalCapacity" class="form-control input-sm" maxlength="13"
+                    [ngClass]="{ 'is-invalid err': formErrors.minimalCapacity }"
+                    (blur)="LogValidationErrors()" /></span>
+                <span [ngClass]="{ 'error-label':formErrors.minimalCapacity }" *ngIf="formErrors.minimalCapacity">
+                  {{formErrors.minimalCapacity}}
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Lean Months<span class="error-label">*</span></label>
+                <span>
+                  <input type="text" formControlName="leanMonths" class="form-control input-sm"
+                    [ngClass]="{ 'is-invalid err': formErrors.leanMonths }" (blur)="LogValidationErrors()" />
+                </span>
+                <span [ngClass]="{ 'error-label':formErrors.leanMonths}"
+                  *ngIf="formErrors.leanMonths">{{formErrors.leanMonths}}
+                </span>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <label class="text">Lean Capacity<span class="error-label">*</span></label>
+                <span><input type="text" formControlName="leanCapacity" class="form-control input-sm" maxlength="13"
+                    [ngClass]="{ 'is-invalid err': formErrors.leanCapacity }" (blur)="LogValidationErrors()" /></span>
+                <span [ngClass]="{ 'error-label':formErrors.leanCapacity }" *ngIf="formErrors.leanCapacity">
+                  {{formErrors.leanCapacity}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- For Remarks -->
+          <hr>
+
+          <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <label class="text">Remarks</label>
+                <span>
+                  <input type="text" formControlName="remarks" class="form-control input-sm" maxlength="511" />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer col-md-12  page-footer">
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
+              data-dismiss="modal">Cancel</button>
+          </div>
         </form>
-        <div
-          *ngIf="BusinessProdData && BusinessProdData.BusinessDetails && BusinessProdData.BusinessDetails.length !== 0"
-          class="container">
-          <fieldset>
-            <legend>Business</legend>
-            <div class="form-group col-lg-12" style="overflow-y: scroll; max-height:185px;">
-              <table class="table table-striped table-bordered table-hover table-small">
-                <thead>
-                  <tr>
-                    <th style="width:25%">Department</th>
-                    <th style="width:20%">Financial Year</th>
-                    <th style="width:13%">DP Business</th>
-                    <th style="width:13%">DP Quantity</th>
-                    <th style="width:13%">JW Business</th>
-                    <th>JW Quantity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ng-container *ngFor="let business of BusinessProdData.BusinessDetails;index as i;">
-                    <tr>
-                      <td>{{business.DeptName}}</td>
-                      <td>
-                        <select class="form-control input-sm" [(ngModel)]="business.FinancialYear">
-                          <option value="{{year}}" *ngFor="let year of FinancialYearList;">{{year}}</option>
-                        </select>
-                      </td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedDPGrnQty" type="text"></td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedDPValueQty" type="text">
-                      </td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedJWGrnQty" type="text"></td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedJWValueQty" type="text">
-                      </td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer col-md-12  page-footer">
-        <button (click)="SaveProductionDetails()" type="button" class="mr-3 btn btn-primary">Save</button>
-        <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
-
-        <button style="display:none;" #modalCloseButton type="button" class="btn btn-secondary"
-          data-dismiss="modal"></button>
       </div>
     </div>
   </div>
@@ -373,17 +379,18 @@
 </div>
 
 <!-- Hidden button to open alert modal -->
-<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+<button #modalOpenButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
   data-toggle="modal" style="display:none;">
 </button>
 
 <!-- Modal to open alert modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="msgModalLabel">{{PopUpMessage}}</h5>
-        <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="dismiss()">OK</button>
+        <h5 class="modal-title" id="exampleModalLabel">{{modalBody}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>

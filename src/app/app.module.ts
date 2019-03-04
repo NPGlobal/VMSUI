@@ -26,10 +26,12 @@ import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
 import { CommonModule } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    BusinessDetailsComponent,
     LayoutComponent,
     VendorListComponent,
     PersonalDetailsComponent,
