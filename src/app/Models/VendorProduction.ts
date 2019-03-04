@@ -1,5 +1,6 @@
 export class VendorProduction {
     // id: number;
+    CompanyCode: string;
     VendorShortCode: string;
     DivisionCode: string;
     DeptCode: string;
@@ -17,7 +18,7 @@ export class VendorProduction {
     StateCode: string;
     StateName: string;
     CityCode: string;
-    Pin: number;
+    Pin: string;
 
     MonthlyCapacity: number;
     MinimalCapacity: number;
@@ -25,7 +26,7 @@ export class VendorProduction {
     LeanCapacity: number;
 
     Remarks: string;
-    Status: boolean;
+    Status: string;
     Action: string;
     isDisable: boolean;
     CreatedBy: number;
