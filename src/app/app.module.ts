@@ -27,6 +27,7 @@ import { LoginModule } from './LoginModule/login.module';
 import { CommonModule } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
+import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { BusinessDetailsComponent } from './Components/business-details/business
     AddressFormComponent,
     BankDetailsComponent,
     LoginComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    DepartmentMappingComponent
   ],
   imports: [
     BrowserModule,
