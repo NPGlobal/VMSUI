@@ -97,7 +97,7 @@
                   <label class="text">Technical Department<span class="error-label">*</span></label>
                   <span>
                     <ng-multiselect-dropdown required class="form-control input-sm dropdown" [placeholder]="'Select Department'" 
-                [ngClass]="{ 'red': invalid }" onchange="logValidationErrors()"
+                [ngClass]="{ 'red': invalid }" onblur="ValidateDepartment()"
                  [ngModelOptions]="{standalone: true}"
                                  [data]="deptList"
                                  [(ngModel)]="deptSelectList"
