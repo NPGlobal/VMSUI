@@ -92,7 +92,7 @@ export class StaffDetailsComponent implements OnInit {
     textField: 'DeptName',
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
-    itemsShowLimit: 3,
+    itemsShowLimit: 1,
     allowSearchFilter: true,
     noDataAvailablePlaceholderText: 'No records'
   };
@@ -216,8 +216,10 @@ export class StaffDetailsComponent implements OnInit {
     }
   }
   onDeptSelect(items: any) {
+    this.invalid = false;
   }
   onDeptSelectAll(items: any) {
+    this.invalid = false;
   }
   GetVendorDepartments() {
     if (this.staffDetailsForm.get('designation').value === '') {
