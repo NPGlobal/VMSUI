@@ -11,6 +11,7 @@ import { retry, catchError } from 'rxjs/operators';
 
 export class HttpErrorInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        // this.CheckSession();
         return next.handle(request)
             .pipe(
                 retry(1),
@@ -28,4 +29,21 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 })
             );
     }
+
+    CheckSession() {
+        const url = window.location.pathname.toLowerCase();
+        if (url.indexOf('login') > 0 || url.indexOf('welcome') > 0 || url === '/') {
+        } else {
+            if (typeof(Storage) !== undefined) {
+                if (sessionStorage.getItem('userid') === null || sessionStorage.getItem('userid') === 'null') {
+                    const redirecturl = window.location.origin;
+                    window.location.href = redirecturl;
+                } else {
+                    // alert('1');
+                }
+            } else {
+                // alert('3');
+            }
+        }
+      }
 }

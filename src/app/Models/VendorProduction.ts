@@ -1,10 +1,19 @@
+import { VendorBusinessDetails } from './vendor-business-details';
+
 export class VendorProduction {
-    // id: number;
+    VendorProductionDetailsID: number;
+
+    CompanyCode: string;
+    VendorShortCode: string;
     DivisionCode: string;
     DeptCode: string;
     DivisionName: string;
     DeptName: string;
+
     ApprovedProductionCount: number;
+    SubContractingName: string;
+    NatureOfSubContracting: string;
+
     Address1: string;
     Address2: string;
     Address3: string;
@@ -12,17 +21,18 @@ export class VendorProduction {
     StateCode: string;
     StateName: string;
     CityCode: string;
-    Pin: number;
-    SubContractingName:  string;
-     NatureOfSubContracting: string;
+    Pin: string;
+
     MonthlyCapacity: number;
     MinimalCapacity: number;
     LeanMonths: number;
     LeanCapacity: number;
-    VendorCode: String;
-    CreatedBy: number;
+
     Remarks: string;
+    Status: string;
     Action: string;
     isDisable: boolean;
-    Status: boolean;
+    CreatedBy: number;
+
+    BusinessDetails: VendorBusinessDetails[];
 }

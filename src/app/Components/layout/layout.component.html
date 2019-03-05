@@ -1,5 +1,5 @@
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap shadow">
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0 img" routerLink="/">
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0 img" href="javascript:void(0)" (click)="MoveToVendorList()">
     <img src="assets\images\logo.png">
   </a>
   <p class="header">Producer Management System</p>
@@ -8,8 +8,8 @@
           <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
             <img src="assets\images\profile-image.png">User</a>
           <ul class="dropdown-menu">
-              <li><a href="javascript:void(0)">Logout</a></li>
-              <li><a href="javascript:void(0)">Change Password</a></li>
+              <li><a href="javascript:void(0)" (click)="LogoutUser()">Logout</a></li>
+              <!-- <li><a href="javascript:void(0)">Change Password</a></li> -->
           </ul>
       </li>
       <!-- <li class="toggle-menu"><img src="assets\images\toggle-icon.png"></li> -->

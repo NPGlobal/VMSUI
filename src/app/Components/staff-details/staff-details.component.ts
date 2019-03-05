@@ -71,6 +71,7 @@ export class StaffDetailsComponent implements OnInit {
       'email': 'Please enter a valid email'
     },
     'ContactPhone': {
+      'required': '',
       'maxlength': 'Should not exceed 10 characters',
       'pattern': 'Please enter a valid phone'
     },
@@ -162,7 +163,7 @@ export class StaffDetailsComponent implements OnInit {
       ContactName: [this.VendorStaff.ContactName, Validators.required],
       ContactEmail: [this.VendorStaff.ContactEmail, Validators.email],
       ContactPhone: [this.VendorStaff.ContactPhone, [
-        Validators.maxLength(10), Validators.pattern(this.PhonePattern)
+        Validators.required, Validators.maxLength(10), Validators.pattern(this.PhonePattern)
       ]],
       priority: [this.VendorStaff.Priority],
       Status: [this.VendorStaff.Status],

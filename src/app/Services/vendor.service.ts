@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vendor } from '../Models/vendor';
 import { OriginService } from './origin.service';
+import { BusinessProduction } from '../Models/business-production';
+import { VendorProduction } from '../Models/VendorProduction';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +14,8 @@ export class VendorService {
   constructor(private _http: HttpClient, private _origin: OriginService) { }
 
   GetVendors(pageIndex: number, Limit: number, searchText = ''): Observable<any> {
-     const apiUrl = this._origin.origin + 'api/Vendor/GetVendors/' + pageIndex + '/' + Limit + '/' + searchText;
-     return this._http.get<any>(apiUrl);
+    const apiUrl = this._origin.origin + 'api/Vendor/GetVendors/' + pageIndex + '/' + Limit + '/' + searchText;
+    return this._http.get<any>(apiUrl);
   }
 
   GetVendorByCode(code: string): Observable<any> {
@@ -71,7 +73,7 @@ export class VendorService {
   // Get all Technical information of a Vendor
   GetVendorTechByVendorCode(vcode: string, pageIndex: number, Limit: number, searchText?: string): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorTech/GetVendorTechByVendorCode/10/'
-    + vcode + '/' + pageIndex + '/' + Limit + '/' + searchText;
+      + vcode + '/' + pageIndex + '/' + Limit + '/' + searchText;
     return this._http.get<any>(apiUrl);
   }
 
@@ -116,10 +118,10 @@ export class VendorService {
     const apiUrl = this._origin.origin + 'api/VendorBusiness/GetVendorBusinessByVendorCode/10/' + vcode + '/' + pageIndex + '/' + Limit;
     return this._http.get<any>(apiUrl);
   }
-  // Used for save and update Vendor Production Info
-  SaveProductionInfo(VendorProduction: any): Observable<any> {
+  // Used for save and update Vendor Production and Business Info
+  SaveVendorProductionInfo(productionObj: VendorProduction): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorProduction/SaveVendorProductionInfo';
-    return this._http.post<any>(apiUrl, VendorProduction);
+    return this._http.post<any>(apiUrl, productionObj);
   }
   // Get all Production details of a vendor
   GetVendorProductionByVendorCode(vcode: string, pageIndex: number, Limit: number, searchText?: string): Observable<any> {
@@ -143,4 +145,8 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
+  SaveVendorDepartments(vendor: Vendor): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/Vendor/SaveVendorDepts';
+    return this._http.post<any>(apiUrl, vendor);
+  }
 }
