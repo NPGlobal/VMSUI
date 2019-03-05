@@ -392,7 +392,7 @@ export class PersonalDetailsComponent implements OnInit {
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
-      if (this.vendor.Ref_VendorCode === null) {
+      if (this.vendor.Ref_VendorCode === '-1') {
         this._vendorService.GetVendors(-1, -1, '').subscribe((mvResult) => {
           this.ReferenceVendorList = mvResult.data.Vendors;
         });

@@ -12,12 +12,14 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
   }
   Redirect() {
-    // debugger;
     if (typeof(Storage) !== undefined) {
       if (sessionStorage.getItem('userid') !== null) {
-        const url = window.location.origin + '/vendor';
-        // alert('hi');
-        window.location.href = url;
+        const host = window.location.host.toLowerCase();
+        if (host.indexOf('localhost')  === -1) {
+          window.location.href = window.location.origin + '/vmsapp/vendor';
+        } else {
+          window.location.href = window.location.origin + '/vendor';
+        }
       }
     } else {
       // alert('Sorry! No Web Storage support..');

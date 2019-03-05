@@ -9,6 +9,9 @@ h6, h6:hover {
     text-align: center
 }
 */
+.main-div {
+   margin: 0px;
+}
 .main-div h4,.main-div h4:hover {
    background-color: #7d2d30;
    margin: 0px;
