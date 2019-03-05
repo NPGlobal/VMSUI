@@ -14,7 +14,7 @@ export class LayoutComponent implements OnInit {
   LogoutUser() {
     sessionStorage.removeItem('userid');
     const host = window.location.host.toLowerCase();
-    if (host.indexOf('localhost') > 0) {
+    if (host.indexOf('localhost')  === -1) {
       window.location.href = window.location.origin + '/vmsapp';
     } else {
       window.location.href = window.location.origin;
@@ -22,7 +22,7 @@ export class LayoutComponent implements OnInit {
   }
   MoveToVendorList() {
     const host = window.location.host.toLowerCase();
-    if (host.indexOf('localhost') > 0) {
+    if (host.indexOf('localhost') === -1) {
       window.location.href = window.location.origin + '/vmsapp/vendor';
     } else {
       window.location.href = window.location.origin + '/vendor';
