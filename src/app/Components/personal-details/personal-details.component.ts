@@ -370,6 +370,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
         this.alertButton.click();
         this.IsAddressSaved = true;
+        this.submitted = false;
         this.Editvendor(this.VendorCode);
       } else {
         this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
