@@ -36,7 +36,8 @@
                                 </label>
                                 <span>
                                     <input type="text" maxlength="49" formControlName="VendorName"
-                                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.VendorName}" />
+                                        class="form-control input-sm"
+                                        [ngClass]="{'is-invalid': formErrors.VendorName}" />
                                 </span>
                             </div>
                         </div>
@@ -577,7 +578,8 @@
                 </div>
                 <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('Address').controls.IsExpanded.value}">
 
-                    <div class="col-md-12 form-group">
+                    <div *ngIf="(vendorAddresses.length <= 2)"
+                     class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
                                 (click)="OpenAddressModal(CreateNewAddress())">
@@ -784,7 +786,7 @@
                 <div class="slider"
                     [ngClass]="{closed: !personalDetailsForm.get('ExpertiseDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group" style="margin-bottom: 15px;">
-                        <div class="col-md-12"><label class="text">Vendor Expertise</label></div>
+                        <div class="col-md-12"><label style="font-weight: 600;" class="text">Expertise</label></div>
                         <div class="col-md-22" *ngFor="let expertise of ExpertiseList">
                             <span class="checkbox-inline">
                                 <label>
@@ -796,7 +798,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <label class="text mr-2">Vendor Weaknesses (If any)</label>
+                        <label style="font-weight: 600;" class="text mr-2">Weaknesses (If any)</label>
                         <input class="input-sm col-md-6" type="text" formControlName="VendorWeaknesses">
                     </div>
                 </div>
@@ -822,8 +824,7 @@
     data-toggle="modal" style="display:none;">
 </button>
 
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

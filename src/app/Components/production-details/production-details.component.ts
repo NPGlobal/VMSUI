@@ -281,9 +281,9 @@ export class ProductionDetailsComponent implements OnInit {
           this.VendorProductionList = result.data.Table1;
           this.totalItems = result.data.Table2[0].TotalVendors;
           this.GetVendorsProductionList();
+          this.Dismiss();
           this.PopUpMessage = result.data.Table[0].Message;
           this.alertModalButton.click();
-          this.Dismiss();
         } else if (result.data.Table[0].ResultCode === 2) { // delete condition
           this.VendorProductionList = result.data.Table1;
           this.totalItems = result.data.Table2[0].TotalVendors;
