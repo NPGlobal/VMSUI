@@ -83,8 +83,8 @@
                     <label class="text">Designation<span class="error-label">*</span></label>
                     <span>
                       <select formControlName="designation" class="form-control input-sm" (change)="GetVendorDepartments($event)"
-                        [ngClass]="{ 'is-invalid': formErrors.designation }" (blur)="LogValidationErrors()" >      
-                        <option [ngValue]="null">Select Designation</option>
+                        [ngClass]="{ 'is-invalid': formErrors.designation }" (blur)="logValidationErrors()" >      
+                        <option value="">Select Designation</option>
                         <option *ngFor="let option of designationList" 
                         [attr.data-maxnumber]="option.Max_Allowed"
                         value={{option.Designation}}>
@@ -96,16 +96,17 @@
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Technical Department<span class="error-label">*</span></label>
                   <span>
-                <ng-multiselect-dropdown class="form-control input-sm dropdown" [placeholder]="'Select Department'" (blur)="LogValidationErrors()" 
-                                  [ngModelOptions]="{standalone: true}"
+                    <ng-multiselect-dropdown required class="form-control input-sm dropdown" [placeholder]="'Select Department'" 
+                [ngClass]="{ 'red': invalid }" onchange="logValidationErrors()"
+                 [ngModelOptions]="{standalone: true}"
                                  [data]="deptList"
                                  [(ngModel)]="deptSelectList"
                                  [settings]="deptDropdownSettings"
                                  (onSelect)="onDeptSelect($event)"
                                  (onSelectAll)="onDeptSelectAll($event)">
-                                 <option [ngValue]="null">Select Technical Department</option>
+                                 <option [ngValue]=null>Select Technical Department</option>
                      </ng-multiselect-dropdown>
-              </span>
+                  </span>
             </div>
                 <!-- <div class="col-lg-6 col-md-6" null>
                     <label class="text">Technical Department<span class="error-label">*</span></label>
@@ -156,7 +157,7 @@
               <div class="col-lg-12 col-md-12">
                 <label class="text">Name<i class="error-label">*</i></label>
                 <span>
-                  <input type="text" formControlName="ContactName" class="form-control input-sm" (blur)="LogValidationErrors()" 
+                  <input type="text" formControlName="ContactName" class="form-control input-sm" (blur)="logValidationErrors()" 
                   [ngClass]="{ 'is-invalid': formErrors.ContactName }" maxlength="49">
                 </span>
               </div>
@@ -167,14 +168,14 @@
                 <div class="col-lg-6 col-md-6">
                   <label class="text">Email</label>
                   <span>
-                    <input type="text" formControlName="ContactEmail" class="form-control input-sm" (blur)="LogValidationErrors()" 
+                    <input type="text" formControlName="ContactEmail" class="form-control input-sm" (blur)="logValidationErrors()" 
                     [ngClass]="{ 'is-invalid err': formErrors.ContactEmail }" maxlength="30"/>
                   </span>
                     <span class="error-label" *ngIf="formErrors.ContactEmail">{{formErrors.ContactEmail}}</span>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Phone</label>
-                    <span><input type="text" formControlName="ContactPhone" maxlength="10"
+                    <span><input type="text" formControlName="ContactPhone" maxlength="10" (blur)="logValidationErrors()" 
                       class="form-control input-sm" [ngClass]="{ 'is-invalid err': formErrors.ContactPhone }" /></span>
                       <span class="error-label" *ngIf="formErrors.ContactPhone">{{formErrors.ContactPhone}}</span>
                 </div>
@@ -186,22 +187,20 @@
                 <span><input type="text" formControlName="remarks" class="form-control input-sm" maxlength="100"/></span>
               </div>
             </div>
-          <div class="form-group col-lg-12">
+          <!-- <div class="form-group col-lg-12">
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
                         <span>
-                          <select formControlName="priority" class="form-control input-sm" (blur)="LogValidationErrors()" 
+                          <select formControlName="priority" class="form-control input-sm" (blur)="logValidationErrors()" 
                           [ngClass]="{ 'is-invalid': formErrors.priority }">
                             <option [ngValue]="null">Select Priority</option>
-                            <!-- <ng-container *ngIf="MaxPriority>0"> -->
                             <option *ngFor="let number of PriorityList(MaxPriority); let i = index;" value={{i+1}}>{{i+1}}</option>
-                          <!-- </ng-container> -->
                           </select>
                         </span>
                       </div>
               </div>
-            </div>
+            </div> -->
             <!-- Modal footer -->
             <div class="modal-footer col-md-12  page-footer">
               <button type="submit" class="mr-3 btn btn-primary">Save</button>
