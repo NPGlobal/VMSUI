@@ -25,15 +25,15 @@ export class VendorBusinessDetails {
     ModifiedBy: number;
 
     // For New Changes
-    CurrentYearVendorBusinessDetailsID: number;
-    CurrentYearProposedDPGrnQty: number;
-    CurrentYearProposedDPValueQty: number;
-    CurrentYearProposedJWGrnQty: number;
-    CurrentYearProposedJWValueQty: number;
+    CurrentYearVendorBusinessDetailsID: number | null;
+    CurrentYearProposedDPGrnQty: number | null;
+    CurrentYearProposedDPValueQty: number | null;
+    CurrentYearProposedJWGrnQty: number | null;
+    CurrentYearProposedJWValueQty: number | null;
 
-    NextYearVendorBusinessDetailsID: number;
-    NextYearProposedDPGrnQty: number;
-    NextYearProposedDPValueQty: number;
-    NextYearProposedJWGrnQty: number;
-    NextYearProposedJWValueQty: number;
+    NextYearVendorBusinessDetailsID: number | null;
+    NextYearProposedDPGrnQty: number | null;
+    NextYearProposedDPValueQty: number | null;
+    NextYearProposedJWGrnQty: number | null;
+    NextYearProposedJWValueQty: number | null;
 }

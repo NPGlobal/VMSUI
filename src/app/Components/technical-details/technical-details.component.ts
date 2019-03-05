@@ -324,7 +324,9 @@ export class TechnicalDetailsComponent implements OnInit {
       if (this.vendorTechDefault.VendorTechDetails.length > 0) {
 
         const existingIndex = this.vendorTechDefault.VendorTechDetails.findIndex((x) =>
-          x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID);
+          x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID &&
+          x.VendorTechConfigID === this.vendorTech.VendorTechConfigID &&
+          x.DeptCode === this.vendorTech.DeptCode);
         if (existingIndex >= 0 && this.isTechDetailEditing > 0) {
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
           this.isTechDetailEditing  = 0;

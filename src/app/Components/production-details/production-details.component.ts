@@ -43,6 +43,15 @@ export class ProductionDetailsComponent implements OnInit {
   submitted = false;
   StateList: MasterDataDetails[] = [];
 
+  // Search Parameters
+  searchBySubContName: string;
+  searchBySubContNature: string;
+  searchByApprProdUnits: string;
+  searchByMonCapacity: string;
+  searchByMinCapacity: string;
+  searchByLeanMonths: string;
+  searchByLeanCapacity: string;
+
   ValidationMessages = {
     'ApprovedProductionCount': {
       'required': '',
@@ -198,7 +207,13 @@ export class ProductionDetailsComponent implements OnInit {
   }
 
   SearchProductionDetails(searchText = '') {
-    this.searchText = searchText;
+    this.searchText = this.searchBySubContName + '~' +
+      this.searchBySubContNature + '~' +
+      this.searchByApprProdUnits + '~' +
+      this.searchByMonCapacity + '~' +
+      this.searchByMinCapacity + '~' +
+      this.searchByLeanMonths + '~' +
+      this.searchByLeanCapacity;
     this.GetVendorProduction(1);
   }
 

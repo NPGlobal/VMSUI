@@ -5,6 +5,7 @@ import { PagerService } from 'src/app/Services/pager.service';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { VendorBusinessService } from 'src/app/Services/vendor-business.service';
 import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
+import { BusinessProduction } from 'src/app/Models/business-production';
 // import { VendorService } from 'src/app/Services/vendor.service';
 // import { VendorProduction } from 'src/app/Models/VendorProduction';
 // import { MasterDataDetails } from 'src/app/Models/master-data-details';
@@ -37,7 +38,7 @@ export class BusinessDetailsComponent implements OnInit {
   @ViewChild('alertModalButton')
   alertModalButton: ElementRef;
   PopUpMessage: string;
-  alertButton: any;
+  alertButton: HTMLElement;
 
   // @ViewChild('modalOpenButton')
   // modalOpenButton: ElementRef;
@@ -53,15 +54,17 @@ export class BusinessDetailsComponent implements OnInit {
   businessList: VendorBusinessDetails[]; // For added Business List
   // businessDetails: VendorBusinessDetails[]; // For data save
   searchText = '';
+  CurrentFinancialYear: string;
+  NextFinancialYear: string;
   //#endregion
 
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
-    private _mddService: MasterDataDetailsService,
     private _vendorBusiService: VendorBusinessService) {
-    // this.CreateNewVendorBusiness();
+    this.CurrentFinancialYear = '';
+    this.NextFinancialYear = '';
   }
   // ValidationMessages = {
   //   'divisionCode': {
@@ -101,8 +104,8 @@ export class BusinessDetailsComponent implements OnInit {
   // };
   ngOnInit() {
     this.PopUpMessage = '';
-    // this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
-    // this.openModal();
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorBusiness(this.currentPage);
@@ -115,7 +118,10 @@ export class BusinessDetailsComponent implements OnInit {
     this.currentPage = index;
     this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
       .subscribe(data => {
-        if (data.VendorBusiness.length > 0) {
+        this.CurrentFinancialYear = data.FinancialData[0].CurrentFinancialYear;
+        this.NextFinancialYear = data.FinancialData[0].NextFinancialYear;
+        if (data.VendorBusiness !== undefined &&
+          data.VendorBusiness.length > 0) {
           this.businessList = data.VendorBusiness;
           this.totalItems = data.VendorBusinessCount[0].TotalVendors;
           this.GetVendorsBusinessList();
@@ -139,21 +145,24 @@ export class BusinessDetailsComponent implements OnInit {
     // }
     // Business Details
     try {
-      this._vendorBusiService.SaveVendorBusinessInfo(this.businessList).subscribe((result) => {
-        if (result.data.Table[0].Result === 0) {
-          // this.vendorProductionList = result.data.Table1;
-          // this.totalItems = result.data.Table2[0].TotalVendors;
-          // this.GetVendorsProductionList();
-          this.PopUpMessage = result.data.Table[0].Message;
+      const busProd = new BusinessProduction();
+      busProd.BusinessDetails = this.businessList;
+      this._vendorBusiService.SaveVendorBusinessInfo(busProd).subscribe((result) => {
+        if (result.data.Msg[0].ResultCode === 0) {
+          this.businessList = result.data.VendorBusiness;
+          this.totalItems = result.data.VendorBusinessCount[0].TotalVendors;
+          this.CurrentFinancialYear = result.data.FinancialData[0].CurrentFinancialYear;
+          this.NextFinancialYear = result.data.FinancialData[0].NextFinancialYear;
+          this.GetVendorsBusinessList();
+          this.PopUpMessage = result.data.Msg[0].Message;
         } else {
-          // alert(result.data.Table[0].Message);
-          this.PopUpMessage = result.data.Table[0].Message;
+          this.PopUpMessage = result.data.Msg[0].Message;
         }
       });
     } catch {
       this.PopUpMessage = 'There are some technical error. Please contact administrator.';
     }
-    // this.alertButton.click();
+    this.alertButton.click();
   }
   //#endregion
   // logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
