@@ -232,7 +232,13 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 
 
 .search{background-color: #fff;}
-.search input[type="text"]{margin-bottom: 0px;width: 100%;}
+.search input[type="text"]
+{
+  margin-bottom: 0px;width: 100%;border-top: none;border-left: none;border-radius:0px;
+  height:20px;
+}
+.search input[type="text"]:first-child{border-left: solid 1px lightgrey;}
+.search input[type="text"]:focus{border-top: none;border-left: none;}
 .table > thead > tr.search, .table > thead > tr.search > th, 
 .table > thead > tr.search > td {
   vertical-align: middle !important;

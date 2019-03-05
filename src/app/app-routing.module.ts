@@ -6,6 +6,7 @@ import { PersonalDetailsComponent } from './Components/personal-details/personal
 import { StaffDetailsComponent } from './Components/staff-details/staff-details.component';
 import { TechnicalDetailsComponent } from './Components/technical-details/technical-details.component';
 import { PageNotFoundComponent } from './Components/page-not-found/page-not-found.component';
+import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { ProductionDetailsComponent } from './Components/production-details/production-details.component';
 import { DocumentComponent } from './Components/document/document.component';
 import { BankDetailsComponent } from './Components/bank-details/bank-details.component';
@@ -34,6 +35,7 @@ const routes: Routes = [
       { path: 'staff', component: StaffDetailsComponent },
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
+      { path: 'business', component: BusinessDetailsComponent },
       { path: 'document', component: DocumentComponent },
       { path: 'bank', component: BankDetailsComponent },
       { path: 'department', component: DepartmentMappingComponent }
@@ -47,6 +49,7 @@ const routes: Routes = [
       { path: 'staff', component: StaffDetailsComponent },
       { path: 'technical', component: TechnicalDetailsComponent },
       { path: 'production', component: ProductionDetailsComponent },
+      { path: 'business', component: BusinessDetailsComponent },
       { path: 'document', component: DocumentComponent },
       { path: 'bank', component: BankDetailsComponent },
       { path: 'department', component: DepartmentMappingComponent }

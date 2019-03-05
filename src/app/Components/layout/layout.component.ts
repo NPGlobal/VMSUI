@@ -13,11 +13,19 @@ export class LayoutComponent implements OnInit {
   }
   LogoutUser() {
     sessionStorage.removeItem('userid');
-    const url = window.location.origin;
-    window.location.href = url;
+    const host = window.location.host.toLowerCase();
+    if (host.indexOf('localhost')  === -1) {
+      window.location.href = window.location.origin + '/vmsapp';
+    } else {
+      window.location.href = window.location.origin;
+    }
   }
   MoveToVendorList() {
-    const url = window.location.origin + '/vendor';
-    window.location.href = url;
+    const host = window.location.host.toLowerCase();
+    if (host.indexOf('localhost') === -1) {
+      window.location.href = window.location.origin + '/vmsapp/vendor';
+    } else {
+      window.location.href = window.location.origin + '/vendor';
+    }
   }
 }

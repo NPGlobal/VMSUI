@@ -1,63 +1,75 @@
 <div class="col-lg-12 col-sm-12 col-md-12 row">
-    <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchStaffDetails($event.target.value)" name="search">
-    <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
-    data-target="#myModal" data-backdrop="static" data-keyboard="false">
-        <i class="fa fa-plus"></i>
-        <span title="Add new" class="py-4">Add</span>
-      </button>
+  <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchStaffDetails($event.target.value)" name="search"> -->
+  <div class="float-right" style="margin-left:96.5%;">
+    <button type="button" class="btn btn-primary" data-toggle="modal" (click)="openModal()" data-target="#myModal"
+      data-backdrop="static" data-keyboard="false">
+      <i class="fa fa-plus"></i>
+      <span title="Add new" class="py-4">Add</span>
+    </button>
+  </div>
 </div>
 <div class="clearfix"></div>
 <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
-    <table class="table table-striped table-bordered table-hover">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Technical Department</th>
-          <th scope="col">Designation</th>
-          <th scope="col">Email</th>
-          <th scope="col">Phone</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr><td colspan="7" *ngIf="totalItems === 0">No Record Found</td></tr>
-          <tr *ngFor="let vendor of pagedItems;index as i;">
-            <td>{{vendor.ContactName}}</td>
-            <td>{{vendor.Department}}</td>
-            <td>{{vendor.Designation}}</td>
-            <td>{{vendor.ContactEmail}}</td>
-            <td>{{vendor.ContactPhone}}</td>
-            <td>
-              <a title="Edit Staff" href="javascript:void(0)" data-toggle="modal" (click)="GetStaffDetails(vendor)" 
-              data-target="#myModal"><i class="fa fa-edit"></i></a>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr class="search">
+        <td><input type="text" [(ngModel)]="searchByDesignation" (keyup)="SearchStaffList()" /></td>
+        <td><input type="text" [(ngModel)]="searchByDepartment" (keyup)="SearchStaffList()" /></td>
+        <td><input type="text" [(ngModel)]="searchByName" (keyup)="SearchStaffList()" /></td>
+        <td><input type="text" [(ngModel)]="searchByEmail" (keyup)="SearchStaffList()" /></td>
+        <td><input type="text" [(ngModel)]="searchByPhone" (keyup)="SearchStaffList()" /></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th scope="col">Designation</th>
+        <th scope="col">Technical Department</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="7" *ngIf="totalItems === 0">No Record Found</td>
+      </tr>
+      <tr *ngFor="let vendor of pagedItems;index as i;">
+        <td>{{vendor.Designation}}</td>
+        <td>{{vendor.Department}}</td>
+        <td>{{vendor.ContactName}}</td>
+        <td>{{vendor.ContactEmail}}</td>
+        <td>{{vendor.ContactPhone}}</td>
+        <td>
+          <a title="Edit Staff" href="javascript:void(0)" data-toggle="modal" (click)="GetStaffDetails(vendor)"
+            data-target="#myModal"><i class="fa fa-edit"></i></a>
 
-              <a title="Delete Staff" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteStaffDetailPopup(vendor)" 
-              data-target="#deleteModal"><i class="fa fa-remove"></i></a>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-    <nav aria-label="..." class=""  *ngIf="totalItems!==0">
-      <ul class="pagination justify-content-end">
-        <li class="page-item" *ngIf="pager.currentPage !== 1">
-          <button class="page-link" (click)="GetVendorStaffs(1)">First</button>
-        </li>
-        <li class="page-item" *ngIf="pager.currentPage !== 1">
-          <a class="page-link" (click)="GetVendorStaffs(pager.currentPage - 1)">Prev</a>
-        </li>
-  
-        <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
-          <button class="page-link" (click)="GetVendorStaffs(i)" href="javascript:void(0)">{{i}}</button>
-        </li>
-  
-        <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-          <a class="page-link" (click)="GetVendorStaffs(pager.currentPage + 1)">Next</a>
-        </li>
-        <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-          <a class="page-link" (click)="GetVendorStaffs(pager.totalPages)">Last</a>
-        </li>
-      </ul>
-    </nav>
+          <a title="Delete Staff" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+            (click)="DeleteStaffDetailPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <nav aria-label="..." class="" *ngIf="totalItems!==0">
+    <ul class="pagination justify-content-end">
+      <li class="page-item" *ngIf="pager.currentPage !== 1">
+        <button class="page-link" (click)="GetVendorStaffs(1)">First</button>
+      </li>
+      <li class="page-item" *ngIf="pager.currentPage !== 1">
+        <a class="page-link" (click)="GetVendorStaffs(pager.currentPage - 1)">Prev</a>
+      </li>
+
+      <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
+        <button class="page-link" (click)="GetVendorStaffs(i)" href="javascript:void(0)">{{i}}</button>
+      </li>
+
+      <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
+        <a class="page-link" (click)="GetVendorStaffs(pager.currentPage + 1)">Next</a>
+      </li>
+      <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
+        <a class="page-link" (click)="GetVendorStaffs(pager.totalPages)">Last</a>
+      </li>
+    </ul>
+  </nav>
 </div>
 
 
@@ -67,47 +79,45 @@
   <div class="modal-dialog" role="document">
     <!-- modal-content -->
     <div class="modal-content">
-        <!-- modal-header -->
-        <div class="modal-header">
-          <h6 class="modal-title">Staff</h6>
-          <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
-        </div>
-        <!-- modal-body -->
-        <div class="modal-body">
-          <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
-            <input type="hidden" formControlName="VendorStaffDetailsId">
+      <!-- modal-header -->
+      <div class="modal-header">
+        <h6 class="modal-title">Staff</h6>
+        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- modal-body -->
+      <div class="modal-body">
+        <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
+          <input type="hidden" formControlName="VendorStaffDetailsId">
 
-              <div class="form-group col-lg-12 col-md-12">
-              <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <label class="text">Designation<span class="error-label">*</span></label>
-                    <span>
-                      <select formControlName="designation" class="form-control input-sm" (change)="GetVendorDepartments($event)"
-                        [ngClass]="{ 'is-invalid': formErrors.designation }" (blur)="LogValidationErrors()" >      
-                        <option [ngValue]="null">Select Designation</option>
-                        <option *ngFor="let option of designationList" 
-                        [attr.data-maxnumber]="option.Max_Allowed"
-                        value={{option.Designation}}>
-                          {{option.Designation}}
-                        </option>
-                        </select>
-                    </span>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                  <label class="text">Technical Department<span class="error-label">*</span></label>
-                  <span>
-                <ng-multiselect-dropdown class="form-control input-sm dropdown" [placeholder]="'Select Department'" (blur)="LogValidationErrors()" 
-                                  [ngModelOptions]="{standalone: true}"
-                                 [data]="deptList"
-                                 [(ngModel)]="deptSelectList"
-                                 [settings]="deptDropdownSettings"
-                                 (onSelect)="onDeptSelect($event)"
-                                 (onSelectAll)="onDeptSelectAll($event)">
-                                 <option [ngValue]="null">Select Technical Department</option>
-                     </ng-multiselect-dropdown>
-              </span>
-            </div>
-                <!-- <div class="col-lg-6 col-md-6" null>
+          <div class="form-group col-lg-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <label class="text">Designation<span class="error-label">*</span></label>
+                <span>
+                  <select formControlName="designation" class="form-control input-sm"
+                    (change)="GetVendorDepartments($event)" [ngClass]="{ 'is-invalid': formErrors.designation }"
+                    (blur)="logValidationErrors()">
+                    <option value="">Select Designation</option>
+                    <option *ngFor="let option of designationList" [attr.data-maxnumber]="option.Max_Allowed"
+                      value={{option.Designation}}>
+                      {{option.Designation}}
+                    </option>
+                  </select>
+                </span>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <label class="text">Technical Department<span class="error-label">*</span></label>
+                <span>
+                  <ng-multiselect-dropdown required class="form-control input-sm dropdown"
+                    [placeholder]="'Select Department'" [ngClass]="{ 'red': invalid }" onblur="ValidateDepartment()"
+                    [ngModelOptions]="{standalone: true}" [data]="deptList" [(ngModel)]="deptSelectList"
+                    [settings]="deptDropdownSettings" (onSelect)="onDeptSelect($event)"
+                    (onSelectAll)="onDeptSelectAll($event)">
+                    <option [ngValue]=null>Select Technical Department</option>
+                  </ng-multiselect-dropdown>
+                </span>
+              </div>
+              <!-- <div class="col-lg-6 col-md-6" null>
                     <label class="text">Technical Department<span class="error-label">*</span></label>
                     <span>
                      <select formControlName="dept" class="form-control input-sm" 
@@ -119,9 +129,9 @@
                       </select>
                     </span>
                 </div> -->
-              </div>
             </div>
-            <!-- <div class="form-group col-lg-12 col-md-12">
+          </div>
+          <!-- <div class="form-group col-lg-12 col-md-12">
               <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <label class="text">Technical Department <span class="error-label">*</span></label>
@@ -151,105 +161,107 @@
                 </div>
               </div>
             </div> -->
-  
-            <div class="form-group">
-              <div class="col-lg-12 col-md-12">
-                <label class="text">Name<i class="error-label">*</i></label>
-                <span>
-                  <input type="text" formControlName="ContactName" class="form-control input-sm" (blur)="LogValidationErrors()" 
-                  [ngClass]="{ 'is-invalid': formErrors.ContactName }" maxlength="49">
-                </span>
-              </div>
+
+          <div class="form-group">
+            <div class="col-lg-12 col-md-12">
+              <label class="text">Name<i class="error-label">*</i></label>
+              <span>
+                <input type="text" formControlName="ContactName" class="form-control input-sm"
+                  (blur)="logValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.ContactName }" maxlength="49">
+              </span>
             </div>
-  
-            <div class="form-group col-lg-12">
-              <div class="row">
-                <div class="col-lg-6 col-md-6">
-                  <label class="text">Email</label>
-                  <span>
-                    <input type="text" formControlName="ContactEmail" class="form-control input-sm" (blur)="LogValidationErrors()" 
-                    [ngClass]="{ 'is-invalid err': formErrors.ContactEmail }" maxlength="30"/>
-                  </span>
-                    <span class="error-label" *ngIf="formErrors.ContactEmail">{{formErrors.ContactEmail}}</span>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <label class="text">Phone</label>
-                    <span><input type="text" formControlName="ContactPhone" maxlength="10"
-                      class="form-control input-sm" [ngClass]="{ 'is-invalid err': formErrors.ContactPhone }" /></span>
-                      <span class="error-label" *ngIf="formErrors.ContactPhone">{{formErrors.ContactPhone}}</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-lg-12 col-md-12">
-                <label class="text">Remarks</label>
-                <span><input type="text" formControlName="remarks" class="form-control input-sm" maxlength="100"/></span>
-              </div>
-            </div>
+          </div>
+
           <div class="form-group col-lg-12">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <label class="text">Email</label>
+                <span>
+                  <input type="text" formControlName="ContactEmail" class="form-control input-sm"
+                    (blur)="logValidationErrors()" [ngClass]="{ 'is-invalid err': formErrors.ContactEmail }"
+                    maxlength="30" />
+                </span>
+                <span class="error-label" *ngIf="formErrors.ContactEmail">{{formErrors.ContactEmail}}</span>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <label class="text">Phone<i class="error-label">*</i></label>
+                <span>
+                  <input type="text" formControlName="ContactPhone" maxlength="10" (blur)="logValidationErrors()"
+                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': formErrors.ContactPhone }" />
+                </span>
+                <span class="error-label" *ngIf="formErrors.ContactPhone">{{formErrors.ContactPhone}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-12 col-md-12">
+              <label class="text">Remarks</label>
+              <span><input type="text" formControlName="remarks" class="form-control input-sm" maxlength="100" /></span>
+            </div>
+          </div>
+          <!-- <div class="form-group col-lg-12">
               <div class="row">
                   <div class="col-lg-6 col-md-6">
                       <label class="text">Priority <span class="error-label">*</span></label>
                         <span>
-                          <select formControlName="priority" class="form-control input-sm" (blur)="LogValidationErrors()" 
+                          <select formControlName="priority" class="form-control input-sm" (blur)="logValidationErrors()" 
                           [ngClass]="{ 'is-invalid': formErrors.priority }">
                             <option [ngValue]="null">Select Priority</option>
-                            <!-- <ng-container *ngIf="MaxPriority>0"> -->
                             <option *ngFor="let number of PriorityList(MaxPriority); let i = index;" value={{i+1}}>{{i+1}}</option>
-                          <!-- </ng-container> -->
                           </select>
                         </span>
                       </div>
               </div>
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer col-md-12  page-footer">
-              <button type="submit" class="mr-3 btn btn-primary">Save</button>
-              <button type="button" class="btn btn-secondary" (click)="dismiss()" data-dismiss="modal">Cancel</button>
-            </div>
-          </form>
-        </div>
+            </div> -->
+          <!-- Modal footer -->
+          <div class="modal-footer col-md-12  page-footer">
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
       </div>
     </div>
-</div>
-
-<!-- Delete Modal-->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
-              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-              </button>
-          </div>
-          <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-          <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
-              <button class="btn btn-primary" (click)="DeleteStaffDetails()">Yes</button>
-          </div>
-      </div>
   </div>
 </div>
 
-<button #modalOpenMsgButton id="modalOpenMsgButton" type="button" data-target="#myMsgModal" data-backdrop="static" data-keyboard="false"
-    data-toggle="modal" style="display:none;">
+<!-- Delete Modal-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ready to Delete?</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
+        <button class="btn btn-primary" (click)="DeleteStaffDetails()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button #modalOpenMsgButton id="modalOpenMsgButton" type="button" data-target="#myMsgModal" data-backdrop="static"
+  data-keyboard="false" data-toggle="modal" style="display:none;">
 </button>
 <!-- Message Modal-->
 <div class="modal fade" id="myMsgModal">
   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ActionMessage}}</h5>
-              <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ActionMessage}}</h5>
+        <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
               </button> -->
-              <button class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
-          </div>
-          <!-- <div class="modal-body">{{ActionMessage}}</div> -->
-          <!-- <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
+      </div>
+      <!-- <div class="modal-body">{{ActionMessage}}</div> -->
+      <!-- <div class="modal-footer">
               <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
           </div> -->
-      </div>
+    </div>
   </div>
 </div>

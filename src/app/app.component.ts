@@ -9,18 +9,21 @@ import { LoginComponent } from './Components/login/login.component';
 })
 
 export class AppComponent implements OnInit {
-  isUserLoggedIn: boolean;
+  showOutlet: boolean;
   title = 'Producer Management System';
   constructor() { }
 
   ngOnInit() {
-    const url = window.location.pathname.toLowerCase();
-    if (url.indexOf('login') > 0 || url.indexOf('welcome') > 0 || url === '/') {
-      this.isUserLoggedIn = false;
-    } else {
-      this.isUserLoggedIn = true;
+    const host = window.location.host.toLowerCase();
+    let url = window.location.pathname.toLowerCase();
+    if (host.indexOf('localhost') === -1) {
+      url = url.replace('/vmsapp' , '');
     }
-    // alert(url);
+    if (url.indexOf('login') > 0 || url.indexOf('welcome') > 0 || url === '/') {
+      this.showOutlet = true;
+    } else {
+      this.showOutlet = false;
+    }
   }
 }
 

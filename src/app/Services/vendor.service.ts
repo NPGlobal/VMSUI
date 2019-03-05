@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Vendor } from '../Models/vendor';
 import { OriginService } from './origin.service';
 import { BusinessProduction } from '../Models/business-production';
+import { VendorProduction } from '../Models/VendorProduction';
 
 @Injectable({
   providedIn: 'root'
@@ -118,9 +119,9 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
   // Used for save and update Vendor Production and Business Info
-  SaveBusinessProductionInfo(vendorBusinessDetailsObj: BusinessProduction): Observable<any> {
-    const apiUrl = this._origin.origin + 'api/VendorProduction/SaveBusinessProductionInfo';
-    return this._http.post<any>(apiUrl, vendorBusinessDetailsObj);
+  SaveVendorProductionInfo(productionObj: VendorProduction): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorProduction/SaveVendorProductionInfo';
+    return this._http.post<any>(apiUrl, productionObj);
   }
   // Get all Production details of a vendor
   GetVendorProductionByVendorCode(vcode: string, pageIndex: number, Limit: number, searchText?: string): Observable<any> {
