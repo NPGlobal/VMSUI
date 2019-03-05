@@ -23,4 +23,17 @@ export class VendorBusinessDetails {
     Remarks: string;
     CreatedBy: number;
     ModifiedBy: number;
+
+    // For New Changes
+    CurrentYearVendorBusinessDetailsID: number;
+    CurrentYearProposedDPGrnQty: number;
+    CurrentYearProposedDPValueQty: number;
+    CurrentYearProposedJWGrnQty: number;
+    CurrentYearProposedJWValueQty: number;
+
+    NextYearVendorBusinessDetailsID: number;
+    NextYearProposedDPGrnQty: number;
+    NextYearProposedDPValueQty: number;
+    NextYearProposedJWGrnQty: number;
+    NextYearProposedJWValueQty: number;
 }
