@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorStaffService } from 'src/app/Services/vendor-staff.service';
 import { VendorStaff } from 'src/app/Models/VendorStaff';
-import { CommonModule, NgStyle} from '@angular/common';
+import { CommonModule, NgStyle } from '@angular/common';
+import { MasterDataDetails } from 'src/app/Models/master-data-details';
 declare var $: any;
 
 @Component({
@@ -13,20 +14,22 @@ declare var $: any;
   styleUrls: ['./staff-details.component.css']
 })
 export class StaffDetailsComponent implements OnInit {
+  invalid = false;
+  priority = 1;
   vendorcode: string;
   PhonePattern = '^[0-9]{10}$';
   NumericPattern = '^[0-9]*$';
   deptList: any[];
   deptSelectList = [];
   designationList: any[];
-  priorityListTemp: any[];
+  //  priorityListTemp: any[];
   submitted = false;
   vendorstaffList: VendorStaff[]; // For added Staff List
   VendorStaff: VendorStaff; // For form value save and update
   editedVendorStaff: any; // For Check of Vendor Staff Edited Value
   staffDetailsForm: FormGroup;
   ActionMessage: string;
-  MaxPriority = 0;
+  //  MaxPriority = 0;
   @ViewChild('modalOpenMsgButton')
   modalOpenMsgButton: ElementRef;
   el: any;
@@ -64,9 +67,9 @@ export class StaffDetailsComponent implements OnInit {
       'maxlength': 'Should not exceed 10 characters',
       'pattern': 'Please enter a valid phone'
     },
-    'priority': {
-      'required': ''
-    }
+    // 'priority': {
+    //   'required': ''
+    // }
   };
   formErrors = {
     'dept': '',
@@ -74,7 +77,7 @@ export class StaffDetailsComponent implements OnInit {
     'ContactName': '',
     'ContactEmail': '',
     'ContactPhone': '',
-    'priority': ''
+    //  'priority': ''
   };
   deptDropdownSettings = {
     singleSelection: false,
@@ -84,25 +87,27 @@ export class StaffDetailsComponent implements OnInit {
     unSelectAllText: 'UnSelect All',
     itemsShowLimit: 3,
     allowSearchFilter: true,
-    noDataAvailablePlaceholderText : 'No records'
+    noDataAvailablePlaceholderText: 'No records'
   };
-  PriorityList(n: any): any[] {
-    return Array(n);
-  }
- ngOnInit() {
+  // PriorityList(n: any): any[] {
+  //   return Array(n);
+  // }
+  ngOnInit() {
     this.openModal();
     this.el = this.modalOpenMsgButton.nativeElement as HTMLElement;
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorStaffs(this.currentPage);
     });
+    this.staffDetailsForm.get('designation').patchValue(null);
     this.GetVendorDesignation();
     // this.staffDetailsForm.valueChanges.subscribe((data) => {
     //   this.logValidationErrors();
     // });
     this.GetVendorStaffs(this.currentPage);
-   }
+  }
   logValidationErrors(group: FormGroup = this.staffDetailsForm): void {
+   // this.ValidateDepartment();
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
@@ -120,52 +125,57 @@ export class StaffDetailsComponent implements OnInit {
         }
       }
     });
-  }
+    }
   CreateNewVendorStaff() {
     this.VendorStaff = new VendorStaff();
     // this.VendorStaff.VendorStaffConfigId = '';
     // this.VendorStaff.VendorStaffDetailsId = '';s
-    // this.VendorStaff.dept = '';
-    this.VendorStaff.designation = '';
+    this.VendorStaff.dept = '';
+    this.VendorStaff.Designation = '';
     this.VendorStaff.VendorCode = '';
     this.VendorStaff.ContactName = '';
     this.VendorStaff.ContactEmail = '';
     this.VendorStaff.ContactPhone = null;
-    this.VendorStaff.Priority = null;
+    this.VendorStaff.Priority = 1;
     this.VendorStaff.Status = 'A';
     this.VendorStaff.Remarks = '';
+   // this.deptSelectList = null;
   }
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
-      VendorStaffConfigId: [this.VendorStaff.VendorStaffConfigId],
+      //   VendorStaffConfigId: [this.VendorStaff.VendorStaffConfigId],
       VendorStaffDetailsId: [this.VendorStaff.VendorStaffDetailsId],
-      dept: [this.VendorStaff.dept, Validators.required],
-      designation: [this.VendorStaff.VendorStaffConfigId, Validators.required],
+      dept : [this.VendorStaff.dept],
+      designation: [this.VendorStaff.Designation, Validators.required],
       ContactName: [this.VendorStaff.ContactName, Validators.required],
       ContactEmail: [this.VendorStaff.ContactEmail, Validators.email],
       ContactPhone: [this.VendorStaff.ContactPhone, [
         Validators.maxLength(10), Validators.pattern(this.PhonePattern)
       ]],
-      priority: [this.VendorStaff.Priority, Validators.required],
+      priority: [this.VendorStaff.Priority],
       Status: [this.VendorStaff.Status],
       remarks: [this.VendorStaff.Remarks]
     });
+  //  this.deptSelectList = [{DeptCode: this.VendorStaff.dept, DeptName : this.VendorStaff.Department }];
     // this.staffDetailsForm.valueChanges.subscribe((data) => {
     //   this.logValidationErrors(this.staffDetailsForm);
     // });
-  }
+   }
   openModal() {
     this.InitializeFormControls();
   }
   dismiss() {
-    this.MaxPriority = 0;
+    // this.MaxPriority = 0;
+    this.invalid = false;
     this.submitted = false;
+    this.deptList = [];
+    this.deptSelectList = null;
     this.CreateNewVendorStaff();
     this.InitializeFormControls();
     this.logValidationErrors();
-   // this.designationList = [];
-   this.deptList = [];
+    // this.DesignationList = [];
     this.editedVendorStaff = undefined;
+  //  this.staffDetailsForm.get('Designation').patchValue(null);
   }
   GetVendorStaffs(index: number) {
     this.currentPage = index;
@@ -185,73 +195,72 @@ export class StaffDetailsComponent implements OnInit {
     this.pagedItems = this.vendorstaffList;
   }
 
-   GetVendorDesignation() {
+  GetVendorDesignation() {
     this._vendorService.GetVendorDesignation('10', '-1', this.vendorcode, 'Designation').subscribe((data) => {
-           this.designationList = data;
-   });
+      this.designationList = data;
+    });
   }
-  onDeptSelect(item: any) {
-  //  alert(item.DeptCode);
-  //  alert(item.DeptName);
-  //  alert(this.staffDetailsForm.get('deptSelectList').value);
-  //  console.log(item);
+
+  GetSelectedDepartments(selectedItems: any) {
+    this.deptSelectList = selectedItems;
+    if (selectedItems === null || selectedItems === undefined) {
+      this.formErrors.dept = 'required';
+    }
+  }
+  onDeptSelect(items: any) {
   }
   onDeptSelectAll(items: any) {
-   // items.forEach(function (i) {
-   //   console.log(i);
-    //  this.dept += i.DeptCode;
-    //  alert(this.dept);
-    // });
-   // alert(items.DeptCode);
-   // console.log(items);
   }
-//  this.sequenceService.GetSequences().subscribe(res => {
-//       this.sequences = res;
-//     });
-    GetVendorDepartments() {
-    if (this.staffDetailsForm.get('designation').value === null) {
+  //  this.sequenceService.GetSequences().subscribe(res => {
+  //       this.sequences = res;
+  //     });
+  GetVendorDepartments() {
+    if (this.staffDetailsForm.get('designation').value === '') {
       this.deptList = [];
-      this.MaxPriority = 0;
-      this.deptSelectList = null;
-      this.staffDetailsForm.controls.priority.patchValue(null);
+      // this.MaxPriority = 0;
+      this.deptSelectList = [];
+      // this.staffDetailsForm.controls.priority.patchValue(null);
     } else {
       this._vendorService.GetVendorsDeptStaff('10', this.staffDetailsForm.get('designation').value, this.vendorcode, 'Department')
         .subscribe((data) => {
           this.deptList = data;
-          this.MaxPriority = data.max_allowed;
+          //  this.MaxPriority = data.max_allowed;
+          if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
           if (this.staffDetailsForm.get('designation').value !== null) {
-            const strArray = this.deptList.find((obj) => obj.DeptName === this.deptSelectList);
+            const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList);
             if (strArray === undefined) {
-              this.deptSelectList = null;
-            } else { this.GetVendorPriority(); }
+              this.deptSelectList = [];
             }
-             if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
-             this.staffDetailsForm.controls.priority.patchValue(null);
-             this.MaxPriority = 0; }
-          });
+            // else { this.GetVendorPriority(); }
+          }}
+          //  if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
+          //  this.staffDetailsForm.controls.priority.patchValue(null);
+          //  this.MaxPriority = 0; }
+          // this.deptSelectList[0].DeptCode = ['PACK-SD'];
+        });
     }
   }
   // GetVendorDepartments() {
   //   this._vendorService.GetVendorsDeptStaff('10', '-1', this.vendorcode, 'Department').subscribe((data) => {
-  //     this.deptList = data;
+  //     this.DeptList = data;
   //   });
   // }
 
   // GetVendorDesignation() {
-  //   if (this.staffDetailsForm.get('dept').value === null) {
-  //     this.designationList = [];
+  //   if (this.staffDetailsForm.get('Dept').value === null) {
+  //     this.DesignationList = [];
   //     this.MaxPriority = 0;
-  //     this.staffDetailsForm.controls.designation.patchValue(null);
+  //     this.staffDetailsForm.controls.Designation.patchValue(null);
   //     this.staffDetailsForm.controls.priority.patchValue(null);
   //   } else {
-  //     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('dept').value, this.vendorcode, 'Designation')
+  //     this._vendorService.GetVendorDesignation('10', this.staffDetailsForm.get('Dept').value, this.vendorcode, 'Designation')
   //       .subscribe((data) => {
-  //         this.designationList = data;
+  //         this.DesignationList = data;
   //      //   this.MaxPriority = data.max_allowed;
-  //         if (this.staffDetailsForm.get('designation').value !== null) {
-  //           const strArray = this.designationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('designation').value);
+  //         if (this.staffDetailsForm.get('Designation').value !== null) {
+  //           const strArray = this.DesignationList.find((obj) => obj.VendorConfigID === this.staffDetailsForm.get('Designation').value);
   //           if (strArray === undefined) {
-  //             this.staffDetailsForm.controls.designation.patchValue(null);
+  //             this.staffDetailsForm.controls.Designation.patchValue(null);
   //           } else { this.GetVendorPriority(); }
   //            }
   //            if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
@@ -260,25 +269,39 @@ export class StaffDetailsComponent implements OnInit {
   //         });
   //   }
   // }
-  GetVendorPriority() {
-    if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
-     this.staffDetailsForm.controls.priority.patchValue(null); }
-    if (this.staffDetailsForm.get('designation').value !== null) {
+  // GetVendorPriority() {
+  //   if (this.staffDetailsForm.get('VendorStaffDetailsId').value === null) {
+  //    this.staffDetailsForm.controls.priority.patchValue(null); }
+  //   if (this.staffDetailsForm.get('Designation').value !== null) {
+  //   // tslint:disable-next-line:triple-equals
+  //   this.priorityListTemp = this.DesignationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('Designation').value);
+  //   this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
+  //   } else {
+  //     this.priorityListTemp = [];
+  //     this.MaxPriority = 0; }}
+  ValidateDepartment() {
     // tslint:disable-next-line:triple-equals
-    this.priorityListTemp = this.designationList.filter(book => book.VendorConfigID == this.staffDetailsForm.get('designation').value);
-    this.MaxPriority = this.priorityListTemp[0].Max_Allowed;
-    } else {
-      this.priorityListTemp = [];
-      this.MaxPriority = 0; }}
+    if (this.VendorStaff.dept == '' || this.deptSelectList.length === 0) {
+      this.invalid = true;
+     // alert(this.invalid);
+      } else { this.invalid = false ; }
+  }
+
   SaveStaffDetails() {
     this.submitted = true;
-    if (this.staffDetailsForm.invalid) {
-      this.logValidationErrors();
+  //  alert(JSON.stringify(this.staffDetailsForm.value));
+  if (this.staffDetailsForm.invalid || this.deptSelectList.length === 0) {
+    this.logValidationErrors();
+    this.ValidateDepartment();
       return;
     }
     if (this.editedVendorStaff !== undefined) {
-      if (
-        this.staffDetailsForm.get('designation').value === this.editedVendorStaff.VendorStaffConfigID
+      if (this.deptSelectList.map(function (element) {
+        return element.DeptCode;
+      }).join('~') === this.editedVendorStaff.dept
+        // this.deptSelectList.find((obj) => obj.DeptCode ===  this.editedVendorStaff.dept)
+        // this.deptSelectList.find() === this.editedVendorStaff.dept &&
+        &&  this.staffDetailsForm.get('designation').value === this.editedVendorStaff.Designation
         && this.staffDetailsForm.get('ContactName').value === this.editedVendorStaff.ContactName
         && this.staffDetailsForm.get('ContactEmail').value === this.editedVendorStaff.ContactEmail
         && this.staffDetailsForm.get('ContactPhone').value === this.editedVendorStaff.ContactPhone
@@ -294,20 +317,26 @@ export class StaffDetailsComponent implements OnInit {
     this.sendFormData();
   }
   DeleteStaffDetails() {
+    this.deptSelectList = [{DeptCode: this.VendorStaff.dept, DeptName : this.VendorStaff.Department }];
     this.sendFormData();
-  }
+    }
   sendFormData() {
     const st = this.staffDetailsForm.get('Status').value;
     this.VendorStaff = new VendorStaff();
     this.VendorStaff.VendorStaffDetailsId = (this.staffDetailsForm.get('VendorStaffDetailsId').value === null)
-    ? 0 : this.staffDetailsForm.get('VendorStaffDetailsId').value;
-    this.VendorStaff.VendorStaffConfigId = this.staffDetailsForm.get('designation').value;
+      ? 0 : this.staffDetailsForm.get('VendorStaffDetailsId').value;
+    // this.VendorStaff.VendorStaffConfigId = this.staffDetailsForm.get('Designation').value;
+    this.VendorStaff.Designation = this.staffDetailsForm.get('designation').value.trim();
+    this.VendorStaff.dept = this.deptSelectList.map(function (element) {
+      return element.DeptCode;
+    }).join('~');
     this.VendorStaff.VendorCode = this.vendorcode;
     this.VendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
     this.VendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value.trim();
     this.VendorStaff.ContactPhone = (this.staffDetailsForm.get('ContactPhone').value === null)
       ? '' : this.staffDetailsForm.get('ContactPhone').value.trim();
-    this.VendorStaff.Priority = this.staffDetailsForm.get('priority').value;
+    // this.VendorStaff.Priority = this.staffDetailsForm.get('priority').value;
+    this.VendorStaff.Priority = this.priority;
     this.VendorStaff.Status = st;
     this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value.trim();
     this.VendorStaff.CreatedBy = 999999;
@@ -354,7 +383,8 @@ export class StaffDetailsComponent implements OnInit {
     this.VendorStaff = vobj;
     vobj.Status = 'A';
     this.InitializeFormControls();
-    this.GetVendorDesignation();
+    this.deptSelectList = [{DeptCode: vobj.dept, DeptName : vobj.Department }];
+    this.GetVendorDepartments();
   }
   DeleteStaffDetailPopup(vobj: VendorStaff) {
     vobj.Status = 'D';

@@ -1,6 +1,8 @@
 import { VendorBusinessDetails } from './vendor-business-details';
 
 export class VendorProduction {
+    VendorProductionDetailsID: number;
+
     CompanyCode: string;
     VendorShortCode: string;
     DivisionCode: string;
