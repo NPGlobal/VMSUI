@@ -14,16 +14,16 @@
     <thead>
       <tr class="search">
         <td><input type="text" [(ngModel)]="searchByDesignation" (keyup)="SearchStaffList()" /></td>
-        <td><input type="text" [(ngModel)]="searchByName" (keyup)="SearchStaffList()" /></td>
         <td><input type="text" [(ngModel)]="searchByDepartment" (keyup)="SearchStaffList()" /></td>
+        <td><input type="text" [(ngModel)]="searchByName" (keyup)="SearchStaffList()" /></td>
         <td><input type="text" [(ngModel)]="searchByEmail" (keyup)="SearchStaffList()" /></td>
         <td><input type="text" [(ngModel)]="searchByPhone" (keyup)="SearchStaffList()" /></td>
         <td></td>
       </tr>
       <tr>
         <th scope="col">Designation</th>
-        <th scope="col">Name</th>
         <th scope="col">Technical Department</th>
+        <th scope="col">Name</th>
         <th scope="col">Email</th>
         <th scope="col">Phone</th>
         <th scope="col">Action</th>
@@ -35,8 +35,8 @@
       </tr>
       <tr *ngFor="let vendor of pagedItems;index as i;">
         <td>{{vendor.Designation}}</td>
-        <td>{{vendor.ContactName}}</td>
         <td>{{vendor.Department}}</td>
+        <td>{{vendor.ContactName}}</td>
         <td>{{vendor.ContactEmail}}</td>
         <td>{{vendor.ContactPhone}}</td>
         <td>
