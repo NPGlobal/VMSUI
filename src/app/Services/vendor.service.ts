@@ -144,4 +144,8 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
+  SaveVendorDepartments(vendor: Vendor): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/Vendor/SaveVendorDepts';
+    return this._http.post<any>(apiUrl, vendor);
+  }
 }

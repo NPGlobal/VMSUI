@@ -45,4 +45,5 @@ export class Vendor {
     Vendor_Weakness: string;
     VendorExpe_MDDCode: string;
     RefVendor_Name: string;
+    Vendor_Depts: string;
 }

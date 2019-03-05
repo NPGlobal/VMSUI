@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { Vendor } from 'src/app/Models/vendor';
@@ -15,12 +15,19 @@ export class DepartmentMappingComponent implements OnInit {
 
   DepartmentMappingForm: FormGroup;
   VendorCode = '';
-  vendor: Vendor;
+  vendor: Vendor = new Vendor();
   DivisionList: MasterDataDetails[] = [];
   DepartmentList: MasterDataDetails[] = [];
   FilteredDeptList: MasterDataDetails[] = [];
+  TempList: MasterDataDetails[] = [];
   SelectedDD: MasterDataDetails[] = [];
   HasPHSelected: boolean;
+  SplittedValue: string[];
+
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: any;
 
   constructor(private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -28,15 +35,11 @@ export class DepartmentMappingComponent implements OnInit {
     private _mddService: MasterDataDetailsService) { }
 
   ngOnInit() {
-    // this._route.parent.paramMap.subscribe((data) => {
-    //   this.VendorCode = (data.get('code'));
-    //   if (this.VendorCode === null) {
-    //     this.vendor = new Vendor();
-    //     this.InitializeFormControls();
-    //   } else {
-    //     this.Edit(this.VendorCode);
-    //   }
-    // });
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+    this._route.parent.paramMap.subscribe((data) => {
+      this.VendorCode = (data.get('code'));
+      this.Edit(this.VendorCode);
+    });
     this.InitializeFormControls();
     this.GetDivisionsAndDepartment();
   }
@@ -50,12 +53,12 @@ export class DepartmentMappingComponent implements OnInit {
     });
   }
 
-  // Edit(Code: string) {
-  //   this._vendorService.GetVendorByCode(Code).subscribe((result) => {
-  //     this.vendor = result.data.Vendor[0];
-  //     this.InitializeFormControls();
-  //   });
-  // }
+  Edit(Code: string) {
+    this._vendorService.GetVendorByCode(Code).subscribe((result) => {
+      this.vendor = result.data.Vendor[0];
+      this.SplitSavedDepartments(this.vendor.Vendor_Depts);
+    });
+  }
 
   GetDivisionsAndDepartment() {
     this._mddService.GetMasterDataDetails('Division', '-1').subscribe((result) => {
@@ -70,11 +73,12 @@ export class DepartmentMappingComponent implements OnInit {
 
   GetDepartment() {
     this.FilteredDeptList = [];
+    this.TempList = Object.assign([], this.DepartmentList);
     const mddCode = this.DepartmentMappingForm.get('Division').value;
     if (mddCode === '-1') {
       for (let i = 0; i < this.DivisionList.length; i++) {
-        for (let j = 0; j < this.DepartmentList.length; j++) {
-          if (this.DivisionList[i].MDDCode === this.DepartmentList[j].ParentMDDCode) {
+        for (let j = 0; j < this.TempList.length; j++) {
+          if (this.DivisionList[i].MDDCode === this.TempList[j].ParentMDDCode) {
             this.FilteredDeptList.push(this.DepartmentList[j]);
           }
         }
@@ -86,7 +90,8 @@ export class DepartmentMappingComponent implements OnInit {
 
   MoveToSelectedList() {
 
-    this.DepartmentMappingForm.get('Division').patchValue('-1');
+    // this.DepartmentMappingForm.get('Division').patchValue('-1');
+
     const div = this.DepartmentMappingForm.get('DivList').value as Array<string>;
     const dept = this.DepartmentMappingForm.get('Department').value as Array<string>;
 
@@ -97,6 +102,9 @@ export class DepartmentMappingComponent implements OnInit {
         }
       }
       this.DeleteFromArray(div, 'Division');
+      this.DeleteFromArray(div, 'DeleteDD');
+      this.DepartmentMappingForm.get('Division').patchValue('-1');
+      this.GetDepartment();
     }
 
     if (dept.length > 0) {
@@ -113,7 +121,6 @@ export class DepartmentMappingComponent implements OnInit {
       this.FilteredDeptList = [];
     }
 
-    this.GetDepartment();
   }
 
   DeleteFromArray(stringArr: string[], type: string) {
@@ -131,9 +138,15 @@ export class DepartmentMappingComponent implements OnInit {
             return value;
           }
         });
-      } else {
+      } else if (type === 'SelectedDD') {
         this.SelectedDD = this.SelectedDD.filter(function (value) {
           if (value.MDDCode !== stringArr[i]) {
+            return value;
+          }
+        });
+      } else {
+        this.SelectedDD = this.SelectedDD.filter(function (value) {
+          if (value.ParentMDDCode !== stringArr[i]) {
             return value;
           }
         });
@@ -163,4 +176,78 @@ export class DepartmentMappingComponent implements OnInit {
 
   }
 
+
+  makeVendorDeptString(): string {
+    let ex = '';
+    ex = this.SelectedDD.map(function (val) {
+      return (val.ParentMDDCode === '' ? val.MDDCode : val.ParentMDDCode) + '~' +
+        (val.ParentMDDCode === '' ? '-1' : val.MDDCode);
+    }).join();
+
+    return ex;
+  }
+
+  SplitSavedDepartments(vendorDepts: string) {
+    const DD = vendorDepts.split(',');
+    for (let i = 0; i < DD.length; i++) {
+      this.SplittedValue = DD[i].split('~');
+      for (let j = 0; j < this.DivisionList.length; j++) {
+        if (this.SplittedValue[1] === '-1') {
+          if (this.SplittedValue[0] === this.DivisionList[j].MDDCode) {
+            this.SelectedDD.push(this.DivisionList[j]);
+            this.DivisionList = this.DivisionList.filter(x => x.MDDCode !== this.SplittedValue[0]);
+          }
+        }
+      }
+      for (let j = 0; j < this.FilteredDeptList.length; j++) {
+        if (this.SplittedValue[1] === this.FilteredDeptList[j].MDDCode) {
+          this.SelectedDD.push(this.FilteredDeptList[j]);
+          this.FilteredDeptList = this.FilteredDeptList.filter(x => x.MDDCode !== this.SplittedValue[1]);
+        }
+      }
+    }
+  }
+
+  SaveVendorDepartment() {
+    const vendor = new Vendor();
+    vendor.VendorCode = this.VendorCode;
+    vendor.Vendor_Depts = this.makeVendorDeptString();
+    try {
+      this._vendorService.SaveVendorDepartments(vendor).subscribe((result => {
+        if (result.data.Table[0].ResultCode === 0) {
+          this.SplitSavedDepartments(result.data.Table1[0].Vendor_Depts);
+          this.PopUpMessage = result.data.Table[0].Message;
+          this.alertButton.click();
+        } else {
+          this.PopUpMessage = result.data.Table[0].Message;
+          this.alertButton.click();
+        }
+      }));
+    } catch {
+      this.PopUpMessage = 'There are some technical error. Please contact administrator.';
+      this.alertButton.click();
+    }
+  }
+
+  UnselectOptions(control: FormControl) {
+    control.patchValue([]);
+  }
+
+  EnableOnAdd() {
+    if ((this.DepartmentMappingForm.get('DivList').value === '' || this.DepartmentMappingForm.get('DivList').value.length === 0) &&
+      (this.DepartmentMappingForm.get('Department').value === '' || this.DepartmentMappingForm.get('Department').value.length === 0)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  EnableOnRemove() {
+    if (this.DepartmentMappingForm.get('SelectedList').value === '' ||
+      this.DepartmentMappingForm.get('SelectedList').value.length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

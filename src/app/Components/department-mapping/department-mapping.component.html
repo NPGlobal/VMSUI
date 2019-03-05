@@ -1,4 +1,4 @@
-<form [formGroup]="DepartmentMappingForm" (ngSubmit)="SaveDepartmentDetails()" novalidate>
+<form [formGroup]="DepartmentMappingForm" (ngSubmit)="SaveVendorDepartment()" novalidate>
 
   <div class="form-inline">
     <div class="content-heading" align="left">Department Mapping</div>
@@ -6,7 +6,7 @@
       <div class="col-sm-5">
         <div class="col-sm-6 mt-1 mb-1 form-group dropdown">
           <label class="text">Division</label>
-          <select formControlName="DivList" class="form-control input-sm" size="5" multiple="multiple">
+          <select (focus)="UnselectOptions(DepartmentMappingForm.controls.Department)" formControlName="DivList" class="form-control input-sm" size="5" multiple="multiple">
             <option *ngFor="let Div of DivisionList" [value]="Div.MDDCode">
               {{ Div.MDDName }}</option>
           </select>
@@ -19,7 +19,7 @@
               {{ Div.MDDName }}</option>
           </select>
           <label class="text">Department</label>
-          <select formControlName="Department" class="form-control input-sm dropdown" size="5" multiple="multiple">
+          <select (focus)="UnselectOptions(DepartmentMappingForm.controls.DivList)" formControlName="Department" class="form-control input-sm dropdown" size="5" multiple="multiple">
             <option *ngFor="let Dept of FilteredDeptList" [value]="Dept.MDDCode">
               {{ Dept.MDDName }}</option>
           </select>
@@ -27,15 +27,15 @@
       </div>
       <div class="col-sm-2" style="padding-left:25px;">
 
-        <input type="button" style="margin-top: 110px;" value=">" (click)="MoveToSelectedList()">
+        <input type="button" [disabled]="EnableOnAdd()" style="margin-top: 110px;" value=">" (click)="MoveToSelectedList()">
         <br />
-        <input type="button" style="margin-top: 10px;" value="<" (click)="RemoveFromSelectedList()">
+        <input type="button" [disabled]="EnableOnRemove()" style="margin-top: 10px;" value="<" (click)="RemoveFromSelectedList()">
 
       </div>
       <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
         <div class="mt-1 mb-1 col-sm-6 form-group" style="width: 250px; max-width: 250px;;">
           <label class="text">Selected Division/Department</label>
-          <select formControlName="SelectedList" class="form-control input-sm" size="15" multiple="multiple">
+          <select onfocusout="event.target.value = ''" formControlName="SelectedList" class="form-control input-sm" size="15" multiple="multiple">
             <option *ngFor="let DD of SelectedDD" [value]="DD.MDDCode">
               {{ DD.MDHCode === 'DEPT' ? DD.MDDName + ' (Department)' : DD.MDDName + ' (Division)' }}
             </option>
@@ -55,3 +55,20 @@
   </div>
 
 </form>
+
+
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+                <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
