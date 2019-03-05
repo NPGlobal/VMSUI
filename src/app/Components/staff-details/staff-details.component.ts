@@ -6,6 +6,7 @@ import { VendorStaffService } from 'src/app/Services/vendor-staff.service';
 import { VendorStaff } from 'src/app/Models/VendorStaff';
 import { CommonModule, NgStyle } from '@angular/common';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import { StaffDetails } from 'src/app/Models/staff-details';
 declare var $: any;
 
 @Component({
@@ -50,6 +51,7 @@ export class StaffDetailsComponent implements OnInit {
   searchByEmail: string;
   searchByPhone: string;
 
+  staffDetailsList: StaffDetails[];
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -191,7 +193,7 @@ export class StaffDetailsComponent implements OnInit {
     this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
       .subscribe(data => {
         if (data.VendorStaff.length > 0) {
-          this.vendorstaffList = data.VendorStaff;
+          this.staffDetailsList = data.VendorStaff;
           this.totalItems = data.VendorStaffCount[0].TotalVendors;
           this.GetVendorsStaffList();
         } else {
@@ -201,7 +203,7 @@ export class StaffDetailsComponent implements OnInit {
   }
   GetVendorsStaffList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.vendorstaffList;
+    this.pagedItems = this.staffDetailsList;
   }
 
   GetVendorDesignation() {
@@ -336,13 +338,25 @@ export class StaffDetailsComponent implements OnInit {
       this.el.click();
     }
   }
-  GetStaffDetails(vobj: VendorStaff) {
+  GetStaffDetails(vobj: StaffDetails) {
     this.editedVendorStaff = vobj;
-    this.VendorStaff = vobj;
-    vobj.Status = 'A';
+
+    const vStaff = new VendorStaff();
+    vStaff.ContactName = vobj.ContactName;
+    vStaff.ContactEmail = vobj.ContactEmail;
+    vStaff.ContactPhone = vobj.ContactPhone;
+    vStaff.Remarks = vobj.Remarks;
+
+    this.VendorStaff = JSON.parse(JSON.stringify(vobj));
+    this.VendorStaff.Status = 'A';
+
     this.InitializeFormControls();
     this.GetVendorDepartments();
-    this.deptSelectList = [{ DeptCode: vobj.dept, DeptName: vobj.Department }];
+    this.deptSelectList =  vobj.DeptList.split(',').filter(function() {
+      return {
+        DeptCode: vobj.DeptList.trim().split(','), DeptName: ''
+      };
+    });
   }
   DeleteStaffDetailPopup(vobj: VendorStaff) {
     vobj.Status = 'D';

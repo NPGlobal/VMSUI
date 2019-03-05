@@ -7,7 +7,7 @@ export class StaffDetails {
     ConfigIdsList: string;
     StaffIdsList: string;
     ContactEmail: string;
-    ContactPhone: string;
+    ContactPhone: number;
     Remarks: string;
     Priority: number;
 }
