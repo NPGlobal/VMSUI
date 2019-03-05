@@ -42,7 +42,14 @@ export class StaffDetailsComponent implements OnInit {
   pagedItems: any[];
 
   _originalValue: string;
+  // Search Variables
   searchText = '';
+  searchByName: string;
+  searchByDepartment: string;
+  searchByDesignation: string;
+  searchByEmail: string;
+  searchByPhone: string;
+
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -93,6 +100,11 @@ export class StaffDetailsComponent implements OnInit {
   //   return Array(n);
   // }
   ngOnInit() {
+    this.searchByName = '';
+    this.searchByDepartment = '';
+    this.searchByDesignation = '';
+    this.searchByEmail = '';
+    this.searchByPhone = '';
     this.openModal();
     this.el = this.modalOpenMsgButton.nativeElement as HTMLElement;
     this._route.parent.paramMap.subscribe((data) => {
@@ -338,5 +350,10 @@ export class StaffDetailsComponent implements OnInit {
   SearchStaffDetails(searchText = '') {
     this.searchText = searchText;
     this.GetVendorStaffs(1);
+  }
+  SearchStaffList() {
+    this.searchText = this.searchByName + '~' + this.searchByDepartment + '~' + this.searchByDesignation + '~' +
+      this.searchByEmail + '~' + this.searchByPhone;
+    this.SearchStaffDetails(this.searchText);
   }
 }
