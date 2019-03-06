@@ -7,4 +7,5 @@ export class MasterDataDetails {
     CompanyCode: string;
     IsDeleted: string;
     Checked: boolean;
+    color: string;
 }
