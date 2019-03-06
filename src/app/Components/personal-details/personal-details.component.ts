@@ -1,4 +1,3 @@
-//#region Import & Componenet
 import { Component, OnInit, ElementRef, ViewChild, Output, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray, AbstractControl, ValidatorFn } from '@angular/forms';
@@ -16,8 +15,6 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
   templateUrl: './personal-details.component.html',
   styleUrls: ['./personal-details.component.css']
 })
-//#endregion
-
 export class PersonalDetailsComponent implements OnInit {
   // minDate = moment(new Date()).format('YYYY-MM-DD')
   Today = new Date();
@@ -67,9 +64,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   submitted = false;
   StateCodeLabel: string;
- //#endregion
 
-//#region Validation Messages
   ValidationMessages = {
     'VendorName': {
       'required': ''
@@ -143,9 +138,7 @@ export class PersonalDetailsComponent implements OnInit {
       'required': ''
     }
   };
-//#endregion
 
-//#region Form for Errors
   formErrors = {
     'VendorName': '',
     'PANNo': '',
@@ -167,9 +160,7 @@ export class PersonalDetailsComponent implements OnInit {
     'PrimaryContactWebsite': '',
     'SecondaryContactWebsite': ''
   };
-//#endregion
 
-//#region Constructor and onInit
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
@@ -203,101 +194,6 @@ export class PersonalDetailsComponent implements OnInit {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
   }
-
-  InitializeFormControls() {
-    this.PopulateYears();
-    const disablePan = this.vendor.PANNo === '' ? false : true;
-    const disableRef = this.vendor.Ref_VendorCode === '-1' ? false : true;
-    const isGSTControlsDisabled = this.vendor.isGSTRegistered ? true : false;
-    const isDPDisabled = this.vendor.IsDirectVendor ? true : false;
-    const isJWDisabled = this.vendor.IsJWVendor ? true : false;
-
-    this.personalDetailsForm = this._fb.group({
-      PersonalDetails: this._fb.group({
-        VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
-        VendorName: [this.vendor.VendorName, [Validators.required]],
-        MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
-        PANNo: [this.vendor.PANNo, [
-          Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.maxLength(10), Validators.minLength(10)]],
-        PHList: [[]],
-        StoreList: [[]],
-        SelectedPHStoreList: [[]],
-        Ref_VendorCode: [this.vendor.Ref_VendorCode],
-        IsExpanded: true,
-        IsJWVendor: [this.vendor.IsJWVendor],
-        IsDirectVendor: [this.vendor.IsDirectVendor],
-        NameofInsuranceCompany: [{ value: this.vendor.NameofInsuranceCompany, disabled: true }],
-        IsInsured: [this.vendor.isInsured]
-      }),
-      RegisteredOfficeAddress: this._fb.group({
-        IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
-        IsRCM: [{ value: this.vendor.isRCM, disabled: true }],
-        GSTIN: [this.vendor.GSTIN],
-        GSTDate: [this.FormatDate(this.vendor.GSTDate)],
-        IsProvisional: [this.vendor.isProvisional],
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
-        Address2: [this.vendor.RegisteredOfficeAddress.Address2],
-        Address3: [this.vendor.RegisteredOfficeAddress.Address3],
-        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
-        CityCode: [this.vendor.RegisteredOfficeAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
-        StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
-        PIN: [this.vendor.RegisteredOfficeAddress.PIN,
-        [Validators.required, Validators.pattern('^[1-9][0-9]{5}$'), Validators.minLength(6), Validators.maxLength(6)]],
-        AddressTypeCode: [this.vendor.RegisteredOfficeAddress.AddressTypeCode],
-        PrimaryContactName: [this.vendor.RegisteredOfficeAddress.PrimaryContactName,
-        [Validators.required, Validators.pattern(this.AlphabetPattern)]],
-        PrimaryContactPhone: [this.vendor.RegisteredOfficeAddress.PrimaryContactPhone,
-        [Validators.required, Validators.pattern(this.PhonePattern)]],
-        PrimaryContactFax: [this.vendor.RegisteredOfficeAddress.PrimaryContactFax, [Validators.pattern(this.PhonePattern)]],
-        PrimaryContactEmail: [this.vendor.RegisteredOfficeAddress.PrimaryContactEmail, [Validators.pattern(this.EmailPattern)]],
-        PrimaryContactWebsite: [this.vendor.RegisteredOfficeAddress.PrimaryContactWebsite, Validators.pattern(this.WebsitePattern)],
-        SecondaryContactName: [this.vendor.RegisteredOfficeAddress.SecondaryContactName, Validators.pattern(this.AlphabetPattern)],
-        SecondaryContactPhone: [this.vendor.RegisteredOfficeAddress.SecondaryContactPhone, [Validators.pattern(this.PhonePattern)]],
-        SecondaryContactFax: [this.vendor.RegisteredOfficeAddress.SecondaryContactFax, [Validators.pattern(this.PhonePattern)]],
-        SecondaryContactEmail: [this.vendor.RegisteredOfficeAddress.SecondaryContactEmail, [Validators.pattern(this.EmailPattern)]],
-        SecondaryContactWebsite: [this.vendor.RegisteredOfficeAddress.SecondaryContactWebsite, Validators.pattern(this.WebsitePattern)],
-        IsSameForAll: [false],
-        IsExpanded: false
-      }),
-      Address: this._fb.group({
-        IsExpanded: false
-      }),
-      OtherRegDetails: this._fb.group({
-        AssociatedSinceYear: [this.vendor.AssociatedSinceYear],
-        VendorType_MDDCode: [this.vendor.VendorType_MDDCode],
-        PersonTopRanker1: [this.vendor.PersonTopRanker1],
-        PersonTopRanker2: [this.vendor.PersonTopRanker2],
-        IsExpanded: false
-      }),
-      CustomerDetails: this._fb.group({
-        OtherCustomer1: [this.vendor.OtherCustomer1],
-        OtherCustomer2: [this.vendor.OtherCustomer2],
-        OtherCustomer3: [this.vendor.OtherCustomer3],
-        OtherCustomer4: [this.vendor.OtherCustomer4],
-        OtherCustomer5: [this.vendor.OtherCustomer5],
-        IsExpanded: false
-      }),
-      ExpertiseDetails: this._fb.group({
-        IsExpanded: false,
-        ExpertiseList: new FormArray([]),
-        VendorWeaknesses: [this.vendor.Vendor_Weakness === null ? '' : this.vendor.Vendor_Weakness]
-      })
-    });
-
-    this.personalDetailsForm.updateValueAndValidity();
-
-    this.DisableControls(disablePan, isGSTControlsDisabled, disableRef, isDPDisabled, isJWDisabled);
-
-    if (!isGSTControlsDisabled) {
-      this.SetValidationForGSTControls();
-    }
-
-    this.personalDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.personalDetailsForm);
-    });
-  }
-//#endregion
-
 
   CreateNewAddress(): any {
     const address = Object.assign({}, {
@@ -498,14 +394,12 @@ export class PersonalDetailsComponent implements OnInit {
       }
     });
   }
-
   dismissMsg() {
     // if (this.PopUpMessage === 'Saved Succesfully!!') {
     //   const absUrl = window.location.href;
     //   window.location.href = absUrl;
     // }
   }
-
   Editvendor(Code: string) {
     this._vendorService.GetVendorByCode(Code).subscribe((result) => {
       this.vendor = result.data.Vendor[0];
