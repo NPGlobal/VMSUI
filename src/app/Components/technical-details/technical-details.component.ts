@@ -42,8 +42,6 @@ export class TechnicalDetailsComponent implements OnInit {
   deptList: any[];
   techSpecList: any[];
   TechDefaultLst: VendorTechDefault[];
-
-
   // isLine = 0;
   // isEfficiency = 0;
   // isDisable = false;
@@ -116,7 +114,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
 
     this.dltModalCloseButton = this.deleteModalClose.nativeElement as HTMLElement;
-
+    this.isTechDetailFormChanged = true;
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorTech(this.currentPage);
@@ -163,9 +161,9 @@ export class TechnicalDetailsComponent implements OnInit {
     });
 
     this.SetEfficiencyAsDefault();
-    // this.techDetailsForm.valueChanges.subscribe((data) => {
-    //   this.LogValidationErrors(this.techDetailsForm);
-    // });
+    this.techDetailsForm.valueChanges.subscribe((data) => {
+      this.LogValidationErrors(this.techDetailsForm);
+    });
   }
 
   SetEfficiencyAsDefault() {
@@ -218,9 +216,12 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DisableSaveFormButton() {
-    this.isTechDetailFormChanged = (this.vendorTechDefault !== null && this.vendorTechDefault !== undefined &&
-      this.vendorTechDefault.VendorTechDetails !== null && this.vendorTechDefault.VendorTechDetails !== undefined &&
-      this.vendorTechDefault.VendorTechDetails.filter(x => x.Status !== 'D').length === 0);
+    if (this.vendorTechDefault.VendorTechDetails !== undefined) {
+      this.isTechDetailFormChanged = this.vendorTechDefault.VendorTechDetails.filter(x => x.Status !== 'D').length === 0;
+    }
+    // this.isTechDetailFormChanged = (this.vendorTechDefault !== null && this.vendorTechDefault !== undefined &&
+    //   this.vendorTechDefault.VendorTechDetails !== null && this.vendorTechDefault.VendorTechDetails !== undefined &&
+    //   this.vendorTechDefault.VendorTechDetails.filter(x => x.Status !== 'D').length === 0);
   }
 
   EditTechDetails(techDefault: VendorTechDefault) {
@@ -228,7 +229,6 @@ export class TechnicalDetailsComponent implements OnInit {
       techDefault = new VendorTechDefault();
       techDefault.TechLineNo = this.maxTechLineNo;
     }
-
     if (techDefault !== null && (techDefault.TechLineNo === '' || techDefault.TechLineNo === null)) {
       techDefault = techDefault.VendorTechDetails[0].VendorTechDetailsID === null ?
         new VendorTechDefault() : techDefault;
@@ -324,7 +324,9 @@ export class TechnicalDetailsComponent implements OnInit {
       if (this.vendorTechDefault.VendorTechDetails.length > 0) {
 
         const existingIndex = this.vendorTechDefault.VendorTechDetails.findIndex((x) =>
-          x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID);
+          x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID &&
+          x.VendorTechConfigID === this.vendorTech.VendorTechConfigID &&
+          x.DeptCode === this.vendorTech.DeptCode);
         if (existingIndex >= 0 && this.isTechDetailEditing > 0) {
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
           this.isTechDetailEditing  = 0;

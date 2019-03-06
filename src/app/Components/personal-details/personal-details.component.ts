@@ -8,8 +8,10 @@ import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
+ import { DatePipe } from '@angular/common';
 
 @Component({
+  providers: [DatePipe],
   selector: 'app-personal-details',
   templateUrl: './personal-details.component.html',
   styleUrls: ['./personal-details.component.css']
@@ -17,8 +19,12 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 //#endregion
 
 export class PersonalDetailsComponent implements OnInit {
-
-//#region Define List, variable and model popups
+  // minDate = moment(new Date()).format('YYYY-MM-DD')
+  Today = new Date();
+  maxDate = this.datepipe.transform(this.Today, 'yyyy-MM-dd');
+// maxDate = '2019-03-06';
+ minDate = '2017-07-01';
+  // maxDate = '2019-03-06';
   CountryList: MasterDataDetails[];
   StateList: MasterDataDetails[];
   vendor: Vendor;
@@ -167,6 +173,7 @@ export class PersonalDetailsComponent implements OnInit {
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
+    public datepipe: DatePipe,
     private _mDDService: MasterDataDetailsService) {
     this.Address = this.CreateNewAddress();
     this.vendor = new Vendor();
@@ -177,6 +184,10 @@ export class PersonalDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+    this.GetMasterDataDetails('VendorType');
+    this.GetMasterDataDetails('COUNTRY');
+    this.GetMasterDataDetails('STATE');
+    // this.GetMasterDataDetails('VendorExpe');
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
@@ -191,12 +202,6 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
-
-    this.GetMasterDataDetails('VendorType');
-    this.GetMasterDataDetails('COUNTRY');
-    this.GetMasterDataDetails('STATE');
-    // this.GetMasterDataDetails('VendorExpe');
-
   }
 
   InitializeFormControls() {
@@ -387,38 +392,48 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.VendorExpertise = this.makeVendorExpertiseString();
     vendor.VendorCode = this.VendorCode;
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
-    vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value;
+    vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
+    this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
     vendor.isInsured = this.personalDetailsForm.get('PersonalDetails.IsInsured').value;
-    vendor.NameofInsuranceCompany = this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value;
+    vendor.NameofInsuranceCompany = this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value === null ? '' :
+    this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value.trim();
     vendor.IsDirectVendor = this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value;
     vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
     vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
-    vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value;
-    vendor.PersonTopRanker2 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value;
-    vendor.OtherCustomer1 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value;
-    vendor.OtherCustomer2 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value;
-    vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value;
-    vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value;
-    vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value;
+    vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value === null ? '' :
+    this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value.trim();
+    vendor.PersonTopRanker2 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value === null ? '' :
+    this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value.trim();
+    vendor.OtherCustomer1 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value === null ? '' :
+    this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value.trim();
+    vendor.OtherCustomer2 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value === null ? '' :
+    this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value.trim();
+    vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value === null ? '' :
+    this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value.trim();
+    vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value === null ? '' :
+    this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value.trim();
+    vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value === null ? '' :
+    this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value.trim();
     vendor.SelectedPHListCSV = this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value ?
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join() : '';
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
-    vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value;
+    vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
+    ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
     vendor.isRCM = this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').value;
     vendor.isProvisional = this.personalDetailsForm.get('RegisteredOfficeAddress.IsProvisional').value;
     vendor.GSTDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
     vendor.RegisteredOfficeAddress = new VendorAddress();
     vendor.RegisteredOfficeAddress.CompanyCode = '10';
     vendor.RegisteredOfficeAddress.PIN = this.personalDetailsForm.get('RegisteredOfficeAddress.PIN').value;
-    vendor.RegisteredOfficeAddress.Address1 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address1').value;
+    vendor.RegisteredOfficeAddress.Address1 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address1').value.trim();
     vendor.RegisteredOfficeAddress.Address2 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address2').value === null
-      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.Address2').value;
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.Address2').value.trim();
     vendor.RegisteredOfficeAddress.Address3 = this.personalDetailsForm.get('RegisteredOfficeAddress.Address3').value === null
-      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.Address3').value;
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.Address3').value.trim();
     vendor.RegisteredOfficeAddress.StateCode = this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value;
     vendor.RegisteredOfficeAddress.CityCode = this.personalDetailsForm.get('RegisteredOfficeAddress.CityCode').value;
     vendor.RegisteredOfficeAddress.CountryCode = this.personalDetailsForm.get('RegisteredOfficeAddress.CountryCode').value;
@@ -429,11 +444,11 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.PrimaryContactName =
       this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactName').value == null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactName').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactName').value.trim();
 
     vendor.RegisteredOfficeAddress.PrimaryContactPhone =
       this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactPhone').value === null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactPhone').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactPhone').value.trim();
 
     vendor.RegisteredOfficeAddress.PrimaryContactFax =
       this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactFax').value === null
@@ -441,15 +456,15 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.PrimaryContactEmail =
       this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactEmail').value === null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactEmail').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactEmail').value.trim();
 
     vendor.RegisteredOfficeAddress.PrimaryContactWebsite =
       this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactWebsite').value === null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactWebsite').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.PrimaryContactWebsite').value.trim();
 
     vendor.RegisteredOfficeAddress.SecondaryContactName =
       this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactName').value === null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactName').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactName').value.trim();
 
     vendor.RegisteredOfficeAddress.SecondaryContactPhone =
       this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactPhone').value === null
@@ -461,11 +476,11 @@ export class PersonalDetailsComponent implements OnInit {
 
     vendor.RegisteredOfficeAddress.SecondaryContactEmail =
       this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactEmail').value === null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactEmail').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactEmail').value.trim();
 
     vendor.RegisteredOfficeAddress.SecondaryContactWebsite =
       this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactWebsite').value === null
-        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactWebsite').value;
+        ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.SecondaryContactWebsite').value.trim();
 
     vendor.RegisteredOfficeAddress.IsSameForAll = this.personalDetailsForm.get('RegisteredOfficeAddress.IsSameForAll').value;
 
@@ -475,6 +490,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
         this.alertButton.click();
         this.IsAddressSaved = true;
+        this.submitted = false;
         this.Editvendor(this.VendorCode);
       } else {
         this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
@@ -496,10 +512,11 @@ export class PersonalDetailsComponent implements OnInit {
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
+      this.vendor.RegisteredOfficeAddress.CountryCode = 'IN';
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
-      if (this.vendor.Ref_VendorCode === null) {
+      if (this.vendor.Ref_VendorCode === '-1') {
         this._vendorService.GetVendors(-1, -1, '').subscribe((mvResult) => {
           this.ReferenceVendorList = mvResult.data.Vendors;
         });
@@ -678,10 +695,14 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.CountryCode').disable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').disable();
     } else {
       this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').enable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').enable();
       this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.CountryCode').enable();
+      this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').enable();
     }
   }
 
@@ -884,31 +905,64 @@ export class PersonalDetailsComponent implements OnInit {
 
   GSTINValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const status = this.CheckGSTFormat(control.value);
+      const status = this.CheckGSTFormat(control.value, this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
+      this.personalDetailsForm.get('PersonalDetails.PANNo').value.trim().toUpperCase());
       if (!status) {
         return { 'pattern': status };
       }
       return null;
     };
   }
-
-  CheckGSTFormat(g: string): boolean {
+  // Modified by Shubhi
+  CheckGSTFormat(gst: string, pan: string): boolean {
     let status = false;
     const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
-    if (g !== null && g.length >= 2) {
-      const firstTwo = g.substr(0, 2);
-      status = this.StateList.find(x => x.MDDShortName === firstTwo) !== undefined;
+    const regWithPan = new RegExp('^([0-9]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+    if (gst !== null && gst.length >= 2) {
+      const firstTwo = gst.substr(0, 2);
+      status = this.StateCodeLabel.substr(0, 2) === firstTwo ;
+      // status = this.StateCodeLabel.substr(0, 2) === firstTwo !== undefined;
     }
-
-    if (status && g !== null && g.length > 2) {
-      const lastcharacters = g.substr(2, g.length);
-      status = reg.test(lastcharacters);
+    if (pan !== null && pan.length === 10) {
+    if (status && gst !== null && gst.length >= 10) {
+      const panChars = gst.substr(2, 10);
+      // status = pan === panChars !== undefined;
+      status = pan === panChars ;
+    }
+    if (status && gst !== null && gst.length >=  gst.length) {
+      const lastThreeChars = gst.substr(12, gst.length);
+      status = regWithPan.test(lastThreeChars);
     } else {
       status = false;
     }
-
+  }  else {
+      if (status && gst !== null && gst.length > 2) {
+            const lastcharacters = gst.substr(2, gst.length);
+            status = reg.test(lastcharacters);
+          } else {
+            status = false;
+          }
+    }
     return status;
   }
+
+  // CheckGSTFormat(g: string): boolean {
+  //   let status = false;
+  //   const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+  //   if (g !== null && g.length >= 2) {
+  //     const firstTwo = g.substr(0, 2);
+  //     status = this.StateList.find(x => x.MDDShortName === firstTwo) !== undefined;
+  //   }
+
+  //   if (status && g !== null && g.length > 2) {
+  //     const lastcharacters = g.substr(2, g.length);
+  //     status = reg.test(lastcharacters);
+  //   } else {
+  //     status = false;
+  //   }
+
+  //   return status;
+  // }
 
   onChange(expertise: string, isChecked: boolean) {
     this.ExpertiseList.find(x => x.MDDCode === expertise).Checked = isChecked;

@@ -1,22 +1,30 @@
-<div class="col-lg-12 col-sm-12 col-md-12 row">
-  <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchProductionDetails($event.target.value)"
-    name="search">
-  <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="openModal()"
-    data-target="#myModal" data-backdrop="static" data-keyboard="false">
+<div class="col-lg-12 col-sm-12 col-md-12">
+  <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchProductionDetails($event.target.value)"
+    name="search"> -->
+  <button type="button" class="btn btn-primary float-right" (click)="EditProductionDetail(null)">
     <i class="fa fa-plus"></i>
     <span title="Add new" class="py-4">Add</span>
   </button>
 </div>
 <div class="clearfix"></div>
 <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
+  <!-- <p>{{searchText}}</p> -->
   <table class="table table-striped table-bordered table-hover">
-    <thead class="table-primary">
+    <thead>
+      <!-- <tr class="search">
+        <td><input type="text" [(ngModel)]="searchBySubContName" (keyup)="SearchProductionDetails()" /></td>
+        <td><input type="text" [(ngModel)]="searchBySubContNature" (keyup)="SearchProductionDetails()" /></td>
+        <td><input type="text" [(ngModel)]="searchByApprProdUnits" (keyup)="SearchProductionDetails()" /></td>
+        <td><input type="text" [(ngModel)]="searchByMonCapacity" (keyup)="SearchProductionDetails()" /></td>
+        <td><input type="text" [(ngModel)]="searchByMinCapacity" (keyup)="SearchProductionDetails()" /></td>
+        <td><input type="text" [(ngModel)]="searchByLeanMonths" (keyup)="SearchProductionDetails()" /></td>
+        <td><input type="text" [(ngModel)]="searchByLeanCapacity" (keyup)="SearchProductionDetails()" /></td>
+        <td></td>
+      </tr> -->
       <tr>
-        <th scope="col">Division</th>
-        <th scope="col">Department</th>
-        <th scope="col">Approved Production Units</th>
         <th scope="col">Sub Contracting Unit Name</th>
         <th scope="col">Nature of Sub Contracting Unit</th>
+        <th scope="col">Approved Production Units</th>
         <th scope="col">Monthly Capacity</th>
         <th scope="col">Minimal Capacity</th>
         <th scope="col">Lean Months</th>
@@ -26,32 +34,32 @@
     </thead>
     <tbody>
       <tr>
-        <td colspan="10" *ngIf="pagedItems.length === 0">No Record Found</td>
+        <td colspan="10" *ngIf="!pagedItems || pagedItems.length === 0">No Record Found</td>
       </tr>
-      <ng-container *ngFor="let vendor of pagedItems;index as i;">
+      <ng-container *ngFor="let production of pagedItems;index as i;">
         <div class="panel-group"></div>
         <tr>
-          <td>{{vendor.DivisionName}}</td>
-          <td>{{vendor.DeptName}}</td>
-          <td>{{vendor.ApprovedProductionCount}}</td>
-          <td>{{vendor.SubContractingName}}</td>
-          <td>{{vendor.NatureOfSubContracting}}</td>
-          <td>{{vendor.MonthlyCapacity}}</td>
-          <td>{{vendor.MinimalCapacity}}</td>
-          <td>{{vendor.LeanMonths}}</td>
-          <td>{{vendor.LeanCapacity}}</td>
+          <td>{{production.SubContractingName}}</td>
+          <td>{{production.NatureOfSubContracting}}</td>
+          <td>{{production.ApprovedProductionCount}}</td>
+          <td>{{production.MonthlyCapacity}}</td>
+          <td>{{production.MinimalCapacity}}</td>
+          <td>{{production.LeanMonths}}</td>
+          <td>{{production.LeanCapacity}}</td>
           <td>
-            <!-- <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor.VendorProductionDetailsId)" 
-            data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a> -->
-            <a title="Edit" href="javascript:void(0)" data-toggle="modal" (click)="GetProductionDetails(vendor)"
-              data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i></a>
+            <a title="Edit" href="javascript:void(0)" (click)="EditProductionDetail(production)">
+              <i class="fa fa-edit"></i>
+            </a>
+
             <a class="ml-2" title="View Address" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
               data-toggle="collapse">
               <i class="fa fa-address-book"></i>
             </a>
 
-            <!-- <a title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteProductionDetailsPopup(vendor)" 
-            data-target="#deleteModal"><i class="fa fa-remove"></i></a> -->
+            <a title="Delete Production Detail" href="javascript:void(0)" class="ml-2"
+              (click)="DeleteProductionDetail(production)" data-target="#deleteModal">
+              <i class="fa fa-remove"></i>
+            </a>
           </td>
         </tr>
         <tr class="collapse" id="{{'Collapse' + (i + 1)}}">
@@ -68,14 +76,14 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{vendor.Address2 === '' ? vendor.Address1 : vendor.Address1 + ','}}
-                    {{vendor.Address3 === '' ? vendor.Address2 : vendor.Address2 + ','}}
-                    {{vendor.Address3}}
+                  <td>{{production.Address2 === '' ? production.Address1 : production.Address1 + ','}}
+                    {{production.Address3 === '' ? production.Address2 : production.Address2 + ','}}
+                    {{production.Address3}}
                   </td>
-                  <td>{{vendor.Phone}}</td>
-                  <td>{{vendor.StateCode}}</td>
-                  <td>{{vendor.CityCode}}</td>
-                  <td>{{vendor.Pin}}</td>
+                  <td>{{production.Phone}}</td>
+                  <td>{{production.StateName}}</td>
+                  <td>{{production.CityCode}}</td>
+                  <td>{{production.Pin}}</td>
                 </tr>
               </tbody>
             </table>
@@ -107,6 +115,9 @@
   </nav>
 </div>
 
+<button #modalOpen type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false" data-toggle="modal"
+  style="display:none;">
+</button>
 
 <div class="modal popup" id="myModal">
   <!-- modal-dialog -->
@@ -115,65 +126,17 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <button type="button" class="close" (click)="dismiss()">&times;</button>
+        <h6 class="modal-title">Production <span class="req-popup-label">(<b>Note:</b> * marks filed are required)</span></h6>
+        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
       </div>
       <!-- modal-body -->
       <div class="modal-body">
-        <form [formGroup]="ProductionDetailsForm" novalidate>
-
-          <!-- <input type="hidden" name="id" formControlName="id"> -->
-          <!-- <input type="hidden" name="division" formControlName="division">
-          <input type="hidden" name="department" formControlName="department"> -->
-
-          <div class="form-group col-lg-12">
-            <div class="row">
-              <div class="col-lg-3 col-md-3">
-                <label class="text">Division<span class="error-label">*</span></label>
-                <span>
-                  <select [attr.disabled]="isDisable===true ? 'true' : null" formControlName="Division"
-                    class="form-control input-sm" (change)="GetDepartment($event)" (blur)="LogValidationErrors()"
-                    [ngClass]="{ 'is-invalid': formErrors.Division}">
-
-                    <option value="">Select Division</option>
-                    <option *ngFor="let option of divisionList" value={{option.MDDCode}}>
-                      {{option.MDDName}}
-                    </option>
-                  </select>
-                </span>
-              </div>
-              <div class="col-lg-4 col-md-4">
-                <label class="text">Department<span class="error-label">*</span></label>
-                <span>
-                  <ng-multiselect-dropdown class="form-control input-sm dropdown" [placeholder]="'Select Department'"
-                    [ngModelOptions]="{standalone: true}" [data]="departmentList" [(ngModel)]="SelectedDepartmentList"
-                    [settings]="DropdownSettings" (onSelect)="CreateBusinessForm($event)"
-                    (onDeSelect)="RemoveBussinessDetails($event)">
-                  </ng-multiselect-dropdown>
-                </span>
-              </div>
-            </div>
-          </div>
+        <form [formGroup]="ProductionDetailsForm" (ngSubmit)="SaveProductionDetails()" novalidate>
 
           <fieldset>
-            <legend>
-              <a class="ml-2" title="View Address" href="javascript:void(0)" [attr.data-target]="'#CollapseProduction'"
-                data-toggle="collapse">Production
-              </a>
-            </legend>
-            <div id="CollapseProduction" class="collapse col-lg-12 col-md-12">
+            <div class="col-lg-12 col-md-12">
               <div class="form-group col-lg-12">
                 <div class="row">
-                  <div class="col-lg-4 col-md-4">
-                    <label class="text">Approved Production Units<span class="error-label">*</span></label>
-                    <span>
-                      <input type="text" formControlName="ApprovedProductionCount" class="form-control input-sm"
-                        (blur)="LogValidationErrors()"
-                        [ngClass]="{ 'is-invalid': formErrors.ApprovedProductionCount}" />
-                    </span>
-                    <span [ngClass]="{ 'error-label':formErrors.ApprovedProductionCount}"
-                      *ngIf="formErrors.ApprovedProductionCount">
-                      {{formErrors.ApprovedProductionCount}}</span>
-                  </div>
 
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Name of Sub Contracting Unit<span class="error-label">*</span></label>
@@ -231,7 +194,7 @@
                     <span>
                       <select formControlName="StateCode" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.StateCode }" (blur)="LogValidationErrors()">
-                        <option value="">Select</option>
+                        <option [ngValue]="null">Select</option>
                         <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
                       </select>
                     </span>
@@ -242,6 +205,8 @@
                       <input type="text" formControlName="CityCode" class="form-control input-sm" maxlength="49"
                         [ngClass]="{ 'is-invalid err': formErrors.CityCode }" (blur)="LogValidationErrors()" />
                     </span>
+                    <span [ngClass]="{ 'error-label':formErrors.CityCode}" *ngIf="formErrors.CityCode">
+                      {{formErrors.CityCode}}</span>
                   </div>
                   <div class="col-lg-3 col-md-3">
                     <label class="text">PinCode<span class="error-label">*</span></label>
@@ -257,7 +222,20 @@
 
               <div class="form-group col-lg-12">
                 <div class="row">
-                  <div class="col-lg-3 col-md-3">
+
+                  <div class="col-lg-2 col-md-2">
+                    <label class="text">Approved Prod. Units<span class="error-label">*</span></label>
+                    <span>
+                      <input type="text" formControlName="ApprovedProductionCount" class="form-control input-sm"
+                        (blur)="LogValidationErrors()"
+                        [ngClass]="{ 'is-invalid': formErrors.ApprovedProductionCount}" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':formErrors.ApprovedProductionCount}"
+                      *ngIf="formErrors.ApprovedProductionCount">
+                      {{formErrors.ApprovedProductionCount}}</span>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2">
                     <label class="text">Monthly Capacity<span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="MonthlyCapacity" class="form-control input-sm" maxlength="13"
@@ -267,7 +245,7 @@
                       {{formErrors.MonthlyCapacity}}
                     </span>
                   </div>
-                  <div class="col-lg-3 col-md-3">
+                  <div class="col-lg-2 col-md-2">
                     <label class="text">Minimal Capacity<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="MinimalCapacity" class="form-control input-sm"
                         maxlength="13" [ngClass]="{ 'is-invalid err': formErrors.MinimalCapacity }"
@@ -276,17 +254,19 @@
                       {{formErrors.MinimalCapacity}}
                     </span>
                   </div>
-                  <div class="col-lg-3 col-md-3">
+                  <div class="col-lg-2 col-md-2">
                     <label class="text">Lean Months<span class="error-label">*</span></label>
                     <span>
-                      <input type="text" formControlName="LeanMonths" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" />
+                      <!-- <input type="text" formControlName="LeanMonths" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" /> -->
+                        <input type="text" formControlName="LeanMonths" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="CheckLeanMonth()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
                       *ngIf="formErrors.LeanMonths">{{formErrors.LeanMonths}}
                     </span>
                   </div>
-                  <div class="col-lg-3 col-md-3">
+                  <div class="col-lg-2 col-md-2">
                     <label class="text">Lean Capacity<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="LeanCapacity" class="form-control input-sm" maxlength="13"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanCapacity }"
@@ -305,58 +285,22 @@
             </div>
           </fieldset>
 
+          <!-- Modal footer -->
+          <div class="modal-footer col-md-12  page-footer">
+            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" (click)="Dismiss()">Cancel</button>
+            <button #modalCloseButton style="display: none;" type="button" data-dismiss="modal"></button>
+          </div>
         </form>
-        <div *ngIf="BusinessProdData && BusinessProdData.BusinessDetails && BusinessProdData.BusinessDetails.length !== 0"
-          class="container">
-          <fieldset>
-            <legend>Business</legend>
-            <div class="form-group col-lg-12" style="overflow-y: scroll; max-height:185px;">
-              <table class="table table-striped table-bordered table-hover table-small">
-                <thead>
-                  <tr>
-                    <th style="width:25%">Department</th>
-                    <th style="width:20%">Financial Year</th>
-                    <th style="width:13%">DP Business</th>
-                    <th style="width:13%">DP Quantity</th>
-                    <th style="width:13%">JW Business</th>
-                    <th>JW Quantity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ng-container *ngFor="let business of BusinessProdData.BusinessDetails;index as i;">
-                    <tr>
-                      <td>{{business.DeptName}}</td>
-                      <td>
-                        <select class="form-control input-sm" [(ngModel)]="business.FinancialYear">
-                          <option value="{{year}}" *ngFor="let year of FinancialYearList;">{{year}}</option>
-                        </select>
-                      </td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedDPGrnQty" type="text"></td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedDPValueQty" type="text">
-                      </td>
-                      <td><input class="form-control input-sm" [(ngModel)]="business.ProposedJWGrnQty" type="text"></td>
-                      <td><input class="form-control input-sm"
-                          [(ngModel)]="business.ProposedJWValueQty" type="text"></td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-      <!-- Modal footer -->
-      <div class="modal-footer col-md-12  page-footer">
-        <button (click)="SaveProductionDetails()" type="button" class="mr-3 btn btn-primary">Save</button>
-        <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
-
-        <button style="display:none;" #modalCloseButton type="button" class="btn btn-secondary"
-          data-dismiss="modal"></button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Hidden button to open delete modal -->
+<button #deleteModalOpen type="button" data-target="#deleteModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
 <!-- Delete Modal-->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
@@ -370,25 +314,26 @@
       </div>
       <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
-        <button class="btn btn-primary" (click)="DeleteProductionDetails()">Yes</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" (click)="SaveProductionDetails()">Yes</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Hidden button to open alert modal -->
-<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+<button #alertModalOpen type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
   data-toggle="modal" style="display:none;">
 </button>
 
 <!-- Modal to open alert modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="msgModalLabel">{{PopUpMessage}}</h5>
-        <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="dismiss()">OK</button>
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>

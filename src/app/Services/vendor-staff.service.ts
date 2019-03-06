@@ -3,6 +3,7 @@ import { HttpClient, HttpRequest, HttpHeaders } from '@angular/common/http';
 import { VendorStaff } from '../Models/VendorStaff';
 import { Observable } from 'rxjs';
 import { OriginService } from './origin.service';
+import { StaffDetails } from '../Models/staff-details';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class VendorStaffService {
 
   constructor(private _http: HttpClient, private _origin: OriginService) { }
   // Used for save and update Vendor Staff Info
-  SaveStaffInfo(vStaff: VendorStaff): Observable<any> {
+  SaveStaffInfo(vStaff: StaffDetails): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorStaff/SaveVendorStaffInfo';
     return this._http.post<any>(apiUrl, vStaff);
   }

@@ -1,4 +1,5 @@
 export class MasterDataDetails {
+    ParentMDDCode: string;
     MDDCode: string;
     MDHCode: string;
     MDDShortName: string;
@@ -6,4 +7,5 @@ export class MasterDataDetails {
     CompanyCode: string;
     IsDeleted: string;
     Checked: boolean;
+    color: string;
 }

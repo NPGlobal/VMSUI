@@ -26,10 +26,13 @@ import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
 import { CommonModule } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
+import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    BusinessDetailsComponent,
     LayoutComponent,
     VendorListComponent,
     PersonalDetailsComponent,
@@ -43,7 +46,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     AddressFormComponent,
     BankDetailsComponent,
     LoginComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    DepartmentMappingComponent
   ],
   imports: [
     BrowserModule,

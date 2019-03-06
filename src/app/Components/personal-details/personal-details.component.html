@@ -33,22 +33,27 @@
                             <div class="col-md-6">
                                 <label class="text">Producer Name
                                     <i class="mandatory">*</i>
-                                </label>
+                                    </label>
                                 <span>
                                     <input type="text" maxlength="49" formControlName="VendorName"
-                                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.VendorName}" />
+                                        class="form-control input-sm"
+                                        [ngClass]="{'is-invalid': formErrors.VendorName}" />
                                 </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <label class="text">PAN No.</label>&nbsp;&nbsp;
+                                <label class="text">PAN No.
+                                    <span class="help-block mandatory" *ngIf="formErrors.PANNo">
+                                        {{formErrors.PANNo}}
+                                    </span>
+                                </label>&nbsp;&nbsp;
                                 <span>
-                                    <input type="text" formControlName="PANNo"
+                                    <input type="text" formControlName="PANNo" style="text-transform: uppercase" (blur)="LogValidationErrors()" 
                                         [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
                                         [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
-                            </div>
+                                </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
@@ -86,7 +91,7 @@
                                 <label class="text">Name of Insurance Company</label>
                                 <span>
                                     <input type="text" (blur)="LogValidationErrors()"
-                                        [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany}"
+                                        [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
                                         formControlName="NameofInsuranceCompany" class="form-control input-sm" />
                                 </span>
                             </div>
@@ -231,18 +236,19 @@
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
-                                <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
+                                <span class="help-block mandatory" *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
                                     {{formErrors.GSTIN}}
                                 </span>
                             </label>
                             <span>
-                                <input (blur)="LogValidationErrors()" formControlName="GSTIN" type="text"
+                                <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? '' : null"
-                                    [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
+                                    [ngClass]="{'is-invalid': formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}" 
+                                    class="form-control input-sm" />
                             </span>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="display:none">
                             <div class="checkbox">
                                 <label class="text">
                                     <input value="true" type="checkbox" formControlName="IsProvisional">
@@ -252,15 +258,16 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="margin-top: -15px;">
                             <label class="text">GST Date
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
                             </label>
                             <span>
-                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate}"
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate
+                                    && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? '' : null"
-                                    formControlName="GSTDate" type="date" class="form-control input-sm" />
+                                    formControlName="GSTDate" type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm"/>
                             </span>
                         </div>
                     </div>
@@ -351,7 +358,7 @@
                                     formControlName="CityCode" type="text" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="display: none;">
                             <label class="text">Same Address for Factory</label>
                             <span>
                                 <input class="ml-2" formControlName="IsSameForAll" type="checkbox" />
@@ -577,7 +584,8 @@
                 </div>
                 <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('Address').controls.IsExpanded.value}">
 
-                    <div class="col-md-12 form-group">
+                    <div *ngIf="(vendorAddresses.length <= 2)"
+                     class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
                                 (click)="OpenAddressModal(CreateNewAddress())">
@@ -784,7 +792,7 @@
                 <div class="slider"
                     [ngClass]="{closed: !personalDetailsForm.get('ExpertiseDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group" style="margin-bottom: 15px;">
-                        <div class="col-md-12"><label class="text">Vendor Expertise</label></div>
+                        <div class="col-md-12"><label style="font-weight: 600;" class="text">Expertise</label></div>
                         <div class="col-md-22" *ngFor="let expertise of ExpertiseList">
                             <span class="checkbox-inline">
                                 <label>
@@ -796,7 +804,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <label class="text mr-2">Vendor Weaknesses (If any)</label>
+                        <label style="font-weight: 600;" class="text mr-2">Weaknesses (If any)</label>
                         <input class="input-sm col-md-6" type="text" formControlName="VendorWeaknesses">
                     </div>
                 </div>
@@ -822,8 +830,7 @@
     data-toggle="modal" style="display:none;">
 </button>
 
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
