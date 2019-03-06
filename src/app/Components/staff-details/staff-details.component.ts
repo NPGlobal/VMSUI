@@ -23,6 +23,7 @@ export class StaffDetailsComponent implements OnInit {
   deptList: any[];
   deptSelectList = [];
   designationList: any[];
+  vendorDesignationList: any[];
   //  priorityListTemp: any[];
   submitted = false;
   vendorstaffList: VendorStaff[]; // For added Staff List
@@ -36,6 +37,17 @@ export class StaffDetailsComponent implements OnInit {
   alertModalOpenBtn: HTMLElement;
   PopUpMessage: string;
 
+  @ViewChild('modalClose')
+  modalClose: ElementRef;
+  modalCloseBtn: HTMLElement;
+
+  @ViewChild('deleteModalOpen')
+  deleteModalOpen: ElementRef;
+  deleteModalOpenBtn: HTMLElement;
+
+  @ViewChild('deleteModalClose')
+  deleteModalClose: ElementRef;
+  deleteModalCloseBtn: HTMLElement;
   // paging variables
   totalItems = 0;
   currentPage = 1;
@@ -54,6 +66,8 @@ export class StaffDetailsComponent implements OnInit {
 
   staffDetailsList: StaffDetails[];
   vendorStaffDetail: StaffDetails;
+  inEditedMode: boolean;
+  inDeletedMode: boolean;
 
   constructor(
     private _route: ActivatedRoute,
@@ -105,6 +119,12 @@ export class StaffDetailsComponent implements OnInit {
     this.searchByPhone = '';
 
     this.alertModalOpenBtn = this.alertModalOpen.nativeElement as HTMLElement;
+    this.modalCloseBtn = this.modalClose.nativeElement as HTMLElement;
+    this.deleteModalOpenBtn = this.deleteModalOpen.nativeElement as HTMLElement;
+    this.deleteModalCloseBtn = this.deleteModalClose.nativeElement as HTMLElement;
+
+    this.inEditedMode = false;
+    this.inDeletedMode = false;
 
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
@@ -151,8 +171,12 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   dismiss() {
+    this.inEditedMode = false;
+    this.inDeletedMode = false;
     this.invalid = false;
     this.submitted = false;
+    this.deleteModalCloseBtn.click();
+    this.modalCloseBtn.click();
     this.deptList = [];
     this.deptSelectList = null;
     this.vendorStaffDetail = new StaffDetails();
@@ -188,10 +212,45 @@ export class StaffDetailsComponent implements OnInit {
 
   onDeptSelect(items: any) {
     this.invalid = false;
+
+    const vStaff = new VendorStaff();
+    vStaff.VendorStaffDetailsID = 0;
+    vStaff.VendorStaffConfigID = 0;
+    vStaff.DeptCode = items.DeptCode;
+    vStaff.Designation = this.staffDetailsForm.get('Designation').value;
+    vStaff.Status = 'A';
+
+    this.vendorStaffDetail.Designation = vStaff.Designation;
+
+    const existingIndex = this.vendorstaffList.findIndex(x => x.Designation === vStaff.Designation && x.DeptCode === vStaff.DeptCode);
+
+    if (this.inEditedMode && existingIndex > -1) {
+      this.vendorstaffList[existingIndex].Status = 'A';
+    } else {
+      this.vendorstaffList.push(vStaff);
+    }
+  }
+
+  onDeptDeselect(items: any) {
+    const vStaff = new VendorStaff();
+    vStaff.DeptCode = items.DeptCode;
+    vStaff.Designation = this.staffDetailsForm.get('Designation').value;
+
+    const existingIndex = this.vendorstaffList.findIndex(x => x.Designation === vStaff.Designation && x.DeptCode === vStaff.DeptCode);
+
+    if (this.inEditedMode && existingIndex > -1) {
+      this.vendorstaffList[existingIndex].Status = 'D';
+    } else {
+      this.vendorstaffList.splice(existingIndex, 1);
+    }
   }
 
   onDeptSelectAll(items: any) {
     this.invalid = false;
+
+    for (let i = 0; i < items.length; ++i) {
+      this.onDeptSelect(items[i]);
+    }
   }
 
   GetVendorDepartments() {
@@ -202,7 +261,7 @@ export class StaffDetailsComponent implements OnInit {
       this._vendorService.GetVendorsDeptStaff('10', this.staffDetailsForm.get('Designation').value, this.vendorcode, 'Department')
         .subscribe((data) => {
           this.deptList = data;
-          if (this.staffDetailsForm.get('Designation').value !== null) {
+          if (this.staffDetailsForm.get('Designation').value !== null && this.deptSelectList[0] !== undefined) {
             const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode);
             if (strArray === undefined) {
               this.deptSelectList = [];
@@ -213,66 +272,73 @@ export class StaffDetailsComponent implements OnInit {
   }
 
   ValidateDepartment() {
-    if (this.VendorStaff.dept === '' || this.deptSelectList.length === 0) {
+    if (this.deptSelectList.length === 0) {
       this.invalid = true;
     } else { this.invalid = false; }
   }
 
   SaveStaffDetails() {
     this.submitted = true;
-    //  alert(JSON.stringify(this.staffDetailsForm.value));
     if (this.staffDetailsForm.invalid || this.deptSelectList.length === 0) {
       this.logValidationErrors();
       this.ValidateDepartment();
       return;
     }
 
-    if (this.editedVendorStaff !== undefined) {
-      if (this.deptSelectList.map(function (element) {
-        return element.DeptCode;
-      }).join('~') === this.editedVendorStaff.dept
-        // this.deptSelectList.find((obj) => obj.DeptCode ===  this.editedVendorStaff.dept)
-        // this.deptSelectList.find() === this.editedVendorStaff.dept &&
-        && this.staffDetailsForm.get('designation').value === this.editedVendorStaff.Designation
-        && this.staffDetailsForm.get('ContactName').value === this.editedVendorStaff.ContactName
-        && this.staffDetailsForm.get('ContactEmail').value === this.editedVendorStaff.ContactEmail
-        && this.staffDetailsForm.get('ContactPhone').value === this.editedVendorStaff.ContactPhone
-        && this.staffDetailsForm.get('priority').value === this.editedVendorStaff.Priority
-        && this.staffDetailsForm.get('remarks').value === this.editedVendorStaff.Remarks
-      ) {
-        // this.showPopUpMessage('There is nothing to change for save.');
-        this.PopUpMessage = 'There is nothing to change for save.';
-        this.alertModalOpenBtn.click();
-        return;
-      }
-    }
     this.sendFormData();
   }
 
-  DeleteStaffDetails() {
-    this.deptSelectList = [{ DeptCode: this.VendorStaff.dept, DeptName: this.VendorStaff.Department }];
-    this.sendFormData();
+  DeleteStaffDetails(vobj: StaffDetails) {
+    this.inDeletedMode = true;
+    this.vendorstaffList = [];
+    let vStaff: VendorStaff;
+    for (let i = 0; i < vobj.DeptList.split(',').length; ++i) {
+      vStaff = new VendorStaff();
+      vStaff.CompanyCode = '10';
+      vStaff.VendorShortCode = this.vendorcode;
+      vStaff.ContactName = vobj.ContactName;
+      vStaff.ContactPhone = vobj.ContactPhone;
+      vStaff.ContactEmail = vobj.ContactEmail;
+      vStaff.DeptCode = vobj.DeptList.split(',')[i];
+      vStaff.VendorStaffConfigID = Number(vobj.ConfigIdsList.split(',')[i]);
+      vStaff.VendorStaffDetailsID = Number(vobj.StaffIdsList.split(',')[i]);
+      vStaff.Department = vobj.DepartmentList.split(',')[i];
+      vStaff.Status = 'D';
+      vStaff.DeptCode = vobj.DeptList.split(',')[i];
+      vStaff.ContactName = vobj.ContactName;
+      vStaff.ContactEmail = vobj.ContactEmail;
+      vStaff.ContactPhone = vobj.ContactPhone;
+      vStaff.Remarks = vobj.Remarks;
+      vStaff.Designation = vobj.Designation;
+      this.vendorstaffList.push(vStaff);
+    }
+    this.vendorStaffDetail = JSON.parse(JSON.stringify(vobj));
   }
 
   sendFormData() {
-    const vendorStaff = new VendorStaff();
+    if (!this.inDeletedMode) {
+      const vendorStaff = new VendorStaff();
 
-    vendorStaff.Designation = this.staffDetailsForm.get('Designation').value;
-    vendorStaff.VendorShortCode = this.vendorcode;
-    vendorStaff.CompanyCode = '10';
-    vendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
-    vendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value.trim();
-    vendorStaff.ContactPhone = this.staffDetailsForm.get('ContactPhone').value;
-    vendorStaff.Remarks = this.staffDetailsForm.get('Remarks').value.trim();
-    vendorStaff.VendorStaffConfigID = 0;
+      vendorStaff.Designation = this.staffDetailsForm.get('Designation').value;
+      vendorStaff.VendorShortCode = this.vendorcode;
+      vendorStaff.CompanyCode = '10';
+      vendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
+      vendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value;
+      vendorStaff.ContactPhone = this.staffDetailsForm.get('ContactPhone').value;
+      vendorStaff.Remarks = (this.staffDetailsForm.get('Remarks').value !== null ||
+        this.staffDetailsForm.get('Remarks').value !== undefined) ? '' : this.staffDetailsForm.get('Remarks').value.trim();
+      vendorStaff.VendorStaffConfigID = 0;
 
-    this.vendorstaffList.filter(data => {
-      data.CompanyCode = vendorStaff.CompanyCode;
-      data.VendorShortCode = vendorStaff.VendorShortCode;
-      data.ContactName = vendorStaff.ContactName;
-      data.ContactPhone = vendorStaff.ContactPhone;
-      data.ContactEmail = vendorStaff.ContactEmail;
-    });
+      this.vendorstaffList.filter(data => {
+        data.Designation = vendorStaff.Designation;
+        data.CompanyCode = vendorStaff.CompanyCode;
+        data.VendorShortCode = vendorStaff.VendorShortCode;
+        data.ContactName = vendorStaff.ContactName;
+        data.ContactPhone = vendorStaff.ContactPhone;
+        data.ContactEmail = vendorStaff.ContactEmail;
+      });
+    }
+
     this.vendorStaffDetail.VendorStaffDetails = this.vendorstaffList;
     try {
       this._vendorService.SaveStaffInfo(this.vendorStaffDetail).subscribe((result) => {
@@ -300,6 +366,7 @@ export class StaffDetailsComponent implements OnInit {
     if (vobj === null) {
       vobj = new StaffDetails();
     } else {
+      this.inEditedMode = true;
       for (let i = 0; i < vobj.DeptList.split(',').length; ++i) {
         vStaff = new VendorStaff();
         vStaff.DeptCode = vobj.DeptList.split(',')[i];
@@ -312,12 +379,21 @@ export class StaffDetailsComponent implements OnInit {
         vStaff.ContactEmail = vobj.ContactEmail;
         vStaff.ContactPhone = vobj.ContactPhone;
         vStaff.Remarks = vobj.Remarks;
+        vStaff.Designation = vobj.Designation;
         this.vendorstaffList.push(vStaff);
       }
     }
     this.vendorStaffDetail = JSON.parse(JSON.stringify(vobj));
 
     this.InitializeFormControls();
+    if (this.inEditedMode) {
+      this.vendorDesignationList = this.designationList.filter(x => x.Designation === vobj.Designation);
+      this.staffDetailsForm.get('Designation').disable();
+    } else {
+      this.vendorDesignationList = this.designationList;
+      this.staffDetailsForm.get('Designation').enable();
+    }
+
     this.GetVendorDepartments();
     this.deptSelectList = this.vendorstaffList.map(function (element) {
       return {

@@ -44,7 +44,8 @@
             data-target="#myModal"><i class="fa fa-edit"></i></a>
 
           <a title="Delete Staff" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-            (click)="DeleteStaffDetailPopup(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i></a>
+            (click)="DeleteStaffDetails(vendor)" data-target="#deleteModal"><i class="fa fa-remove"></i>
+          </a>
         </td>
       </tr>
     </tbody>
@@ -86,7 +87,7 @@
       </div>
       <!-- modal-body -->
       <div class="modal-body">
-        <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
+        <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()">
 
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
@@ -95,9 +96,10 @@
                 <span>
                   <select formControlName="Designation" class="form-control input-sm"
                     (change)="GetVendorDepartments($event)" [ngClass]="{ 'is-invalid': formErrors.Designation }"
-                    (blur)="logValidationErrors()">
+                    (blur)="logValidationErrors()"
+                    [attr.disabled]="staffDetailsForm.get('Designation').disabled ? 'disabled' : null">
                     <option [ngValue]="null">Select Designation</option>
-                    <option *ngFor="let option of designationList" [attr.data-maxnumber]="option.Max_Allowed"
+                    <option *ngFor="let option of vendorDesignationList" [attr.data-maxnumber]="option.Max_Allowed"
                       value={{option.Designation}}>
                       {{option.Designation}}
                     </option>
@@ -108,59 +110,16 @@
                 <label class="text">Technical Department<span class="error-label">*</span></label>
                 <span>
                   <ng-multiselect-dropdown required class="form-control input-sm dropdown"
-                    [placeholder]="'Select Department'" [ngClass]="{ 'red': invalid }" onblur="ValidateDepartment()"
+                    [placeholder]="'Select Department'" [ngClass]="{ 'red': invalid }"
                     [ngModelOptions]="{standalone: true}" [data]="deptList" [(ngModel)]="deptSelectList"
                     [settings]="deptDropdownSettings" (onSelect)="onDeptSelect($event)"
-                    (onSelectAll)="onDeptSelectAll($event)">
+                    (onDeSelect)="onDeptDeselect($event)" (onSelectAll)="onDeptSelectAll($event)">
                     <option [ngValue]=null>Select Technical Department</option>
                   </ng-multiselect-dropdown>
                 </span>
               </div>
-              <!-- <div class="col-lg-6 col-md-6" null>
-                    <label class="text">Technical Department<span class="error-label">*</span></label>
-                    <span>
-                     <select formControlName="dept" class="form-control input-sm" 
-                      [ngClass]="{ 'is-invalid': formErrors.dept }">
-                        <option [ngValue]="null">Select Technical Department</option>
-                        <option *ngFor="let option of deptList" value={{option.DeptCode}}>
-                          {{option.DeptName}}
-                        </option>
-                      </select>
-                    </span>
-                </div> -->
             </div>
           </div>
-          <!-- <div class="form-group col-lg-12 col-md-12">
-              <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <label class="text">Technical Department <span class="error-label">*</span></label>
-                    <span>
-                      <select formControlName="dept" class="form-control input-sm" (change)="GetVendorDesignation($event)"
-                        [ngClass]="{ 'is-invalid': formErrors.dept }">      
-                        <option [ngValue]="null">Select Department</option>
-                        <option *ngFor="let option of deptList" value={{option.DeptCode}}>
-                          {{option.DeptName}}
-                        </option>
-                        </select>
-                    </span>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <label class="text">Designation <span class="error-label">*</span></label>
-                    <span>
-                     <select formControlName="designation" class="form-control input-sm" (change)="GetVendorPriority($event)"
-                      [ngClass]="{ 'is-invalid': formErrors.designation }">
-                        <option [ngValue]="null">Select Designation</option>
-                        <option *ngFor="let option of designationList" 
-                        [attr.data-maxnumber]="option.Max_Allowed"
-                        value={{option.VendorConfigID}}>
-                          {{option.Designation}}
-                        </option>
-                      </select>
-                    </span>
-                </div>
-              </div>
-            </div> -->
-
           <div class="form-group">
             <div class="col-lg-12 col-md-12">
               <label class="text">Name<i class="error-label">*</i></label>
@@ -198,24 +157,11 @@
               <span><input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="100" /></span>
             </div>
           </div>
-          <!-- <div class="form-group col-lg-12">
-              <div class="row">
-                  <div class="col-lg-6 col-md-6">
-                      <label class="text">Priority <span class="error-label">*</span></label>
-                        <span>
-                          <select formControlName="priority" class="form-control input-sm" (blur)="logValidationErrors()" 
-                          [ngClass]="{ 'is-invalid': formErrors.priority }">
-                            <option [ngValue]="null">Select Priority</option>
-                            <option *ngFor="let number of PriorityList(MaxPriority); let i = index;" value={{i+1}}>{{i+1}}</option>
-                          </select>
-                        </span>
-                      </div>
-              </div>
-            </div> -->
           <!-- Modal footer -->
           <div class="modal-footer col-md-12  page-footer">
             <button type="submit" class="mr-3 btn btn-primary">Save</button>
-            <button type="button" class="btn btn-secondary" (click)="dismiss()" data-dismiss="modal">Cancel</button>
+            <button #modalClose (click)="dismiss()" type="button" class="btn btn-secondary"
+              data-dismiss="modal">Cancel</button>
           </div>
         </form>
       </div>
@@ -224,6 +170,10 @@
 </div>
 
 <!-- Delete Modal-->
+<button #deleteModalOpen type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -236,18 +186,18 @@
       </div>
       <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
-        <button class="btn btn-primary" (click)="DeleteStaffDetails()">Yes</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
+        <button class="btn btn-primary" (click)="sendFormData()">Yes</button>
       </div>
     </div>
   </div>
 </div>
 
-<button #alertModalOpen type="button" data-target="#alertModal" data-backdrop="static"
-  data-keyboard="false" data-toggle="modal" style="display:none;">
+<!-- Alert Modal-->
+<button #alertModalOpen type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
 </button>
 
-<!-- Message Modal-->
 <div class="modal fade" id="alertModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

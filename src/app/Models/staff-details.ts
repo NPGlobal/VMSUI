@@ -2,7 +2,7 @@ import { VendorStaff } from './VendorStaff';
 
 export class StaffDetails {
     RowNumber: number;
-    Designation: number;
+    Designation: string;
     ContactName: string;
     DepartmentList: string;
     DeptList: string;
