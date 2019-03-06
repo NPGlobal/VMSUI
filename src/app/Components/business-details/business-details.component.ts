@@ -39,6 +39,7 @@ export class BusinessDetailsComponent implements OnInit {
   alertModalButton: ElementRef;
   PopUpMessage: string;
   alertButton: HTMLElement;
+  isError = '';
 
   // @ViewChild('modalOpenButton')
   // modalOpenButton: ElementRef;
@@ -167,17 +168,19 @@ export class BusinessDetailsComponent implements OnInit {
   }
 
   //#region Error Validator
-  CheckPattern(value: string) {
-    if (value === '' || value === null) {
-      return;
-    } else {
-      if ((/^[0-9]*[\.\]?[0-9][0-9]*$/.test(value))) {
-        return;
-      } else {
-        alert('invalid Value');
+  Validate(event: any) {
+    const x = event.target.value;
+    if (event.key >= 0 && event.key <= 9) {
+    } else if (event.key === '.') {
+      const value = event.target.value.split('.');
+      if (value.length > 2) {
+        event.target.value = x.substring(0, x.length - 1);
       }
+    } else {
+      event.target.value = x.substring(0, x.length - 1);
     }
   }
+
   //#endregion
 
   //#endregion
@@ -374,3 +377,4 @@ export class BusinessDetailsComponent implements OnInit {
   //   this.GetVendorBusiness(1);
   // }
 }
+
