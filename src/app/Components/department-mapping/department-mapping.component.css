@@ -16,3 +16,11 @@ form {
     font-weight: 400;
     font-size:14px;
 }
+
+.DivisionClass {
+    background-color: lightyellow;
+}
+
+.DepartmentClass {
+    background-color: rgb(194, 248, 194);
+}
