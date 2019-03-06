@@ -306,6 +306,7 @@
                             <span>
                                 <select (blur)="LogValidationErrors()"
                                     [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                     class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
@@ -321,6 +322,7 @@
                             <span>
                                 <select (blur)="LogValidationErrors()" (change)="SetStateCodeLabel()"
                                     [ngClass]="{'is-invalid': formErrors.StateCode}" formControlName="StateCode"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                     class="form-control input-sm">
                                     <option [ngValue]="null">Select</option>
                                     <option *ngFor="let state of StateList" value="{{state.MDDCode}}">

@@ -218,7 +218,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.modalOpenButton.click();
   }
 
-  SearchProductionDetails(searchText = '') {
+  SearchProductionDetails() {
     this.searchText = this.searchBySubContName + '~' +
       this.searchBySubContNature + '~' +
       this.searchByApprProdUnits + '~' +
@@ -226,9 +226,12 @@ export class ProductionDetailsComponent implements OnInit {
       this.searchByMinCapacity + '~' +
       this.searchByLeanMonths + '~' +
       this.searchByLeanCapacity;
+    this.SearchProduction(this.searchText);
+  }
+  SearchProduction(searchText = '') {
+    this.searchText = searchText;
     this.GetVendorProduction(1);
   }
-
   LogValidationErrors(group: FormGroup = this.ProductionDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
