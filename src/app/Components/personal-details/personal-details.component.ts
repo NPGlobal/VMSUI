@@ -254,17 +254,23 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
 checkGSTDateValidation() {
-  if (this.minDate >= this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value ||
-  this.maxDate <= this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value
-   ) {
-    this.PopUpMessage = 'Please enter a valid GST Date.';
-    this.alertButton.click();
-    return;
-}}
+  let isValidDate = true;
+  const gstDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
+  if (this.minDate >= gstDate || this.maxDate <= gstDate) {
+    isValidDate = false;
+  }
+  return isValidDate;
+}
 
   SavePersonalDetails() {
     this.submitted = true;
-    this.checkGSTDateValidation();
+    
+    if(!this.checkGSTDateValidation()){
+      this.PopUpMessage = 'Please enter a valid GST Date.';
+      this.alertButton.click();
+      return;
+    }
+
     if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value &&
       (this.SavedPHStoreList.length === 0 &&
         this.SelectedPHStoreList.length === 0)) {
@@ -776,6 +782,7 @@ checkGSTDateValidation() {
   }
 
   SetValidationForGSTControls() {
+    
     if (!this.vendor.isGSTRegistered) {
       if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
@@ -797,7 +804,15 @@ checkGSTDateValidation() {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').patchValue(null);
 
         this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
+
+        this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').patchValue(false);
+
+        this.formErrors.GSTIN = '';
+        this.formErrors.GSTDate = '';
       }
+      // this.LogValidationErrors();
+      // this.personalDetailsForm.valid;
+
     }
   }
 
@@ -903,6 +918,7 @@ checkGSTDateValidation() {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').patchValue('');
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators([]);
+      this.formErrors.NameofInsuranceCompany = '';
     }
   }
 }

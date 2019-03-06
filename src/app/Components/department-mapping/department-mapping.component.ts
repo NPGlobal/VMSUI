@@ -115,7 +115,7 @@ export class DepartmentMappingComponent implements OnInit {
     const dept = this.DepartmentMappingForm.get('Department').value as Array<string>;
     if (div.length > 0) {
       if (this.checkAddedDivisionDepartment(div)) {
-        this.PopUpMessage = 'Department of selected Division already exist. Do You want to replace?';
+        this.PopUpMessage = 'Department(s) of selected division already exist. Do you want to replace it?';
         this.isDeptExist = false;
         this.deleteButton.click();
       } else {
