@@ -71,16 +71,19 @@ export class DocumentComponent implements OnInit {
   GetVendorDocuments(index: number) {
     this.currentPage = index;
     this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
-    .subscribe(result => {
-      if (result.data.VendorDoc.length > 0) {
-        this.vendDocList = result.data.VendorDoc;
-        this.totalItems = result.data.VendorDocCount[0].TotalVendors;
-        this.GetVendorDocumentsList();
-      }
-    });
+      .subscribe(result => {
+        if (result.data.VendorDoc.length > 0) {
+          this.vendDocList = result.data.VendorDoc;
+          this.totalItems = result.data.VendorDocCount[0].TotalVendors;
+          this.GetVendorDocumentsList();
+        }
+      });
   }
 
   GetVendorDocumentsList() {
+    this.vendDocList.filter(el => {
+      el.FileName = el.FileName.substring(el.FileName.lastIndexOf('\\') + 1);
+    });
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.vendDocList;
   }
@@ -156,18 +159,18 @@ export class DocumentComponent implements OnInit {
 
     try {
       this._vendorDocService.SaveVendorDocuments(this.formData)
-      .subscribe((updateStatus) => {
-        if (updateStatus.Error === '') {
-          this.vendDocList = updateStatus.data.VendorDoc;
-          this.totalItems = updateStatus.data.VendorDocCount[0].TotalVendors;
-          this.GetVendorDocumentsList();
-          alert(updateStatus.data.Msg[0].Message);
-          this.dismiss();
-          $('#myModal').modal('toggle');
-        } else {
-          alert('There are some technical error. Please contact administrator.');
-        }
-      });
+        .subscribe((updateStatus) => {
+          if (updateStatus.Error === '') {
+            this.vendDocList = updateStatus.data.VendorDoc;
+            this.totalItems = updateStatus.data.VendorDocCount[0].TotalVendors;
+            this.GetVendorDocumentsList();
+            alert(updateStatus.data.Msg[0].Message);
+            this.dismiss();
+            $('#myModal').modal('toggle');
+          } else {
+            alert('There are some technical error. Please contact administrator.');
+          }
+        });
     } catch {
       alert('There are some technical error. Please contact administrator.');
     }
@@ -188,7 +191,7 @@ export class DocumentComponent implements OnInit {
     this.GetVendorDocuments(1);
   }
   SearchDocumentList() {
-    this.searchText = this.searchByAction + '~' + this.searchByDocument + '~' + this.searchByFile ;
+    this.searchText = this.searchByAction + '~' + this.searchByDocument + '~' + this.searchByFile;
     this.SearchDocuments(this.searchText);
   }
   // GetDocDetails(vDoc: VendorDocument) {
