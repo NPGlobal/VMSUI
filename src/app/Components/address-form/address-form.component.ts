@@ -154,7 +154,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
       Address1: [this.Address.Address1, Validators.required],
       Address2: [this.Address.Address2],
       Address3: [this.Address.Address3],
-      CountryCode: [this.Address.CountryCode, Validators.required],
+      CountryCode: ['IN', Validators.required],
       CityCode: [this.Address.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       StateCode: [this.Address.StateCode, Validators.required],
       PIN: [this.Address.PIN,
@@ -225,7 +225,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
     const address = Object.assign({}, {
       AddressCode: null,
       AddressTypeCode: 'F',
-      CountryCode: null,
+      CountryCode: 'null',
       StateCode: null,
       PIN: null
     });

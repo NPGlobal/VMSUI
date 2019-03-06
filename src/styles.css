@@ -247,3 +247,10 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   padding: 0px !important;
   border:none !important;
 }
+
+
+.error-label,.req-popup-label{
+  color:red;
+  font-size: 12px;
+  font-weight: 500;
+}
