@@ -36,7 +36,7 @@ export class TechnicalDetailsComponent implements OnInit {
   vendorTech: VendorTech;
   isTechDetailEditing: any;
 
-  efficiencyPattern = '/^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/';
+  efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
   // VendorTech: VendorTech;
   deptList: any[];
@@ -50,7 +50,13 @@ export class TechnicalDetailsComponent implements OnInit {
   // obj2: JSON;
   // flag: boolean;
   // Action: string;
+  // for searching
   searchText = '';
+  searchByTechLine = '';
+  searchByMachineType = '';
+  searchByMachineName = '';
+  searchByEfficiency = '';
+  searchByUnitCount = '';
   // ExistingVendorTech: FormGroup;
   // machineItems: Array<{ MachineType: string, MachineName: string, UnitCount: string, Efficiency: string }> = [];
   ValidationMessages = {
@@ -128,6 +134,11 @@ export class TechnicalDetailsComponent implements OnInit {
     this.GetVendorTech(1);
   }
 
+    SearchTechDetailsList() {
+    this.searchText = this.searchByTechLine + '~' + this.searchByMachineType + '~' + this.searchByMachineName + '~' +
+      this.searchByEfficiency + '~' + this.searchByUnitCount;
+    this.SearchTechDetails(this.searchText);
+  }
   GetVendorTech(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).
@@ -145,6 +156,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.TechDefaultLst;
   }
+
 
   InitializeFormControls() {
     const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
@@ -329,7 +341,7 @@ export class TechnicalDetailsComponent implements OnInit {
           x.DeptCode === this.vendorTech.DeptCode);
         if (existingIndex >= 0 && this.isTechDetailEditing > 0) {
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
-          this.isTechDetailEditing  = 0;
+          this.isTechDetailEditing = 0;
           // this.vendorTech = undefined;
         } else {
 

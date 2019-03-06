@@ -158,6 +158,48 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 .btn-primary,.btn-primary:hover {background-color: #f58220;border-color: #f58220;}
 
 /*
+.menuicon {position: absolute;right: 10%;top: 30%;}
+.menuicon li{list-style: none;}
+.menuicon {margin-right: 20px;}
+.menuicon li a {color: #7d2d30;}
+.menuicon li .dropdown-menu {text-align: left;padding-left: 5px;}
+.menuicon li a.dropdown-toggle {display: inline-block !important;color: #fff;line-height: 25px;vertical-align: middle;}
+.menuicon li a.dropdown-toggle img{margin-right:5px;}
+*/
+
+.menuicon {position: absolute;right: 10%;top: 42%;}
+.menuicon > li { display:inline-block; position: relative; background:#62282a;height:35px;margin-left: 2px;}
+.menuicon > li:first-child > a { border: 0px !important;}
+.menuicon > li > a { display: block; font-size: 15px; color: #c5bda2;  line-height: 30px; height: 35px;
+  vertical-align: middle;
+  text-align: center; text-decoration: none; padding:5px 40px 0 15px; font-weight:400;
+}
+.menuicon .dropdown-toggle::after {
+  
+  margin-left: 0.555em;
+}
+.menuicon > li:hover > a, .menuicon > li > a.active { background: #c5bda2; color:#62282a;}
+.menuicon > li:hover > ul {display: block;}
+.menuicon > li > ul {background: #c5bda2; padding:4px; display: none; position: absolute; right: 0; top: 95%; width:160px;  z-index: 999; box-sizing: border-box; box-shadow: 0 1px 2px #CCC; border-top:solid 2px #fff;}
+.menuicon > li > ul li {display: block;}
+.menuicon > li > ul li a {color:#62282a;  font-size: 14px; display: block;  padding: 5px; }
+.menuicon > li > ul li:last-child a {border: none;}
+.menuicon > li > ul li a:hover, .menuicon > li > ul li a.active 
+{
+    color: #c5bda2;  background:#62282a ;  /* transition */
+	-webkit-transition: 0.2s;-moz-transition: 0.2s;-ms-transition: 0.2s;-o-transition: 0.2s;transition: 0.2s;
+}
+.menuicon > li > ul li.haschild {background: #c5bda2;}
+.menuicon > li > ul li.haschild > a:hover, .menuicon > li > ul li.haschild > a.active 
+{
+    background:#62282a; -webkit-transition: 0s;-moz-transition: 0s;-ms-transition: 0s;-o-transition: 0s;transition: 0s;
+}
+
+
+/*
+.menuicon li .dropdown-menu > li:hover > a, .menuicon > li .dropdown-menu> a.active { background: #c5bda2; color:#62282a; }
+*/
+/*
 ============= Added by Ashutosh for collapse form and its sections
 */
 .slider, .detailslider {
@@ -254,3 +296,4 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   font-size: 12px;
   font-weight: 500;
 }
+.py-4{margin-left:5px;}

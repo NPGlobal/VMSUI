@@ -56,6 +56,7 @@ export class BusinessDetailsComponent implements OnInit {
   searchText = '';
   CurrentFinancialYear: string;
   NextFinancialYear: string;
+  DecimalPattern = '';
   //#endregion
 
   constructor(
@@ -164,6 +165,21 @@ export class BusinessDetailsComponent implements OnInit {
     }
     this.alertButton.click();
   }
+
+  //#region Error Validator
+  CheckPattern(value: string) {
+    if (value === '' || value === null) {
+      return;
+    } else {
+      if ((/^[0-9]*[\.\]?[0-9][0-9]*$/.test(value))) {
+        return;
+      } else {
+        alert('invalid Value');
+      }
+    }
+  }
+  //#endregion
+
   //#endregion
   // logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
   //   Object.keys(group.controls).forEach((key: string) => {

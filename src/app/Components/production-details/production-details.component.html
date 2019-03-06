@@ -21,6 +21,16 @@
         <td><input type="text" [(ngModel)]="searchByLeanCapacity" (keyup)="SearchProductionDetails()" /></td>
         <td></td>
       </tr> -->
+      <tr class="search">
+          <td style="width:25%"><input type="text" class="form-control input-sm" [(ngModel)]="searchBySubContName" (keyup)="SearchProductionDetailsList()" placeholder="Search By Sub Contrac..." /></td>
+          <td style="width:15%"><input type="text" class="form-control input-sm" [(ngModel)]="searchBySubContNature" (keyup)="SearchProductionDetailsList()" placeholder="Search By Sub Contrac..." /></td>
+          <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByApprProdUnits" (keyup)="SearchProductionDetailsList()" placeholder="Search By Approved pro..." /></td>
+          <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMonCapacity" (keyup)="SearchProductionDetailsList()" placeholder="Search By Monthly Cap..." /></td>
+          <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMinCapacity" (keyup)="SearchProductionDetailsList()" placeholder="Search By Minimal Cap..." /></td>
+          <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByLeanMonths" (keyup)="SearchProductionDetailsList()" placeholder="Search By Lean Mon..." /></td>
+          <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByLeanCapacity" (keyup)="SearchProductionDetailsList()" placeholder="Search By Lean Cap..." /></td>
+          <td></td>
+        </tr>
       <tr>
         <th scope="col">Sub Contracting Unit Name</th>
         <th scope="col">Nature of Sub Contracting Unit</th>
@@ -259,7 +269,7 @@
                     <span>
                       <!-- <input type="text" formControlName="LeanMonths" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" /> -->
-                        <input type="text" formControlName="LeanMonths" class="form-control input-sm"
+                        <input type="text" formControlName="LeanMonths" max="500" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="CheckLeanMonth()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
@@ -277,8 +287,12 @@
                   <div class="col-lg-12 col-md-12">
                     <label class="text">Remarks</label>
                     <span>
-                      <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511" />
+                      <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511" 
+                      [ngClass]="{ 'is-invalid err': formErrors.Remarks }" />
                     </span>
+                    <span [ngClass]="{ 'error-label':formErrors.Remarks}"
+                    *ngIf="formErrors.Remarks">{{formErrors.Remarks}}
+                  </span>
                   </div>
                 </div>
               </div>

@@ -37,9 +37,10 @@ export class ProductionDetailsComponent implements OnInit {
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
   // CityPattern = '^[A-Za-z]+$';
-  CityPattern = '^[\w\(\)+,?-_@.#&%/\' ]+([\w()+,?-_@.#&%/\' ]+)*$';
+  AddressAndRemarksPattern = '^[\w\(\)+,?-_@.#&%/\' A-Za-z]+([\w()+,?-_@.#&%/\' A-Za-z]+)*$';
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
+  // NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
   ProductionDetailsForm: FormGroup;
   submitted = false;
   StateList: MasterDataDetails[] = [];
@@ -75,14 +76,22 @@ export class ProductionDetailsComponent implements OnInit {
     },
     'LeanMonths': {
       'required': '',
-      'pattern': 'Only numbers allowed.'
+      'pattern': 'Only numbers allowed.',
+      'max': 'Month cannot exceed than 500.'
     },
     'LeanCapacity': {
       'required': '',
       'pattern': 'Numeric value allowed.'
     },
     'Address1': {
-      'required': ''
+      'required': '',
+      'pattern' : 'Only +,?-_@.#&%/\' are allowed.'
+    },
+    'Address2': {
+      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+    },
+    'Address3': {
+      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
     },
     'Phone': {
       'required': '',
@@ -93,11 +102,14 @@ export class ProductionDetailsComponent implements OnInit {
     },
     'CityCode': {
       'required': '',
-      'pattern': 'Only characters allowed.'
+      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
     },
     'Pin': {
       'required': '',
       'pattern': 'Please enter a valid pincode.'
+    },
+    'Remarks': {
+      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
     }
   };
 
@@ -114,6 +126,7 @@ export class ProductionDetailsComponent implements OnInit {
     'StateCode': '',
     'CityCode': '',
     'Pin': '',
+    'Remarks': ''
   };
 
   @ViewChild('modalOpen')
@@ -179,20 +192,21 @@ export class ProductionDetailsComponent implements OnInit {
       NatureOfSubContracting: [this.VendorProduction.NatureOfSubContracting, Validators.required],
       MonthlyCapacity: [this.VendorProduction.MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       MinimalCapacity: [this.VendorProduction.MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
-      LeanMonths: [this.VendorProduction.LeanMonths, [Validators.required, Validators.pattern(this.NumericPattern)]],
+      LeanMonths: [this.VendorProduction.LeanMonths,
+         [Validators.required, Validators.pattern(this.NumericPattern), Validators.max(500)]],
       LeanCapacity: [this.VendorProduction.LeanCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
-      Address1: [this.VendorProduction.Address1, Validators.required],
-      Address2: [this.VendorProduction.Address2],
-      Address3: [this.VendorProduction.Address3],
+      Address1: [this.VendorProduction.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+      Address2: [this.VendorProduction.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
+      Address3: [this.VendorProduction.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
       Phone: [this.VendorProduction.Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: [this.VendorProduction.StateCode, [Validators.required, Validators.required]],
-      CityCode: [this.VendorProduction.CityCode, [Validators.required, Validators.pattern(this.CityPattern)]],
+      CityCode: [this.VendorProduction.CityCode, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
       Pin: [this.VendorProduction.Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
-      Remarks: [this.VendorProduction.Remarks]
+      Remarks: [this.VendorProduction.Remarks, Validators.pattern(this.AddressAndRemarksPattern)]
     });
-    this.ProductionDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.ProductionDetailsForm);
-    });
+    // this.ProductionDetailsForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.ProductionDetailsForm);
+    // });
   }
 
   EditProductionDetail(production: VendorProduction) {
@@ -207,7 +221,7 @@ export class ProductionDetailsComponent implements OnInit {
     this.modalOpenButton.click();
   }
 
-  SearchProductionDetails(searchText = '') {
+  SearchProductionDetails() {
     this.searchText = this.searchBySubContName + '~' +
       this.searchBySubContNature + '~' +
       this.searchByApprProdUnits + '~' +
@@ -215,9 +229,12 @@ export class ProductionDetailsComponent implements OnInit {
       this.searchByMinCapacity + '~' +
       this.searchByLeanMonths + '~' +
       this.searchByLeanCapacity;
+    this.SearchProduction(this.searchText);
+  }
+  SearchProduction(searchText = '') {
+    this.searchText = searchText;
     this.GetVendorProduction(1);
   }
-
   LogValidationErrors(group: FormGroup = this.ProductionDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -321,4 +338,5 @@ export class ProductionDetailsComponent implements OnInit {
       this.ProductionDetailsForm.get('LeanMonths').patchValue(value[0]);
     }
   }
+
 }
