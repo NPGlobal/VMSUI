@@ -36,7 +36,8 @@ export class ProductionDetailsComponent implements OnInit {
   // form group variables
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
-  CityPattern = '^[A-Za-z]+$';
+  // CityPattern = '^[A-Za-z]+$';
+  CityPattern = '^[\w\(\)+,?-_@.#&%/\' ]+([\w()+,?-_@.#&%/\' ]+)*$';
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   ProductionDetailsForm: FormGroup;
@@ -55,48 +56,48 @@ export class ProductionDetailsComponent implements OnInit {
   ValidationMessages = {
     'ApprovedProductionCount': {
       'required': '',
-      'pattern': 'Only numbers allowed'
+      'pattern': 'Only numbers allowed.'
     },
     'SubContractingName': {
       'required': '',
-      'pattern': 'Only numbers allowed'
+      'pattern': 'Only numbers allowed.'
     },
     'NatureOfSubContracting': {
       'required': ''
     },
     'MonthlyCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed'
+      'pattern': 'Numeric value allowed.'
     },
     'MinimalCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed'
+      'pattern': 'Numeric value allowed.'
     },
     'LeanMonths': {
       'required': '',
-      'pattern': 'Only numbers allowed'
+      'pattern': 'Only numbers allowed.'
     },
     'LeanCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed'
+      'pattern': 'Numeric value allowed.'
     },
     'Address1': {
       'required': ''
     },
     'Phone': {
       'required': '',
-      'pattern': 'Please enter a valid phone number'
+      'pattern': 'Please enter a valid phone number.'
     },
     'StateCode': {
       'required': ''
     },
     'CityCode': {
       'required': '',
-      'pattern': 'Please enter a valid city'
+      'pattern': 'Only characters allowed.'
     },
     'Pin': {
       'required': '',
-      'pattern': 'Please enter a valid pincode'
+      'pattern': 'Please enter a valid pincode.'
     }
   };
 
@@ -310,5 +311,14 @@ export class ProductionDetailsComponent implements OnInit {
     this.VendorProduction.Status = 'D';
     this.InitializeFormControls();
     this.deleteModalButton.click();
+  }
+
+  CheckLeanMonth() {
+    const value = this.ProductionDetailsForm.get('LeanMonths').value.split('.');
+    if (value.length > 2) {
+      this.LogValidationErrors();
+    } else if (Number(value[1]) === 0) {
+      this.ProductionDetailsForm.get('LeanMonths').patchValue(value[0]);
+    }
   }
 }

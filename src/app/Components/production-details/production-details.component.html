@@ -126,7 +126,7 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Production</h6>
+        <h6 class="modal-title">Production <span class="req-popup-label">(<b>Note:</b> * marks filed are required)</span></h6>
         <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
       </div>
       <!-- modal-body -->
@@ -205,6 +205,8 @@
                       <input type="text" formControlName="CityCode" class="form-control input-sm" maxlength="49"
                         [ngClass]="{ 'is-invalid err': formErrors.CityCode }" (blur)="LogValidationErrors()" />
                     </span>
+                    <span [ngClass]="{ 'error-label':formErrors.CityCode}" *ngIf="formErrors.CityCode">
+                      {{formErrors.CityCode}}</span>
                   </div>
                   <div class="col-lg-3 col-md-3">
                     <label class="text">PinCode<span class="error-label">*</span></label>
@@ -255,8 +257,10 @@
                   <div class="col-lg-2 col-md-2">
                     <label class="text">Lean Months<span class="error-label">*</span></label>
                     <span>
-                      <input type="text" formControlName="LeanMonths" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" />
+                      <!-- <input type="text" formControlName="LeanMonths" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" /> -->
+                        <input type="text" formControlName="LeanMonths" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="CheckLeanMonth()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
                       *ngIf="formErrors.LeanMonths">{{formErrors.LeanMonths}}
