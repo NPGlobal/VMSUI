@@ -15,13 +15,13 @@
   <table class="table table-striped table-hover">
       <thead>
       <tr class="search">
-        <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByName" (keyup)="SearchVendorList()" /></td>
-        <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByShortName" (keyup)="SearchVendorList()" /></td>
-        <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByRefVendor" (keyup)="SearchVendorList()" /></td>
-        <td style="width:11%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByGST" (keyup)="SearchVendorList()" /></td>
-        <td style="width:11%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByPAN" (keyup)="SearchVendorList()" /></td>
-        <td style="width:17%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByCreatedOn" (keyup)="SearchVendorList()" /></td>
-        <td></td>
+        <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByName" (keyup)="SearchVendorList()" placeholder="Search By Name" /></td>
+        <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByShortName" (keyup)="SearchVendorList()" placeholder="By Short Name" /></td>
+        <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByRefVendor" (keyup)="SearchVendorList()" placeholder="By Ref Vendor" /></td>
+        <td style="width:11%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByGST" (keyup)="SearchVendorList()" placeholder="By GST" /></td>
+        <td style="width:11%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByPAN" (keyup)="SearchVendorList()" placeholder="By PAN" /></td>
+        <!-- <td style="width:17%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByCreatedOn" (keyup)="SearchVendorList()" /></td> -->
+        <td colspan="2"></td>
       </tr>
         <tr>
         <!-- <th scope="col">Serial</th> -->
