@@ -298,10 +298,11 @@ export class DepartmentMappingComponent implements OnInit {
     if (this.DivisionList.length === 0) {
       this.DepartmentMappingForm.get('Division').patchValue('0');
       this.FilteredDeptList = [];
-    } else if ((this.DivisionList.length < this.DivisionCount)) {
+    } else if (this.DivisionList.length < this.DivisionCount) {
       this.DepartmentMappingForm.get('Division').patchValue('1');
+      this.FilteredDeptList = [];
     } else {
-      this.DepartmentMappingForm.get('Division').patchValue('0');
+      this.DepartmentMappingForm.get('Division').patchValue('-1');
       this.FilteredDeptList = [];
     }
   }
