@@ -93,12 +93,26 @@ export class DepartmentMappingComponent implements OnInit {
       for (let i = 0; i < this.DivisionList.length; i++) {
         for (let j = 0; j < this.TempList.length; j++) {
           if (this.DivisionList[i].MDDCode === this.TempList[j].ParentMDDCode) {
-            this.FilteredDeptList.push(this.DepartmentList[j]);
+            this.isDeptExist = Boolean(this.SelectedDD.find(x => x.MDDCode === this.TempList[j].MDDCode &&
+              x.ParentMDDCode === this.TempList[j].ParentMDDCode));
+            if (!this.isDeptExist) {
+              this.FilteredDeptList.push(this.DepartmentList[j]);
+            }
           }
         }
       }
+      this.isDeptExist = false;
     } else {
-      this.FilteredDeptList = this.DepartmentList.filter(x => x.ParentMDDCode === mddCode);
+      const selectedDeptList = this.DepartmentList.filter(x => x.ParentMDDCode === mddCode);
+      for (let j = 0; j < selectedDeptList.length; j++) {
+        this.isDeptExist = Boolean(this.SelectedDD.find(x => x.MDDCode === selectedDeptList[j].MDDCode &&
+          x.ParentMDDCode === selectedDeptList[j].ParentMDDCode));
+        if (!this.isDeptExist) {
+          this.FilteredDeptList.push(selectedDeptList[j]);
+        }
+      }
+      //       this.FilteredDeptList = this.DepartmentList.filter(x => x.ParentMDDCode === mddCode);
+      this.isDeptExist = false;
     }
   }
 
@@ -110,6 +124,7 @@ export class DepartmentMappingComponent implements OnInit {
     }
     return this.isDeptExist;
   }
+
   MoveToSelectedList() {
     const div = this.DepartmentMappingForm.get('DivList').value as Array<string>;
     const dept = this.DepartmentMappingForm.get('Department').value as Array<string>;
@@ -282,8 +297,9 @@ export class DepartmentMappingComponent implements OnInit {
 
     if (this.DivisionList.length === 0) {
       this.DepartmentMappingForm.get('Division').patchValue('0');
-      this.DepartmentMappingForm.get('Department').patchValue('0');
       this.FilteredDeptList = [];
+    } else if ((this.DivisionList.length < this.DivisionCount)) {
+      this.DepartmentMappingForm.get('Division').patchValue('1');
     } else {
       this.DepartmentMappingForm.get('Division').patchValue('0');
       this.FilteredDeptList = [];
