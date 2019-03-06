@@ -16,13 +16,15 @@
           <select formControlName="Division" class="form-control input-sm DivisionClass"
             (change)="GetDepartment($event)">
             <option *ngIf="DivisionList.length === 0" [value]="0">No Division Left</option>
-            <option *ngIf="DivisionList.length !== 0" [value]="-1" selected="selected">All</option>
+            <option *ngIf="DivisionList.length !== DivisionCount" [value]="1">Select</option>
+            <option *ngIf="DivisionList.length === DivisionCount" [value]="-1" selected="selected">All</option>
             <option *ngFor="let Div of DivisionList" [value]="Div.MDDCode">
               {{ Div.MDDName }}</option>
           </select>
           <label class="text">Department</label>
           <select (focus)="UnselectOptions(DepartmentMappingForm.controls.DivList)" formControlName="Department"
             class="form-control input-sm dropdown DepartmentClass" size="5" multiple="multiple">
+            <option *ngIf="FilteredDeptList.length === 0" [value]="0">Select Department</option>
             <option *ngFor="let Dept of FilteredDeptList" class="DepartmentClass" [value]="Dept.MDDCode">
               {{ Dept.MDDName }}</option>
           </select>

@@ -277,8 +277,12 @@
                   <div class="col-lg-12 col-md-12">
                     <label class="text">Remarks</label>
                     <span>
-                      <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511" />
+                      <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511" 
+                      [ngClass]="{ 'is-invalid err': formErrors.Remarks }" />
                     </span>
+                    <span [ngClass]="{ 'error-label':formErrors.Remarks}"
+                    *ngIf="formErrors.Remarks">{{formErrors.Remarks}}
+                  </span>
                   </div>
                 </div>
               </div>

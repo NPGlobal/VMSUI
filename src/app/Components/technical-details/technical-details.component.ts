@@ -36,7 +36,7 @@ export class TechnicalDetailsComponent implements OnInit {
   vendorTech: VendorTech;
   isTechDetailEditing: any;
 
-  efficiencyPattern = '/^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/';
+  efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
   // VendorTech: VendorTech;
   deptList: any[];
@@ -329,7 +329,7 @@ export class TechnicalDetailsComponent implements OnInit {
           x.DeptCode === this.vendorTech.DeptCode);
         if (existingIndex >= 0 && this.isTechDetailEditing > 0) {
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
-          this.isTechDetailEditing  = 0;
+          this.isTechDetailEditing = 0;
           // this.vendorTech = undefined;
         } else {
 
