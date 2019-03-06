@@ -110,7 +110,7 @@
                 </span>
               </div>
               <div class="col-lg-3 col-md-3">
-                <label class="text">Efficiency (Default)</label>
+                <label class="text">Default line eEfficiency (%)</label>
                 <span>
                   <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
@@ -174,7 +174,7 @@
               </div>
 
               <div class="col-lg-2 col-md-2">
-                <label class="text">Efficiency</label>
+                <label class="text">Efficiency (%)</label>
                 <span>
                   <input type="text" formControlName="Efficiency" class="form-control input-sm"
                     [ngClass]="{ 'is-invalid': formErrors.Efficiency }" />
