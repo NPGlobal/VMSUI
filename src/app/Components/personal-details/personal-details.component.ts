@@ -7,9 +7,10 @@ import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
-// import { DatePipe } from '@angular/common';
+ import { DatePipe } from '@angular/common';
 
 @Component({
+  providers: [DatePipe],
   selector: 'app-personal-details',
   templateUrl: './personal-details.component.html',
   styleUrls: ['./personal-details.component.css']
@@ -17,8 +18,8 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 export class PersonalDetailsComponent implements OnInit {
   // minDate = moment(new Date()).format('YYYY-MM-DD')
   Today = new Date();
- // maxDate = this.datepipe.transform(this.Today, 'yyyy-MM-dd');
- maxDate = '2019-03-06';
+  maxDate = this.datepipe.transform(this.Today, 'yyyy-MM-dd');
+// maxDate = '2019-03-06';
  minDate = '2017-07-01';
   // maxDate = '2019-03-06';
   CountryList: MasterDataDetails[];
@@ -163,7 +164,7 @@ export class PersonalDetailsComponent implements OnInit {
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
-   // public datepipe: DatePipe,
+    public datepipe: DatePipe,
     private _mDDService: MasterDataDetailsService) {
     this.Address = this.CreateNewAddress();
     this.vendor = new Vendor();
