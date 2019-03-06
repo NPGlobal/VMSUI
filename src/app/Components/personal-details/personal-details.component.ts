@@ -7,6 +7,7 @@ import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
+// import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-personal-details',
@@ -14,7 +15,12 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
   styleUrls: ['./personal-details.component.css']
 })
 export class PersonalDetailsComponent implements OnInit {
-
+  // minDate = moment(new Date()).format('YYYY-MM-DD')
+  Today = new Date();
+ // maxDate = this.datepipe.transform(this.Today, 'yyyy-MM-dd');
+ maxDate = '2019-03-06';
+ minDate = '2017-07-01';
+  // maxDate = '2019-03-06';
   CountryList: MasterDataDetails[];
   StateList: MasterDataDetails[];
   vendor: Vendor;
@@ -157,6 +163,7 @@ export class PersonalDetailsComponent implements OnInit {
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
+   // public datepipe: DatePipe,
     private _mDDService: MasterDataDetailsService) {
     this.Address = this.CreateNewAddress();
     this.vendor = new Vendor();
@@ -167,6 +174,10 @@ export class PersonalDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+    this.GetMasterDataDetails('VendorType');
+    this.GetMasterDataDetails('COUNTRY');
+    this.GetMasterDataDetails('STATE');
+    // this.GetMasterDataDetails('VendorExpe');
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
@@ -181,12 +192,6 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
-
-    this.GetMasterDataDetails('VendorType');
-    this.GetMasterDataDetails('COUNTRY');
-    this.GetMasterDataDetails('STATE');
-    // this.GetMasterDataDetails('VendorExpe');
-
   }
 
   CreateNewAddress(): any {
@@ -282,7 +287,7 @@ export class PersonalDetailsComponent implements OnInit {
     vendor.VendorExpertise = this.makeVendorExpertiseString();
     vendor.VendorCode = this.VendorCode;
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
-    vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value;
+    vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
     vendor.isInsured = this.personalDetailsForm.get('PersonalDetails.IsInsured').value;
     vendor.NameofInsuranceCompany = this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value;
@@ -302,7 +307,7 @@ export class PersonalDetailsComponent implements OnInit {
       }).join() : '';
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
-    vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value;
+    vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
     vendor.isRCM = this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').value;
     vendor.isProvisional = this.personalDetailsForm.get('RegisteredOfficeAddress.IsProvisional').value;
     vendor.GSTDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
@@ -389,6 +394,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       this.vendorAddresses = result.data.FactoryAddress;
+      this.vendor.RegisteredOfficeAddress.CountryCode = 'IN';
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
@@ -777,31 +783,63 @@ export class PersonalDetailsComponent implements OnInit {
 
   GSTINValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const status = this.CheckGSTFormat(control.value);
+      const status = this.CheckGSTFormat(control.value, this.personalDetailsForm.get('PersonalDetails.PANNo').value.trim().toUpperCase());
       if (!status) {
         return { 'pattern': status };
       }
       return null;
     };
   }
-
-  CheckGSTFormat(g: string): boolean {
+  // Modified by Shubhi
+  CheckGSTFormat(gst: string, pan: string): boolean {
     let status = false;
     const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
-    if (g !== null && g.length >= 2) {
-      const firstTwo = g.substr(0, 2);
-      status = this.StateList.find(x => x.MDDShortName === firstTwo) !== undefined;
+    const regWithPan = new RegExp('^([0-9]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+    if (gst !== null && gst.length >= 2) {
+      const firstTwo = gst.substr(0, 2);
+      status = this.StateCodeLabel.substr(0, 2) === firstTwo ;
+      // status = this.StateCodeLabel.substr(0, 2) === firstTwo !== undefined;
     }
-
-    if (status && g !== null && g.length > 2) {
-      const lastcharacters = g.substr(2, g.length);
-      status = reg.test(lastcharacters);
+    if (pan !== null && pan.length === 10) {
+    if (status && gst !== null && gst.length >= 10) {
+      const panChars = gst.substr(2, 10);
+      // status = pan === panChars !== undefined;
+      status = pan === panChars ;
+    }
+    if (status && gst !== null && gst.length >=  gst.length) {
+      const lastThreeChars = gst.substr(12, gst.length);
+      status = regWithPan.test(lastThreeChars);
     } else {
       status = false;
     }
-
+  }  else {
+      if (status && gst !== null && gst.length > 2) {
+            const lastcharacters = gst.substr(2, gst.length);
+            status = reg.test(lastcharacters);
+          } else {
+            status = false;
+          }
+    }
     return status;
   }
+
+  // CheckGSTFormat(g: string): boolean {
+  //   let status = false;
+  //   const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+  //   if (g !== null && g.length >= 2) {
+  //     const firstTwo = g.substr(0, 2);
+  //     status = this.StateList.find(x => x.MDDShortName === firstTwo) !== undefined;
+  //   }
+
+  //   if (status && g !== null && g.length > 2) {
+  //     const lastcharacters = g.substr(2, g.length);
+  //     status = reg.test(lastcharacters);
+  //   } else {
+  //     status = false;
+  //   }
+
+  //   return status;
+  // }
 
   onChange(expertise: string, isChecked: boolean) {
     this.ExpertiseList.find(x => x.MDDCode === expertise).Checked = isChecked;

@@ -33,7 +33,7 @@
                             <div class="col-md-6">
                                 <label class="text">Producer Name
                                     <i class="mandatory">*</i>
-                                </label>
+                                    </label>
                                 <span>
                                     <input type="text" maxlength="49" formControlName="VendorName"
                                         class="form-control input-sm"
@@ -43,13 +43,17 @@
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
-                                <label class="text">PAN No.</label>&nbsp;&nbsp;
+                                <label class="text">PAN No.
+                                    <span class="help-block mandatory" *ngIf="formErrors.PANNo">
+                                        {{formErrors.PANNo}}
+                                    </span>
+                                </label>&nbsp;&nbsp;
                                 <span>
-                                    <input type="text" formControlName="PANNo"
+                                    <input type="text" formControlName="PANNo" style="text-transform: uppercase" (blur)="LogValidationErrors()" 
                                         [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
                                         [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
-                            </div>
+                                </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
@@ -87,7 +91,7 @@
                                 <label class="text">Name of Insurance Company</label>
                                 <span>
                                     <input type="text" (blur)="LogValidationErrors()"
-                                        [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany}"
+                                        [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
                                         formControlName="NameofInsuranceCompany" class="form-control input-sm" />
                                 </span>
                             </div>
@@ -232,18 +236,19 @@
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
-                                <span class="help-block mandatory" *ngIf="formErrors.GSTIN">
+                                <span class="help-block mandatory" *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
                                     {{formErrors.GSTIN}}
                                 </span>
                             </label>
                             <span>
-                                <input (blur)="LogValidationErrors()" formControlName="GSTIN" type="text"
+                                <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? '' : null"
-                                    [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
+                                    [ngClass]="{'is-invalid': formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}" 
+                                    class="form-control input-sm" />
                             </span>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="display:none">
                             <div class="checkbox">
                                 <label class="text">
                                     <input value="true" type="checkbox" formControlName="IsProvisional">
@@ -253,15 +258,16 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="margin-top: -15px;">
                             <label class="text">GST Date
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
                             </label>
                             <span>
-                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate}"
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate
+                                    && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? '' : null"
-                                    formControlName="GSTDate" type="date" class="form-control input-sm" />
+                                    formControlName="GSTDate" type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm"/>
                             </span>
                         </div>
                     </div>
