@@ -36,7 +36,7 @@ export class TechnicalDetailsComponent implements OnInit {
   vendorTech: VendorTech;
   isTechDetailEditing: any;
 
-  efficiencyPattern = '/^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/';
+  efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
   // VendorTech: VendorTech;
   deptList: any[];
