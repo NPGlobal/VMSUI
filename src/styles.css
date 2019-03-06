@@ -172,7 +172,11 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 .menuicon > li:first-child > a { border: 0px !important;}
 .menuicon > li > a { display: block; font-size: 15px; color: #c5bda2;  line-height: 30px; height: 35px;
   vertical-align: middle;
-  text-align: center; text-decoration: none; padding:0 40px 0 15px; font-weight:400;
+  text-align: center; text-decoration: none; padding:5px 40px 0 15px; font-weight:400;
+}
+.menuicon .dropdown-toggle::after {
+  
+  margin-left: 0.555em;
 }
 .menuicon > li:hover > a, .menuicon > li > a.active { background: #c5bda2; color:#62282a;}
 .menuicon > li:hover > ul {display: block;}
@@ -292,3 +296,4 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   font-size: 12px;
   font-weight: 500;
 }
+.py-4{margin-left:5px;}

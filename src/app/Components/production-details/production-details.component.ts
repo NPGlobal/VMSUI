@@ -40,7 +40,7 @@ export class ProductionDetailsComponent implements OnInit {
   AddressAndRemarksPattern = '^[\w\(\)+,?-_@.#&%/\' A-Za-z]+([\w()+,?-_@.#&%/\' A-Za-z]+)*$';
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
-  NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
+  // NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
   ProductionDetailsForm: FormGroup;
   submitted = false;
   StateList: MasterDataDetails[] = [];
@@ -77,7 +77,7 @@ export class ProductionDetailsComponent implements OnInit {
     'LeanMonths': {
       'required': '',
       'pattern': 'Only numbers allowed.',
-      'patternRange': 'Month cannot exceed than 500.'
+      'max': 'Month cannot exceed than 500.'
     },
     'LeanCapacity': {
       'required': '',
@@ -193,7 +193,7 @@ export class ProductionDetailsComponent implements OnInit {
       MonthlyCapacity: [this.VendorProduction.MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       MinimalCapacity: [this.VendorProduction.MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       LeanMonths: [this.VendorProduction.LeanMonths,
-         [Validators.required, Validators.pattern(this.NumericPattern), Validators.pattern(this.NumericRange)]],
+         [Validators.required, Validators.pattern(this.NumericPattern), Validators.max(500)]],
       LeanCapacity: [this.VendorProduction.LeanCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       Address1: [this.VendorProduction.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
       Address2: [this.VendorProduction.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
