@@ -259,7 +259,7 @@
                     <span>
                       <!-- <input type="text" formControlName="LeanMonths" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" /> -->
-                        <input type="text" formControlName="LeanMonths" class="form-control input-sm"
+                        <input type="text" formControlName="LeanMonths" max="500" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="CheckLeanMonth()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
