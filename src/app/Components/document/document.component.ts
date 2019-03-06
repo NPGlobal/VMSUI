@@ -22,7 +22,11 @@ export class DocumentComponent implements OnInit {
   submitted = false;
   docDetailsForm: FormGroup;
   vendorDocument: VendorDocument;
+  // for searching
   searchText = '';
+  searchByAction = '';
+  searchByDocument = '';
+  searchByFile = '';
   vendDocList: VendorDocument[];
 
   // paging variables
@@ -182,6 +186,10 @@ export class DocumentComponent implements OnInit {
   SearchDocuments(searchText = '') {
     this.searchText = searchText;
     this.GetVendorDocuments(1);
+  }
+  SearchDocumentList() {
+    this.searchText = this.searchByAction + '~' + this.searchByDocument + '~' + this.searchByFile ;
+    this.SearchDocuments(this.searchText);
   }
   // GetDocDetails(vDoc: VendorDocument) {
   //   const x =  vDoc.VendorDocDetailsID;

@@ -253,9 +253,18 @@ export class PersonalDetailsComponent implements OnInit {
       state.MDDShortName === undefined || state.MDDShortName === null) ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
+checkGSTDateValidation() {
+  if (this.minDate >= this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value ||
+  this.maxDate <= this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value
+   ) {
+    this.PopUpMessage = 'Please enter a valid GST Date.';
+    this.alertButton.click();
+    return;
+}}
+
   SavePersonalDetails() {
     this.submitted = true;
-
+    this.checkGSTDateValidation();
     if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value &&
       (this.SavedPHStoreList.length === 0 &&
         this.SelectedPHStoreList.length === 0)) {
