@@ -98,6 +98,28 @@ export class DocumentComponent implements OnInit {
     });
   }
 
+  // CheckFileValidation() {
+  //   const files = this.docDetailsForm.get('FileName').value;
+  //   let fSize = 0;
+  //   let isExtension = true;
+  //   if (files.length > 0) {
+  //     for (var i = 0; i < files.length; i++) {
+  //       fSize = parseInt(fSize) + parseInt(files[i].size);
+  //       fileData.append(files[i].name, files[i]);
+  //       var splitFileName = files[i].name.split('.');
+  //       var extension = ["XLS", "XLSX", "PDF", "DOC", "DOCX"];
+  //       if (extension.indexOf(splitFileName[splitFileName.length - 1].toUpperCase()) != -1) { }
+  //       else {
+  //         isExtension = false;
+  //       }
+  //     }
+  //   }
+  //   if (fSize > parseInt(fileSize * 1024)) {
+  //     alert('File size should be less than ' + Math.round(parseFloat(parseInt(fileSize) / 1024), 2) + 'MB.');
+  //     return false;
+  //   }
+  // }
+
   openModal() {
     this.InitializeFormControls();
   }
