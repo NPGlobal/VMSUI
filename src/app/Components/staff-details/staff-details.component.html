@@ -1,8 +1,8 @@
 <div class="col-lg-12 col-sm-12 col-md-12 row">
   <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchStaffDetails($event.target.value)" name="search"> -->
   <div class="float-right" style="margin-left:96.5%;">
-    <button type="button" class="btn btn-primary" data-toggle="modal" (click)="openModal()" data-target="#myModal"
-      data-backdrop="static" data-keyboard="false">
+    <button type="button" class="btn btn-primary" data-toggle="modal" (click)="EditStaffDetails(null)"
+      data-target="#myModal" data-backdrop="static" data-keyboard="false">
       <i class="fa fa-plus"></i>
       <span title="Add new" class="py-4">Add</span>
     </button>
@@ -40,7 +40,7 @@
         <td>{{vendor.ContactEmail}}</td>
         <td>{{vendor.ContactPhone}}</td>
         <td>
-          <a title="Edit Staff" href="javascript:void(0)" data-toggle="modal" (click)="GetStaffDetails(vendor)"
+          <a title="Edit Staff" href="javascript:void(0)" data-toggle="modal" (click)="EditStaffDetails(vendor)"
             data-target="#myModal"><i class="fa fa-edit"></i></a>
 
           <a title="Delete Staff" href="javascript:void(0)" class="ml-2" data-toggle="modal"
@@ -87,17 +87,16 @@
       <!-- modal-body -->
       <div class="modal-body">
         <form [formGroup]="staffDetailsForm" (ngSubmit)="SaveStaffDetails()" novalidate>
-          <input type="hidden" formControlName="VendorStaffDetailsId">
 
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
                 <label class="text">Designation<span class="error-label">*</span></label>
                 <span>
-                  <select formControlName="designation" class="form-control input-sm"
-                    (change)="GetVendorDepartments($event)" [ngClass]="{ 'is-invalid': formErrors.designation }"
+                  <select formControlName="Designation" class="form-control input-sm"
+                    (change)="GetVendorDepartments($event)" [ngClass]="{ 'is-invalid': formErrors.Designation }"
                     (blur)="logValidationErrors()">
-                    <option value="">Select Designation</option>
+                    <option [ngValue]="null">Select Designation</option>
                     <option *ngFor="let option of designationList" [attr.data-maxnumber]="option.Max_Allowed"
                       value={{option.Designation}}>
                       {{option.Designation}}
@@ -196,7 +195,7 @@
           <div class="form-group">
             <div class="col-lg-12 col-md-12">
               <label class="text">Remarks</label>
-              <span><input type="text" formControlName="remarks" class="form-control input-sm" maxlength="100" /></span>
+              <span><input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="100" /></span>
             </div>
           </div>
           <!-- <div class="form-group col-lg-12">
@@ -244,19 +243,20 @@
   </div>
 </div>
 
-<button #modalOpenMsgButton id="modalOpenMsgButton" type="button" data-target="#myMsgModal" data-backdrop="static"
+<button #alertModalOpen type="button" data-target="#alertModal" data-backdrop="static"
   data-keyboard="false" data-toggle="modal" style="display:none;">
 </button>
+
 <!-- Message Modal-->
-<div class="modal fade" id="myMsgModal">
+<div class="modal fade" id="alertModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{ActionMessage}}</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
         <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
               </button> -->
-        <button class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
+        <button #alertModalClose class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
       </div>
       <!-- <div class="modal-body">{{ActionMessage}}</div> -->
       <!-- <div class="modal-footer">

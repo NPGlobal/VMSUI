@@ -1,3 +1,5 @@
+import { VendorStaff } from './VendorStaff';
+
 export class StaffDetails {
     RowNumber: number;
     Designation: number;
@@ -7,7 +9,9 @@ export class StaffDetails {
     ConfigIdsList: string;
     StaffIdsList: string;
     ContactEmail: string;
-    ContactPhone: number;
+    ContactPhone: string;
     Remarks: string;
     Priority: number;
+    StatusList: string;
+    VendorStaffDetails: VendorStaff[];
 }

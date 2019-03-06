@@ -31,9 +31,10 @@ export class StaffDetailsComponent implements OnInit {
   staffDetailsForm: FormGroup;
   ActionMessage: string;
   //  MaxPriority = 0;
-  @ViewChild('modalOpenMsgButton')
-  modalOpenMsgButton: ElementRef;
-  el: any;
+  @ViewChild('alertModalOpen')
+  alertModalOpen: ElementRef;
+  alertModalOpenBtn: HTMLElement;
+  PopUpMessage: string;
 
   // paging variables
   totalItems = 0;
@@ -52,18 +53,17 @@ export class StaffDetailsComponent implements OnInit {
   searchByPhone: string;
 
   staffDetailsList: StaffDetails[];
+  vendorStaffDetail: StaffDetails;
+
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
     private _vendorService: VendorStaffService) {
-    this.CreateNewVendorStaff();
   }
+
   ValidationMessages = {
-    'dept': {
-      'required': ''
-    },
-    'designation': {
+    'Designation': {
       'required': ''
     },
     'ContactName': {
@@ -76,19 +76,16 @@ export class StaffDetailsComponent implements OnInit {
       'required': '',
       'maxlength': 'Should not exceed 10 characters',
       'pattern': 'Please enter a valid phone'
-    },
-    // 'priority': {
-    //   'required': ''
-    // }
+    }
   };
+
   formErrors = {
-    'dept': '',
-    'designation': '',
+    'Designation': '',
     'ContactName': '',
     'ContactEmail': '',
-    'ContactPhone': '',
-    //  'priority': ''
+    'ContactPhone': ''
   };
+
   deptDropdownSettings = {
     singleSelection: false,
     idField: 'DeptCode',
@@ -99,28 +96,27 @@ export class StaffDetailsComponent implements OnInit {
     allowSearchFilter: true,
     noDataAvailablePlaceholderText: 'No records'
   };
-  // PriorityList(n: any): any[] {
-  //   return Array(n);
-  // }
+
   ngOnInit() {
     this.searchByName = '';
     this.searchByDepartment = '';
     this.searchByDesignation = '';
     this.searchByEmail = '';
     this.searchByPhone = '';
-    this.openModal();
-    this.el = this.modalOpenMsgButton.nativeElement as HTMLElement;
+
+    this.alertModalOpenBtn = this.alertModalOpen.nativeElement as HTMLElement;
+
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorStaffs(this.currentPage);
     });
-    this.staffDetailsForm.get('designation').patchValue(null);
+    this.EditStaffDetails(null);
+    // this.staffDetailsForm.get('Designation').patchValue(null);
     this.GetVendorDesignation();
-    // this.staffDetailsForm.valueChanges.subscribe((data) => {
-    //   this.logValidationErrors();
-    // });
+
     this.GetVendorStaffs(this.currentPage);
   }
+
   logValidationErrors(group: FormGroup = this.staffDetailsForm): void {
     // this.ValidateDepartment();
     Object.keys(group.controls).forEach((key: string) => {
@@ -141,53 +137,30 @@ export class StaffDetailsComponent implements OnInit {
       }
     });
   }
-  CreateNewVendorStaff() {
-    this.VendorStaff = new VendorStaff();
-    // this.VendorStaff.VendorStaffConfigId = '';
-    // this.VendorStaff.VendorStaffDetailsId = '';s
-    this.VendorStaff.dept = '';
-    this.VendorStaff.Designation = '';
-    this.VendorStaff.VendorCode = '';
-    this.VendorStaff.ContactName = '';
-    this.VendorStaff.ContactEmail = '';
-    this.VendorStaff.ContactPhone = null;
-    this.VendorStaff.Priority = 1;
-    this.VendorStaff.Status = 'A';
-    this.VendorStaff.Remarks = '';
-    // this.deptSelectList = null;
-  }
+
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
-      //   VendorStaffConfigId: [this.VendorStaff.VendorStaffConfigId],
-      VendorStaffDetailsId: [this.VendorStaff.VendorStaffDetailsId],
-      dept: [this.VendorStaff.dept],
-      designation: [this.VendorStaff.Designation, Validators.required],
-      ContactName: [this.VendorStaff.ContactName, Validators.required],
-      ContactEmail: [this.VendorStaff.ContactEmail, Validators.email],
-      ContactPhone: [this.VendorStaff.ContactPhone, [
+      Designation: [this.vendorStaffDetail.Designation, Validators.required],
+      ContactName: [this.vendorStaffDetail.ContactName, Validators.required],
+      ContactEmail: [this.vendorStaffDetail.ContactEmail, Validators.email],
+      ContactPhone: [this.vendorStaffDetail.ContactPhone, [
         Validators.required, Validators.maxLength(10), Validators.pattern(this.PhonePattern)
       ]],
-      priority: [this.VendorStaff.Priority],
-      Status: [this.VendorStaff.Status],
-      remarks: [this.VendorStaff.Remarks]
+      Remarks: [this.vendorStaffDetail.Remarks]
     });
   }
-  openModal() {
-    this.InitializeFormControls();
-  }
+
   dismiss() {
-    // this.MaxPriority = 0;
     this.invalid = false;
     this.submitted = false;
     this.deptList = [];
     this.deptSelectList = null;
-    this.CreateNewVendorStaff();
+    this.vendorStaffDetail = new StaffDetails();
     this.InitializeFormControls();
     this.logValidationErrors();
-    // this.DesignationList = [];
     this.editedVendorStaff = undefined;
-    //  this.staffDetailsForm.get('Designation').patchValue(null);
   }
+
   GetVendorStaffs(index: number) {
     this.currentPage = index;
     this._vendorService.GetVendorStaffByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
@@ -201,6 +174,7 @@ export class StaffDetailsComponent implements OnInit {
         }
       });
   }
+
   GetVendorsStaffList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.pagedItems = this.staffDetailsList;
@@ -212,27 +186,23 @@ export class StaffDetailsComponent implements OnInit {
     });
   }
 
-  GetSelectedDepartments(selectedItems: any) {
-    this.deptSelectList = selectedItems;
-    if (selectedItems === null || selectedItems === undefined) {
-      this.formErrors.dept = 'required';
-    }
-  }
   onDeptSelect(items: any) {
     this.invalid = false;
   }
+
   onDeptSelectAll(items: any) {
     this.invalid = false;
   }
+
   GetVendorDepartments() {
-    if (this.staffDetailsForm.get('designation').value === '') {
+    if (this.staffDetailsForm.get('Designation').value === null) {
       this.deptList = [];
       this.deptSelectList = [];
     } else {
-      this._vendorService.GetVendorsDeptStaff('10', this.staffDetailsForm.get('designation').value, this.vendorcode, 'Department')
+      this._vendorService.GetVendorsDeptStaff('10', this.staffDetailsForm.get('Designation').value, this.vendorcode, 'Department')
         .subscribe((data) => {
           this.deptList = data;
-          if (this.staffDetailsForm.get('designation').value !== null) {
+          if (this.staffDetailsForm.get('Designation').value !== null) {
             const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode);
             if (strArray === undefined) {
               this.deptSelectList = [];
@@ -241,11 +211,10 @@ export class StaffDetailsComponent implements OnInit {
         });
     }
   }
+
   ValidateDepartment() {
-    // tslint:disable-next-line:triple-equals
-    if (this.VendorStaff.dept == '' || this.deptSelectList.length === 0) {
+    if (this.VendorStaff.dept === '' || this.deptSelectList.length === 0) {
       this.invalid = true;
-      // alert(this.invalid);
     } else { this.invalid = false; }
   }
 
@@ -257,6 +226,7 @@ export class StaffDetailsComponent implements OnInit {
       this.ValidateDepartment();
       return;
     }
+
     if (this.editedVendorStaff !== undefined) {
       if (this.deptSelectList.map(function (element) {
         return element.DeptCode;
@@ -271,93 +241,91 @@ export class StaffDetailsComponent implements OnInit {
         && this.staffDetailsForm.get('remarks').value === this.editedVendorStaff.Remarks
       ) {
         // this.showPopUpMessage('There is nothing to change for save.');
-        this.ActionMessage = 'There is nothing to change for save.';
-        this.el.click();
+        this.PopUpMessage = 'There is nothing to change for save.';
+        this.alertModalOpenBtn.click();
         return;
       }
     }
     this.sendFormData();
   }
+
   DeleteStaffDetails() {
     this.deptSelectList = [{ DeptCode: this.VendorStaff.dept, DeptName: this.VendorStaff.Department }];
     this.sendFormData();
   }
+
   sendFormData() {
-    const st = this.staffDetailsForm.get('Status').value;
-    this.VendorStaff = new VendorStaff();
-    this.VendorStaff.VendorStaffDetailsId = (this.staffDetailsForm.get('VendorStaffDetailsId').value === null)
-      ? 0 : this.staffDetailsForm.get('VendorStaffDetailsId').value;
-    // this.VendorStaff.VendorStaffConfigId = this.staffDetailsForm.get('Designation').value;
-    this.VendorStaff.Designation = this.staffDetailsForm.get('designation').value.trim();
-    this.VendorStaff.dept = this.deptSelectList.map(function (element) {
-      return element.DeptCode;
-    }).join('~');
-    this.VendorStaff.VendorCode = this.vendorcode;
-    this.VendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
-    this.VendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value.trim();
-    this.VendorStaff.ContactPhone = (this.staffDetailsForm.get('ContactPhone').value === null)
-      ? '' : this.staffDetailsForm.get('ContactPhone').value.trim();
-    // this.VendorStaff.Priority = this.staffDetailsForm.get('priority').value;
-    this.VendorStaff.Priority = this.priority;
-    this.VendorStaff.Status = st;
-    this.VendorStaff.Remarks = this.staffDetailsForm.get('remarks').value.trim();
-    this.VendorStaff.CreatedBy = 999999;
+    const vendorStaff = new VendorStaff();
 
-    // console.log(JSON.stringify(this.VendorStaff));
+    vendorStaff.Designation = this.staffDetailsForm.get('Designation').value;
+    vendorStaff.VendorShortCode = this.vendorcode;
+    vendorStaff.CompanyCode = '10';
+    vendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
+    vendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value.trim();
+    vendorStaff.ContactPhone = this.staffDetailsForm.get('ContactPhone').value;
+    vendorStaff.Remarks = this.staffDetailsForm.get('Remarks').value.trim();
+    vendorStaff.VendorStaffConfigID = 0;
 
+    this.vendorstaffList.filter(data => {
+      data.CompanyCode = vendorStaff.CompanyCode;
+      data.VendorShortCode = vendorStaff.VendorShortCode;
+      data.ContactName = vendorStaff.ContactName;
+      data.ContactPhone = vendorStaff.ContactPhone;
+      data.ContactEmail = vendorStaff.ContactEmail;
+    });
+    this.vendorStaffDetail.VendorStaffDetails = this.vendorstaffList;
     try {
-      this._vendorService.SaveStaffInfo(this.VendorStaff).subscribe((data) => {
-        if (data.Msg != null) {
-          if (data.Msg[0].Result === 0) {
-            this.VendorStaff = new VendorStaff();
-            this.vendorstaffList = data.VendorStaff;
-            this.totalItems = data.VendorStaffCount[0].TotalVendors;
-            this.GetVendorsStaffList();
-            this.ActionMessage = data.Msg[0].Message;
-            this.el.click();
-            if (st === 'A') {
-              $('#myModal').modal('toggle');
-            } else {
-              $('#deleteModal').modal('toggle');
-            }
-            this.dismiss();
-          } else {
-            // alert(data.Msg[0].Message);
-            // this.showPopUpMessage(data.Msg[0].Message);
-            this.ActionMessage = data.Msg[0].Message;
-            this.el.click();
-          }
+      this._vendorService.SaveStaffInfo(this.vendorStaffDetail).subscribe((result) => {
+        if (result.Error === '' && result.data.Msg[0].Result === 0) {
+          this.staffDetailsList = result.data.VendorStaff;
+          this.totalItems = result.data.VendorStaffCount[0].TotalVendors;
+          this.GetVendorsStaffList();
+          this.PopUpMessage = result.data.Msg[0].Message;
+          this.alertModalOpenBtn.click();
+          this.dismiss();
         } else {
-          // this.showPopUpMessage('There are some technical error. Please contact administrator.');
-          this.ActionMessage = 'There are some technical error. Please contact administrator.';
-          this.el.click();
+          this.PopUpMessage = result.data.Msg[0].Message;
+          this.alertModalOpenBtn.click();
         }
       });
     } catch {
-      this.ActionMessage = 'There are some technical error. Please contact administrator.';
-      this.el.click();
+      this.PopUpMessage = 'There are some technical error. Please contact administrator.';
+      this.alertModalOpenBtn.click();
     }
   }
-  GetStaffDetails(vobj: StaffDetails) {
-    this.editedVendorStaff = vobj;
 
-    const vStaff = new VendorStaff();
-    vStaff.ContactName = vobj.ContactName;
-    vStaff.ContactEmail = vobj.ContactEmail;
-    vStaff.ContactPhone = vobj.ContactPhone;
-    vStaff.Remarks = vobj.Remarks;
-
-    this.VendorStaff = JSON.parse(JSON.stringify(vobj));
-    this.VendorStaff.Status = 'A';
+  EditStaffDetails(vobj: StaffDetails) {
+    this.vendorstaffList = [];
+    let vStaff: VendorStaff;
+    if (vobj === null) {
+      vobj = new StaffDetails();
+    } else {
+      for (let i = 0; i < vobj.DeptList.split(',').length; ++i) {
+        vStaff = new VendorStaff();
+        vStaff.DeptCode = vobj.DeptList.split(',')[i];
+        vStaff.VendorStaffConfigID = Number(vobj.ConfigIdsList.split(',')[i]);
+        vStaff.VendorStaffDetailsID = Number(vobj.StaffIdsList.split(',')[i]);
+        vStaff.Department = vobj.DepartmentList.split(',')[i];
+        vStaff.Status = 'A';
+        vStaff.DeptCode = vobj.DeptList.split(',')[i];
+        vStaff.ContactName = vobj.ContactName;
+        vStaff.ContactEmail = vobj.ContactEmail;
+        vStaff.ContactPhone = vobj.ContactPhone;
+        vStaff.Remarks = vobj.Remarks;
+        this.vendorstaffList.push(vStaff);
+      }
+    }
+    this.vendorStaffDetail = JSON.parse(JSON.stringify(vobj));
 
     this.InitializeFormControls();
     this.GetVendorDepartments();
-    this.deptSelectList =  vobj.DeptList.split(',').filter(function() {
+    this.deptSelectList = this.vendorstaffList.map(function (element) {
       return {
-        DeptCode: vobj.DeptList.trim().split(','), DeptName: ''
+        DeptCode: element.DeptCode, DeptName: element.Department
       };
     });
   }
+
   DeleteStaffDetailPopup(vobj: VendorStaff) {
     vobj.Status = 'D';
     this.VendorStaff = vobj;
@@ -368,6 +336,7 @@ export class StaffDetailsComponent implements OnInit {
     this.searchText = searchText;
     this.GetVendorStaffs(1);
   }
+
   SearchStaffList() {
     this.searchText = this.searchByName + '~' + this.searchByDepartment + '~' + this.searchByDesignation + '~' +
       this.searchByEmail + '~' + this.searchByPhone;
