@@ -256,7 +256,7 @@ export class PersonalDetailsComponent implements OnInit {
 checkGSTDateValidation() {
   let isValidDate = true;
   const gstDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
-  if (this.minDate >= gstDate || this.maxDate <= gstDate) {
+  if (this.minDate > gstDate || this.maxDate < gstDate) {
     isValidDate = false;
   }
   return isValidDate;
@@ -264,8 +264,7 @@ checkGSTDateValidation() {
 
   SavePersonalDetails() {
     this.submitted = true;
-    
-    if(!this.checkGSTDateValidation()){
+    if ( !this.checkGSTDateValidation()) {
       this.PopUpMessage = 'Please enter a valid GST Date.';
       this.alertButton.click();
       return;
