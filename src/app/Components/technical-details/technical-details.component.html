@@ -13,7 +13,7 @@
     <thead>
       <tr class="search">
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByTechLine"
-            (keyup)="SearchTechDetailsList()" placeholder="Search By Tech Line" /></td>
+            (keyup)="SearchTechDetailsList()" placeholder="Search By Tech Line" style="display:none"/></td>
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMachineType"
             (keyup)="SearchTechDetailsList()" placeholder="Search By Machine Type" /></td>
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMachineName"
@@ -41,7 +41,7 @@
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               {{vendor.TechLineNo === '' || vendor.TechLineNo === null ? '-' : 'Line ' + vendor.TechLineNo}}
               <br>
-              {{vendor.DefaultEfficiency !== null ? 'Default Efficiency: ' + vendor.DefaultEfficiency : ''}}
+              {{vendor.TechLineNo === '' || vendor.TechLineNo === null ? '' : 'Default Efficiency: ' + vendor.DefaultEfficiency}}
             </td>
             <td>{{item.MachineType}}</td>
             <td>{{item.MachineName}}</td>
