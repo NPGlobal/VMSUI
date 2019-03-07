@@ -20,7 +20,7 @@ export class PersonalDetailsComponent implements OnInit {
   Today = new Date();
   maxDate = this.datepipe.transform(this.Today, 'yyyy-MM-dd');
 // maxDate = '2019-03-06';
- minDate = '2017-07-01';
+ minDate = '2017-04-01';
   // maxDate = '2019-03-06';
   CountryList: MasterDataDetails[];
   StateList: MasterDataDetails[];
@@ -256,7 +256,7 @@ export class PersonalDetailsComponent implements OnInit {
 checkGSTDateValidation() {
   let isValidDate = true;
   const gstDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
-  if (this.minDate >= gstDate || this.maxDate <= gstDate) {
+  if (this.minDate > gstDate || this.maxDate < gstDate) {
     isValidDate = false;
   }
   return isValidDate;
@@ -264,8 +264,22 @@ checkGSTDateValidation() {
 
   SavePersonalDetails() {
     this.submitted = true;
-    
-    if(!this.checkGSTDateValidation()){
+
+    // added by shubhi
+    const pan = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
+    this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
+    const gst =  this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
+    ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
+
+    if (gst !== '' && pan !== '') {
+      if ( !this.CheckGSTFormat(gst, pan)) {
+        this.PopUpMessage = 'Please enter a valid Pan No.';
+        this.alertButton.click();
+        return;
+      }
+     }
+
+    if ( !this.checkGSTDateValidation()) {
       this.PopUpMessage = 'Please enter a valid GST Date.';
       this.alertButton.click();
       return;
@@ -782,7 +796,6 @@ checkGSTDateValidation() {
   }
 
   SetValidationForGSTControls() {
-    
     if (!this.vendor.isGSTRegistered) {
       if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators(
@@ -794,7 +807,10 @@ checkGSTDateValidation() {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').enable();
 
         this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(false);
-      } else {
+
+        // added by shubhi for pan validation
+        // this.personalDetailsForm.get('PersonalDetails.PANNo').setValidators(this.PanNoValidator());
+        } else {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
@@ -819,6 +835,30 @@ checkGSTDateValidation() {
   UnselectOptions(control: FormControl) {
     control.patchValue([]);
   }
+  // added by shubhi for pan no.
+  // PanNoValidator(): ValidatorFn {
+  //   return (control: AbstractControl): { [key: string]: boolean } | null => {
+  //     const status = this.CheckPANFormat(control.value, this.personalDetailsForm.get
+  // ('RegisteredOfficeAddress.GSTIN').value === null ? '' :
+  //     this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.trim().toUpperCase());
+  //     if (!status) {
+  //       return { 'pattern': status };
+  //     }
+  //     return null;
+  //   };
+  // }
+
+  // CheckPANFormat(pan: string, gst: string): boolean {
+  //   let status = false;
+  //   if (gst !== null && gst.length >= 2) {
+  //     const panChars = gst.substr(2, 10);
+  //     status = pan === panChars ;
+  //     // status = this.StateCodeLabel.substr(0, 2) === firstTwo !== undefined;
+  //   } else {
+  //           status = false;
+  //         }
+  //   return status;
+  // }
 
 
   GSTINValidator(): ValidatorFn {
