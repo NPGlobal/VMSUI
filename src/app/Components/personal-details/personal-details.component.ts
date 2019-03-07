@@ -271,9 +271,9 @@ checkGSTDateValidation() {
     const gst =  this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
     ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
 
-    if (gst !== '' && pan !== '') {
+    if (gst !== '' || pan !== '') {
       if ( !this.CheckGSTFormat(gst, pan)) {
-        this.PopUpMessage = 'Please enter a valid Pan No.';
+        this.PopUpMessage = 'GSTIN or PANNo is not correct.';
         this.alertButton.click();
         return;
       }
@@ -822,13 +822,10 @@ checkGSTDateValidation() {
         this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').patchValue(true);
 
         this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').patchValue(false);
-
-        this.formErrors.GSTIN = '';
-        this.formErrors.GSTDate = '';
       }
       // this.LogValidationErrors();
       // this.personalDetailsForm.valid;
-
+      this.clearValidator();
     }
   }
 
@@ -958,7 +955,34 @@ checkGSTDateValidation() {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').patchValue('');
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators([]);
-      this.formErrors.NameofInsuranceCompany = '';
+      this.clearValidator();
     }
+  }
+
+  clearValidator() {
+    this.formErrors.VendorName = '';
+    this.formErrors.PANNo = '';
+    this.formErrors.GSTIN = '';
+
+    this.formErrors.GSTDate = '';
+    this.formErrors.Address1 = '';
+    this.formErrors.CountryCode = '';
+
+    this.formErrors.StateCode = '';
+    this.formErrors.CityCode = '';
+    this.formErrors.PIN = '';
+
+    this.formErrors.PrimaryContactName = '';
+    this.formErrors.PrimaryContactPhone = '';
+    this.formErrors.PrimaryContactFax = '';
+    this.formErrors.PrimaryContactEmail = '';
+    this.formErrors.SecondaryContactPhone = '';
+    this.formErrors.SecondaryContactFax = '';
+
+    this.formErrors.SecondaryContactEmail = '';
+    this.formErrors.NameofInsuranceCompany = '';
+    this.formErrors.PrimaryContactWebsite = '';
+    this.formErrors.SecondaryContactWebsite = '';
+
   }
 }
