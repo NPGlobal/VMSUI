@@ -285,7 +285,7 @@ export class StaffDetailsComponent implements OnInit {
       return;
     }
 
-    if (!this.inDeletedMode) {
+    if (!this.inDeletedMode && this.staffDetailsList !== undefined) {
       const vendorStaff = new VendorStaff();
 
       vendorStaff.Designation = this.staffDetailsForm.get('Designation').value;

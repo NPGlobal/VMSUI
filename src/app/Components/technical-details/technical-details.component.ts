@@ -134,7 +134,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.GetVendorTech(1);
   }
 
-    SearchTechDetailsList() {
+  SearchTechDetailsList() {
     this.searchText = this.searchByTechLine + '~' + this.searchByMachineType + '~' + this.searchByMachineName + '~' +
       this.searchByEfficiency + '~' + this.searchByUnitCount;
     this.SearchTechDetails(this.searchText);
@@ -275,6 +275,10 @@ export class TechnicalDetailsComponent implements OnInit {
         this.vendorTechDefault.Status = st;
         this.vendorTechDefault.VendorShortCode = this.vendorcode;
 
+        if (this.techDetailsForm.get('DefaultEfficiency').invalid) {
+          this.LogValidationErrors();
+          return;
+        }
         this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
           if (result.Msg !== '') {
             if (result.Status === 0) {
