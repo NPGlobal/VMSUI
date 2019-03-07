@@ -7,7 +7,7 @@ import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
- import { DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   providers: [DatePipe],
@@ -19,8 +19,8 @@ export class PersonalDetailsComponent implements OnInit {
   // minDate = moment(new Date()).format('YYYY-MM-DD')
   Today = new Date();
   maxDate = this.datepipe.transform(this.Today, 'yyyy-MM-dd');
-// maxDate = '2019-03-06';
- minDate = '2017-04-01';
+  // maxDate = '2019-03-06';
+  minDate = '2017-04-01';
   // maxDate = '2019-03-06';
   CountryList: MasterDataDetails[];
   StateList: MasterDataDetails[];
@@ -253,33 +253,33 @@ export class PersonalDetailsComponent implements OnInit {
       state.MDDShortName === undefined || state.MDDShortName === null) ? '' : state.MDDShortName + '.' + state.MDDName;
   }
 
-checkGSTDateValidation() {
-  let isValidDate = true;
-  const gstDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
-  if (this.minDate > gstDate || this.maxDate < gstDate) {
-    isValidDate = false;
+  checkGSTDateValidation() {
+    let isValidDate = true;
+    const gstDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
+    if (this.minDate > gstDate || this.maxDate < gstDate) {
+      isValidDate = false;
+    }
+    return isValidDate;
   }
-  return isValidDate;
-}
 
   SavePersonalDetails() {
     this.submitted = true;
 
     // added by shubhi
     const pan = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
-    this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
-    const gst =  this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
-    ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
+      this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
+    const gst = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
 
     if (gst !== '' || pan !== '') {
-      if ( !this.CheckGSTFormat(gst, pan)) {
+      if (!this.CheckGSTFormat(gst, pan)) {
         this.PopUpMessage = 'GSTIN or PANNo is not correct.';
         this.alertButton.click();
         return;
       }
-     }
+    }
 
-    if ( !this.checkGSTDateValidation()) {
+    if (!this.checkGSTDateValidation()) {
       this.PopUpMessage = 'Please enter a valid GST Date.';
       this.alertButton.click();
       return;
@@ -318,28 +318,28 @@ checkGSTDateValidation() {
     vendor.VendorCode = this.VendorCode;
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
     vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
-    this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
+      this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
     vendor.Ref_VendorCode = this.personalDetailsForm.get('PersonalDetails.Ref_VendorCode').value;
     vendor.isInsured = this.personalDetailsForm.get('PersonalDetails.IsInsured').value;
     vendor.NameofInsuranceCompany = this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value === null ? '' :
-    this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value.trim();
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').value.trim();
     vendor.IsDirectVendor = this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value;
     vendor.AssociatedSinceYear = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
     vendor.VendorType_MDDCode = this.personalDetailsForm.get('OtherRegDetails.VendorType_MDDCode').value;
     vendor.PersonTopRanker1 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value === null ? '' :
-    this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value.trim();
+      this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value.trim();
     vendor.PersonTopRanker2 = this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value === null ? '' :
-    this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value.trim();
+      this.personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value.trim();
     vendor.OtherCustomer1 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value === null ? '' :
-    this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value.trim();
+      this.personalDetailsForm.get('CustomerDetails.OtherCustomer1').value.trim();
     vendor.OtherCustomer2 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value === null ? '' :
-    this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value.trim();
+      this.personalDetailsForm.get('CustomerDetails.OtherCustomer2').value.trim();
     vendor.OtherCustomer3 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value === null ? '' :
-    this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value.trim();
+      this.personalDetailsForm.get('CustomerDetails.OtherCustomer3').value.trim();
     vendor.OtherCustomer4 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value === null ? '' :
-    this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value.trim();
+      this.personalDetailsForm.get('CustomerDetails.OtherCustomer4').value.trim();
     vendor.OtherCustomer5 = this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value === null ? '' :
-    this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value.trim();
+      this.personalDetailsForm.get('CustomerDetails.OtherCustomer5').value.trim();
     vendor.SelectedPHListCSV = this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value ?
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
@@ -347,7 +347,7 @@ checkGSTDateValidation() {
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
     vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
-    ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
     vendor.isRCM = this.personalDetailsForm.get('RegisteredOfficeAddress.IsRCM').value;
     vendor.isProvisional = this.personalDetailsForm.get('RegisteredOfficeAddress.IsProvisional').value;
     vendor.GSTDate = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').value;
@@ -811,7 +811,7 @@ checkGSTDateValidation() {
 
         // added by shubhi for pan validation
         // this.personalDetailsForm.get('PersonalDetails.PANNo').setValidators(this.PanNoValidator());
-        } else {
+      } else {
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').setValidators([]);
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disable();
         this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').patchValue(null);
@@ -862,7 +862,7 @@ checkGSTDateValidation() {
   GSTINValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const status = this.CheckGSTFormat(control.value, this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
-      this.personalDetailsForm.get('PersonalDetails.PANNo').value.trim().toUpperCase());
+        this.personalDetailsForm.get('PersonalDetails.PANNo').value.trim().toUpperCase());
       if (!status) {
         return { 'pattern': status };
       }
@@ -872,32 +872,36 @@ checkGSTDateValidation() {
   // Modified by Shubhi
   CheckGSTFormat(gst: string, pan: string): boolean {
     let status = false;
+
     const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
     const regWithPan = new RegExp('^([0-9]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
-    if (gst !== null && gst.length >= 2) {
+
+    const stateCode = this.StateList.find(x =>
+      x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value).MDDShortName;
+    if (gst !== null && gst.length >= 2 && stateCode !== undefined) {
       const firstTwo = gst.substr(0, 2);
-      status = this.StateCodeLabel.substr(0, 2) === firstTwo ;
+      status = stateCode.substr(0, 2) === firstTwo;
       // status = this.StateCodeLabel.substr(0, 2) === firstTwo !== undefined;
     }
     if (pan !== null && pan.length === 10) {
-    if (status && gst !== null && gst.length >= 10) {
-      const panChars = gst.substr(2, 10);
-      // status = pan === panChars !== undefined;
-      status = pan === panChars ;
-    }
-    if (status && gst !== null && gst.length >=  gst.length) {
-      const lastThreeChars = gst.substr(12, gst.length);
-      status = regWithPan.test(lastThreeChars);
+      if (status && gst !== null && gst.length >= 10) {
+        const panChars = gst.substr(2, 10);
+        // status = pan === panChars !== undefined;
+        status = pan === panChars;
+      }
+      if (status && gst !== null && gst.length >= gst.length) {
+        const lastThreeChars = gst.substr(12, gst.length);
+        status = regWithPan.test(lastThreeChars);
+      } else {
+        status = false;
+      }
     } else {
-      status = false;
-    }
-  }  else {
       if (status && gst !== null && gst.length > 2) {
-            const lastcharacters = gst.substr(2, gst.length);
-            status = reg.test(lastcharacters);
-          } else {
-            status = false;
-          }
+        const lastcharacters = gst.substr(2, gst.length);
+        status = reg.test(lastcharacters);
+      } else {
+        status = false;
+      }
     }
     return status;
   }
