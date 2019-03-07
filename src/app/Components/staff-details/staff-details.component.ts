@@ -285,6 +285,30 @@ export class StaffDetailsComponent implements OnInit {
       return;
     }
 
+    if (!this.inDeletedMode) {
+      const vendorStaff = new VendorStaff();
+
+      vendorStaff.Designation = this.staffDetailsForm.get('Designation').value;
+      vendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
+      vendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value;
+      vendorStaff.ContactPhone = this.staffDetailsForm.get('ContactPhone').value;
+
+      const selectedDeptList = this.deptSelectList;
+      const existingDesignationStaffs = this.staffDetailsList.filter(x => x.Designation === vendorStaff.Designation &&
+        x.ContactPhone === vendorStaff.ContactPhone);
+      let isExist = false;
+      existingDesignationStaffs.filter(function (element) {
+        const isFind = element.DeptList.split(',').filter(y => selectedDeptList.find(a => a.DeptCode.toLowerCase() === y.toLowerCase()));
+        if (isFind.length > 0) {
+          isExist = true;
+        }
+      });
+      if (isExist) {
+        this.PopUpMessage = 'This data already exists.';
+        this.alertModalOpenBtn.click();
+        return;
+      }
+    }
     this.sendFormData();
   }
 

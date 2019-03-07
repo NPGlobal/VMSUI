@@ -265,26 +265,6 @@ export class PersonalDetailsComponent implements OnInit {
   SavePersonalDetails() {
     this.submitted = true;
 
-    // added by shubhi
-    const pan = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
-      this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
-    const gst = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
-      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
-
-    if (gst !== '' || pan !== '') {
-      if (!this.CheckGSTFormat(gst, pan)) {
-        this.PopUpMessage = 'GSTIN or PANNo is not correct.';
-        this.alertButton.click();
-        return;
-      }
-    }
-
-    if (!this.checkGSTDateValidation()) {
-      this.PopUpMessage = 'Please enter a valid GST Date.';
-      this.alertButton.click();
-      return;
-    }
-
     if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value &&
       (this.SavedPHStoreList.length === 0 &&
         this.SelectedPHStoreList.length === 0)) {
@@ -312,6 +292,31 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
       return;
     }
+
+    // added by shubhi
+    const pan = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
+      this.personalDetailsForm.get('PersonalDetails.PANNo').value.toUpperCase();
+    const gst = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null
+      ? '' : this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value.toUpperCase();
+
+
+    if (this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value) {
+      if (gst !== '' || pan !== '') {
+        if (!this.CheckGSTFormat(gst, pan)) {
+          this.PopUpMessage = 'GSTIN or PANNo is not correct.';
+          this.alertButton.click();
+          return;
+        }
+      }
+
+      if (!this.checkGSTDateValidation()) {
+        this.PopUpMessage = 'Please enter a valid GST Date.';
+        this.alertButton.click();
+        return;
+      }
+    }
+
+
     let StatusObj: any;
     const vendor = new Vendor();
     vendor.VendorExpertise = this.makeVendorExpertiseString();
@@ -876,11 +881,11 @@ export class PersonalDetailsComponent implements OnInit {
     const reg = new RegExp('^([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
     const regWithPan = new RegExp('^([0-9]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
 
-    const stateCode = this.StateList.find(x =>
-      x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value).MDDShortName;
-    if (gst !== null && gst.length >= 2 && stateCode !== undefined) {
+    const state = this.StateList.find(x =>
+      x.MDDCode === this.personalDetailsForm.get('RegisteredOfficeAddress.StateCode').value);
+    if (gst !== null && gst.length >= 2 && state !== undefined) {
       const firstTwo = gst.substr(0, 2);
-      status = stateCode.substr(0, 2) === firstTwo;
+      status = state.MDDShortName.substr(0, 2) === firstTwo;
       // status = this.StateCodeLabel.substr(0, 2) === firstTwo !== undefined;
     }
     if (pan !== null && pan.length === 10) {
