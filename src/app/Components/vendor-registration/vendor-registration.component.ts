@@ -182,7 +182,7 @@ SaveVendorPrimaryInfo() {
   }
 
   if (!this.RegistrationForm.get('IsDirectVendor').value && !this.RegistrationForm.get('IsJWVendor').value) {
-    this.PopUpMessage = 'Please select Vendor Type.';
+    this.PopUpMessage = 'Please select Producer Type.';
     this.alertButton.click();
     return;
   }
