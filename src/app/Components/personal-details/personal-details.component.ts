@@ -416,6 +416,7 @@ checkGSTDateValidation() {
         this.alertButton.click();
         this.IsAddressSaved = true;
         this.submitted = false;
+        this.clearValidator();
         this.Editvendor(this.VendorCode);
       } else {
         this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
