@@ -245,7 +245,7 @@
                             <span>
                                 <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
                                     (blur)="LogValidationErrors()"
-                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? '' : null"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? 'disabled' : null"
                                     [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                         </div>
@@ -268,7 +268,7 @@
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate
                                     && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}"
-                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? '' : null"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? 'disabled' : null"
                                     formControlName="GSTDate" type="date" [min]="minDate" [max]="maxDate"
                                     class="form-control input-sm" />
                             </span>
