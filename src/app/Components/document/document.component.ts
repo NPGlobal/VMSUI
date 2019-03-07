@@ -79,11 +79,11 @@ export class DocumentComponent implements OnInit {
     this.currentPage = index;
     this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
       .subscribe(result => {
-        if (result.data.VendorDoc.length > 0) {
+        // if (result.data.VendorDoc.length > 0) {
           this.vendDocList = result.data.VendorDoc;
           this.totalItems = result.data.VendorDocCount[0].TotalVendors;
           this.GetVendorDocumentsList();
-        }
+        // }
       });
   }
 
