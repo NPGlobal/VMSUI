@@ -41,29 +41,37 @@
           <td>{{business.DeptName}}</td>
           <!-- <td>{{business.FinancialYear}}</td> -->
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.CurrentYearProposedDPGrnQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.CurrentYearProposedDPGrnQty" type="text">
           </td>
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.CurrentYearProposedDPValueQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.CurrentYearProposedDPValueQty" type="text">
           </td>
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.CurrentYearProposedJWGrnQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)" 
+            [(ngModel)]="business.CurrentYearProposedJWGrnQty" type="text">
           </td>
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.CurrentYearProposedJWValueQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.CurrentYearProposedJWValueQty" type="text">
           </td>
 
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.NextYearProposedDPGrnQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.NextYearProposedDPGrnQty" type="text">
           </td>
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.NextYearProposedDPValueQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.NextYearProposedDPValueQty" type="text">
           </td>
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.NextYearProposedJWGrnQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.NextYearProposedJWGrnQty" type="text">
           </td>
           <td>
-            <input class="form-control input-sm" [(ngModel)]="business.NextYearProposedJWValueQty" type="text">
+            <input class="form-control input-sm" (keyup)="Validate($event)"
+            [(ngModel)]="business.NextYearProposedJWValueQty" type="text">
           </td>
         </tr>
       </ng-container>

@@ -341,7 +341,7 @@ export class TechnicalDetailsComponent implements OnInit {
           x.DeptCode === this.vendorTech.DeptCode);
         if (existingIndex >= 0 && this.isTechDetailEditing > 0) {
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
-          this.isTechDetailEditing  = 0;
+          this.isTechDetailEditing = 0;
           // this.vendorTech = undefined;
         } else {
 

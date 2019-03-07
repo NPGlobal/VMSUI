@@ -39,6 +39,7 @@ export class BusinessDetailsComponent implements OnInit {
   alertModalButton: ElementRef;
   PopUpMessage: string;
   alertButton: HTMLElement;
+  isError = '';
 
   // @ViewChild('modalOpenButton')
   // modalOpenButton: ElementRef;
@@ -56,6 +57,7 @@ export class BusinessDetailsComponent implements OnInit {
   searchText = '';
   CurrentFinancialYear: string;
   NextFinancialYear: string;
+  DecimalPattern = '';
   //#endregion
 
   constructor(
@@ -164,6 +166,23 @@ export class BusinessDetailsComponent implements OnInit {
     }
     this.alertButton.click();
   }
+
+  //#region Error Validator
+  Validate(event: any) {
+    const x = event.target.value;
+    if (event.key >= 0 && event.key <= 9) {
+    } else if (event.key === '.') {
+      const value = event.target.value.split('.');
+      if (value.length > 2) {
+        event.target.value = x.substring(0, x.length - 1);
+      }
+    } else {
+      event.target.value = x.substring(0, x.length - 1);
+    }
+  }
+
+  //#endregion
+
   //#endregion
   // logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
   //   Object.keys(group.controls).forEach((key: string) => {
@@ -358,3 +377,4 @@ export class BusinessDetailsComponent implements OnInit {
   //   this.GetVendorBusiness(1);
   // }
 }
+
