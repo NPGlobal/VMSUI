@@ -368,6 +368,7 @@ export class StaffDetailsComponent implements OnInit {
         data.ContactName = vendorStaff.ContactName;
         data.ContactPhone = vendorStaff.ContactPhone;
         data.ContactEmail = vendorStaff.ContactEmail;
+        data.Remarks = vendorStaff.Remarks;
       });
     }
 
