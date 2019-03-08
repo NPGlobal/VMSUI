@@ -296,6 +296,14 @@ export class StaffDetailsComponent implements OnInit {
       const selectedDeptList = this.deptSelectList;
       const existingDesignationStaffs = this.staffDetailsList.filter(x => x.Designation === vendorStaff.Designation &&
         x.ContactPhone === vendorStaff.ContactPhone);
+
+      const exitingObjIndex = existingDesignationStaffs.findIndex(x => x.Designation === this.vendorStaffDetail.Designation &&
+        x.DepartmentList === this.vendorStaffDetail.DepartmentList &&
+        x.ContactName === this.vendorStaffDetail.ContactName &&
+        x.ContactPhone === this.vendorStaffDetail.ContactPhone);
+      if (exitingObjIndex > -1) {
+        existingDesignationStaffs.splice(exitingObjIndex, 1);
+      }
       let isExist = false;
       existingDesignationStaffs.filter(function (element) {
         const isFind = element.DeptList.split(',').filter(y => selectedDeptList.find(a => a.DeptCode.toLowerCase() === y.toLowerCase()));

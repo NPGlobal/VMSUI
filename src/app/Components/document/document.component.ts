@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PagerService } from 'src/app/Services/pager.service';
@@ -38,6 +38,11 @@ export class DocumentComponent implements OnInit {
 
   formData: FormData;
 
+  @ViewChild('alertModalOpen')
+  alertModalOpen: ElementRef;
+  alertModalButton: HTMLElement;
+  PopUpMessage: string;
+
   constructor(
     private _vendorService: VendorService,
     private _route: ActivatedRoute,
@@ -52,6 +57,8 @@ export class DocumentComponent implements OnInit {
 
   ngOnInit() {
     this.openModal();
+    this.alertModalButton = this.alertModalOpen.nativeElement as HTMLElement;
+
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
       this.GetVendorDocuments(this.currentPage);
@@ -72,11 +79,11 @@ export class DocumentComponent implements OnInit {
     this.currentPage = index;
     this._vendorDocService.GetVendorDocumentsByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
       .subscribe(result => {
-        if (result.data.VendorDoc.length > 0) {
+        // if (result.data.VendorDoc.length > 0) {
           this.vendDocList = result.data.VendorDoc;
           this.totalItems = result.data.VendorDocCount[0].TotalVendors;
           this.GetVendorDocumentsList();
-        }
+        // }
       });
   }
 
@@ -186,9 +193,10 @@ export class DocumentComponent implements OnInit {
             this.vendDocList = updateStatus.data.VendorDoc;
             this.totalItems = updateStatus.data.VendorDocCount[0].TotalVendors;
             this.GetVendorDocumentsList();
-            alert(updateStatus.data.Msg[0].Message);
+            this.PopUpMessage = updateStatus.data.Msg[0].Message;
             this.dismiss();
             $('#myModal').modal('toggle');
+            this.alertModalButton.click();
           } else {
             alert('There are some technical error. Please contact administrator.');
           }

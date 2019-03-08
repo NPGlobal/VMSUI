@@ -15,11 +15,11 @@
         <tr class="search">
             <td style="width:30%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByAction" (keyup)="SearchDocumentList()" placeholder="Search By Action" /></td>
             <td style="width:30%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByDocument" (keyup)="SearchDocumentList()" placeholder="Search By Document" /></td>
-            <td style="width:30%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByFile" (keyup)="SearchTechDocumentList()" placeholder="Search By File" /></td>
+            <td style="width:30%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByFile" (keyup)="SearchDocumentList()" placeholder="Search By File" /></td>
             <td></td>
           </tr>
       <tr>
-        <th scope="col">Action</th>
+        <th scope="col">Action Header</th>
         <th scope="col">Document</th>
         <th scope="col">File</th>
         <th scope="col">Action</th>
@@ -132,6 +132,24 @@
             <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()" data-dismiss="modal">Cancel</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden button to open alert modal -->
+<button #alertModalOpen type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<!-- Modal to open alert modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>

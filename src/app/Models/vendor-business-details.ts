@@ -36,4 +36,6 @@ export class VendorBusinessDetails {
     NextYearProposedDPValueQty: number | null;
     NextYearProposedJWGrnQty: number | null;
     NextYearProposedJWValueQty: number | null;
+
+    ErrorList: string[];
 }
