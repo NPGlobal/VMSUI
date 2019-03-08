@@ -151,7 +151,8 @@ export class BusinessDetailsComponent implements OnInit {
       busProd.BusinessDetails = this.businessList;
 
       let hasError = false;
-      busProd.BusinessDetails.forEach((data) => {
+      for (let count = 0; count < busProd.BusinessDetails.length; ++count) {
+        const data = busProd.BusinessDetails[count];
         this.ValidateField(data, data.CurrentYearProposedDPGrnQty.toString(), 0);
         this.ValidateField(data, data.CurrentYearProposedDPValueQty.toString(), 1);
         this.ValidateField(data, data.CurrentYearProposedJWGrnQty.toString(), 2);
@@ -161,10 +162,13 @@ export class BusinessDetailsComponent implements OnInit {
         this.ValidateField(data, data.NextYearProposedJWGrnQty.toString(), 6);
         this.ValidateField(data, data.NextYearProposedJWValueQty.toString(), 7);
 
-        hasError = (data.ErrorList.findIndex(x => x.length > 0) > -1);
-      });
+        hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+
+        if (hasError) { break; }
+      }
 
       if (hasError) { return; }
+
       this._vendorBusiService.SaveVendorBusinessInfo(busProd).subscribe((result) => {
         if (result.data.Msg[0].ResultCode === 0) {
           this.businessList = result.data.VendorBusiness;

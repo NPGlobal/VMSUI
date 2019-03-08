@@ -460,7 +460,9 @@ export class PersonalDetailsComponent implements OnInit {
       this.GetMasterDataDetails('VendorExpe');
       this.GetPHList();
 
-      this.InitializeFormControls();
+      if (!this.IsAddressSaved) {
+        this.InitializeFormControls();
+      }
 
       this.SetStateCodeLabel();
 

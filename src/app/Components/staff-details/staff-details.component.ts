@@ -355,10 +355,11 @@ export class StaffDetailsComponent implements OnInit {
       vendorStaff.VendorShortCode = this.vendorcode;
       vendorStaff.CompanyCode = '10';
       vendorStaff.ContactName = this.staffDetailsForm.get('ContactName').value.trim();
-      vendorStaff.ContactEmail = this.staffDetailsForm.get('ContactEmail').value;
+      vendorStaff.ContactEmail = (this.staffDetailsForm.get('ContactEmail').value !== null &&
+        this.staffDetailsForm.get('ContactEmail').value !== undefined) ? this.staffDetailsForm.get('ContactEmail').value.trim() : '';
       vendorStaff.ContactPhone = this.staffDetailsForm.get('ContactPhone').value;
-      vendorStaff.Remarks = (this.staffDetailsForm.get('Remarks').value !== null ||
-        this.staffDetailsForm.get('Remarks').value !== undefined) ? '' : this.staffDetailsForm.get('Remarks').value.trim();
+      vendorStaff.Remarks = (this.staffDetailsForm.get('Remarks').value !== null &&
+        this.staffDetailsForm.get('Remarks').value !== undefined) ? this.staffDetailsForm.get('Remarks').value.trim() : '';
       vendorStaff.VendorStaffConfigID = 0;
 
       this.vendorstaffList.filter(data => {
@@ -368,6 +369,7 @@ export class StaffDetailsComponent implements OnInit {
         data.ContactName = vendorStaff.ContactName;
         data.ContactPhone = vendorStaff.ContactPhone;
         data.ContactEmail = vendorStaff.ContactEmail;
+        data.Remarks = vendorStaff.Remarks;
       });
     }
 
