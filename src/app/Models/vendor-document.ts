@@ -7,4 +7,5 @@ export class VendorDocument {
     VendDoc_MDDCode: string;
     FileName: string;
     CreatedBy: number;
+    Status: string;
 }
