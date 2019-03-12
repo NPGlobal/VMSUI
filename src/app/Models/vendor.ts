@@ -46,4 +46,6 @@ export class Vendor {
     VendorExpe_MDDCode: string;
     RefVendor_Name: string;
     Vendor_Depts: string;
+    CreatedOn: Date;
+    MasterVendorName: string;
 }
