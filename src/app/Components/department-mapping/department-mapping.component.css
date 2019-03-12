@@ -41,8 +41,4 @@ fieldset select{margin-bottom: 13px;cursor: pointer;}
 .fieldsetdivision legend{width: 37%;}
 .fieldsetdepartment legend{width: 47%;}
 .selected legend{width: 77%;}
-<<<<<<< HEAD
 input[type="button"].input-sm{cursor:pointer;}
-=======
-input[type="button"].input-sm{cursor:pointer;}
->>>>>>> AnuragDev
