@@ -21,9 +21,11 @@
               <select formControlName="Division" class="form-control input-sm DivisionClass"
                 (change)="GetDepartment($event)">
                 <option *ngIf="DivisionList.length === 0" [value]="0">No Division Left</option>
-                <option *ngIf="DivisionList.length !== DivisionCount" [value]="1">Select Division</option>
-                <option *ngIf="DivisionList.length === DivisionCount" [value]="-1" selected="selected">All Division
+                <option *ngIf="SelectedDD.length > 0" [value]="1">Select Division</option>
+                <option *ngIf="SelectedDD.length === 0" [value]="-1" selected="selected">All Division
                 </option>
+                <!-- <option *ngIf="DivisionList.length === DivisionCount" [value]="-1" selected="selected">All Division
+                </option> -->
                 <option *ngFor="let Div of DivisionList" [value]="Div.MDDCode">
                   {{ Div.MDDName }}</option>
               </select>
