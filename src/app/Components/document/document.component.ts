@@ -27,6 +27,7 @@ export class DocumentComponent implements OnInit {
   formData: FormData;
   submitted = false;
   inEditedMode: boolean;
+  isRemarksShown: boolean;
 
   // for searching
   searchText = '';
@@ -64,13 +65,17 @@ export class DocumentComponent implements OnInit {
     },
     'FileName': {
       'required': ''
+    },
+    'Remarks': {
+      'required': ''
     }
   };
 
   formErrors = {
     'VendAction_MDDCode': '',
     'VendDoc_MDDCode': '',
-    'FileName': ''
+    'FileName': '',
+    'Remarks': ''
   };
   //#endregion
 
@@ -84,6 +89,7 @@ export class DocumentComponent implements OnInit {
     private _vendorDocService: VendorDocumentService) {
     this.formData = new FormData();
     this.inEditedMode = false;
+    this.isRemarksShown = false;
   }
 
   ngOnInit() {
@@ -140,14 +146,31 @@ export class DocumentComponent implements OnInit {
         });
     }
   }
+
+  ShowRemarks() {
+    if (this.docDetailsForm.get('VendDoc_MDDCode').value !== null &&
+      this.docDetailsForm.get('VendDoc_MDDCode').value.toUpperCase() === 'OTHE') {
+      this.isRemarksShown = true;
+      this.docDetailsForm.get('Remarks').setValidators([Validators.required]);
+      this.docDetailsForm.get('Remarks').updateValueAndValidity();
+    } else {
+      this.isRemarksShown = false;
+      this.docDetailsForm.get('Remarks').patchValue(null);
+      this.docDetailsForm.get('Remarks').setValidators([]);
+      this.docDetailsForm.get('Remarks').updateValueAndValidity();
+    }
+  }
   //#endregion
 
   //#region Data save
   OnFileChange(event) {
-    const files = event.target.files;
-    this.CheckFileValidation(files);
-    for (const file of files) {
+    this.formData = new FormData();
+    const file = event.target.files[0];
+    const isFileOk = this.CheckFileValidation(file);
+    if (isFileOk) {
       this.formData.append(file.name, file);
+    } else {
+      return;
     }
   }
 
@@ -166,6 +189,7 @@ export class DocumentComponent implements OnInit {
       this.InitializeFormControls();
       this.GetDocument();
     }
+    this.ShowRemarks();
     this.DisableControls();
   }
 
@@ -176,8 +200,19 @@ export class DocumentComponent implements OnInit {
       return;
     }
 
-    this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('VendAction_MDDCode').value;
-    this.vendorDocument.VendDoc_MDDCode = this.docDetailsForm.get('VendDoc_MDDCode').value;
+    if (!this.inEditedMode) {
+      this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('VendAction_MDDCode').value;
+      this.vendorDocument.VendDoc_MDDCode = this.docDetailsForm.get('VendDoc_MDDCode').value;
+      this.vendorDocument.Remarks = this.docDetailsForm.get('Remarks').value;
+    }
+
+    this.vendorDocument.CompanyCode = '10';
+
+    if (this.vendDocList.findIndex(x => x.VendAction_MDDCode === this.vendorDocument.VendAction_MDDCode) > -1 &&
+      this.vendDocList.findIndex(x => x.VendDoc_MDDCode === this.vendorDocument.VendDoc_MDDCode) > -1) {
+      this.PopUpMessage = 'This data already exists.';
+      this.alertModalButton.click();
+    }
 
     this.formData.append('vendorDoc', JSON.stringify(this.vendorDocument));
 
@@ -207,11 +242,35 @@ export class DocumentComponent implements OnInit {
   //#region Data Delete
   DeleteDocDetails(docDetails: VendorDocument) {
     this.vendorDocument = JSON.parse(JSON.stringify(docDetails));
-    this.vendorDocument.Status = 'A';
+    this.vendorDocument.Status = 'D';
   }
   //#endregion
 
   //#region Form validation and initialization
+
+  CheckFileValidation(file: File): boolean {
+    let status = true;
+    let fSize = 0;
+    fSize = Number(file.size);
+
+    const splitFileName = file.name.split('.');
+    const extension = ['XLS', 'XLSX', 'PDF', 'DOC', 'DOCX'];
+    if (extension.indexOf(splitFileName[splitFileName.length - 1].toUpperCase()) !== -1) {
+    } else {
+      this.PopUpMessage = 'Invalid file.';
+      this.alertModalButton.click();
+      this.docDetailsForm.get('FileName').patchValue(null);
+      status = false;
+    }
+    if (fSize > 3 * 1024 * 1024) {
+      this.PopUpMessage = 'File size should be less than  3 MB.';
+      this.alertModalButton.click();
+      this.docDetailsForm.get('FileName').patchValue(null);
+      status = false;
+    }
+    return status;
+  }
+
   DisableControls() {
     if (this.inEditedMode) {
       this.docDetailsForm.get('VendAction_MDDCode').disable();
@@ -226,7 +285,8 @@ export class DocumentComponent implements OnInit {
     this.docDetailsForm = this._fb.group({
       VendAction_MDDCode: [this.vendorDocument.VendAction_MDDCode, Validators.required],
       VendDoc_MDDCode: [this.vendorDocument.VendDoc_MDDCode, Validators.required],
-      FileName: [null, [Validators.required]]
+      FileName: [null, [Validators.required]],
+      Remarks: [this.vendorDocument.Remarks]
     });
   }
 
@@ -260,27 +320,6 @@ export class DocumentComponent implements OnInit {
       }
     });
   }
-
-  CheckFileValidation(files: File[]) {
-    let fSize = 0;
-    let isExtension = true;
-    if (files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        fSize = Number(fSize) + Number(files[i].size);
-        const splitFileName = files[i].name.split('.');
-        const extension = ['XLS', 'XLSX', 'PDF', 'DOC', 'DOCX'];
-        if (extension.indexOf(splitFileName[splitFileName.length - 1].toUpperCase()) !== -1) {
-        } else {
-          isExtension = false;
-        }
-      }
-    }
-    if (fSize > 2 * 1024 * 1024) {
-      this.PopUpMessage = 'File size should be less than  2 MB.';
-      this.alertModalButton.click();
-      return false;
-    }
-  }
   //#endregion
 
   //#region Searching functionality
@@ -291,6 +330,27 @@ export class DocumentComponent implements OnInit {
   SearchDocumentList() {
     this.searchText = this.searchByAction + '~' + this.searchByDocument + '~' + this.searchByFile;
     this.SearchDocuments(this.searchText);
+  }
+  //#endregion
+
+  //#region Download
+  DownloadDocument(doc: VendorDocument) {
+    this._vendorDocService.DownloadDocument(doc.FileName).subscribe((result) => {
+      const newBlob = new Blob([result], { type: result.type });
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob);
+        return;
+      }
+
+      // For other browsers:
+      // Create a link pointing to the ObjectURL containing the blob.
+      const data = window.URL.createObjectURL(newBlob);
+
+      const link = document.createElement('a');
+      link.href = data;
+      // this is necessary as link.click() does not work on the latest firefox
+      link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+    });
   }
   //#endregion
 }
