@@ -41,7 +41,7 @@
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               {{vendor.TechLineNo === '' || vendor.TechLineNo === null ? '-' : 'Line ' + vendor.TechLineNo}}
               <br>
-              {{vendor.DefaultEfficiency !== null ? 'Default Efficiency: ' + vendor.DefaultEfficiency : ''}}
+              {{vendor.TechLineNo === '' || vendor.TechLineNo === null ? '' : 'Default Efficiency: ' + vendor.DefaultEfficiency}}
             </td>
             <td>{{item.MachineType}}</td>
             <td>{{item.MachineName}}</td>
@@ -123,7 +123,7 @@
                 </span>
               </div>
               <div class="col-lg-3 col-md-3">
-                <label class="text">Default line eEfficiency (%)</label>
+                <label class="text">Default Line Efficiency (%)</label>
                 <span>
                   <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
@@ -279,7 +279,7 @@
           'This record will be available for allocation'))}} in the system.
         Are you sure?
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
         <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
       </div>

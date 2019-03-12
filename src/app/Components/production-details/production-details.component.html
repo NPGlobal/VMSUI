@@ -8,7 +8,6 @@
 </div>
 <div class="clearfix"></div>
 <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
-  <!-- <p>{{searchText}}</p> -->
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <!-- <tr class="search">
@@ -183,16 +182,29 @@
                       <input type="text" formControlName="Address1" class="form-control input-sm" maxlength="49"
                         [ngClass]="{ 'is-invalid err': formErrors.Address1 }" (blur)="LogValidationErrors()" />
                     </span>
+                    <span [ngClass]="{ 'error-label':formErrors.Address1}" *ngIf="formErrors.Address1">
+                      {{formErrors.Address1}}
+                    </span>
                   </div>
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Address Line 2</label>
-                    <span><input type="text" formControlName="Address2" maxlength="49"
-                        class="form-control input-sm" /></span>
+                    <span>
+                      <input type="text" formControlName="Address2" maxlength="49" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid err': formErrors.Address2 }" (blur)="LogValidationErrors()" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':formErrors.Address2}" *ngIf="formErrors.Address2">
+                      {{formErrors.Address2}}
+                    </span>
                   </div>
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Address Line 3</label>
-                    <span><input type="text" name="address3" formControlName="Address3" maxlength="49"
-                        class="form-control input-sm" /></span>
+                    <span>
+                      <input type="text" formControlName="Address3" maxlength="49" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid err': formErrors.Address3 }" (blur)="LogValidationErrors()" />
+                    </span>
+                    <span [ngClass]="{ 'error-label':formErrors.Address3}" *ngIf="formErrors.Address3">
+                      {{formErrors.Address3}}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -206,7 +218,8 @@
                         [ngClass]="{ 'is-invalid err': formErrors.Phone }" (blur)="LogValidationErrors()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.Phone}" *ngIf="formErrors.Phone">
-                      {{formErrors.Phone}}</span>
+                      {{formErrors.Phone}}
+                    </span>
                   </div>
                   <div class="col-lg-3 col-md-3">
                     <label class="text">State<span class="error-label">*</span></label>
@@ -297,7 +310,7 @@
                     <label class="text">Remarks</label>
                     <span>
                       <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511"
-                        [ngClass]="{ 'is-invalid err': formErrors.Remarks }" />
+                        [ngClass]="{ 'is-invalid err': formErrors.Remarks }" (blur)="LogValidationErrors()"/>
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.Remarks}"
                       *ngIf="formErrors.Remarks">{{formErrors.Remarks}}
@@ -336,9 +349,9 @@
         </button>
       </div>
       <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-      <div class="modal-footer">
-        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="SaveProductionDetails()">Yes</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>

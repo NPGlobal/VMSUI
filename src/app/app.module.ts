@@ -48,7 +48,7 @@ import { DepartmentMappingComponent } from './Components/department-mapping/depa
     LoginComponent,
     WelcomeComponent,
     DepartmentMappingComponent
-  ],
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -33,7 +33,7 @@
                             <div class="col-md-6">
                                 <label class="text">Producer Name
                                     <i class="mandatory">*</i>
-                                    </label>
+                                </label>
                                 <span>
                                     <input type="text" maxlength="49" formControlName="VendorName"
                                         class="form-control input-sm"
@@ -49,11 +49,12 @@
                                     </span>
                                 </label>&nbsp;&nbsp;
                                 <span>
-                                    <input type="text" formControlName="PANNo" style="text-transform: uppercase" (blur)="LogValidationErrors()" 
+                                    <input type="text" formControlName="PANNo" style="text-transform: uppercase"
+                                        (blur)="LogValidationErrors()"
                                         [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
                                         [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
-                                </div>
+                            </div>
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="col-md-6">
@@ -236,15 +237,16 @@
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
-                                <span class="help-block mandatory" *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
+                                <span class="help-block mandatory"
+                                    *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
                                     {{formErrors.GSTIN}}
                                 </span>
                             </label>
                             <span>
                                 <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
-                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? '' : null"
-                                    [ngClass]="{'is-invalid': formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}" 
-                                    class="form-control input-sm" />
+                                    (blur)="LogValidationErrors()"
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? 'disabled' : null"
+                                    [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                         </div>
 
@@ -266,8 +268,9 @@
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.GSTDate
                                     && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value}"
-                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? '' : null"
-                                    formControlName="GSTDate" type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm"/>
+                                    [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTDate').disabled ? 'disabled' : null"
+                                    formControlName="GSTDate" type="date" [min]="minDate" [max]="maxDate"
+                                    class="form-control input-sm" />
                             </span>
                         </div>
                     </div>
@@ -577,7 +580,7 @@
 
             <!-- Vendor Factory Address -->
 
-            <div class="col" formGroupName="Address">
+            <!-- <div class="col" formGroupName="Address">
                 <div class="content-heading">
                     <a href="javascript:void(0)" (click)="ToggleContainer(personalDetailsForm.get('Address'))"
                         class="glyphicon-expand">
@@ -586,8 +589,7 @@
                 </div>
                 <div class="slider" [ngClass]="{closed: !personalDetailsForm.get('Address').controls.IsExpanded.value}">
 
-                    <div *ngIf="(vendorAddresses.length <= 2)"
-                     class="col-md-12 form-group">
+                    <div *ngIf="(vendorAddresses.length <= 2)" class="col-md-12 form-group">
                         <span>
                             <button style="margin-left: 15px;" type="button" class="btn btn-primary float-right"
                                 (click)="OpenAddressModal(CreateNewAddress())">
@@ -679,7 +681,7 @@
 
                 </div>
             </div>
-            <hr>
+            <hr> -->
 
             <!-- Other Registration Detail -->
 
@@ -693,16 +695,14 @@
                 <div class="slider"
                     [ngClass]="{closed: !personalDetailsForm.get('OtherRegDetails').controls.IsExpanded.value}">
                     <div class="col-md-12 form-group">
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="margin-top: -17px;">
                             <label class="text">Associated With Us Since</label>
                             <span>
-                                <select formControlName="AssociatedSinceYear" class="form-control input-sm">
-                                    <option [ngValue]="0">Select</option>
-                                    <option *ngFor="let Year of YearList" value="{{Year}}">{{Year}}</option>
-                                </select>
+                                <input formControlName="AssociatedSinceYear" type="date" [min]="AssociatedWithDate"
+                                    [max]="maxDate" class="form-control input-sm" />
                             </span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="margin-top: -7px;">
                             <label class="text">Nature Of Enterprise</label>
                             <span>
                                 <select *ngIf="VendorTypeList" formControlName="VendorType_MDDCode"
@@ -808,6 +808,8 @@
                     <div class="col-md-12">
                         <label style="font-weight: 600;" class="text mr-2">Weaknesses (If any)</label>
                         <input class="input-sm col-md-6" type="text" formControlName="VendorWeaknesses">
+                        <span class="mandatory" style="font-size: 13px;font-weight: 500;"> (Only 250 character
+                            allowed)</span>
                     </div>
                 </div>
             </div>
@@ -826,7 +828,7 @@
 <button #addModalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
     data-toggle="modal" style="display:none;">
 </button>
-<app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form>
+<!-- <app-address-form (IsAddressSaved)="OnAddressSaved($event)" [vendor]="vendor" [Address]="Address"></app-address-form> -->
 
 <button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
     data-toggle="modal" style="display:none;">
