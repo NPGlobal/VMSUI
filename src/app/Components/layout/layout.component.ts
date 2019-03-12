@@ -11,15 +11,20 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  //#region Logout and Clear Session
   LogoutUser() {
     sessionStorage.removeItem('userid');
     const host = window.location.host.toLowerCase();
-    if (host.indexOf('localhost')  === -1) {
+    if (host.indexOf('localhost') === -1) {
       window.location.href = window.location.origin + '/vmsapp';
     } else {
       window.location.href = window.location.origin;
     }
   }
+  //#endregion
+
+  //#region Redirect user to Home page
   MoveToVendorList() {
     const host = window.location.host.toLowerCase();
     if (host.indexOf('localhost') === -1) {
@@ -28,4 +33,5 @@ export class LayoutComponent implements OnInit {
       window.location.href = window.location.origin + '/vendor';
     }
   }
+  //#endregion
 }

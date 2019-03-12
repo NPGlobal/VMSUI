@@ -149,4 +149,14 @@ export class VendorService {
     const apiUrl = this._origin.origin + 'api/Vendor/SaveVendorDepts';
     return this._http.post<any>(apiUrl, vendor);
   }
+
+  GetVendorAddress(code: string): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/Vendor/GetVendorAddress/' + code;
+    return this._http.get<any>(apiUrl);
+  }
+
+  SaveVendorFactoryAddress(VendorAddress: any): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/Vendor/SaveVendorFactoryAddress';
+    return this._http.post<any>(apiUrl, VendorAddress);
+  }
 }

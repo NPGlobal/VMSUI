@@ -8,4 +8,5 @@ export class MasterDataDetails {
     IsDeleted: string;
     Checked: boolean;
     color: string;
+    type: string;
 }

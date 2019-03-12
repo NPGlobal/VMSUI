@@ -11,12 +11,16 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  //#region Variable Declaration
   isUserLoggedIn: boolean;
   PopUpMessage = '';
   LoginForm: FormGroup;
   submitted = false;
   data: any;
   errormsg = '';
+  //#endregion
+
+  //#region Validation Messages
   ValidationMessages = {
     'UserName': {
       'required': 'Employee Id is required.'
@@ -30,6 +34,7 @@ export class LoginComponent implements OnInit {
     'UserName': '',
     'Password': ''
   };
+  //#endregion
 
 
   constructor(private _fb: FormBuilder,
@@ -46,13 +51,16 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  //#region Form Initialization
   InitializeFormControls() {
     this.LoginForm = this._fb.group({
       UserName: ['', Validators.required],
       Password: ['', Validators.required]
     });
   }
+  //#endregion
 
+  //#region Authenticate valid user
   UserAuthentication() {
     this.submitted = true;
 
@@ -77,7 +85,9 @@ export class LoginComponent implements OnInit {
     });
 
   }
+  //#endregion
 
+  //#region Form Validator
   logValidationErrors(group: FormGroup = this.LoginForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -98,5 +108,6 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+  //#endregion
 
 }
