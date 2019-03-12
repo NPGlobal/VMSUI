@@ -1,164 +1,288 @@
-<div *ngIf="AddressForm.AddressCode !== null && AddressForm.AddressCode !== ''" class="modal fade" id="myModal"
-  tabindex="-1" role="dialog" style="display: none;">
-  <!-- modal-dialog -->
-  <div class="modal-dialog modal-lg">
-    <!-- modal-content -->
-    <div class="modal-content">
-      <!-- modal-header -->
-      <div class="modal-header">
-        <h6 class="modal-title">{{(Address.AddressCode !== null && Address.AddressCode !== '') ? 'Edit' : 'Add New'}}
-          Address</h6>
-        <button class="close" aria-label="Close" (click)="ResetForm()" data-dismiss="modal"><span
-            aria-hidden="true">&times;</span></button>
-      </div>
-      <!-- modal-body -->
-      <!-- New Contact -->
-      <form *ngIf="AddressForm && vendor" [formGroup]="AddressForm" novalidate (ngSubmit)="SaveAddressDetails()">
-        <input type="hidden" formControlName="OrgUnitCode" />
-        <div class="modal-body">
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <fieldset>
-                <div class="form-group row">
-                  <div class="col-md-3">
-                    <label class="text">Address 1<i class="mandatory">*</i></label>
-                    <input (blur)="LogValidationErrors()" formControlName="Address1" type="text"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.Address1}">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="text">Address 2</label>
-                    <input formControlName="Address2" type="text" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="text">Address 3</label>
-                    <input formControlName="Address3" type="text" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-3">
-                    <label class="text">Address Type</label>
-                    <div class="col-md-12">
-                      <label class="text form-check-label">
-                        <input value="F" formControlName="AddressTypeCode" class="form-check-input" type="radio">Factory
-                      </label>
-                      <label class="text form-check-label" style="margin-left: 30px;">
-                        <input class="form-check-input" formControlName="AddressTypeCode" type="radio" value="I">
-                        Sister Concern</label>
+<!-- Vendor Factory Address -->
+
+<div *ngIf="(VendorAddresses && VendorAddresses.length <= 2)" class="col-md-12 form-group">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <button style="margin-left: 15px; margin-top: 10px;" type="button" class="btn btn-primary float-right"
+        (click)="OpenAddressModal(CreateNewAddress())">
+        <i class="fa fa-plus"></i>
+        <span title="Add new" class="py-4">Add New Address</span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="clearfix"></div>
+  <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Address1</th>
+          <th scope="col">Address2</th>
+          <th scope="col">Address3</th>
+          <th scope="col">City/District(PIN)</th>
+          <th scope="col">State, Country</th>
+          <th scope="col">Address Type</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="VendorAddresses.length > 0">
+          <ng-container *ngFor="let address of VendorAddresses;index as i;">
+            <div class="panel-group"></div>
+            <tr>
+              <td>{{address.Address1}}</td>
+              <td>{{address.Address2}}</td>
+              <td>{{address.Address3}}</td>
+              <td>{{address.CityCode + '(' + address.PIN + ')'}}</td>
+              <td>{{address.StateName + ', ' + address.CountryName}}</td>
+              <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}
+              </td>
+              <td>
+                <a title="Edit" href="javascript:void(0)" (click)="OpenAddressModal(address)">
+                  <i class="fa fa-edit"></i>
+                </a>
+                <a class="ml-2" title="View Contacts" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
+                  data-toggle="collapse">
+                  <i class="fa fa-address-book"></i>
+                </a>
+              </td>
+            </tr>
+            <tr class="collapse" id="{{'Collapse' + (i + 1)}}">
+              <td colspan="9">
+                <table class="table table-warning table-sm">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Name</th>
+                      <th>Phone</th>
+                      <th>Fax</th>
+                      <th>Email</th>
+                      <th>Website</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Primary</td>
+                      <td>{{address.PrimaryContactName}}</td>
+                      <td>{{address.PrimaryContactPhone}}</td>
+                      <td>{{address.PrimaryContactFax}}</td>
+                      <td>{{address.PrimaryContactEmail}}</td>
+                      <td>{{address.PrimaryContactWebsite}}</td>
+                    </tr>
+                    <tr>
+                      <td>Secondary</td>
+                      <td>{{address.SecondaryContactName}}</td>
+                      <td>{{address.SecondaryContactPhone}}</td>
+                      <td>{{address.SecondaryContactFax}}</td>
+                      <td>{{address.SecondaryContactEmail}}</td>
+                      <td>{{address.SecondaryContactWebsite}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+  
+          </ng-container>
+        </ng-container>
+        <tr *ngIf="VendorAddresses.length === 0">
+          <td colspan="7">
+            <h6>No Record Found</h6>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  
+  <button #addModalOpenButton type="button" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+    data-toggle="modal" style="display:none;">
+  </button>
+  
+  <!-- Address Modal -->
+  
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" style="display: none;">
+    <!-- modal-dialog -->
+    <div class="modal-dialog modal-lg">
+      <!-- modal-content -->
+      <div class="modal-content">
+        <!-- modal-header -->
+        <div class="modal-header">
+          <h6 class="modal-title">
+            {{(VendorAddress.AddressCode !== null && VendorAddress.AddressCode !== '') ? 'Edit' : 'Add New'}}
+            Address</h6>
+          <button class="close" aria-label="Close" (click)="ResetForm()" data-dismiss="modal"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <!-- modal-body -->
+        <!-- New Contact -->
+        <form *ngIf="AddressForm" [formGroup]="AddressForm" novalidate (ngSubmit)="SaveAddressDetails()">
+          <input type="hidden" formControlName="OrgUnitCode" />
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <fieldset>
+                  <div class="form-group row">
+                    <div class="col-md-3">
+                      <label class="text">Address 1<i class="mandatory">*</i></label>
+                      <input (blur)="LogValidationErrors()" formControlName="Address1" type="text"
+                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.Address1}">
+                    </div>
+                    <div class="col-md-3">
+                      <label class="text">Address 2</label>
+                      <input formControlName="Address2" type="text" class="form-control input-sm">
+                    </div>
+                    <div class="col-md-3">
+                      <label class="text">Address 3</label>
+                      <input formControlName="Address3" type="text" class="form-control input-sm">
+                    </div>
+                    <div class="col-md-3">
+                      <label class="text">Address Type</label>
+                      <div class="col-md-12">
+                        <label class="text form-check-label">
+                          <input value="F" formControlName="AddressTypeCode" class="form-check-input" type="radio">Factory
+                        </label>
+                        <label class="text form-check-label" style="margin-left: 30px;">
+                          <input class="form-check-input" formControlName="AddressTypeCode" type="radio" value="I">
+                          Sister Concern</label>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="form-group row">
-                  <div class="col-md-3">
-                    <label class="text">Country<i class="mandatory">*</i></label>
-                    <span>
-                      <select formControlName="CountryCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                        [ngClass]="{'is-invalid': formErrors.CountryCode}">
-                        <option [ngValue]="null">Select</option>
-                        <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}
-                        </option>
-                      </select>
-                    </span>
-                  </div>
-                  <div class="col-md-3">
-                    <label class="text">State<i class="mandatory">*</i></label>
-                    <span>
-                      <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control input-sm"
-                        [ngClass]="{'is-invalid': formErrors.StateCode}">
-                        <option [ngValue]="null">Select</option>
-                        <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
-                      </select>
-                    </span>
-                  </div>
-                  <div class="col-md-3">
-                    <label class="text">City<i class="mandatory">*</i></label>
-                    <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.CityCode}">
-                  </div>
-                  <div class="col-md-2">
-                    <label class="text">Pin Code<i class="mandatory">*</i>
-                      <span class="help-block mandatory" *ngIf="formErrors.PIN">
-                        {{formErrors.PIN}}
+                  <div class="form-group row">
+                    <div class="col-md-3">
+                      <label class="text">Country<i class="mandatory">*</i></label>
+                      <span>
+                        <select formControlName="CountryCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                          [ngClass]="{'is-invalid': formErrors.CountryCode}">
+                          <option [ngValue]="null">Select</option>
+                          <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">{{country.MDDName}}
+                          </option>
+                        </select>
                       </span>
-                    </label>
-                    <input formControlName="PIN" [pattern]="NumberPattern" (blur)="LogValidationErrors()" type="text"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PIN}">
+                    </div>
+                    <div class="col-md-3">
+                      <label class="text">State<i class="mandatory">*</i></label>
+                      <span>
+                        <select formControlName="StateCode" (blur)="LogValidationErrors()" class="form-control input-sm"
+                          [ngClass]="{'is-invalid': formErrors.StateCode}">
+                          <option [ngValue]="null">Select</option>
+                          <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
+                        </select>
+                      </span>
+                    </div>
+                    <div class="col-md-3">
+                      <label class="text">City<i class="mandatory">*</i></label>
+                      <input (blur)="LogValidationErrors()" formControlName="CityCode" type="text"
+                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.CityCode}">
+                    </div>
+                    <div class="col-md-2">
+                      <label class="text">Pin Code<i class="mandatory">*</i>
+                        <span class="help-block mandatory" *ngIf="formErrors.PIN">
+                          {{formErrors.PIN}}
+                        </span>
+                      </label>
+                      <input formControlName="PIN" [pattern]="NumberPattern" (blur)="LogValidationErrors()" type="text"
+                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PIN}">
+                    </div>
                   </div>
-                </div>
-              </fieldset>
-            </div>
-            <hr>
-            <div class="form-group col-md-12">
-              <fieldset>
-                <legend>Primary Info</legend>
-                <div class="form-group row">
-                  <div class="col-md-22">
-                    <label class="text">Contact Name<i class="mandatory">*</i></label>
-                    <input (blur)="LogValidationErrors()" formControlName="PrimaryContactName" type="text"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactName}">
+                </fieldset>
+              </div>
+              <hr>
+              <div class="form-group col-md-12">
+                <fieldset>
+                  <legend>Primary Info</legend>
+                  <div class="form-group row">
+                    <div class="col-md-22">
+                      <label class="text">Contact Name<i class="mandatory">*</i></label>
+                      <input (blur)="LogValidationErrors()" formControlName="PrimaryContactName" type="text"
+                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactName}">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Phone No.<i class="mandatory">*</i></label>
+                      <input type="text" (blur)="LogValidationErrors()" formControlName="PrimaryContactPhone"
+                        class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Fax</label>
+                      <input type="text" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}" formControlName="PrimaryContactFax"
+                        class="form-control input-sm">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Email</label>
+                      <input type="email" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.PrimaryContactEmail}" formControlName="PrimaryContactEmail"
+                        class="form-control input-sm">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Website</label>
+                      <input type="text" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.PrimaryContactWebsite}"
+                        formControlName="PrimaryContactWebsite" class="form-control input-sm">
+                    </div>
                   </div>
-                  <div class="col-md-22">
-                    <label class="text">Phone No.<i class="mandatory">*</i></label>
-                    <input type="text" (blur)="LogValidationErrors()" formControlName="PrimaryContactPhone"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}">
+                </fieldset>
+              </div>
+              <div class="form-group col-md-12">
+                <fieldset>
+                  <legend>Secondary Info</legend>
+                  <div class="form-group row">
+                    <div class="col-md-22">
+                      <label class="text">Contact Name</label>
+                      <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactName}"
+                        formControlName="SecondaryContactName" type="text" class="form-control input-sm">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Phone No.</label>
+                      <input type="text" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}"
+                        formControlName="SecondaryContactPhone" class="form-control input-sm">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Fax</label>
+                      <input type="text" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}" formControlName="SecondaryContactFax"
+                        class="form-control input-sm">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Email</label>
+                      <input type="email" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.SecondaryContactEmail}"
+                        formControlName="SecondaryContactEmail" class="form-control input-sm">
+                    </div>
+                    <div class="col-md-22">
+                      <label class="text">Website</label>
+                      <input type="text" (blur)="LogValidationErrors()"
+                        [ngClass]="{'is-invalid': formErrors.SecondaryContactWebsite}"
+                        formControlName="SecondaryContactWebsite" class="form-control input-sm">
+                    </div>
                   </div>
-                  <div class="col-md-22">
-                    <label class="text">Fax</label>
-                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}"
-                    formControlName="PrimaryContactFax" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-22">
-                    <label class="text">Email</label>
-                    <input type="email" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactEmail}"
-                     formControlName="PrimaryContactEmail" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-22">
-                    <label class="text">Website</label>
-                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PrimaryContactWebsite}" 
-                    formControlName="PrimaryContactWebsite" class="form-control input-sm">
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-            <div class="form-group col-md-12">
-              <fieldset>
-                <legend>Secondary Info</legend>
-                <div class="form-group row">
-                  <div class="col-md-22">
-                    <label class="text">Contact Name</label>
-                    <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactName}" 
-                    formControlName="SecondaryContactName" type="text" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-22">
-                    <label class="text">Phone No.</label>
-                    <input  type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}"
-                    formControlName="SecondaryContactPhone" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-22">
-                    <label class="text">Fax</label>
-                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}"
-                    formControlName="SecondaryContactFax" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-22">
-                    <label class="text">Email</label>
-                    <input type="email" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactEmail}"
-                    formControlName="SecondaryContactEmail" class="form-control input-sm">
-                  </div>
-                  <div class="col-md-22">
-                    <label class="text">Website</label>
-                    <input type="text" (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactWebsite}"
-                    formControlName="SecondaryContactWebsite" class="form-control input-sm">
-                  </div>
-                </div>
-              </fieldset>
+                </fieldset>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="ml-auto mr-auto">
+          <div class="modal-footer col-md-12  page-footer">
             <button type="submit" (click)="LogValidationErrors()" class="mr-3 btn btn-primary">Save</button>
             <button #modalCloseButton data-dismiss="modal" type="button" (click)="ResetForm()"
               class="btn btn-secondary">Cancel</button>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+<!-- Hidden button to open alert modal -->
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div style="width:500px;" class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+      </div>
     </div>
   </div>
 </div>
