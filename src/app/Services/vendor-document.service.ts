@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpHeaders, HttpParams } from '@angular/common/http';
 import { VendorDocument } from '../Models/vendor-document';
 import { Observable } from 'rxjs';
 import { OriginService } from './origin.service';
@@ -28,8 +28,8 @@ export class VendorDocumentService {
     );
   }
   DownloadDocument(fileName: string): Observable<Blob> {
-    const apiUrl = this._origin.origin + 'api/VendorDoc/DownloadFile?filename=' + fileName;
+    const apiUrl = this._origin.origin + 'api/VendorDoc/DownloadFile';
 
-    return this._http.get<Blob>(apiUrl, { responseType: 'blob' as 'json' });
+    return this._http.get<Blob>(apiUrl, { params: { 'filename': fileName }, responseType: 'blob' as 'json' });
   }
 }

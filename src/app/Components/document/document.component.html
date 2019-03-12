@@ -123,12 +123,7 @@
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
-                <label class="text">Upload Document<span class="error-label">*</span></label>
-                <!-- <span>
-                  <input class="form-control input-sm" type="file" (change)="OnFileChange($event)"
-                  [ngClass]="{ 'is-invalid': (docDetailsForm.controls.FileName.touched || submitted) && docDetailsForm.controls.FileName.errors }" />
-                  <br />
-                </span> -->
+                <label class="text">Upload Document<span *ngIf="!inEditedMode" class="error-label">*</span></label>
                 <span>
                   <input class="form-control input-sm" type="file" formControlName="FileName"
                     (change)="OnFileChange($event)" [ngClass]="{ 'is-invalid': formErrors.FileName }"
@@ -140,15 +135,18 @@
                 <label class="text">Remarks<span class="error-label">*</span></label>
                 <span>
                   <input class="form-control input-sm" type="text" formControlName="Remarks"
-                    [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="LogValidationErrors()" />
-                  <br />
+                    [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="LogValidationErrors()" maxlength="511" />
+                </span><span [ngClass]="{ 'error-label':formErrors.Remarks}" *ngIf="formErrors.Remarks">
+                  {{formErrors.Remarks}}
                 </span>
               </div>
             </div>
-            <div *ngIf="inEditedMode" class="row col-lg-12 col-md-12">
-              <span>
-                {{vendorDocument.FileName.substring(vendorDocument.FileName.lastIndexOf('\\') + 1)}}
-              </span>
+            <div *ngIf="inEditedMode" class="row">
+              <div class="col-lg-12 col-md-12">
+                <label class="text">
+                  {{vendorDocument.FileName.substring(vendorDocument.FileName.lastIndexOf('\\') + 1)}}
+                </label>
+              </div>
             </div>
           </div>
 
