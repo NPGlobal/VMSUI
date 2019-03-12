@@ -13,6 +13,7 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
+import { AddressFormComponent } from './Components/address-form/address-form.component';
 
 const routes: Routes = [
   {
@@ -38,7 +39,8 @@ const routes: Routes = [
       { path: 'business', component: BusinessDetailsComponent },
       { path: 'document', component: DocumentComponent },
       { path: 'bank', component: BankDetailsComponent },
-      { path: 'department', component: DepartmentMappingComponent }
+      { path: 'department', component: DepartmentMappingComponent },
+      { path: 'address', component: AddressFormComponent }
     ]
   },
   {
@@ -52,8 +54,8 @@ const routes: Routes = [
       { path: 'business', component: BusinessDetailsComponent },
       { path: 'document', component: DocumentComponent },
       { path: 'bank', component: BankDetailsComponent },
-      { path: 'department', component: DepartmentMappingComponent }
-
+      { path: 'department', component: DepartmentMappingComponent },
+      { path: 'address', component: AddressFormComponent }
     ]
   },
   {

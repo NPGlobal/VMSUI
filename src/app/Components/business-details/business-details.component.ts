@@ -28,13 +28,6 @@ export class BusinessDetailsComponent implements OnInit {
   pagedItems: any[] = [];
   //#endregion
 
-  // NumericPattern = '^[0-9]*$';
-  // divisionList: any[];
-  // departmentList: any[];
-  // businessObj: VendorBusinessDetails; // For form value save and update
-  // editedVendorBusiness: any; // For Check of Vendor Business Edited Value
-  // businessDetailsForm: FormGroup;
-
   //#region Modal Popup and Alert
   @ViewChild('alertModalButton')
   alertModalButton: ElementRef;
@@ -69,42 +62,7 @@ export class BusinessDetailsComponent implements OnInit {
     this.CurrentFinancialYear = '';
     this.NextFinancialYear = '';
   }
-  // ValidationMessages = {
-  //   'divisionCode': {
-  //     'required': ''
-  //   },
-  //   'deptCode': {
-  //     'required': ''
-  //   },
-  //   'ProposedDPValueQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   },
-  //   'ProposedDPGrnQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   },
-  //   'ProposedJWValueQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   },
-  //   'ProposedJWGrnQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   }
-  // };
-  // formErrors = {
-  //   'divisionCode': '',
-  //   'deptCode': '',
-  //   'ProposedDPValueQty': '',
-  //   'ProposedDPGrnQty': '',
-  //   'ProposedJWValueQty': '',
-  //   'ProposedJWGrnQty': ''
-  // };
+
   ngOnInit() {
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
@@ -136,9 +94,20 @@ export class BusinessDetailsComponent implements OnInit {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.businessList.filter(x => {
       x.ErrorList = [];
-      // x.ErrorList.forEach(y => y = '');
     });
     this.pagedItems = this.businessList;
+  }
+  //#endregion
+
+  //#region Error Validator
+  ValidateField(business: VendorBusinessDetails, val: string, index: number) {
+    const regex = new RegExp(this.DecimalPattern);
+    const success = regex.test(val);
+    if ((val !== null && val !== '' && val !== undefined) && !success) {
+      business.ErrorList[index] = 'Numeric value allowed';
+    } else {
+      business.ErrorList[index] = undefined;
+    }
   }
   //#endregion
 
@@ -186,22 +155,10 @@ export class BusinessDetailsComponent implements OnInit {
     }
     this.alertButton.click();
   }
-
-  //#region Error Validator
-
-  ValidateField(business: VendorBusinessDetails, val: string, index: number) {
-    const regex = new RegExp(this.DecimalPattern);
-    const success = regex.test(val);
-    if ((val !== null && val !== '' && val !== undefined) && !success) {
-      business.ErrorList[index] = 'Numeric value allowed';
-    } else {
-      business.ErrorList[index] = undefined;
-    }
-  }
-
   //#endregion
 
-  //#endregion
+  //#region  Commented Code
+
   // logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
   //   Object.keys(group.controls).forEach((key: string) => {
   //     const abstractControl = group.get(key);
@@ -394,5 +351,7 @@ export class BusinessDetailsComponent implements OnInit {
   //   this.searchText = searchText;
   //   this.GetVendorBusiness(1);
   // }
+
+  //#endregion
 }
 

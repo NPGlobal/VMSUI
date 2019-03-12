@@ -11,6 +11,7 @@ import { Vendor } from 'src/app/Models/vendor';
 })
 export class VendorListComponent implements OnInit {
 
+  //#region Form Variables
   vendors: Vendor[];
   totalItems: number;
   currentPage = 1;
@@ -21,12 +22,16 @@ export class VendorListComponent implements OnInit {
   searchText = '';
   loading: boolean;
   RegistrationClick = true;
+  //#endregion
+
+  //#region Search Parameters
   searchByName: string;
   searchByShortName: string;
   searchByRefVendor: string;
   searchByGST: string;
   searchByPAN: string;
   searchByCreatedOn: string;
+  //#endregion
 
   constructor(private _http: HttpClient,
     private _vendorService: VendorService,
@@ -42,6 +47,8 @@ export class VendorListComponent implements OnInit {
 
     this.GetVendors(this.currentPage);
   }
+
+  //#region Data Binding
   GetVendors(index: number) {
     this.loading = true;
     this.currentPage = index;
@@ -53,6 +60,13 @@ export class VendorListComponent implements OnInit {
     });
   }
 
+  GetVendorsList() {
+    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.pagedItems = this.vendors;
+  }
+  //#endregion
+
+  //#region Searching and Sorting
   SearchVendor(searchText = '') {
     this.searchText = searchText;
     this.GetVendors(1);
@@ -62,11 +76,6 @@ export class VendorListComponent implements OnInit {
     this.searchText = this.searchByName + '~' + this.searchByShortName + '~' + this.searchByRefVendor + '~' +
       this.searchByGST + '~' + this.searchByPAN + '~' + this.searchByCreatedOn;
     this.SearchVendor(this.searchText);
-  }
-
-  GetVendorsList() {
-    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.vendors;
   }
 
   SortVendorList(ColumnName: string) {
@@ -104,8 +113,11 @@ export class VendorListComponent implements OnInit {
       }
     }
   }
+  //#endregion
 
+  //#region Open Registration Modal
   OnRegistrationClick() {
     this.RegistrationClick = !this.RegistrationClick;
   }
+  //#endregion
 }
