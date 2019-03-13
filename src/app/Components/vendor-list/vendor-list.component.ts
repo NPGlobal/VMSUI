@@ -17,7 +17,7 @@ export class VendorListComponent implements OnInit {
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
-  pagedItems: any[];
+  pagedItems: Vendor[];
   isSorted = false;
   searchText = '';
   loading: boolean;
@@ -79,39 +79,33 @@ export class VendorListComponent implements OnInit {
   }
 
   SortVendorList(ColumnName: string) {
-    if (ColumnName === 'ProducerName') {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.sort((a, b) => a.VendorName.localeCompare(b.VendorName));
+    switch (ColumnName) {
+      case 'ProducerName': {
+        this.pagedItems.sort((a, b) => a.VendorName.toUpperCase().localeCompare(b.VendorName.toUpperCase()));
+        break;
       }
-    } else if (ColumnName === 'ShortName') {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
+      case 'ShortName': {
+        this.pagedItems.sort((a, b) => a.VendorCode.toUpperCase().localeCompare(b.VendorCode.toUpperCase()));
+        break;
       }
-    } else if (ColumnName === 'RefVendor') {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
+      case 'RefVendor': {
+        this.pagedItems.filter(x => {
+          if (x.MasterVendorName === null || x.MasterVendorName === undefined) {
+            x.MasterVendorName = '';
+          }
+        });
+        this.pagedItems.sort((a, b) => a.MasterVendorName.toUpperCase().localeCompare(b.MasterVendorName.toUpperCase()));
+        break;
       }
-    } else {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.sort((a, b) => a.CreatedOn.localeCompare(b.CreatedOn));
+      case 'CreatedOn': {
+        this.pagedItems.sort((a, b) => new Date(a.CreatedOn).getTime() - new Date(b.CreatedOn).getTime());
+        break;
       }
     }
+    if (!this.isSorted) {
+      this.pagedItems.reverse();
+    }
+    this.isSorted = !this.isSorted;
   }
   //#endregion
 
