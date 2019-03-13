@@ -1,10 +1,15 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, SimpleChanges, OnChanges, Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { Vendor } from 'src/app/Models/vendor';
 import { Router } from '@angular/router';
 import { MasterVendor } from 'src/app/Models/master-vendor';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
   selector: 'app-vendor-registration',
@@ -45,27 +50,49 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
   //#region Validation Messages
   ValidationMessages = {
-    'VendorCode': {
+   'VendorCode': {
       'required': '',
-      'maxlength': 'Code should not exceed 6 characters',
-      'pattern': 'Cannot contains special characters',
-      'CodeExist': 'Code Already Exists'
+      'maxlength': this._validationMess.MaxLength,
+      'pattern': this._validationMess.VCodePattern,
+      'CodeExist': this._validationMess.CodeExist
     },
     'VendorName': {
-      'required': 'Vendor Name is Required'
+      'required': this._validationMess.VNameRequired
     },
     'VendorType': {
-      'required': 'Vendor Type is Required'
+      'required': this._validationMess.VTypeRequired
     },
     'PANNo': {
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Invalid format'
+      'pattern': this._validationMess.PanPattern
     },
     'MasterVendorId': {
       'required': ''
-    }
+     }
   };
+  // ValidationMessages = {
+  //   'VendorCode': {
+  //     'required': '',
+  //     'maxlength': 'Code should not exceed 6 characters',
+  //     'pattern': 'Cannot contains special characters',
+  //     'CodeExist': 'Code Already Exists'
+  //   },
+  //   'VendorName': {
+  //     'required': 'Vendor Name is Required'
+  //   },
+  //   'VendorType': {
+  //     'required': 'Vendor Type is Required'
+  //   },
+  //   'PANNo': {
+  //     'minlength': '',
+  //     'maxlength': '',
+  //     'pattern': 'Invalid format'
+  //   },
+  //   'MasterVendorId': {
+  //     'required': ''
+  //   }
+  // };
 
   formErrors = {
     'VendorCode': '',
@@ -78,7 +105,10 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
-    private _router: Router) {
+    private _router: Router,
+    private _validationMess: ValidationMessagesService
+    ) {
+     // this.validationsMess[0] = new validations();
   }
 
   ngOnInit() {
