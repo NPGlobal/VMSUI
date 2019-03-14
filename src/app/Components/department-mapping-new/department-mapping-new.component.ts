@@ -14,15 +14,16 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 export class DepartmentMappingNewComponent implements OnInit {
 
   //#region Variable Declaration
-  DepartmentMappingForm: FormGroup;
   VendorCode = '';
-  vendor: Vendor = new Vendor();
-  isDataExist = false;
-  CheckData = 0;
   AllList: MasterDataDetails[] = [];
   DivisionList: MasterDataDetails[] = [];
   DepartmentList: MasterDataDetails[] = [];
   SelectedDD: MasterDataDetails[] = [];
+
+  DepartmentMappingForm: FormGroup;
+  vendor: Vendor = new Vendor();
+  isDataExist = false;
+  CheckData = 0;
   Temp: MasterDataDetails[] = [];
   //#endregion
 
@@ -74,83 +75,74 @@ export class DepartmentMappingNewComponent implements OnInit {
   BindData() {
     // this.DivisionList = this.AllList.filter(x => x.MDHCode === 'DIVISION');
     // this.DepartmentList = this.AllList.filter(x => x.MDHCode === 'DEPT');
-    this.DepartmentMappingForm.get('Division').patchValue(this.SelectedDD.length > 0 ? '1' : '-1');
-     if (this.SelectedDD.length === 0) {
-       this.GetDivisionsAndDepartment();
-     } else {
-       this.GetDivision();
-       this.GetDepartment();
-     }
 
-    // if (this.DivisionList.length === 0 && this.SelectedDD.length !== 0) {
-    //   this.DepartmentMappingForm.get('Division').patchValue('0');
-    // } else if (this.DivisionList.length > 0 && this.SelectedDD.length === 0) {
-    //   this.DepartmentMappingForm.get('Division').patchValue('-1');
-    // } else if (this.DivisionList.length > 0 && this.SelectedDD.length !== 0) {
-    //   if (this.DepartmentList.length === 0 || this.DepartmentMappingForm.get('Division').value === '-1') {
-    //     this.DepartmentMappingForm.get('Division').patchValue('1');
-    //   }
+    let divisionCode = this.DepartmentMappingForm.get('Division').value;
+    if (divisionCode === '-1') {
+      // 1 is Used for Message (Select Division), and -1 is Used for Message (All Division) in division dropdown.
+      divisionCode = this.SelectedDD.length > 0 ? '1' : '-1';
+    }
+    this.DepartmentMappingForm.get('Division').patchValue(divisionCode);
+
+    // if (this.SelectedDD.length === 0) {
+    //   // If there are no record saved in database
+    //   this.GetDivisionsAndDepartment();
+    // } else {
+    this.GetDivision();
+    this.GetDepartment();
     // }
 
-    // this.SelectedDD.sort((a, b) => a.type.localeCompare(b.type));
+    this.SelectedDD.sort((a, b) => a.type.localeCompare(b.type));
+    this.SelectedDD.reverse();
   }
 
-  GetDivisionsAndDepartment() {
-    this.DivisionList = this.AllList.filter(x => x.MDHCode === 'DIVISION');
-    this.DepartmentList = this.AllList.filter(x => x.MDHCode === 'DEPT');
-  }
+  // GetDivisionsAndDepartment() {
+  //   this.DivisionList = this.AllList.filter(x => x.MDHCode === 'DIVISION');
+  //   this.DepartmentList = this.AllList.filter(x => x.MDHCode === 'DEPT');
+  // }
 
   GetDivision() {
-    this.DivisionList = [];
-    this.Temp = this.AllList.filter(x => x.MDHCode === 'DIVISION');
-    for (let i = 0; i < this.Temp.length; i++) {
-      this.isDataExist = Boolean(this.SelectedDD.find(x => x.MDDCode === this.Temp[i].MDDCode &&
-        x.ParentMDDCode === this.Temp[i].ParentMDDCode));
-      if (!this.isDataExist) {
-        this.DivisionList.push(this.Temp[i]);
-      }
-    }
-    this.isDataExist = false;
-    this.Temp = [];
+    // Here we filtered division from selected list.
+    const selectedDivisionList = this.SelectedDD.filter(x => x.MDHCode === 'DIVISION');
+
+    // Here we filtered division from all division and department list.
+    const filterdDivisionList = this.AllList.filter(x => x.MDHCode === 'DIVISION');
+
+    // Here we remove those division which already exist in selectd division list.
+    this.DivisionList = filterdDivisionList.filter(function (el) {
+      return selectedDivisionList.findIndex(x => x.MDDCode === el.MDDCode) >= 0 ? null : el;
+    });
+
+    // this.DivisionList = [];
+    // this.Temp = this.AllList.filter(x => x.MDHCode === 'DIVISION');
+    // for (let i = 0; i < this.Temp.length; i++) {
+    //   this.isDataExist = Boolean(this.SelectedDD.find(x => x.MDDCode === this.Temp[i].MDDCode &&
+    //     x.ParentMDDCode === this.Temp[i].ParentMDDCode));
+    //   if (!this.isDataExist) {
+    //     this.DivisionList.push(this.Temp[i]);
+    //   }
+    // }
+    // this.isDataExist = false;
+    // this.Temp = [];
   }
 
   GetDepartment() {
-    this.DepartmentList = [];
-    const mddCode = this.DepartmentMappingForm.get('Division').value;
-    if (mddCode !== '1') {
-       const selectedDepartmentList = this.SelectedDD.filter(x => x.MDHCode === 'DEPT' &&
-         x.ParentMDDCode === (mddCode === '-1' ? x.ParentMDDCode : mddCode));
-      this.DepartmentList = this.AllList.filter(x => x.MDHCode === 'DEPT' &&
-        x.ParentMDDCode === (mddCode === '-1' ? x.ParentMDDCode : mddCode))
-        .filter(function (el) {
-          const index = selectedDepartmentList.findIndex(x => x.MDDCode === el.MDDCode);
-          return selectedDepartmentList.findIndex(x => x.MDDCode === el.MDDCode) >= 0 ? null : el;
-        });
+    const divisionCode = this.DepartmentMappingForm.get('Division').value;
+    if (divisionCode !== '1') {
+      // Here we filtered those department which belongs to selected division from selected list.
+      const selectedDepartmentList = this.SelectedDD.filter(x => x.MDHCode === 'DEPT' &&
+        x.ParentMDDCode === (divisionCode === '-1' ? x.ParentMDDCode : divisionCode));
+
+      // Here we filtered those department which belongs to selected division.
+      const filterdDepartmentList = this.AllList.filter(x => x.MDHCode === 'DEPT' &&
+        x.ParentMDDCode === (divisionCode === '-1' ? x.ParentMDDCode : divisionCode));
+
+      // Here we remove those department which already exist in selectd department list.
+      this.DepartmentList = filterdDepartmentList.filter(function (el) {
+        return selectedDepartmentList.findIndex(x => x.MDDCode === el.MDDCode) >= 0 ? null : el;
+      });
+    } else {
+      this.DepartmentList = [];
     }
-    // this.DepartmentList = [];
-    // if (mddCode === '-1') {
-    //   this.Temp = this.AllList.filter(x => x.MDHCode === 'DEPT');
-    //   for (let i = 0; i < this.Temp.length; i++) {
-    //     this.isDataExist = Boolean(this.SelectedDD.find(x => x.MDDCode === this.Temp[i].MDDCode &&
-    //       x.ParentMDDCode === this.Temp[i].ParentMDDCode));
-    //     if (!this.isDataExist) {
-    //       this.DepartmentList.push(this.Temp[i]);
-    //     }
-    //   }
-    //   this.isDataExist = false;
-    //   this.Temp = [];
-    // } else {
-    //   this.Temp = this.AllList.filter(x => x.MDHCode === 'DEPT' && x.ParentMDDCode === mddCode);
-    //   for (let i = 0; i < this.Temp.length; i++) {
-    //     this.isDataExist = Boolean(this.SelectedDD.find(x => x.MDDCode === this.Temp[i].MDDCode &&
-    //       x.ParentMDDCode === this.Temp[i].ParentMDDCode));
-    //     if (!this.isDataExist) {
-    //       this.DepartmentList.push(this.Temp[i]);
-    //     }
-    //   }
-    //   this.isDataExist = false;
-    //   this.Temp = [];
-    // }
   }
   //#endregion
 
@@ -230,10 +222,30 @@ export class DepartmentMappingNewComponent implements OnInit {
         this.SelectedDD.push(this.DivisionList[i]);
       }
     }
-    this.GetDivision();
-    this.DepartmentList = [];
-    this.DepartmentMappingForm.get('Division').patchValue('1');
+    this.BindData();
   }
+
+  // DeleteExistingDepartment() {
+  //   const stringArr = this.DepartmentMappingForm.get('DivList').value as Array<string>;
+  //   for (let i = 0; i < stringArr.length; ++i) {
+  //     this.SelectedDD = this.SelectedDD.filter(function (value) {
+  //       if (value.ParentMDDCode !== stringArr[i]) {
+  //         return value;
+  //       }
+  //     });
+  //   }
+  //   for (let i = 0; i < this.DivisionList.length; i++) {
+  //     if (stringArr.includes(this.DivisionList[i].MDDCode)) {
+  //       this.DivisionList[i].color = 'lightyellow';
+  //       this.DivisionList[i].isDeletable = 'Y';
+  //       this.DivisionList[i].type = 'Division';
+  //       this.SelectedDD.push(this.DivisionList[i]);
+  //     }
+  //   }
+  //   this.GetDivision();
+  //   this.DepartmentList = [];
+  //   this.DepartmentMappingForm.get('Division').patchValue('1');
+  // }
   //#endregion
 
   //#region Save Form Data
