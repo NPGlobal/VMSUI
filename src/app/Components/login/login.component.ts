@@ -3,6 +3,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Login } from 'src/app/Models/login';
 import { LoginService } from 'src/app/Services/login.service';
 import { Router } from '@angular/router';
+import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-login',
@@ -23,10 +24,10 @@ export class LoginComponent implements OnInit {
   //#region Validation Messages
   ValidationMessages = {
     'UserName': {
-      'required': 'Employee Id is required.'
+      'required': this._validationMess.UserName
     },
     'Password': {
-      'required': 'Password is required.'
+      'required': this._validationMess.Password
     }
   };
 
@@ -39,7 +40,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private _fb: FormBuilder,
     private _loginService: LoginService,
-    private _router: Router) {
+    private _router: Router,
+    private _validationMess: ValidationMessagesService) {
     this.isUserLoggedIn = false;
   }
 

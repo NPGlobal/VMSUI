@@ -11,6 +11,7 @@ import { load } from '@angular/core/src/render3';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { and } from '@angular/router/src/utils/collection';
 import { VendorTechDefault } from 'src/app/Models/vendorTechDefault';
+import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 declare var $: any;
 
 @Component({
@@ -37,7 +38,7 @@ export class TechnicalDetailsComponent implements OnInit {
   isTechDetailFormChanged: boolean;
   vendorTech: VendorTech;
   isTechDetailEditing: any;
-
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   // vendortechList: VendorTech[];
   // VendorTech: VendorTech;
@@ -76,13 +77,16 @@ export class TechnicalDetailsComponent implements OnInit {
     },
     'DefaultEfficiency': {
       'required': '',
-      'pattern': 'Enter valid efficiency'
+      'pattern': this._validationMess.EfficiencyPattern
     },
     'UnitCount': {
       'required': ''
     },
     'Efficiency': {
-      'pattern': 'Enter valid efficiency'
+      'pattern': this._validationMess.EfficiencyPattern
+    },
+    'Remarks': {
+      'pattern': this._validationMess.RemarksPattern
     }
   };
 
@@ -92,7 +96,8 @@ export class TechnicalDetailsComponent implements OnInit {
     'DefaultEfficiency': '',
     'UnitCount': '',
     'VendorTechConfigID': '',
-    'Efficiency': ''
+    'Efficiency': '',
+    'Remarks' : ''
   };
   //#endregion
 
@@ -125,7 +130,8 @@ export class TechnicalDetailsComponent implements OnInit {
   constructor(private _vendorService: VendorService,
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
-    private _pager: PagerService) {
+    private _pager: PagerService,
+    private _validationMess: ValidationMessagesService) {
   }
 
   ngOnInit() {
@@ -155,14 +161,14 @@ export class TechnicalDetailsComponent implements OnInit {
       Validators.pattern(this.efficiencyPattern)],
       UnitCount: [],
       Status: [this.vendorTechDefault.Status],
-      Remarks: [this.vendorTechDefault.Remarks],
+      Remarks: [this.vendorTechDefault.Remarks, Validators.pattern(this.AddressAndRemarksPattern)],
       Efficiency: [null, Validators.pattern(this.efficiencyPattern)]
     });
 
     this.SetEfficiencyAsDefault();
-    this.techDetailsForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.techDetailsForm);
-    });
+    // this.techDetailsForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.techDetailsForm);
+    // });
   }
 
   EditTechDetails(techDefault: VendorTechDefault) {

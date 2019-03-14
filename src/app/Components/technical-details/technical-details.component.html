@@ -105,7 +105,7 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Technical <span class="req-popup-label">(<b>Note:</b> * marks filed are required)</span>
+        <h6 class="modal-title">Technical <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span>
         </h6>
         <button type="button" class="close" (click)="DiscardChanges()">&times;</button>
         <button #modalCloseButton type="button" class="close" data-dismiss="modal" style="display: none;"></button>
@@ -127,7 +127,7 @@
                 <span>
                   <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
-                    (blur)="SetEfficiencyAsDefault()" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
+                    (blur)="SetEfficiencyAsDefault(); LogValidationErrors();" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
                   {{formErrors.DefaultEfficiency}}
@@ -136,7 +136,11 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Remarks</label>
                 <span>
-                  <input type="text" formControlName="Remarks" class="form-control input-sm" />
+                  <input type="text"  (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.Remarks }"
+                  formControlName="Remarks" class="form-control input-sm" maxlength="100"/>
+                </span>
+                <span [ngClass]="{ 'error-label': formErrors.Remarks }" *ngIf="formErrors.Remarks">
+                  {{formErrors.Remarks}}
                 </span>
               </div>
             </div>
@@ -189,8 +193,8 @@
               <div class="col-lg-2 col-md-2">
                 <label class="text">Efficiency (%)</label>
                 <span>
-                  <input type="text" formControlName="Efficiency" class="form-control input-sm"
-                    [ngClass]="{ 'is-invalid': formErrors.Efficiency }" />
+                  <input type="text" formControlName="Efficiency" class="form-control input-sm" maxlength="8"
+                    [ngClass]="{ 'is-invalid': formErrors.Efficiency }" (blur)="LogValidationErrors()" />
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.Efficiency }" *ngIf="formErrors.Efficiency">
                   {{formErrors.Efficiency}}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { OriginService } from 'src/app/Services/origin.service';
 
 @Component({
   selector: 'app-layout',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _originService: OriginService) { }
 
   ngOnInit() {
   }
@@ -16,22 +17,13 @@ export class LayoutComponent implements OnInit {
   LogoutUser() {
     sessionStorage.removeItem('userid');
     const host = window.location.host.toLowerCase();
-    if (host.indexOf('localhost') === -1) {
-      window.location.href = window.location.origin + '/vmsapp';
-    } else {
-      window.location.href = window.location.origin;
-    }
+    window.location.href = this._originService.GetOriginWithSubDirectoryPath();
   }
   //#endregion
 
   //#region Redirect user to Home page
   MoveToVendorList() {
-    const host = window.location.host.toLowerCase();
-    if (host.indexOf('localhost') === -1) {
-      window.location.href = window.location.origin + '/vmsapp/vendor';
-    } else {
-      window.location.href = window.location.origin + '/vendor';
-    }
+    window.location.href = this._originService.GetOriginWithSubDirectoryPath() + 'vendor';
   }
   //#endregion
 }

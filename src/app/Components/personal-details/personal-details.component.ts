@@ -8,6 +8,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
 import { DatePipe } from '@angular/common';
+import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   providers: [DatePipe],
@@ -47,11 +48,13 @@ export class PersonalDetailsComponent implements OnInit {
   //#endregion
 
   //#region Patterns
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   PhonePattern = '^[0-9]{10}$';
   EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';
   WebsitePattern = '^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$';
-  AlphabetPattern = '^[a-zA-Z ]*$';
+  // AlphabetPattern = '^[a-zA-Z ]*$';
+  AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   GSTPattern: string;
   //#endregion
 
@@ -80,19 +83,26 @@ export class PersonalDetailsComponent implements OnInit {
     'PANNo': {
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Invalid Format'
+      'pattern': this._validationMess.PanPattern
     },
     'GSTIN': {
       'required': '',
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Invalid GST number'
+      'pattern': this._validationMess.GSTPattern
     },
     'GSTDate': {
       'required': ''
     },
     'Address1': {
-      'required': ''
+      'required': '',
+      'pattern' : this._validationMess.AddressPattern
+    },
+    'Address2': {
+      'pattern' : this._validationMess.AddressPattern
+    },
+    'Address3': {
+      'pattern' : this._validationMess.AddressPattern
     },
     'CountryCode': {
       'required': ''
@@ -102,45 +112,45 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'CityCode': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.CityPattern
     },
     'PIN': {
       'required': '',
       'minlength': '',
       'maxlength': '',
-      'pattern': 'Invalid PIN number'
+      'pattern': this._validationMess.PinPattern
     },
     'PrimaryContactName': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.ContactNamePattern
     },
     'PrimaryContactPhone': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.PhonePattern
     },
     'PrimaryContactFax': {
-      'pattern': ''
+      'pattern': this._validationMess.FaxPattern
     },
     'PrimaryContactEmail': {
-      'pattern': ''
+      'pattern': this._validationMess.EmailPattern
     },
     'PrimaryContactWebsite': {
-      'pattern': ''
+      'pattern': this._validationMess.WebsitePattern
     },
     'SecondaryContactName': {
-      'pattern': ''
+      'pattern': this._validationMess.ContactNamePattern
     },
     'SecondaryContactPhone': {
-      'pattern': ''
+      'pattern': this._validationMess.PhonePattern
     },
     'SecondaryContactFax': {
-      'pattern': ''
+      'pattern': this._validationMess.FaxPattern
     },
     'SecondaryContactEmail': {
-      'pattern': ''
+      'pattern': this._validationMess.EmailPattern
     },
     'SecondaryContactWebsite': {
-      'pattern': ''
+      'pattern': this._validationMess.WebsitePattern
     },
     'NameofInsuranceCompany': {
       'required': ''
@@ -153,6 +163,8 @@ export class PersonalDetailsComponent implements OnInit {
     'GSTIN': '',
     'GSTDate': '',
     'Address1': '',
+    'Address2': '',
+    'Address3': '',
     'CountryCode': '',
     'StateCode': '',
     'CityCode': '',
@@ -174,7 +186,8 @@ export class PersonalDetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     public datepipe: DatePipe,
-    private _mDDService: MasterDataDetailsService) {
+    private _mDDService: MasterDataDetailsService,
+    private _validationMess: ValidationMessagesService) {
     this.Address = this.CreateNewAddress();
     this.vendor = new Vendor();
     this.vendor.RegisteredOfficeAddress = new VendorAddress();
@@ -236,9 +249,9 @@ export class PersonalDetailsComponent implements OnInit {
         GSTIN: [this.vendor.GSTIN],
         GSTDate: [this.FormatDate(this.vendor.GSTDate)],
         IsProvisional: [this.vendor.isProvisional],
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
-        Address2: [this.vendor.RegisteredOfficeAddress.Address2],
-        Address3: [this.vendor.RegisteredOfficeAddress.Address3],
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+        Address2: [this.vendor.RegisteredOfficeAddress.Address2, [Validators.pattern(this.AddressAndRemarksPattern)]],
+        Address3: [this.vendor.RegisteredOfficeAddress.Address3, [Validators.pattern(this.AddressAndRemarksPattern)]],
         CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
         StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
