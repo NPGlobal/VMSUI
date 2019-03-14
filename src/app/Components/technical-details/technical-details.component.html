@@ -105,7 +105,8 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Technical <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span>
+        <h6 class="modal-title">Technical <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are
+            mandatory)</span>
         </h6>
         <button type="button" class="close" (click)="DiscardChanges()">&times;</button>
         <button #modalCloseButton type="button" class="close" data-dismiss="modal" style="display: none;"></button>
@@ -127,7 +128,8 @@
                 <span>
                   <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
-                    (blur)="SetEfficiencyAsDefault(); LogValidationErrors();" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
+                    (blur)="SetEfficiencyAsDefault(); LogValidationErrors();"
+                    [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
                   {{formErrors.DefaultEfficiency}}
@@ -136,8 +138,8 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Remarks</label>
                 <span>
-                  <input type="text"  (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.Remarks }"
-                  formControlName="Remarks" class="form-control input-sm" maxlength="100"/>
+                  <input type="text" (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.Remarks }"
+                    formControlName="Remarks" class="form-control input-sm" maxlength="100" />
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.Remarks }" *ngIf="formErrors.Remarks">
                   {{formErrors.Remarks}}
@@ -306,7 +308,7 @@
         <span [innerHTML]="DeleteModalBody"></span>
       </div> -->
       <div class="modal-footer page-footer">
-        <button type="button" class="btn btn-primary" (click)="DiscardChanges()">Yes</button>
+        <button type="button" data-dismiss="modal" class="btn btn-primary" (click)="dismiss()">Yes</button>
         <button #discardModalClose class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
       </div>
     </div>

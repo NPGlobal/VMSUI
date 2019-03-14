@@ -1,6 +1,7 @@
 import { VendorTech } from './VendorTech';
 
 export class VendorTechDefault {
+    VendorTechDefaultID: number;
     VendorTechDetailsID: number;
     VendorShortCode: string;
     TechLineNo: string;

@@ -11,7 +11,7 @@ import { load } from '@angular/core/src/render3';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { and } from '@angular/router/src/utils/collection';
 import { VendorTechDefault } from 'src/app/Models/vendorTechDefault';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 declare var $: any;
 
 @Component({
@@ -97,7 +97,7 @@ export class TechnicalDetailsComponent implements OnInit {
     'UnitCount': '',
     'VendorTechConfigID': '',
     'Efficiency': '',
-    'Remarks' : ''
+    'Remarks': ''
   };
   //#endregion
 
@@ -344,10 +344,15 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DiscardChanges() {
-    // const vendorTechDefault = this.TechDefaultLst.find(x=>x.VendorTechDetailsID === )
-    // if( JSON.stringify(this.vendorTechDefault.VendorTechDetails) === JSON.stringify(dataInputUpdated))
-    // this.discardModalOpenButton.click();
-    // this.dismiss();
+    let vendorTechDefault = this.TechDefaultLst.find(x => x.VendorTechDefaultID === this.vendorTechDefault.VendorTechDefaultID);
+    if (vendorTechDefault === undefined) {
+      vendorTechDefault = new VendorTechDefault();
+    }
+    if (JSON.stringify(vendorTechDefault.VendorTechDetails) === JSON.stringify(this.vendorTechDefault.VendorTechDetails)) {
+      this.dismiss();
+    } else {
+      this.discardModalOpenButton.click();
+    }
   }
 
   AddMachine() {
