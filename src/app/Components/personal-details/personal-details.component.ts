@@ -504,6 +504,15 @@ export class PersonalDetailsComponent implements OnInit {
     return isValidDate;
   }
 
+  checkAssociationDateValidation() {
+    let isValidDate = true;
+    const date = this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value;
+    if (this.AssociatedWithDate > date || this.maxDate < date) {
+      isValidDate = false;
+    }
+    return isValidDate;
+  }
+
   GSTINValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const status = this.CheckGSTFormat(control.value, this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
@@ -822,6 +831,14 @@ export class PersonalDetailsComponent implements OnInit {
 
       if (!this.checkGSTDateValidation()) {
         this.PopUpMessage = 'Please enter a valid GST Date.';
+        this.alertButton.click();
+        return;
+      }
+    }
+
+    if (this.personalDetailsForm.get('OtherRegDetails.AssociatedSinceYear').value) {
+      if (!this.checkAssociationDateValidation()) {
+        this.PopUpMessage = 'Please enter a valid association date.';
         this.alertButton.click();
         return;
       }
