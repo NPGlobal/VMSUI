@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorAddress } from 'src/app/Models/vendor-address';
+import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-bank-details',
@@ -39,7 +40,7 @@ export class BankDetailsComponent implements OnInit {
       'required': ''
     },
     'AccountNo': {
-      'pattern': ''
+      'pattern': this._validationMess.AccountNoPattern
     }
   };
 
@@ -53,7 +54,8 @@ export class BankDetailsComponent implements OnInit {
 
   constructor(private _route: ActivatedRoute,
     private _fb: FormBuilder,
-    private _vendorService: VendorService) { }
+    private _vendorService: VendorService,
+    private _validationMess: ValidationMessagesService) { }
 
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;

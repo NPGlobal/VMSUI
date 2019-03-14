@@ -6,6 +6,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-production-details',
@@ -18,7 +19,8 @@ export class ProductionDetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
-    private _mddService: MasterDataDetailsService
+    private _mddService: MasterDataDetailsService,
+    private _validationMess: ValidationMessagesService
   ) { }
 
   //#region paging variables
@@ -63,59 +65,59 @@ export class ProductionDetailsComponent implements OnInit {
   ValidationMessages = {
     'ApprovedProductionCount': {
       'required': '',
-      'pattern': 'Only numbers allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'SubContractingName': {
       'required': '',
-      'pattern': 'Only numbers allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'NatureOfSubContracting': {
       'required': ''
     },
     'MonthlyCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'MinimalCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'LeanMonths': {
       'required': '',
-      'pattern': 'Only numbers allowed.',
-      'max': 'Month cannot exceed than 500.'
+      'pattern': this._validationMess.NumericPattern,
+      'max': this._validationMess.MaxLeanMonth
     },
     'LeanCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'Address1': {
       'required': '',
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.AddressPattern
     },
     'Address2': {
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.AddressPattern
     },
     'Address3': {
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.AddressPattern
     },
     'Phone': {
       'required': '',
-      'pattern': 'Please enter a valid phone number.'
+      'pattern': this._validationMess.PhonePattern
     },
     'StateCode': {
       'required': ''
     },
     'CityCode': {
       'required': '',
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.CityPattern
     },
     'Pin': {
       'required': '',
-      'pattern': 'Please enter a valid pincode.'
+      'pattern': this._validationMess.PinPattern
     },
     'Remarks': {
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.RemarksPattern
     }
   };
 

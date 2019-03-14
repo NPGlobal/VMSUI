@@ -5,6 +5,7 @@ import { PagerService } from 'src/app/Services/pager.service';
 import { VendorStaffService } from 'src/app/Services/vendor-staff.service';
 import { VendorStaff } from 'src/app/Models/VendorStaff';
 import { StaffDetails } from 'src/app/Models/staff-details';
+import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-staff-details',
@@ -17,6 +18,7 @@ export class StaffDetailsComponent implements OnInit {
   invalid = false;
   priority = 1;
   vendorcode: string;
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   PhonePattern = '^[0-9]{10}$';
   NumericPattern = '^[0-9]*$';
   deptList: any[];
@@ -79,7 +81,8 @@ export class StaffDetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
-    private _vendorService: VendorStaffService) {
+    private _vendorService: VendorStaffService,
+    private _validationMess: ValidationMessagesService) {
   }
 
   //#region Validation Message
@@ -91,12 +94,15 @@ export class StaffDetailsComponent implements OnInit {
       'required': ''
     },
     'ContactEmail': {
-      'email': 'Please enter a valid email'
+      'email': this._validationMess.EmailPattern
     },
     'ContactPhone': {
       'required': '',
-      'maxlength': 'Should not exceed 10 characters',
-      'pattern': 'Please enter a valid phone'
+      'maxlength': this._validationMess.PhonePattern,
+      'pattern': this._validationMess.PhonePattern
+    },
+    'Remarks': {
+      'pattern': this._validationMess.RemarksPattern
     }
   };
 
@@ -104,7 +110,8 @@ export class StaffDetailsComponent implements OnInit {
     'Designation': '',
     'ContactName': '',
     'ContactEmail': '',
-    'ContactPhone': ''
+    'ContactPhone': '',
+    'Remarks': ''
   };
   //#endregion
 
@@ -156,7 +163,7 @@ export class StaffDetailsComponent implements OnInit {
       ContactPhone: [this.vendorStaffDetail.ContactPhone, [
         Validators.required, Validators.maxLength(10), Validators.pattern(this.PhonePattern)
       ]],
-      Remarks: [this.vendorStaffDetail.Remarks]
+      Remarks: [this.vendorStaffDetail.Remarks, Validators.pattern(this.AddressAndRemarksPattern)]
     });
   }
 

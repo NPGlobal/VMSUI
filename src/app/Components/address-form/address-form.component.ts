@@ -5,7 +5,7 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { ActivatedRoute } from '@angular/router';
-
+import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-address-form',
@@ -25,11 +25,14 @@ export class AddressFormComponent implements OnInit {
   //#endregion
 
   //#region Patterns
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  PinPattern = '^[1-9][0-9]{5}$';
   NumberPattern: '^[1-9][0-9]*$';
   PhonePattern = '^[0-9]{10}$';
   EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';
   WebsitePattern = '^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$';
-  AlphabetPattern = '^[a-zA-Z ]*$';
+  // AlphabetPattern = '^[a-zA-Z ]*$';
+  AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   //#endregion
 
   //#region Modal Popup and Alert
@@ -53,7 +56,7 @@ export class AddressFormComponent implements OnInit {
     },
     'PIN': {
       'required': '',
-      'pattern': 'Invalid PIN number',
+      'pattern': this._validationMess.PinPattern,
       'minlength': '',
       'maxlength': ''
     },
@@ -65,42 +68,49 @@ export class AddressFormComponent implements OnInit {
     },
     'CityCode': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.CityPattern
     },
     'Address1': {
-      'required': ''
+      'required': '',
+      'pattern' : this._validationMess.AddressPattern
+    },
+    'Address2': {
+      'pattern' : this._validationMess.AddressPattern
+    },
+    'Address3': {
+      'pattern' : this._validationMess.AddressPattern
     },
     'PrimaryContactName': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.ContactNamePattern
     },
     'PrimaryContactPhone': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.PhonePattern
     },
     'PrimaryContactFax': {
-      'pattern': ''
+      'pattern': this._validationMess.FaxPattern
     },
     'PrimaryContactEmail': {
-      'pattern': ''
+      'pattern': this._validationMess.EmailPattern
     },
     'PrimaryContactWebsite': {
-      'pattern': ''
+      'pattern': this._validationMess.WebsitePattern
     },
     'SecondaryContactName': {
-      'pattern': ''
+      'pattern': this._validationMess.ContactNamePattern
     },
     'SecondaryContactPhone': {
-      'pattern': ''
+      'pattern': this._validationMess.PhonePattern
     },
     'SecondaryContactFax': {
-      'pattern': ''
+      'pattern': this._validationMess.FaxPattern
     },
     'SecondaryContactEmail': {
-      'pattern': ''
+      'pattern': this._validationMess.EmailPattern
     },
     'SecondaryContactWebsite': {
-      'pattern': ''
+      'pattern': this._validationMess.WebsitePattern
     },
   };
 
@@ -120,14 +130,17 @@ export class AddressFormComponent implements OnInit {
     'CountryCode': '',
     'StateCode': '',
     'CityCode': '',
-    'Address1': ''
+    'Address1': '',
+    'Address2': '',
+    'Address3': ''
   };
   //#endregion
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
     private _mddService: MasterDataDetailsService,
-    private _route: ActivatedRoute) {
+    private _route: ActivatedRoute,
+    private _validationMess: ValidationMessagesService ) {
     this.VendorAddress = this.CreateNewAddress();
   }
 
@@ -155,14 +168,14 @@ export class AddressFormComponent implements OnInit {
 
     this.AddressForm = this._fb.group({
       OrgUnitCode: [this.VendorAddress.OrgUnitCode],
-      Address1: [this.VendorAddress.Address1, Validators.required],
-      Address2: [this.VendorAddress.Address2],
-      Address3: [this.VendorAddress.Address3],
+      Address1: [this.VendorAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+      Address2: [this.VendorAddress.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
+      Address3: [this.VendorAddress.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
       CountryCode: ['IN', Validators.required],
       CityCode: [this.VendorAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       StateCode: [this.VendorAddress.StateCode, Validators.required],
       PIN: [this.VendorAddress.PIN,
-      [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
+      [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.PinPattern)]],
       AddressTypeCode: [this.VendorAddress.AddressTypeCode],
       PrimaryContactName: [this.VendorAddress.PrimaryContactName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       PrimaryContactPhone: [this.VendorAddress.PrimaryContactPhone, [Validators.required, Validators.pattern(this.PhonePattern)]],

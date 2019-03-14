@@ -22,7 +22,7 @@
                       closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
                   }">
                     <div class="col-md-8">
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <label class="text">Short Name</label>
                                 <span>
@@ -41,22 +41,22 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <label class="text">PAN No.
-                                    <span class="help-block mandatory" *ngIf="formErrors.PANNo">
-                                        {{formErrors.PANNo}}
-                                    </span>
-                                </label>&nbsp;&nbsp;
+                                 </label>&nbsp;&nbsp;
                                 <span>
                                     <input type="text" formControlName="PANNo" style="text-transform: uppercase"
-                                        (blur)="LogValidationErrors()"
+                                        (blur)="LogValidationErrors()" maxlength="10"
                                         [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
                                         [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
                                 </span>
+                                <span class="error-label-lg" *ngIf="formErrors.PANNo">
+                                    {{formErrors.PANNo}}
+                                </span>
                             </div>
                         </div>
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <div for="Ref_VendorCode">Reference Producer Name</div>
                                 <select type="text" class="form-control col-md-12 input-sm"
@@ -79,7 +79,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <span>
                                     <label class="text">Insured
@@ -91,7 +91,7 @@
                             <div class="col-md-6">
                                 <label class="text">Name of Insurance Company</label>
                                 <span>
-                                    <input type="text" (blur)="LogValidationErrors()"
+                                    <input type="text" (blur)="LogValidationErrors()" maxlength="50"
                                         [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
                                         formControlName="NameofInsuranceCompany" class="form-control input-sm" />
                                 </span>
@@ -200,7 +200,7 @@
                             <label class="text">GST Registered</label>
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input [value]="true" type="radio" formControlName="IsGSTRegistered"
+                                    <input [value]="true" type="radio" formControlName="IsGSTRegistered" 
                                         [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                         (change)="SetValidationForGSTControls($event)" />
                                     <span style="margin-left:5px;">Yes</span>
@@ -237,14 +237,14 @@
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
-                                <span class="help-block mandatory"
+                                <span class="error-label-lg"
                                     *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
                                     {{formErrors.GSTIN}}
                                 </span>
                             </label>
                             <span>
                                 <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
-                                    (blur)="LogValidationErrors()"
+                                    (blur)="LogValidationErrors()" maxlength="15"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? 'disabled' : null"
                                     [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
@@ -282,21 +282,30 @@
                             </label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address1}"
-                                    formControlName="Address1" type="text" class="form-control input-sm" />
+                                    formControlName="Address1" type="text" class="form-control input-sm" maxlength="50"/>
+                            </span>
+                            <span class="error-label-lg" *ngIf="formErrors.Address1">
+                                {{formErrors.Address1}}
                             </span>
                         </div>
 
                         <div class="col-md-4">
                             <label class="text">Address2</label>
                             <span>
-                                <input formControlName="Address2" type="text" class="form-control input-sm" />
+                                <input formControlName="Address2" type="text" class="form-control input-sm" maxlength="50"/>
+                            </span>
+                            <span class="error-label-lg" *ngIf="formErrors.Address2">
+                                {{formErrors.Address2}}
                             </span>
                         </div>
 
                         <div class="col-md-4">
                             <label class="text">Address3</label>
                             <span>
-                                <input formControlName="Address3" type="text" class="form-control input-sm" />
+                                <input formControlName="Address3" type="text" class="form-control input-sm" maxlength="50"/>
+                            </span>
+                            <span class="error-label-lg" *ngIf="formErrors.Address3">
+                                {{formErrors.Address3}}
                             </span>
                         </div>
                     </div>
@@ -347,12 +356,12 @@
                             <label class="text">Pincode
                                 <i class="mandatory">*</i>
                             </label>
-                            <span class="help-block mandatory" *ngIf="formErrors.PIN">
+                            <span class="error-label-lg" *ngIf="formErrors.PIN">
                                 {{formErrors.PIN}}
                             </span>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PIN}"
-                                    formControlName="PIN" type="text" class="form-control input-sm" />
+                                    formControlName="PIN" type="text" class="form-control input-sm" maxlength="6" />
                             </span>
                         </div>
 
@@ -360,7 +369,10 @@
                             <label class="text">City<i class="mandatory">*</i></label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.CityCode}"
-                                    formControlName="CityCode" type="text" class="form-control input-sm" />
+                                    formControlName="CityCode" type="text" class="form-control input-sm" maxlength="50" />
+                            </span>
+                            <span class="error-label-lg" *ngIf="formErrors.CityCode">
+                                {{formErrors.CityCode}}
                             </span>
                         </div>
                         <div class="col-md-4" style="display: none;">
@@ -380,46 +392,61 @@
                                 <div class="col-md-22">
                                     <label class="text">Contact Name<i class="mandatory">*</i></label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="50"
                                             [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
                                             formControlName="PrimaryContactName" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.PrimaryContactName">
+                                        {{formErrors.PrimaryContactName}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Phone No.<i class="mandatory">*</i></label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="10"
                                             [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
                                             formControlName="PrimaryContactPhone" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.PrimaryContactPhone">
+                                        {{formErrors.PrimaryContactPhone}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Fax</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="10"
                                             [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}"
                                             formControlName="PrimaryContactFax" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.PrimaryContactFax">
+                                        {{formErrors.PrimaryContactFax}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Email</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="50"
                                             [ngClass]="{'is-invalid': formErrors.PrimaryContactEmail}"
                                             formControlName="PrimaryContactEmail" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.PrimaryContactEmail">
+                                        {{formErrors.PrimaryContactEmail}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Website</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="50"
                                             [ngClass]="{'is-invalid': formErrors.PrimaryContactWebsite}"
                                             formControlName="PrimaryContactWebsite" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.PrimaryContactWebsite">
+                                        {{formErrors.PrimaryContactWebsite}}
                                     </span>
                                 </div>
                             </div>
@@ -433,46 +460,61 @@
                                 <div class="col-md-22">
                                     <label class="text">Contact Name</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="50"
                                             [ngClass]="{'is-invalid': formErrors.SecondaryContactName}"
                                             formControlName="SecondaryContactName" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.SecondaryContactName">
+                                        {{formErrors.SecondaryContactName}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Phone No.</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="10"
                                             [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}"
                                             formControlName="SecondaryContactPhone" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.SecondaryContactPhone">
+                                        {{formErrors.SecondaryContactPhone}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Fax</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="10"
                                             [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}"
                                             formControlName="SecondaryContactFax" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.SecondaryContactFax">
+                                        {{formErrors.SecondaryContactFax}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Email</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="50"
                                             [ngClass]="{'is-invalid': formErrors.SecondaryContactEmail}"
                                             formControlName="SecondaryContactEmail" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.SecondaryContactEmail">
+                                        {{formErrors.SecondaryContactEmail}}
                                     </span>
                                 </div>
                                 <div class="col-md-22">
                                     <label class="text">Website</label>
                                     <span>
-                                        <input (blur)="LogValidationErrors()"
+                                        <input (blur)="LogValidationErrors()" maxlength="50"
                                             [ngClass]="{'is-invalid': formErrors.SecondaryContactWebsite}"
                                             formControlName="SecondaryContactWebsite" type="text"
                                             class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.SecondaryContactWebsite">
+                                        {{formErrors.SecondaryContactWebsite}}
                                     </span>
                                 </div>
                             </div>

@@ -8,6 +8,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { VendorDocumentService } from 'src/app/Services/vendor-document.service';
 import { VendorDocument } from 'src/app/Models/vendor-document';
 import { HttpRequest } from '@angular/common/http';
+import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 declare var $: any;
 
 @Component({
@@ -71,7 +72,7 @@ export class DocumentComponent implements OnInit {
     },
     'Remarks': {
       'required': '',
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validatonMess.RemarksPattern
     }
   };
 
@@ -90,7 +91,8 @@ export class DocumentComponent implements OnInit {
     private _pager: PagerService,
     private _mddService: MasterDataDetailsService,
     private cd: ChangeDetectorRef,
-    private _vendorDocService: VendorDocumentService) {
+    private _vendorDocService: VendorDocumentService,
+    private _validatonMess: ValidationMessagesService) {
     this.formData = new FormData();
     this.inEditedMode = false;
     this.isRemarksShown = false;

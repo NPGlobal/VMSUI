@@ -111,7 +111,8 @@ a, a:hover, button, button:focus, a:focus, img {text-decoration: none;outline: n
 .main-div label.text span{padding-left:5px;font-weight: normal;font-size: small;}
 .main-div .form-group{padding-left: 0px;}
 
-input[type="text"]{margin-bottom: 15px;}
+/* input[type="text"]{margin-bottom: 15px;} */
+input[type="text"] {margin-bottom: 5px;}
 select{margin-bottom: 10px;}
 .content-heading{
   margin-bottom: 20px;border-bottom: 1px solid #bdbcbc;width: 100%;
@@ -270,6 +271,7 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
   .pl-4, .px-4{padding-left:0px;}
   .detail-page{width:95%}
   .expand-all{width:95%}
+  .py-4{display: none;}
 }
 
 
@@ -294,6 +296,11 @@ p.header{font-weight: bold;color: #fff;font-size:20px;position: absolute;left: 5
 .error-label,.req-popup-label{
   color:red;
   font-size: 12px;
+  font-weight: 500;
+}
+.error-label-lg{
+  color:red;
+  font-size: 13px;
   font-weight: 500;
 }
 .py-4{margin-left:5px;}
