@@ -175,9 +175,9 @@ export class AddressFormComponent implements OnInit {
       SecondaryContactEmail: [this.VendorAddress.SecondaryContactEmail, Validators.pattern(this.EmailPattern)],
       SecondaryContactWebsite: [this.VendorAddress.SecondaryContactWebsite, Validators.pattern(this.WebsitePattern)]
     });
-    this.AddressForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.AddressForm);
-    });
+    // this.AddressForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.AddressForm);
+    // });
   }
   //#endregion
 

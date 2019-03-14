@@ -9,7 +9,7 @@ export class Vendor {
     MasterVendorId: number;
     PANNo: string;
     Status: string;
-    AssociatedSinceYear: number;
+    AssociatedSinceYear: Date;
     VendorType_MDDCode: string;
     PersonTopRanker1: string;
     PersonTopRanker2: string;
@@ -46,4 +46,6 @@ export class Vendor {
     VendorExpe_MDDCode: string;
     RefVendor_Name: string;
     Vendor_Depts: string;
+    CreatedOn: Date;
+    MasterVendorName: string;
 }

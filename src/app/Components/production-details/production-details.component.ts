@@ -161,6 +161,14 @@ export class ProductionDetailsComponent implements OnInit {
     this.deleteModalButton = this.deleteModal.nativeElement as HTMLElement;
     this.deleteModalCloseBtn = this.deleteModalClose.nativeElement as HTMLElement;
 
+    this.searchBySubContName = '';
+    this.searchBySubContNature = '';
+    this.searchByApprProdUnits = '';
+    this.searchByMonCapacity = '';
+    this.searchByMinCapacity = '';
+    this.searchByLeanMonths = '';
+    this.searchByLeanCapacity = '';
+
     this.GetStateList();
     this.VendorProduction = new VendorProduction();
     this.InitializeFormControls();
@@ -357,10 +365,5 @@ export class ProductionDetailsComponent implements OnInit {
     }
   }
   //#endregion
-
-
-
-
-
 
 }

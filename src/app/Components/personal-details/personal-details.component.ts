@@ -264,7 +264,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: false
       }),
       OtherRegDetails: this._fb.group({
-        AssociatedSinceYear: [this.vendor.AssociatedSinceYear],
+        AssociatedSinceYear: [this.FormatDate(this.vendor.AssociatedSinceYear)],
         VendorType_MDDCode: [this.vendor.VendorType_MDDCode],
         PersonTopRanker1: [this.vendor.PersonTopRanker1],
         PersonTopRanker2: [this.vendor.PersonTopRanker2],
@@ -491,7 +491,9 @@ export class PersonalDetailsComponent implements OnInit {
       }
       // this.LogValidationErrors();
       // this.personalDetailsForm.valid;
-      this.clearValidator();
+      // this.clearValidator();
+      this.formErrors.GSTIN = '';
+      this.formErrors.GSTDate = '';
     }
   }
 
@@ -568,7 +570,8 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').patchValue('');
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators([]);
-      this.clearValidator();
+      // this.clearValidator();
+      this.formErrors.NameofInsuranceCompany = '';
     }
   }
 

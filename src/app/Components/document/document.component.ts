@@ -29,6 +29,9 @@ export class DocumentComponent implements OnInit {
   inEditedMode: boolean;
   isRemarksShown: boolean;
 
+  // pattern
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+
   // for searching
   searchText = '';
   searchByAction = '';
@@ -67,7 +70,8 @@ export class DocumentComponent implements OnInit {
       'required': ''
     },
     'Remarks': {
-      'required': ''
+      'required': '',
+      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
     }
   };
 
@@ -151,7 +155,7 @@ export class DocumentComponent implements OnInit {
     if (this.docDetailsForm.get('VendDoc_MDDCode').value !== null &&
       this.docDetailsForm.get('VendDoc_MDDCode').value.toUpperCase() === 'OTHE') {
       this.isRemarksShown = true;
-      this.docDetailsForm.get('Remarks').setValidators([Validators.required]);
+      this.docDetailsForm.get('Remarks').setValidators([Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]);
       this.docDetailsForm.get('Remarks').updateValueAndValidity();
     } else {
       this.isRemarksShown = false;
@@ -203,16 +207,18 @@ export class DocumentComponent implements OnInit {
     if (!this.inEditedMode) {
       this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('VendAction_MDDCode').value;
       this.vendorDocument.VendDoc_MDDCode = this.docDetailsForm.get('VendDoc_MDDCode').value;
-      this.vendorDocument.Remarks = this.docDetailsForm.get('Remarks').value;
+
+      if (this.vendDocList.findIndex(x => x.VendAction_MDDCode === this.vendorDocument.VendAction_MDDCode) > -1 &&
+        this.vendDocList.findIndex(x => x.VendDoc_MDDCode === this.vendorDocument.VendDoc_MDDCode) > -1) {
+        this.PopUpMessage = 'This data already exists.';
+        this.alertModalButton.click();
+        return;
+      }
+
     }
 
+    this.vendorDocument.Remarks = this.docDetailsForm.get('Remarks').value;
     this.vendorDocument.CompanyCode = '10';
-
-    if (this.vendDocList.findIndex(x => x.VendAction_MDDCode === this.vendorDocument.VendAction_MDDCode) > -1 &&
-      this.vendDocList.findIndex(x => x.VendDoc_MDDCode === this.vendorDocument.VendDoc_MDDCode) > -1) {
-      this.PopUpMessage = 'This data already exists.';
-      this.alertModalButton.click();
-    }
 
     this.formData.append('vendorDoc', JSON.stringify(this.vendorDocument));
 
@@ -275,9 +281,11 @@ export class DocumentComponent implements OnInit {
     if (this.inEditedMode) {
       this.docDetailsForm.get('VendAction_MDDCode').disable();
       this.docDetailsForm.get('VendDoc_MDDCode').disable();
+      this.docDetailsForm.get('FileName').setValidators([]);
     } else {
       this.docDetailsForm.get('VendAction_MDDCode').enable();
       this.docDetailsForm.get('VendDoc_MDDCode').enable();
+      this.docDetailsForm.get('FileName').setValidators([Validators.required]);
     }
   }
 
@@ -342,14 +350,14 @@ export class DocumentComponent implements OnInit {
         return;
       }
 
-      // For other browsers:
-      // Create a link pointing to the ObjectURL containing the blob.
-      const data = window.URL.createObjectURL(newBlob);
+      const url = window.URL.createObjectURL(newBlob);
 
       const link = document.createElement('a');
-      link.href = data;
-      // this is necessary as link.click() does not work on the latest firefox
-      link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      link.href = url;
+      link.download = doc.FileName.substring(doc.FileName.lastIndexOf('\\') + 1);
+      link.click();
+
+      window.URL.revokeObjectURL(url);
     });
   }
   //#endregion
