@@ -13,7 +13,7 @@
     <thead>
       <tr class="search">
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByTechLine"
-            (keyup)="SearchTechDetailsList()" placeholder="Search By Tech Line" style="display:none"/></td>
+            (keyup)="SearchTechDetailsList()" placeholder="Search By Tech Line" style="display:none" /></td>
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMachineType"
             (keyup)="SearchTechDetailsList()" placeholder="Search By Machine Type" /></td>
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMachineName"
@@ -48,9 +48,9 @@
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
-              <a *ngIf="vendor.Status !== 'B'" title="Edit Machine"
-                href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)" data-target="#myModal"
-                data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
+              <a *ngIf="vendor.Status !== 'B'" title="Edit Machine" href="javascript:void(0)" data-toggle="modal"
+                (click)="EditTechDetails(vendor)" data-target="#myModal" data-backdrop="static" data-keyboard="false"><i
+                  class="fa fa-edit"></i>
               </a>
 
               <a *ngIf="vendor.TechLineNo.length>0" title="Delete Machine" href="javascript:void(0)" class="ml-2"
@@ -107,7 +107,7 @@
       <div class="modal-header">
         <h6 class="modal-title">Technical <span class="req-popup-label">(<b>Note:</b> * marks filed are required)</span>
         </h6>
-        <button type="button" class="close" (click)="dismiss()">&times;</button>
+        <button type="button" class="close" (click)="DiscardChanges()">&times;</button>
         <button #modalCloseButton type="button" class="close" data-dismiss="modal" style="display: none;"></button>
       </div>
       <!-- modal-body -->
@@ -250,7 +250,7 @@
             [attr.disabled]="isTechDetailFormChanged ? 'disabled' : null" class="mr-3 btn btn-primary">
             Save
           </button>
-          <button type="button" class="btn btn-secondary" (click)="dismiss()">Cancel</button>
+          <button type="button" class="btn btn-secondary" (click)="DiscardChanges()">Cancel</button>
         </div>
       </div>
     </div>
@@ -264,24 +264,46 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
-          Ready to {{vendorTechDefault!== undefined && 
-                     (vendorTechDefault.Status === 'D' ? 'Delete' :
-                     (vendorTechDefault.Status === 'B' ? 'Deactivate' : 'Activate'))}}?
+          {{DeleteModalHeader}}
         </h5>
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body">
-        {{vendorTechDefault!== undefined && 
-          (vendorTechDefault.Status === 'D' ? 'This record no longer will be available' : 
-          (vendorTechDefault.Status === 'B' ? 'This record no longer will be available for allocation' :
-          'This record will be available for allocation'))}} in the system.
-        Are you sure?
+        <span [innerHTML]="DeleteModalBody"></span>
       </div>
       <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
         <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden button to open alert modal -->
+<button #discardModalOpen type="button" data-target="#discardModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+<!-- DiscardChanges Modal-->
+<div class="modal fade" id="discardModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Discard changes?
+        </h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <!-- <div class="modal-body">
+        <span [innerHTML]="DeleteModalBody"></span>
+      </div> -->
+      <div class="modal-footer page-footer">
+        <button type="button" class="btn btn-primary" (click)="DiscardChanges()">Yes</button>
+        <button #discardModalClose class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
       </div>
     </div>
   </div>
