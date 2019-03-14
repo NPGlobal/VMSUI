@@ -307,11 +307,11 @@
                                 <i class="mandatory">*</i>
                             </label>
                             <span>
-                                <select (blur)="LogValidationErrors()"
+                                <select (blur)="LogValidationErrors()" (change)="PopulateStateList($event)"
                                     [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                     class="form-control input-sm">
-                                    <option [ngValue]="null">Select</option>
+                                    <option *ngIf="CountryList && CountryList.length > 1" [ngValue]="null">Select</option>
                                     <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
                                         {{country.MDDName}}</option>
                                 </select>
