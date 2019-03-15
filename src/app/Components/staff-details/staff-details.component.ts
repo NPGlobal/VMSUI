@@ -18,6 +18,7 @@ export class StaffDetailsComponent implements OnInit {
   invalid = false;
   priority = 1;
   vendorcode: string;
+  AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   PhonePattern = '^[0-9]{10}$';
   NumericPattern = '^[0-9]*$';
@@ -91,7 +92,8 @@ export class StaffDetailsComponent implements OnInit {
       'required': ''
     },
     'ContactName': {
-      'required': ''
+      'required': '',
+      'pattern' : this._validationMess.ContactNamePattern
     },
     'ContactEmail': {
       'email': this._validationMess.EmailPattern
@@ -158,7 +160,7 @@ export class StaffDetailsComponent implements OnInit {
   InitializeFormControls() {
     this.staffDetailsForm = this._fb.group({
       Designation: [this.vendorStaffDetail.Designation, Validators.required],
-      ContactName: [this.vendorStaffDetail.ContactName, Validators.required],
+      ContactName: [this.vendorStaffDetail.ContactName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       ContactEmail: [this.vendorStaffDetail.ContactEmail, Validators.email],
       ContactPhone: [this.vendorStaffDetail.ContactPhone, [
         Validators.required, Validators.maxLength(10), Validators.pattern(this.PhonePattern)

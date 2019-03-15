@@ -25,7 +25,7 @@ EfficiencyPattern = 'Please enter a valid efficiency';
 AccountNoPattern = 'Please enter a valid account no.';
 UserName = 'Employee Id is required';
 Password = 'Password is Required';
-MaxLeanMonth = 'Month cannot exceed than 500';
+MaxLeanMonth = 'Month cannot exceed 500';
 NumericPattern = 'Numeric value allowed';
 
   constructor() { }

@@ -17,7 +17,7 @@
       <tr class="search">
         <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByName" (keyup)="SearchVendorList()" placeholder="Search By Name" /></td>
         <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByShortName" (keyup)="SearchVendorList()" placeholder="Search By S. Name" /></td>
-        <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByRefVendor" (keyup)="SearchVendorList()" placeholder="Search By Ref Vendor" /></td>
+        <td style="width:22%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByRefVendor" (keyup)="SearchVendorList()" placeholder="Search By Ref Producer" /></td>
         <td style="width:11%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByGST" (keyup)="SearchVendorList()" placeholder="Search By GST" /></td>
         <td style="width:11%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByPAN" (keyup)="SearchVendorList()" placeholder="Search By PAN" /></td>
         <!-- <td style="width:17%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByCreatedOn" (keyup)="SearchVendorList()" /></td> -->
@@ -27,7 +27,7 @@
         <!-- <th scope="col">Serial</th> -->
         <th scope="col" (click)="SortVendorList('ProducerName')">Producer Name <i class="fa fa-sort"></i></th>
         <th scope="col" (click)="SortVendorList('ShortName')">Short Name <i class="fa fa-sort"></i></th>
-        <th scope="col" (click)="SortVendorList('RefVendor')">Ref Vendor <i class="fa fa-sort"></i></th>
+        <th scope="col" (click)="SortVendorList('RefVendor')">Ref Producer <i class="fa fa-sort"></i></th>
         <th scope="col">GST No</th>
         <th scope="col">PAN No</th>
         <th scope="col" (click)="SortVendorList('CreatedOn')">Created On <i class="fa fa-sort"></i></th>

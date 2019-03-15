@@ -125,6 +125,7 @@
                 <input type="text" formControlName="ContactName" class="form-control input-sm"
                   (blur)="logValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.ContactName }" maxlength="49">
               </span>
+              <span class="error-label-lg" *ngIf="formErrors.ContactName">{{formErrors.ContactName}}</span>
             </div>
           </div>
 

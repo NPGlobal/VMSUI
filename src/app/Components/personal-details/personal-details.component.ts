@@ -586,6 +586,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.formErrors.GSTDate = '';
     this.formErrors.Address1 = '';
+    this.formErrors.Address2 = '';
+    this.formErrors.Address3 = '';
     this.formErrors.CountryCode = '';
 
     this.formErrors.StateCode = '';
