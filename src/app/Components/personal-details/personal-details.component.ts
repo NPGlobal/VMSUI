@@ -197,9 +197,8 @@ export class PersonalDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
-    this.GetMasterDataDetails('VendorType');
-    this.GetMasterDataDetails('COUNTRY');
-    this.GetMasterDataDetails('STATE');
+    this.GetMasterDataDetails('VendorType', '-1');
+    this.GetMasterDataDetails('COUNTRY', '-1');
     // this.GetMasterDataDetails('VendorExpe');
 
     this._route.parent.paramMap.subscribe((data) => {
@@ -249,10 +248,13 @@ export class PersonalDetailsComponent implements OnInit {
         GSTIN: [this.vendor.GSTIN],
         GSTDate: [this.FormatDate(this.vendor.GSTDate)],
         IsProvisional: [this.vendor.isProvisional],
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
-        Address2: [this.vendor.RegisteredOfficeAddress.Address2, [Validators.pattern(this.AddressAndRemarksPattern)]],
-        Address3: [this.vendor.RegisteredOfficeAddress.Address3, [Validators.pattern(this.AddressAndRemarksPattern)]],
-        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
+        Address2: [this.vendor.RegisteredOfficeAddress.Address2],
+        Address3: [this.vendor.RegisteredOfficeAddress.Address3],
+        // CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
+        CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode === undefined ?
+          (this.CountryList.length === 1 ? this.CountryList[0].MDDCode : null) :
+          this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CityCode: [this.vendor.RegisteredOfficeAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
         StateCode: [this.vendor.RegisteredOfficeAddress.StateCode, [Validators.required]],
         PIN: [this.vendor.RegisteredOfficeAddress.PIN,
@@ -317,7 +319,7 @@ export class PersonalDetailsComponent implements OnInit {
       this.vendor.RegisteredOfficeAddress =
         ((result.data.RegisteredOfficeAddress[0] === undefined) ? new VendorAddress() : result.data.RegisteredOfficeAddress[0]);
       // this.vendorAddresses = result.data.FactoryAddress;
-      this.vendor.RegisteredOfficeAddress.CountryCode = 'IN';
+      // this.vendor.RegisteredOfficeAddress.CountryCode = 'IN';
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
@@ -333,7 +335,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.ReferenceVendorList.push(tempVendor);
       }
 
-      this.GetMasterDataDetails('VendorExpe');
+      this.GetMasterDataDetails('VendorExpe', '-1');
       this.GetPHList();
 
       this.InitializeFormControls();
@@ -359,8 +361,8 @@ export class PersonalDetailsComponent implements OnInit {
     });
   }
 
-  GetMasterDataDetails(MDHCode: string) {
-    this._mDDService.GetMasterDataDetails(MDHCode, '-1').subscribe((result) => {
+  GetMasterDataDetails(MDHCode: string, ParentMDDCode: string) {
+    this._mDDService.GetMasterDataDetails(MDHCode, ParentMDDCode).subscribe((result) => {
       let lst: MasterDataDetails[];
       switch (MDHCode) {
         case 'VendorType': {
@@ -369,6 +371,9 @@ export class PersonalDetailsComponent implements OnInit {
         }
         case 'COUNTRY': {
           this.CountryList = result.data.Table.filter(x => x.MDDName === 'India');
+          if (this.CountryList.length === 1) {
+            this.GetMasterDataDetails('STATE', this.CountryList[0].MDDCode);
+          }
           break;
         }
         case 'STATE': {
@@ -383,6 +388,11 @@ export class PersonalDetailsComponent implements OnInit {
         }
       }
     });
+  }
+
+  PopulateStateList() {
+    const parentMDDCode = this.personalDetailsForm.get('RegisteredOfficeAddress.CountryCode').value;
+    this.GetMasterDataDetails('STATE', parentMDDCode);
   }
 
   SetStateCodeLabel() {
