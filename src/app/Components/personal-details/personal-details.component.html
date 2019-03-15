@@ -36,7 +36,7 @@
                                 </label>
                                 <span>
                                     <input type="text" maxlength="49" formControlName="VendorName"
-                                        class="form-control input-sm"
+                                        class="form-control input-sm" (blur)="LogValidationErrors()"
                                         [ngClass]="{'is-invalid': formErrors.VendorName}" />
                                 </span>
                             </div>
@@ -237,17 +237,17 @@
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
-                                <span class="error-label-lg"
-                                    *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
-                                    {{formErrors.GSTIN}}
-                                </span>
-                            </label>
+                                </label>
                             <span>
                                 <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
                                     (blur)="LogValidationErrors()" maxlength="15"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').disabled ? 'disabled' : null"
                                     [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
+                            <span class="error-label-lg"
+                                    *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
+                                    {{formErrors.GSTIN}}
+                                </span>
                         </div>
 
                         <div class="col-md-4" style="display:none">
@@ -292,7 +292,8 @@
                         <div class="col-md-4">
                             <label class="text">Address2</label>
                             <span>
-                                <input formControlName="Address2" type="text" class="form-control input-sm" maxlength="50"/>
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address2}"
+                                formControlName="Address2" type="text" class="form-control input-sm" maxlength="50"/>
                             </span>
                             <span class="error-label-lg" *ngIf="formErrors.Address2">
                                 {{formErrors.Address2}}
@@ -302,7 +303,8 @@
                         <div class="col-md-4">
                             <label class="text">Address3</label>
                             <span>
-                                <input formControlName="Address3" type="text" class="form-control input-sm" maxlength="50"/>
+                                <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address3}"
+                                formControlName="Address3" type="text" class="form-control input-sm" maxlength="50"/>
                             </span>
                             <span class="error-label-lg" *ngIf="formErrors.Address3">
                                 {{formErrors.Address3}}
