@@ -3,15 +3,25 @@ import {
     HttpInterceptor,
     HttpHandler,
     HttpRequest,
-    HttpResponse,
     HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 
 export class HttpErrorInterceptor implements HttpInterceptor {
+
+    userid: string;
+    constructor() { }
+
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // this.CheckSession();
+        this.CheckSession();
+        this.SetUserId();
+
+        const headers = request.headers.set('userid', this.userid);
+        request = request.clone({
+            headers: headers
+        });
+
         return next.handle(request)
             .pipe(
                 retry(1),
@@ -30,11 +40,19 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             );
     }
 
+    SetUserId() {
+        if (sessionStorage.getItem('userid') === null) {
+            this.userid = null;
+        } else {
+            this.userid = sessionStorage.getItem('userid').toString();
+        }
+    }
+
     CheckSession() {
         const url = window.location.pathname.toLowerCase();
         if (url.indexOf('login') > 0 || url.indexOf('welcome') > 0 || url === '/') {
         } else {
-            if (typeof(Storage) !== undefined) {
+            if (typeof (Storage) !== undefined) {
                 if (sessionStorage.getItem('userid') === null || sessionStorage.getItem('userid') === 'null') {
                     const redirecturl = window.location.origin;
                     window.location.href = redirecturl;
@@ -45,5 +63,5 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 // alert('3');
             }
         }
-      }
+    }
 }
