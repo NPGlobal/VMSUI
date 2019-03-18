@@ -39,6 +39,9 @@
                                         class="form-control input-sm" (blur)="LogValidationErrors()"
                                         [ngClass]="{'is-invalid': formErrors.VendorName}" />
                                 </span>
+                                <span class="error-label-lg" *ngIf="formErrors.VendorName">
+                                    {{formErrors.VendorName}}
+                                </span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group row">
@@ -358,12 +361,12 @@
                             <label class="text">Pincode
                                 <i class="mandatory">*</i>
                             </label>
-                            <span class="error-label-lg" *ngIf="formErrors.PIN">
-                                {{formErrors.PIN}}
-                            </span>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PIN}"
                                     formControlName="PIN" type="text" class="form-control input-sm" maxlength="6" />
+                            </span>
+                            <span class="error-label-lg" *ngIf="formErrors.PIN">
+                                {{formErrors.PIN}}
                             </span>
                         </div>
 
@@ -851,9 +854,15 @@
                     </div>
                     <div class="col-md-12">
                         <label style="font-weight: 600;" class="text mr-2">Weaknesses (If any)</label>
-                        <input class="input-sm col-md-6" type="text" formControlName="VendorWeaknesses">
+                        <input class="input-sm col-md-6"  [ngClass]="{'is-invalid': formErrors.VendorWeaknesses}"
+                        type="text" formControlName="VendorWeaknesses" (blur)="LogValidationErrors()"  maxlength="250">
                         <span class="mandatory" style="font-size: 13px;font-weight: 500;"> (Only 250 character
                             allowed)</span>
+                        <br> <span class="error-label-lg" *ngIf="formErrors.VendorWeaknesses" style="margin-left: 9%;">
+                            {{formErrors.VendorWeaknesses}}
+                        </span>
+                        
+                          
                     </div>
                 </div>
             </div>

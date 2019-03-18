@@ -78,7 +78,8 @@ export class PersonalDetailsComponent implements OnInit {
   //#region  Validation Messages
   ValidationMessages = {
     'VendorName': {
-      'required': ''
+      'required': '',
+      'pattern' : this._validationMess.ContactNamePattern
     },
     'PANNo': {
       'minlength': '',
@@ -154,6 +155,9 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'NameofInsuranceCompany': {
       'required': ''
+    },
+    'VendorWeaknesses': {
+      'pattern': this._validationMess.RemarksPattern
     }
   };
 
@@ -178,7 +182,8 @@ export class PersonalDetailsComponent implements OnInit {
     'SecondaryContactEmail': '',
     'NameofInsuranceCompany': '',
     'PrimaryContactWebsite': '',
-    'SecondaryContactWebsite': ''
+    'SecondaryContactWebsite': '',
+    'VendorWeaknesses': ''
   };
   //#endregion
 
@@ -229,7 +234,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
-        VendorName: [this.vendor.VendorName, [Validators.required]],
+        VendorName: [this.vendor.VendorName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [
           Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.maxLength(10), Validators.minLength(10)]],
@@ -294,7 +299,8 @@ export class PersonalDetailsComponent implements OnInit {
       ExpertiseDetails: this._fb.group({
         IsExpanded: false,
         ExpertiseList: new FormArray([]),
-        VendorWeaknesses: [this.vendor.Vendor_Weakness === null ? '' : this.vendor.Vendor_Weakness]
+        VendorWeaknesses: [this.vendor.Vendor_Weakness === null ? '' : this.vendor.Vendor_Weakness,
+         Validators.pattern(this.AddressAndRemarksPattern)]
       })
     });
 
