@@ -122,14 +122,30 @@ export class BusinessDetailsComponent implements OnInit {
       let hasError = false;
       for (let count = 0; count < busProd.BusinessDetails.length; ++count) {
         const data = busProd.BusinessDetails[count];
+        if (data.CurrentYearProposedDPGrnQty !== null) {
         this.ValidateField(data, data.CurrentYearProposedDPGrnQty.toString(), 0);
+      }
+      if (data.CurrentYearProposedDPValueQty !== null) {
         this.ValidateField(data, data.CurrentYearProposedDPValueQty.toString(), 1);
+      }
+        if (data.CurrentYearProposedJWGrnQty !== null) {
         this.ValidateField(data, data.CurrentYearProposedJWGrnQty.toString(), 2);
+      }
+      if (data.CurrentYearProposedJWValueQty !== null) {
         this.ValidateField(data, data.CurrentYearProposedJWValueQty.toString(), 3);
+      }
+      if (data.NextYearProposedDPGrnQty !== null) {
         this.ValidateField(data, data.NextYearProposedDPGrnQty.toString(), 4);
+      }
+      if (data.NextYearProposedDPValueQty !== null) {
         this.ValidateField(data, data.NextYearProposedDPValueQty.toString(), 5);
+      }
+      if (data.NextYearProposedJWGrnQty !== null) {
         this.ValidateField(data, data.NextYearProposedJWGrnQty.toString(), 6);
+      }
+      if (data.NextYearProposedJWValueQty !== null) {
         this.ValidateField(data, data.NextYearProposedJWValueQty.toString(), 7);
+      }
 
         hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
 
