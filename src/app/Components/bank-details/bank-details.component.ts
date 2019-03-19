@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { Vendor } from 'src/app/Models/vendor';
 import { VendorAddress } from 'src/app/Models/vendor-address';
+import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-bank-details',
@@ -12,6 +13,7 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 })
 export class BankDetailsComponent implements OnInit {
 
+  //#region Variable Declaration and Pattern
   BankDetailsForm: FormGroup;
   vendor: Vendor;
   submitted = false;
@@ -20,12 +22,16 @@ export class BankDetailsComponent implements OnInit {
   AccountType: any[];
   CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
+  //#endregion
 
+  //#region Alert Modal
   @ViewChild('alertModalButton')
   alertModalButton: ElementRef;
   PopUpMessage: string;
   alertButton: any;
+  //#endregion
 
+  //#region Validation Message
   ValidationMessages = {
     'CurrencyCode': {
       'required': ''
@@ -34,7 +40,7 @@ export class BankDetailsComponent implements OnInit {
       'required': ''
     },
     'AccountNo': {
-      'pattern': ''
+      'pattern': this._validationMess.AccountNoPattern
     }
   };
 
@@ -43,9 +49,13 @@ export class BankDetailsComponent implements OnInit {
     'PaymentTerms': '',
     'AccountNo': ''
   };
+  //#endregion
 
 
-  constructor(private _route: ActivatedRoute, private _fb: FormBuilder, private _vendorService: VendorService) { }
+  constructor(private _route: ActivatedRoute,
+    private _fb: FormBuilder,
+    private _vendorService: VendorService,
+    private _validationMess: ValidationMessagesService) { }
 
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
@@ -62,6 +72,7 @@ export class BankDetailsComponent implements OnInit {
     this.GetAccountType();
   }
 
+  //#region Form Initialization
   InitializeFormControls() {
     this.BankDetailsForm = this._fb.group({
       NameAsPerBankAccount: [this.vendor.NameAsPerBankAccount],
@@ -88,7 +99,23 @@ export class BankDetailsComponent implements OnInit {
       this.InitializeFormControls();
     });
   }
+  //#endregion
 
+  //#region Data Binging
+  GetCurrencyList() {
+    this._vendorService.GetCurrencyList().subscribe((result) => {
+      this.CurrencyList = result.data.Table;
+    });
+  }
+
+  GetAccountType() {
+    this._vendorService.GetAccountType().subscribe((result) => {
+      this.AccountType = result.data.Table;
+    });
+  }
+  //#endregion
+
+  //#region Form Validator
   logValidationErrors(group: FormGroup = this.BankDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -108,7 +135,9 @@ export class BankDetailsComponent implements OnInit {
       }
     });
   }
+  //#endregion
 
+  //#region Save Form Data
   SaveVendorBankDetails() {
 
     this.submitted = true;
@@ -125,24 +154,24 @@ export class BankDetailsComponent implements OnInit {
     vendor.VendorCode = this.VendorCode;
     vendor.SaveOnlyBankDetails = this.SaveOnlyBankDetails;
     vendor.NameAsPerBankAccount = this.BankDetailsForm.get('NameAsPerBankAccount').value === null ?
-    null : this.BankDetailsForm.get('NameAsPerBankAccount').value.trim();
+      null : this.BankDetailsForm.get('NameAsPerBankAccount').value.trim();
     vendor.BankAcctNo = this.BankDetailsForm.get('AccountNo').value === null ?
-    null : this.BankDetailsForm.get('AccountNo').value.trim();
+      null : this.BankDetailsForm.get('AccountNo').value.trim();
     vendor.BankName = this.BankDetailsForm.get('BankName').value === null ?
-    null : this.BankDetailsForm.get('BankName').value.trim();
+      null : this.BankDetailsForm.get('BankName').value.trim();
     vendor.BranchName = this.BankDetailsForm.get('BranchName').value === null ?
-    null : this.BankDetailsForm.get('BranchName').value.trim();
+      null : this.BankDetailsForm.get('BranchName').value.trim();
     vendor.CurrencyCode = this.BankDetailsForm.get('CurrencyCode').value;
     vendor.IFSCCode = this.BankDetailsForm.get('IFSCCode').value === null ?
-    null : this.BankDetailsForm.get('IFSCCode').value.trim();
+      null : this.BankDetailsForm.get('IFSCCode').value.trim();
     vendor.MICRNo = this.BankDetailsForm.get('MICRNo').value === null ?
-    null : this.BankDetailsForm.get('MICRNo').value.trim();
+      null : this.BankDetailsForm.get('MICRNo').value.trim();
     vendor.PaymentTerms = this.BankDetailsForm.get('PaymentTerms').value === null ?
-    null : this.BankDetailsForm.get('PaymentTerms').value.trim();
+      null : this.BankDetailsForm.get('PaymentTerms').value.trim();
     vendor.RemittanceInfavourof = this.BankDetailsForm.get('RemittanceInfavourof').value === null ?
-    null : this.BankDetailsForm.get('RemittanceInfavourof').value.trim();
+      null : this.BankDetailsForm.get('RemittanceInfavourof').value.trim();
     vendor.SwiftCode = this.BankDetailsForm.get('SWIFTCode').value === null ?
-    null : this.BankDetailsForm.get('SWIFTCode').value.trim();
+      null : this.BankDetailsForm.get('SWIFTCode').value.trim();
     vendor.accountType = this.BankDetailsForm.get('AccountType').value.trim();
     vendor.isECSenabled = this.BankDetailsForm.get('isECSenabled').value;
     try {
@@ -162,15 +191,7 @@ export class BankDetailsComponent implements OnInit {
       this.alertButton.click();
     }
   }
+  //#endregion
 
-  GetCurrencyList() {
-    this._vendorService.GetCurrencyList().subscribe((result) => {
-      this.CurrencyList = result.data.Table;
-    });
-  }
-  GetAccountType() {
-    this._vendorService.GetAccountType().subscribe((result) => {
-      this.AccountType = result.data.Table;
-    });
-  }
+
 }

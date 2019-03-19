@@ -14,4 +14,9 @@ export class MasterDataDetailsService {
     const apiUrl = this._origin.origin + 'api/MasterDataDetails/GetMasterDataDetails/' + MDHCode + '/' + parentCode;
     return this._http.get<any>(apiUrl);
   }
+
+  GetDepartmentMappingDetails(VendorCode: string): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/MasterDataDetails/GetDepartmentMappingDetails/' + VendorCode;
+    return this._http.get<any>(apiUrl);
+  }
 }

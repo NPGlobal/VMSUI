@@ -11,22 +11,27 @@ import { Vendor } from 'src/app/Models/vendor';
 })
 export class VendorListComponent implements OnInit {
 
+  //#region Form Variables
   vendors: Vendor[];
   totalItems: number;
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
-  pagedItems: any[];
+  pagedItems: Vendor[];
   isSorted = false;
   searchText = '';
   loading: boolean;
   RegistrationClick = true;
+  //#endregion
+
+  //#region Search Parameters
   searchByName: string;
   searchByShortName: string;
   searchByRefVendor: string;
   searchByGST: string;
   searchByPAN: string;
   searchByCreatedOn: string;
+  //#endregion
 
   constructor(private _http: HttpClient,
     private _vendorService: VendorService,
@@ -42,6 +47,8 @@ export class VendorListComponent implements OnInit {
 
     this.GetVendors(this.currentPage);
   }
+
+  //#region Data Binding
   GetVendors(index: number) {
     this.loading = true;
     this.currentPage = index;
@@ -53,6 +60,13 @@ export class VendorListComponent implements OnInit {
     });
   }
 
+  GetVendorsList() {
+    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.pagedItems = this.vendors;
+  }
+  //#endregion
+
+  //#region Searching and Sorting
   SearchVendor(searchText = '') {
     this.searchText = searchText;
     this.GetVendors(1);
@@ -64,48 +78,40 @@ export class VendorListComponent implements OnInit {
     this.SearchVendor(this.searchText);
   }
 
-  GetVendorsList() {
-    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.vendors;
-  }
-
   SortVendorList(ColumnName: string) {
-    if (ColumnName === 'ProducerName') {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.sort((a, b) => a.VendorName.localeCompare(b.VendorName));
+    switch (ColumnName) {
+      case 'ProducerName': {
+        this.pagedItems.sort((a, b) => a.VendorName.toUpperCase().localeCompare(b.VendorName.toUpperCase()));
+        break;
       }
-    } else if (ColumnName === 'ShortName') {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
+      case 'ShortName': {
+        this.pagedItems.sort((a, b) => a.VendorCode.toUpperCase().localeCompare(b.VendorCode.toUpperCase()));
+        break;
       }
-    } else if (ColumnName === 'RefVendor') {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.sort((a, b) => a.MasterVendorName.localeCompare(b.MasterVendorName));
+      case 'RefVendor': {
+        this.pagedItems.filter(x => {
+          if (x.MasterVendorName === null || x.MasterVendorName === undefined) {
+            x.MasterVendorName = '';
+          }
+        });
+        this.pagedItems.sort((a, b) => a.MasterVendorName.toUpperCase().localeCompare(b.MasterVendorName.toUpperCase()));
+        break;
       }
-    } else {
-      if (this.isSorted) {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.reverse();
-      } else {
-        this.isSorted = !this.isSorted;
-        this.pagedItems.sort((a, b) => a.CreatedOn.localeCompare(b.CreatedOn));
+      case 'CreatedOn': {
+        this.pagedItems.sort((a, b) => new Date(a.CreatedOn).getTime() - new Date(b.CreatedOn).getTime());
+        break;
       }
     }
+    if (!this.isSorted) {
+      this.pagedItems.reverse();
+    }
+    this.isSorted = !this.isSorted;
   }
+  //#endregion
 
+  //#region Open Registration Modal
   OnRegistrationClick() {
     this.RegistrationClick = !this.RegistrationClick;
   }
+  //#endregion
 }

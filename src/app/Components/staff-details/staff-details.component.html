@@ -80,7 +80,7 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Staff</h6>
+        <h6 class="modal-title">Staff <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span></h6>
         <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
       </div>
       <!-- modal-body -->
@@ -125,6 +125,7 @@
                 <input type="text" formControlName="ContactName" class="form-control input-sm"
                   (blur)="logValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.ContactName }" maxlength="49">
               </span>
+              <span class="error-label-lg" *ngIf="formErrors.ContactName">{{formErrors.ContactName}}</span>
             </div>
           </div>
 
@@ -134,25 +135,29 @@
                 <label class="text">Email</label>
                 <span>
                   <input type="text" formControlName="ContactEmail" class="form-control input-sm"
-                    (blur)="logValidationErrors()" [ngClass]="{ 'is-invalid err': formErrors.ContactEmail }"
+                    (blur)="logValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.ContactEmail }"
                     maxlength="30" />
                 </span>
-                <span class="error-label" *ngIf="formErrors.ContactEmail">{{formErrors.ContactEmail}}</span>
+                <span class="error-label-lg" *ngIf="formErrors.ContactEmail">{{formErrors.ContactEmail}}</span>
               </div>
               <div class="col-lg-6 col-md-6">
                 <label class="text">Phone<i class="error-label">*</i></label>
                 <span>
                   <input type="text" formControlName="ContactPhone" maxlength="10" (blur)="logValidationErrors()"
-                    class="form-control input-sm" [ngClass]="{ 'is-invalid err': formErrors.ContactPhone }" />
+                    class="form-control input-sm" [ngClass]="{ 'is-invalid': formErrors.ContactPhone }" />
                 </span>
-                <span class="error-label" *ngIf="formErrors.ContactPhone">{{formErrors.ContactPhone}}</span>
+                <span class="error-label-lg" *ngIf="formErrors.ContactPhone">{{formErrors.ContactPhone}}</span>
               </div>
             </div>
           </div>
           <div class="form-group">
             <div class="col-lg-12 col-md-12">
               <label class="text">Remarks</label>
-              <span><input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="100" /></span>
+              <span>
+                <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="100" 
+                [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="logValidationErrors()" />
+              </span>
+              <span class="error-label-lg" *ngIf="formErrors.Remarks">{{formErrors.Remarks}}</span>
             </div>
           </div>
           <!-- Modal footer -->
@@ -168,7 +173,7 @@
 </div>
 
 <!-- Delete Modal-->
-<button #deleteModalOpen type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+<button #deleteModalOpen type="button" data-target="#deleteModal" data-backdrop="static" data-keyboard="false"
   data-toggle="modal" style="display:none;">
 </button>
 
@@ -183,7 +188,7 @@
         </button>
       </div>
       <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-      <div class="modal-footer">
+      <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="sendFormData()">Yes</button>
         <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
       </div>
@@ -201,15 +206,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
-        <!-- <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-              </button> -->
         <button #alertModalClose class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
       </div>
-      <!-- <div class="modal-body">{{ActionMessage}}</div> -->
-      <!-- <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          </div> -->
     </div>
   </div>
 </div>

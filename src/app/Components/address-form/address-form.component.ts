@@ -1,54 +1,62 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorAddress } from 'src/app/Models/vendor-address';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
-import { Router } from '@angular/router';
-import { Vendor } from 'src/app/Models/vendor';
+import { ActivatedRoute } from '@angular/router';
+import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-address-form',
   templateUrl: './address-form.component.html',
   styleUrls: ['./address-form.component.css']
 })
-export class AddressFormComponent implements OnInit, OnChanges {
+export class AddressFormComponent implements OnInit {
 
-  VendorAddress: VendorAddress;
+  //#region Form Variables Declaration
   AddressForm: FormGroup;
-  OnlyDirectVendor = false;
-  NumberPattern: '^[1-9][0-9]*$';
-
-  @Output() IsAddressSaved = new EventEmitter<boolean>();
-
-  @Input()
-  vendor: Vendor;
-
-  @Input()
-  Address: VendorAddress;
-
-  @ViewChild('modalCloseButton')
-  modalCloseButton: ElementRef;
-
-  AllPHList: OrgUnit[] = [];
-  SelectedPHList: OrgUnit[] = [];
+  VendorCode: string;
+  VendorAddress: VendorAddress; // to save/edit vendor address
+  VendorAddresses: VendorAddress[] = []; // for binding vendor addresses
   CountryList: MasterDataDetails[] = [];
   StateList: MasterDataDetails[] = [];
   submitted = false;
+  //#endregion
 
+  //#region Patterns
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  PinPattern = '^[1-9][0-9]{5}$';
+  NumberPattern: '^[1-9][0-9]*$';
   PhonePattern = '^[0-9]{10}$';
   EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';
   WebsitePattern = '^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$';
-  AlphabetPattern = '^[a-zA-Z ]*$';
+  // AlphabetPattern = '^[a-zA-Z ]*$';
+  AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
+  //#endregion
 
+  //#region Modal Popup and Alert
+  @ViewChild('modalCloseButton')
+  modalCloseButton: ElementRef;
+
+  @ViewChild('addModalOpenButton')
+  addModalOpenButton: ElementRef;
+
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage: string;
+  alertButton: HTMLElement;
+
+  //#endregion
+
+  //#region Validation messages
   ValidationMessages = {
     'OrgUnitCode': {
       'required': ''
     },
     'PIN': {
       'required': '',
-      'pattern': 'Invalid PIN number',
+      'pattern': this._validationMess.PinPattern,
       'minlength': '',
       'maxlength': ''
     },
@@ -60,42 +68,49 @@ export class AddressFormComponent implements OnInit, OnChanges {
     },
     'CityCode': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.CityPattern
     },
     'Address1': {
-      'required': ''
+      'required': '',
+      'pattern' : this._validationMess.AddressPattern
+    },
+    'Address2': {
+      'pattern' : this._validationMess.AddressPattern
+    },
+    'Address3': {
+      'pattern' : this._validationMess.AddressPattern
     },
     'PrimaryContactName': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.ContactNamePattern
     },
     'PrimaryContactPhone': {
       'required': '',
-      'pattern': ''
+      'pattern': this._validationMess.PhonePattern
     },
     'PrimaryContactFax': {
-      'pattern': ''
+      'pattern': this._validationMess.FaxPattern
     },
     'PrimaryContactEmail': {
-      'pattern': ''
+      'pattern': this._validationMess.EmailPattern
     },
     'PrimaryContactWebsite': {
-      'pattern': ''
+      'pattern': this._validationMess.WebsitePattern
     },
     'SecondaryContactName': {
-      'pattern': ''
+      'pattern': this._validationMess.ContactNamePattern
     },
     'SecondaryContactPhone': {
-      'pattern': ''
+      'pattern': this._validationMess.PhonePattern
     },
     'SecondaryContactFax': {
-      'pattern': ''
+      'pattern': this._validationMess.FaxPattern
     },
     'SecondaryContactEmail': {
-      'pattern': ''
+      'pattern': this._validationMess.EmailPattern
     },
     'SecondaryContactWebsite': {
-      'pattern': ''
+      'pattern': this._validationMess.WebsitePattern
     },
   };
 
@@ -115,67 +130,71 @@ export class AddressFormComponent implements OnInit, OnChanges {
     'CountryCode': '',
     'StateCode': '',
     'CityCode': '',
-    'Address1': ''
+    'Address1': '',
+    'Address2': '',
+    'Address3': ''
   };
+  //#endregion
 
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
     private _mddService: MasterDataDetailsService,
-    private _router: Router) { }
+    private _route: ActivatedRoute,
+    private _validationMess: ValidationMessagesService ) {
+    this.VendorAddress = this.CreateNewAddress();
+  }
 
   ngOnInit() {
+    this.PopUpMessage = '';
+    this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+
+    this._route.parent.paramMap.subscribe((data) => {
+      this.VendorCode = (data.get('code'));
+    });
+
     this.GetCountryList();
     this.GetStateList();
-
-    this.BindOrgUnitDropDown();
-
-    this.InitializeFormControls();
+    this.Editvendor(this.VendorCode);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.InitializeFormControls();
-  }
-
-  FillPHLists() {
-    if (this.vendor && this.vendor.SelectedPHListCSV) {
-      const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
-      for (let i = 0; i < this.AllPHList.length; ++i) {
-        if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
-          this.SelectedPHList.push(this.AllPHList[i]);
-        }
-      }
-    }
+  //#region Form Initialization
+  Editvendor(Code: string) {
+    this._vendorService.GetVendorAddress(Code).subscribe((result) => {
+      this.VendorAddresses = result.data.FactoryAddress;
+    });
   }
 
   InitializeFormControls() {
 
     this.AddressForm = this._fb.group({
-      OrgUnitCode: [this.Address.OrgUnitCode],
-      Address1: [this.Address.Address1, Validators.required],
-      Address2: [this.Address.Address2],
-      Address3: [this.Address.Address3],
-      CountryCode: ['IN', Validators.required],
-      CityCode: [this.Address.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
-      StateCode: [this.Address.StateCode, Validators.required],
-      PIN: [this.Address.PIN,
-      [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.NumberPattern)]],
-      AddressTypeCode: [this.Address.AddressTypeCode],
-      PrimaryContactName: [this.Address.PrimaryContactName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
-      PrimaryContactPhone: [this.Address.PrimaryContactPhone, [Validators.required, Validators.pattern(this.PhonePattern)]],
-      PrimaryContactFax: [this.Address.PrimaryContactFax, Validators.pattern(this.PhonePattern)],
-      PrimaryContactEmail: [this.Address.PrimaryContactEmail, Validators.pattern(this.EmailPattern)],
-      PrimaryContactWebsite: [this.Address.PrimaryContactWebsite, Validators.pattern(this.WebsitePattern)],
-      SecondaryContactName: [this.Address.SecondaryContactName, [Validators.pattern(this.AlphabetPattern)]],
-      SecondaryContactPhone: [this.Address.SecondaryContactPhone, Validators.pattern(this.PhonePattern)],
-      SecondaryContactFax: [this.Address.SecondaryContactFax, Validators.pattern(this.PhonePattern)],
-      SecondaryContactEmail: [this.Address.SecondaryContactEmail, Validators.pattern(this.EmailPattern)],
-      SecondaryContactWebsite: [this.Address.SecondaryContactWebsite, Validators.pattern(this.WebsitePattern)]
+      OrgUnitCode: [this.VendorAddress.OrgUnitCode],
+      Address1: [this.VendorAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+      Address2: [this.VendorAddress.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
+      Address3: [this.VendorAddress.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
+      CountryCode: [this.CountryList.length === 1 ? this.CountryList[0].MDDCode : null, Validators.required],
+      CityCode: [this.VendorAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
+      StateCode: [this.VendorAddress.StateCode, Validators.required],
+      PIN: [this.VendorAddress.PIN,
+      [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(this.PinPattern)]],
+      AddressTypeCode: [this.VendorAddress.AddressTypeCode],
+      PrimaryContactName: [this.VendorAddress.PrimaryContactName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
+      PrimaryContactPhone: [this.VendorAddress.PrimaryContactPhone, [Validators.required, Validators.pattern(this.PhonePattern)]],
+      PrimaryContactFax: [this.VendorAddress.PrimaryContactFax, Validators.pattern(this.PhonePattern)],
+      PrimaryContactEmail: [this.VendorAddress.PrimaryContactEmail, Validators.pattern(this.EmailPattern)],
+      PrimaryContactWebsite: [this.VendorAddress.PrimaryContactWebsite, Validators.pattern(this.WebsitePattern)],
+      SecondaryContactName: [this.VendorAddress.SecondaryContactName, [Validators.pattern(this.AlphabetPattern)]],
+      SecondaryContactPhone: [this.VendorAddress.SecondaryContactPhone, Validators.pattern(this.PhonePattern)],
+      SecondaryContactFax: [this.VendorAddress.SecondaryContactFax, Validators.pattern(this.PhonePattern)],
+      SecondaryContactEmail: [this.VendorAddress.SecondaryContactEmail, Validators.pattern(this.EmailPattern)],
+      SecondaryContactWebsite: [this.VendorAddress.SecondaryContactWebsite, Validators.pattern(this.WebsitePattern)]
     });
-    this.AddressForm.valueChanges.subscribe((data) => {
-      this.LogValidationErrors(this.AddressForm);
-    });
+    // this.AddressForm.valueChanges.subscribe((data) => {
+    //   this.LogValidationErrors(this.AddressForm);
+    // });
   }
+  //#endregion
 
+  //#region Data Binding
   GetCountryList() {
     this._mddService.GetMasterDataDetails('COUNTRY', '-1').subscribe((result) => {
       this.CountryList = result.data.Table.filter(x => x.MDDName === 'India');
@@ -187,7 +206,38 @@ export class AddressFormComponent implements OnInit, OnChanges {
       this.StateList = result.data.Table;
     });
   }
+  //#endregion
 
+  //#region Open/Close Modal
+  CreateNewAddress(): any {
+    const address = Object.assign({}, {
+      AddressCode: null,
+      AddressTypeCode: 'F',
+      CountryCode: 'null',
+      StateCode: null,
+      PIN: null
+    });
+    return address;
+  }
+
+  OpenAddressModal(vendorAddress: VendorAddress) {
+    this.VendorAddress = vendorAddress;
+    this.InitializeFormControls();
+    const el = this.addModalOpenButton.nativeElement as HTMLElement;
+    el.click();
+  }
+
+  ResetForm() {
+    this.submitted = false;
+    this.VendorAddress = this.CreateNewAddress();
+    this.InitializeFormControls();
+    this.VendorAddresses = [];
+    this.Editvendor(this.VendorCode);
+    this.LogValidationErrors();
+  }
+  //#endregion
+
+  //#region Form Validator
   LogValidationErrors(group: FormGroup = this.AddressForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -207,31 +257,9 @@ export class AddressFormComponent implements OnInit, OnChanges {
       }
     });
   }
+  //#endregion
 
-  BindOrgUnitDropDown() {
-    this._vendorService.GetPHList().subscribe(result => {
-      this.AllPHList = result.data.Table;
-      this.FillPHLists();
-    });
-  }
-
-  ResetForm() {
-    this.submitted = false;
-    this.InitializeFormControls();
-    this.LogValidationErrors();
-  }
-
-  CreateNewAddress(): any {
-    const address = Object.assign({}, {
-      AddressCode: null,
-      AddressTypeCode: 'F',
-      CountryCode: 'null',
-      StateCode: null,
-      PIN: null
-    });
-    return address;
-  }
-
+  //#region Save Form Data
   SaveAddressDetails() {
     this.submitted = true;
 
@@ -241,9 +269,11 @@ export class AddressFormComponent implements OnInit, OnChanges {
     }
 
     const el = this.modalCloseButton.nativeElement as HTMLElement;
-    let StatusObj: any;
 
-    this.VendorAddress = new VendorAddress();
+    if (this.VendorAddress.AddressCode === null || this.VendorAddress.AddressCode === undefined) {
+      this.VendorAddress = new VendorAddress();
+    }
+
     this.VendorAddress.CompanyCode = '10';
     this.VendorAddress.OrgUnitCode = this.AddressForm.get('OrgUnitCode').value === null ? '' : this.AddressForm.get('OrgUnitCode').value;
     this.VendorAddress.PIN = this.AddressForm.get('PIN').value;
@@ -255,8 +285,9 @@ export class AddressFormComponent implements OnInit, OnChanges {
     this.VendorAddress.CountryCode = this.AddressForm.get('CountryCode').value;
     this.VendorAddress.AddressTypeCode = this.AddressForm.get('AddressTypeCode').value;
     this.VendorAddress.AddressReference = 'V';
-    this.VendorAddress.VendorCode = this.vendor.VendorCode;
-    this.VendorAddress.AddressCode = this.Address.AddressCode === null ? '' : this.Address.AddressCode;
+    this.VendorAddress.VendorCode = this.VendorCode;
+    this.VendorAddress.AddressCode = this.VendorAddress.AddressCode === null || this.VendorAddress.AddressCode === undefined ?
+    '' : this.VendorAddress.AddressCode;
     this.VendorAddress.PrimaryContactName = this.AddressForm.get('PrimaryContactName').value;
     this.VendorAddress.PrimaryContactPhone = this.AddressForm.get('PrimaryContactPhone').value;
     this.VendorAddress.PrimaryContactFax = this.AddressForm.get('PrimaryContactFax').value === null
@@ -276,13 +307,19 @@ export class AddressFormComponent implements OnInit, OnChanges {
     this.VendorAddress.SecondaryContactWebsite = this.AddressForm.get('SecondaryContactWebsite').value === null
       ? '' : this.AddressForm.get('SecondaryContactWebsite').value;
 
-    this._vendorService.SaveVendorAddress(this.VendorAddress).subscribe((data) => {
-      StatusObj = data;
+    try {
+      this._vendorService.SaveVendorFactoryAddress(this.VendorAddress).subscribe((result) => {
+        if (result.data.Table[0].ResultCode === 0) {
+          this.PopUpMessage = result.data.Table[0].ResultMessage;
+          el.click();
+          this.alertButton.click();
+        }
+      });
+    } catch {
+      this.PopUpMessage = 'There are some technical error. Please contact administrator.';
+      this.alertButton.click();
+    }
 
-      if (StatusObj.Status === 0) {
-        this.IsAddressSaved.emit(true);
-        el.click();
-      }
-    });
   }
+  //#endregion
 }

@@ -6,6 +6,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { VendorBusinessService } from 'src/app/Services/vendor-business.service';
 import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
 import { BusinessProduction } from 'src/app/Models/business-production';
+import { forEach } from '@angular/router/src/utils/collection';
 // import { VendorService } from 'src/app/Services/vendor.service';
 // import { VendorProduction } from 'src/app/Models/VendorProduction';
 // import { MasterDataDetails } from 'src/app/Models/master-data-details';
@@ -26,13 +27,6 @@ export class BusinessDetailsComponent implements OnInit {
   pager: any = {};
   pagedItems: any[] = [];
   //#endregion
-
-  // NumericPattern = '^[0-9]*$';
-  // divisionList: any[];
-  // departmentList: any[];
-  // businessObj: VendorBusinessDetails; // For form value save and update
-  // editedVendorBusiness: any; // For Check of Vendor Business Edited Value
-  // businessDetailsForm: FormGroup;
 
   //#region Modal Popup and Alert
   @ViewChild('alertModalButton')
@@ -57,7 +51,7 @@ export class BusinessDetailsComponent implements OnInit {
   searchText = '';
   CurrentFinancialYear: string;
   NextFinancialYear: string;
-  DecimalPattern = '';
+  DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   //#endregion
 
   constructor(
@@ -68,42 +62,7 @@ export class BusinessDetailsComponent implements OnInit {
     this.CurrentFinancialYear = '';
     this.NextFinancialYear = '';
   }
-  // ValidationMessages = {
-  //   'divisionCode': {
-  //     'required': ''
-  //   },
-  //   'deptCode': {
-  //     'required': ''
-  //   },
-  //   'ProposedDPValueQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   },
-  //   'ProposedDPGrnQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   },
-  //   'ProposedJWValueQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   },
-  //   'ProposedJWGrnQty': {
-  //     'required': '',
-  //     'maxlength': 'Should not exceed 14 characters',
-  //     'pattern': 'Only numbers allowed'
-  //   }
-  // };
-  // formErrors = {
-  //   'divisionCode': '',
-  //   'deptCode': '',
-  //   'ProposedDPValueQty': '',
-  //   'ProposedDPGrnQty': '',
-  //   'ProposedJWValueQty': '',
-  //   'ProposedJWGrnQty': ''
-  // };
+
   ngOnInit() {
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
@@ -133,22 +92,68 @@ export class BusinessDetailsComponent implements OnInit {
 
   GetVendorsBusinessList() {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.businessList.filter(x => {
+      x.ErrorList = [];
+    });
     this.pagedItems = this.businessList;
+  }
+  //#endregion
+
+  //#region Error Validator
+  ValidateField(business: VendorBusinessDetails, val: string, index: number) {
+    const regex = new RegExp(this.DecimalPattern);
+    const success = regex.test(val);
+    if ((val !== null && val !== '' && val !== undefined) && !success) {
+      business.ErrorList[index] = 'Numeric value allowed';
+    } else {
+      business.ErrorList[index] = undefined;
+    }
   }
   //#endregion
 
   //#region Save Form Data
   SaveBusinessDetails() {
-    // this.submitted = true;
 
-    // if (this.ProductionDetailsForm.invalid) {
-    //   this.LogValidationErrors();
-    //   return;
-    // }
     // Business Details
     try {
       const busProd = new BusinessProduction();
       busProd.BusinessDetails = this.businessList;
+
+      let hasError = false;
+      for (let count = 0; count < busProd.BusinessDetails.length; ++count) {
+        const data = busProd.BusinessDetails[count];
+        if (data.CurrentYearProposedDPGrnQty !== null) {
+        this.ValidateField(data, data.CurrentYearProposedDPGrnQty.toString(), 0);
+      }
+      if (data.CurrentYearProposedDPValueQty !== null) {
+        this.ValidateField(data, data.CurrentYearProposedDPValueQty.toString(), 1);
+      }
+        if (data.CurrentYearProposedJWGrnQty !== null) {
+        this.ValidateField(data, data.CurrentYearProposedJWGrnQty.toString(), 2);
+      }
+      if (data.CurrentYearProposedJWValueQty !== null) {
+        this.ValidateField(data, data.CurrentYearProposedJWValueQty.toString(), 3);
+      }
+      if (data.NextYearProposedDPGrnQty !== null) {
+        this.ValidateField(data, data.NextYearProposedDPGrnQty.toString(), 4);
+      }
+      if (data.NextYearProposedDPValueQty !== null) {
+        this.ValidateField(data, data.NextYearProposedDPValueQty.toString(), 5);
+      }
+      if (data.NextYearProposedJWGrnQty !== null) {
+        this.ValidateField(data, data.NextYearProposedJWGrnQty.toString(), 6);
+      }
+      if (data.NextYearProposedJWValueQty !== null) {
+        this.ValidateField(data, data.NextYearProposedJWValueQty.toString(), 7);
+      }
+
+        hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+
+        if (hasError) { break; }
+      }
+
+      if (hasError) { return; }
+
       this._vendorBusiService.SaveVendorBusinessInfo(busProd).subscribe((result) => {
         if (result.data.Msg[0].ResultCode === 0) {
           this.businessList = result.data.VendorBusiness;
@@ -166,24 +171,10 @@ export class BusinessDetailsComponent implements OnInit {
     }
     this.alertButton.click();
   }
-
-  //#region Error Validator
-  Validate(event: any) {
-    const x = event.target.value;
-    if (event.key >= 0 && event.key <= 9) {
-    } else if (event.key === '.') {
-      const value = event.target.value.split('.');
-      if (value.length > 2) {
-        event.target.value = x.substring(0, x.length - 1);
-      }
-    } else {
-      event.target.value = x.substring(0, x.length - 1);
-    }
-  }
-
   //#endregion
 
-  //#endregion
+  //#region  Commented Code
+
   // logValidationErrors(group: FormGroup = this.businessDetailsForm): void {
   //   Object.keys(group.controls).forEach((key: string) => {
   //     const abstractControl = group.get(key);
@@ -376,5 +367,7 @@ export class BusinessDetailsComponent implements OnInit {
   //   this.searchText = searchText;
   //   this.GetVendorBusiness(1);
   // }
+
+  //#endregion
 }
 

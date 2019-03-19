@@ -21,13 +21,13 @@
         <!-- <th rowspan="2" scope="col">Action</th> -->
       </tr>
       <tr>
-        <th scope="col">DP Business</th>
+        <th scope="col">DP Business Value (In lakh(s))</th>
         <th scope="col">DP GRN Qty</th>
-        <th scope="col">JW Business</th>
+        <th scope="col">JW Business Value (In lakh(s))</th>
         <th scope="col">JW GRN Qty</th>
-        <th scope="col">DP Business</th>
+        <th scope="col">DP Business Value (In lakh(s))</th>
         <th scope="col">DP Qty</th>
-        <th scope="col">JW Business</th>
+        <th scope="col">JW Business  (In lakh(s))</th>
         <th scope="col">JW Qty</th>
       </tr>
     </thead>
@@ -41,37 +41,61 @@
           <td>{{business.DeptName}}</td>
           <!-- <td>{{business.FinancialYear}}</td> -->
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.CurrentYearProposedDPGrnQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[0]}"
+              [(ngModel)]="business.CurrentYearProposedDPGrnQty" type="text"
+              (blur)="ValidateField(business, business.CurrentYearProposedDPGrnQty, 0)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[0]}"
+              *ngIf="business.ErrorList[0]">{{business.ErrorList[0]}}</span>
           </td>
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.CurrentYearProposedDPValueQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[1]}"
+              [(ngModel)]="business.CurrentYearProposedDPValueQty" type="text"
+              (blur)="ValidateField(business, business.CurrentYearProposedDPValueQty, 1)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[1]}"
+              *ngIf="business.ErrorList[1]">{{business.ErrorList[1]}}</span>
           </td>
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)" 
-            [(ngModel)]="business.CurrentYearProposedJWGrnQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[2]}"
+              [(ngModel)]="business.CurrentYearProposedJWGrnQty" type="text"
+              (blur)="ValidateField(business, business.CurrentYearProposedJWGrnQty, 2)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[2]}"
+              *ngIf="business.ErrorList[2]">{{business.ErrorList[2]}}</span>
           </td>
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.CurrentYearProposedJWValueQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[3]}"
+              [(ngModel)]="business.CurrentYearProposedJWValueQty" type="text"
+              (blur)="ValidateField(business, business.CurrentYearProposedJWValueQty, 3)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[3]}"
+              *ngIf="business.ErrorList[3]">{{business.ErrorList[3]}}</span>
           </td>
 
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.NextYearProposedDPGrnQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[4]}"
+              [(ngModel)]="business.NextYearProposedDPGrnQty" type="text"
+              (blur)="ValidateField(business, business.NextYearProposedDPGrnQty, 4)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[4]}"
+              *ngIf="business.ErrorList[4]">{{business.ErrorList[4]}}</span>
           </td>
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.NextYearProposedDPValueQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[5]}"
+              [(ngModel)]="business.NextYearProposedDPValueQty" type="text"
+              (blur)="ValidateField(business, business.NextYearProposedDPValueQty, 5)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[5]}"
+              *ngIf="business.ErrorList[5]">{{business.ErrorList[5]}}</span>
           </td>
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.NextYearProposedJWGrnQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[6]}"
+              [(ngModel)]="business.NextYearProposedJWGrnQty" type="text"
+              (blur)="ValidateField(business, business.NextYearProposedJWGrnQty, 6)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[6]}"
+              *ngIf="business.ErrorList[6]">{{business.ErrorList[6]}}</span>
           </td>
           <td>
-            <input class="form-control input-sm" (keyup)="Validate($event)"
-            [(ngModel)]="business.NextYearProposedJWValueQty" type="text">
+            <input class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[7]}"
+              [(ngModel)]="business.NextYearProposedJWValueQty" type="text"
+              (blur)="ValidateField(business, business.NextYearProposedJWValueQty, 7)" />
+            <span [ngClass]="{ 'error-label':business.ErrorList[7]}"
+              *ngIf="business.ErrorList[7]">{{business.ErrorList[7]}}</span>
           </td>
         </tr>
       </ng-container>

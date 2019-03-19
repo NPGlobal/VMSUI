@@ -6,6 +6,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-production-details',
@@ -18,34 +19,39 @@ export class ProductionDetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
-    private _mddService: MasterDataDetailsService
+    private _mddService: MasterDataDetailsService,
+    private _validationMess: ValidationMessagesService
   ) { }
 
-  vendorcode: string;
-
-  VendorProductionList: VendorProduction[]; // For added Production List
-  VendorProduction: VendorProduction; // For form value save and update
-
+  //#region paging variables
   totalItems = 0;
   searchText = '';
   currentPage = 1;
   pageSize = 20;
   pager: any = {};
   pagedItems: any[] = [];
+  //#endregion
 
-  // form group variables
+  //#region Patterns
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
   // CityPattern = '^[A-Za-z]+$';
-  AddressAndRemarksPattern = '^[\w\(\)+,?-_@.#&%/\' A-Za-z]+([\w()+,?-_@.#&%/\' A-Za-z]+)*$';
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   // NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
+  //#endregion
+
+  //#region Form Variables
+  vendorcode: string;
+  VendorProductionList: VendorProduction[]; // For added Production List
+  VendorProduction: VendorProduction; // For form value save and update
   ProductionDetailsForm: FormGroup;
   submitted = false;
   StateList: MasterDataDetails[] = [];
+  //#endregion
 
-  // Search Parameters
+  //#region Search Parameters
   searchBySubContName: string;
   searchBySubContNature: string;
   searchByApprProdUnits: string;
@@ -53,63 +59,65 @@ export class ProductionDetailsComponent implements OnInit {
   searchByMinCapacity: string;
   searchByLeanMonths: string;
   searchByLeanCapacity: string;
+  //#endregion
 
+  //#region Validation Messages
   ValidationMessages = {
     'ApprovedProductionCount': {
       'required': '',
-      'pattern': 'Only numbers allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'SubContractingName': {
       'required': '',
-      'pattern': 'Only numbers allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'NatureOfSubContracting': {
       'required': ''
     },
     'MonthlyCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'MinimalCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'LeanMonths': {
       'required': '',
-      'pattern': 'Only numbers allowed.',
-      'max': 'Month cannot exceed than 500.'
+      'pattern': this._validationMess.NumericPattern,
+      'max': this._validationMess.MaxLeanMonth
     },
     'LeanCapacity': {
       'required': '',
-      'pattern': 'Numeric value allowed.'
+      'pattern': this._validationMess.NumericPattern
     },
     'Address1': {
       'required': '',
-      'pattern' : 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.AddressPattern
     },
     'Address2': {
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.AddressPattern
     },
     'Address3': {
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.AddressPattern
     },
     'Phone': {
       'required': '',
-      'pattern': 'Please enter a valid phone number.'
+      'pattern': this._validationMess.PhonePattern
     },
     'StateCode': {
       'required': ''
     },
     'CityCode': {
       'required': '',
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.CityPattern
     },
     'Pin': {
       'required': '',
-      'pattern': 'Please enter a valid pincode.'
+      'pattern': this._validationMess.PinPattern
     },
     'Remarks': {
-      'pattern': 'Only +,?-_@.#&%/\' are allowed.'
+      'pattern': this._validationMess.RemarksPattern
     }
   };
 
@@ -128,7 +136,9 @@ export class ProductionDetailsComponent implements OnInit {
     'Pin': '',
     'Remarks': ''
   };
+  //#endregion
 
+  //#region Modal Popup and Alert
   @ViewChild('modalOpen')
   modalOpen: ElementRef;
   modalOpenButton: HTMLElement;
@@ -145,12 +155,21 @@ export class ProductionDetailsComponent implements OnInit {
   alertModalOpen: ElementRef;
   alertModalButton: HTMLElement;
   PopUpMessage: string;
+  //#endregion
 
   ngOnInit() {
     this.alertModalButton = this.alertModalOpen.nativeElement as HTMLElement;
     this.modalOpenButton = this.modalOpen.nativeElement as HTMLElement;
     this.deleteModalButton = this.deleteModal.nativeElement as HTMLElement;
     this.deleteModalCloseBtn = this.deleteModalClose.nativeElement as HTMLElement;
+
+    this.searchBySubContName = '';
+    this.searchBySubContNature = '';
+    this.searchByApprProdUnits = '';
+    this.searchByMonCapacity = '';
+    this.searchByMinCapacity = '';
+    this.searchByLeanMonths = '';
+    this.searchByLeanCapacity = '';
 
     this.GetStateList();
     this.VendorProduction = new VendorProduction();
@@ -161,29 +180,7 @@ export class ProductionDetailsComponent implements OnInit {
     });
   }
 
-  //#region  GetProductionDetails
-  GetVendorProduction(index: number) {
-    this.currentPage = index;
-    this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
-      .subscribe(result => {
-        this.VendorProductionList = result.data.Table;
-        this.totalItems = result.data.Table1[0].TotalVendors;
-        this.GetVendorsProductionList();
-      });
-  }
-
-  GetVendorsProductionList() {
-    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
-    this.pagedItems = this.VendorProductionList;
-  }
-
-  GetStateList() {
-    this._mddService.GetMasterDataDetails('STATE', '-1').subscribe(result => {
-      this.StateList = result.data.Table;
-    });
-  }
-  //#endregion
-
+  //#region Form Initialization
   InitializeFormControls() {
     this.ProductionDetailsForm = this._fb.group({
       ApprovedProductionCount: [this.VendorProduction.ApprovedProductionCount,
@@ -193,7 +190,7 @@ export class ProductionDetailsComponent implements OnInit {
       MonthlyCapacity: [this.VendorProduction.MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       MinimalCapacity: [this.VendorProduction.MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       LeanMonths: [this.VendorProduction.LeanMonths,
-         [Validators.required, Validators.pattern(this.NumericPattern), Validators.max(500)]],
+      [Validators.required, Validators.pattern(this.NumericPattern), Validators.max(500)]],
       LeanCapacity: [this.VendorProduction.LeanCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       Address1: [this.VendorProduction.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
       Address2: [this.VendorProduction.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
@@ -220,6 +217,29 @@ export class ProductionDetailsComponent implements OnInit {
     this.InitializeFormControls();
     this.modalOpenButton.click();
   }
+  //#endregion
+
+  //#region  Data Binding and Search
+  GetVendorProduction(index: number) {
+    this.currentPage = index;
+    this._vendorService.GetVendorProductionByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
+      .subscribe(result => {
+        this.VendorProductionList = result.data.Table;
+        this.totalItems = result.data.Table1[0].TotalVendors;
+        this.GetVendorsProductionList();
+      });
+  }
+
+  GetVendorsProductionList() {
+    this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
+    this.pagedItems = this.VendorProductionList;
+  }
+
+  GetStateList() {
+    this._mddService.GetMasterDataDetails('STATE', '-1').subscribe(result => {
+      this.StateList = result.data.Table;
+    });
+  }
 
   SearchProductionDetails() {
     this.searchText = this.searchBySubContName + '~' +
@@ -231,10 +251,17 @@ export class ProductionDetailsComponent implements OnInit {
       this.searchByLeanCapacity;
     this.SearchProduction(this.searchText);
   }
+
   SearchProduction(searchText = '') {
     this.searchText = searchText;
     this.GetVendorProduction(1);
   }
+
+  // GetProductionDetails(vendor: VendorProduction) {
+  // }
+  //#endregion
+
+  //#region Form Validation
   LogValidationErrors(group: FormGroup = this.ProductionDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -255,6 +282,24 @@ export class ProductionDetailsComponent implements OnInit {
     });
   }
 
+  CheckLeanMonth() {
+    const value = this.ProductionDetailsForm.get('LeanMonths').value.split('.');
+    if (value.length > 2) {
+      this.LogValidationErrors();
+    } else if (Number(value[1]) === 0) {
+      this.ProductionDetailsForm.get('LeanMonths').patchValue(value[0]);
+    }
+  }
+  //#endregion
+
+  //#region Delete or Reset Form Data
+  DeleteProductionDetail(production: VendorProduction) {
+    this.VendorProduction = JSON.parse(JSON.stringify(production));
+    this.VendorProduction.Status = 'D';
+    this.InitializeFormControls();
+    this.deleteModalButton.click();
+  }
+
   Dismiss() {
     this.submitted = false;
     this.VendorProduction = new VendorProduction();
@@ -263,7 +308,9 @@ export class ProductionDetailsComponent implements OnInit {
     this.ProductionDetailsForm.reset();
     this.modalOpenButton.click();
   }
+  //#endregion
 
+  //#region Save Form Data
   SaveProductionDetails() {
     this.submitted = true;
     if (this.ProductionDetailsForm.invalid) {
@@ -319,24 +366,6 @@ export class ProductionDetailsComponent implements OnInit {
       this.alertModalButton.click();
     }
   }
-
-  GetProductionDetails(vendor: VendorProduction) {
-  }
-
-  DeleteProductionDetail(production: VendorProduction) {
-    this.VendorProduction = JSON.parse(JSON.stringify(production));
-    this.VendorProduction.Status = 'D';
-    this.InitializeFormControls();
-    this.deleteModalButton.click();
-  }
-
-  CheckLeanMonth() {
-    const value = this.ProductionDetailsForm.get('LeanMonths').value.split('.');
-    if (value.length > 2) {
-      this.LogValidationErrors();
-    } else if (Number(value[1]) === 0) {
-      this.ProductionDetailsForm.get('LeanMonths').patchValue(value[0]);
-    }
-  }
+  //#endregion
 
 }

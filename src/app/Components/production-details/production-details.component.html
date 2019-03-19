@@ -8,34 +8,23 @@
 </div>
 <div class="clearfix"></div>
 <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:10px;">
-  <!-- <p>{{searchText}}</p> -->
   <table class="table table-striped table-bordered table-hover">
     <thead>
-      <!-- <tr class="search">
-        <td><input type="text" [(ngModel)]="searchBySubContName" (keyup)="SearchProductionDetails()" /></td>
-        <td><input type="text" [(ngModel)]="searchBySubContNature" (keyup)="SearchProductionDetails()" /></td>
-        <td><input type="text" [(ngModel)]="searchByApprProdUnits" (keyup)="SearchProductionDetails()" /></td>
-        <td><input type="text" [(ngModel)]="searchByMonCapacity" (keyup)="SearchProductionDetails()" /></td>
-        <td><input type="text" [(ngModel)]="searchByMinCapacity" (keyup)="SearchProductionDetails()" /></td>
-        <td><input type="text" [(ngModel)]="searchByLeanMonths" (keyup)="SearchProductionDetails()" /></td>
-        <td><input type="text" [(ngModel)]="searchByLeanCapacity" (keyup)="SearchProductionDetails()" /></td>
-        <td></td>
-      </tr> -->
       <tr class="search">
         <td style="width:25%"><input type="text" class="form-control input-sm" [(ngModel)]="searchBySubContName"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Sub Contrac..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Sub Contrac..." /></td>
         <td style="width:15%"><input type="text" class="form-control input-sm" [(ngModel)]="searchBySubContNature"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Sub Contrac..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Sub Contrac..." /></td>
         <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByApprProdUnits"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Approved pro..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Approved pro..." /></td>
         <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMonCapacity"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Monthly Cap..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Monthly Cap..." /></td>
         <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByMinCapacity"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Minimal Cap..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Minimal Cap..." /></td>
         <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByLeanMonths"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Lean Mon..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Lean Mon..." /></td>
         <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByLeanCapacity"
-            (keyup)="SearchProductionDetailsList()" placeholder="Search By Lean Cap..." /></td>
+            (keyup)="SearchProductionDetails()" placeholder="Search By Lean Cap..." /></td>
         <td></td>
       </tr>
       <tr>
@@ -143,8 +132,7 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Production <span class="req-popup-label">(<b>Note:</b> * marks filed are
-            required)</span></h6>
+        <h6 class="modal-title">Production <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span></h6>
         <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
       </div>
       <!-- modal-body -->
@@ -160,13 +148,13 @@
                     <label class="text">Name of Sub Contracting Unit<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="SubContractingName" maxlength="254"
                         class="form-control input-sm" (blur)="LogValidationErrors()"
-                        [ngClass]="{ 'is-invalid err': formErrors.SubContractingName }" /></span>
+                        [ngClass]="{ 'is-invalid ': formErrors.SubContractingName }" /></span>
                   </div>
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Nature of Sub Contracting Unit<span class="error-label">*</span></label>
                     <span><input type="text" maxlength="99" (blur)="LogValidationErrors()"
                         formControlName="NatureOfSubContracting" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.NatureOfSubContracting }" /></span>
+                        [ngClass]="{ 'is-invalid ': formErrors.NatureOfSubContracting }" /></span>
                   </div>
                 </div>
                 <hr>
@@ -181,18 +169,31 @@
                     <label class="text">Address Line 1<span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="Address1" class="form-control input-sm" maxlength="49"
-                        [ngClass]="{ 'is-invalid err': formErrors.Address1 }" (blur)="LogValidationErrors()" />
+                        [ngClass]="{ 'is-invalid': formErrors.Address1 }" (blur)="LogValidationErrors()" />
+                    </span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.Address1}" *ngIf="formErrors.Address1">
+                      {{formErrors.Address1}}
                     </span>
                   </div>
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Address Line 2</label>
-                    <span><input type="text" formControlName="Address2" maxlength="49"
-                        class="form-control input-sm" /></span>
+                    <span>
+                      <input type="text" formControlName="Address2" maxlength="49" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid': formErrors.Address2 }" (blur)="LogValidationErrors()" />
+                    </span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.Address2}" *ngIf="formErrors.Address2">
+                      {{formErrors.Address2}}
+                    </span>
                   </div>
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Address Line 3</label>
-                    <span><input type="text" name="address3" formControlName="Address3" maxlength="49"
-                        class="form-control input-sm" /></span>
+                    <span>
+                      <input type="text" formControlName="Address3" maxlength="49" class="form-control input-sm"
+                        [ngClass]="{ 'is-invalid': formErrors.Address3 }" (blur)="LogValidationErrors()" />
+                    </span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.Address3}" *ngIf="formErrors.Address3">
+                      {{formErrors.Address3}}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -203,16 +204,17 @@
                     <label class="text">Phone<span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="Phone" class="form-control input-sm" maxlength="10"
-                        [ngClass]="{ 'is-invalid err': formErrors.Phone }" (blur)="LogValidationErrors()" />
+                        [ngClass]="{ 'is-invalid': formErrors.Phone }" (blur)="LogValidationErrors()" />
                     </span>
-                    <span [ngClass]="{ 'error-label':formErrors.Phone}" *ngIf="formErrors.Phone">
-                      {{formErrors.Phone}}</span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.Phone}" *ngIf="formErrors.Phone">
+                      {{formErrors.Phone}}
+                    </span>
                   </div>
                   <div class="col-lg-3 col-md-3">
                     <label class="text">State<span class="error-label">*</span></label>
                     <span>
                       <select formControlName="StateCode" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.StateCode }" (blur)="LogValidationErrors()">
+                        [ngClass]="{ 'is-invalid': formErrors.StateCode }" (blur)="LogValidationErrors()">
                         <option [ngValue]="null">Select</option>
                         <option *ngFor="let state of StateList" value="{{state.MDDCode}}">{{state.MDDName}}</option>
                       </select>
@@ -222,16 +224,16 @@
                     <label class="text">City<span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="CityCode" class="form-control input-sm" maxlength="49"
-                        [ngClass]="{ 'is-invalid err': formErrors.CityCode }" (blur)="LogValidationErrors()" />
+                        [ngClass]="{ 'is-invalid': formErrors.CityCode }" (blur)="LogValidationErrors()" />
                     </span>
-                    <span [ngClass]="{ 'error-label':formErrors.CityCode}" *ngIf="formErrors.CityCode">
+                    <span [ngClass]="{ 'error-label-lg':formErrors.CityCode}" *ngIf="formErrors.CityCode">
                       {{formErrors.CityCode}}</span>
                   </div>
                   <div class="col-lg-3 col-md-3">
                     <label class="text">PinCode<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="Pin" class="form-control input-sm" maxlength="6"
-                        [ngClass]="{ 'is-invalid err': formErrors.Pin }" (blur)="LogValidationErrors()" /></span>
-                    <span [ngClass]="{ 'error-label':formErrors.Pin}" *ngIf="formErrors.Pin">
+                        [ngClass]="{ 'is-invalid': formErrors.Pin }" (blur)="LogValidationErrors()" /></span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.Pin}" *ngIf="formErrors.Pin">
                       {{formErrors.Pin}}</span>
                   </div>
                 </div>
@@ -258,7 +260,7 @@
                     <label class="text">Monthly Capacity<span class="error-label">*</span></label>
                     <span>
                       <input type="text" formControlName="MonthlyCapacity" class="form-control input-sm" maxlength="13"
-                        [ngClass]="{ 'is-invalid err': formErrors.MonthlyCapacity }" (blur)="LogValidationErrors()" />
+                        [ngClass]="{ 'is-invalid': formErrors.MonthlyCapacity }" (blur)="LogValidationErrors()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.MonthlyCapacity}" *ngIf="formErrors.MonthlyCapacity">
                       {{formErrors.MonthlyCapacity}}
@@ -279,7 +281,7 @@
                       <!-- <input type="text" formControlName="LeanMonths" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" /> -->
                       <input type="text" formControlName="LeanMonths" max="500" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="CheckLeanMonth()" />
+                        [ngClass]="{ 'is-invalid': formErrors.LeanMonths }" (blur)="LogValidationErrors(); CheckLeanMonth()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
                       *ngIf="formErrors.LeanMonths">{{formErrors.LeanMonths}}
@@ -288,7 +290,7 @@
                   <div class="col-lg-2 col-md-2">
                     <label class="text">Lean Capacity<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="LeanCapacity" class="form-control input-sm" maxlength="13"
-                        [ngClass]="{ 'is-invalid err': formErrors.LeanCapacity }"
+                        [ngClass]="{ 'is-invalid': formErrors.LeanCapacity }"
                         (blur)="LogValidationErrors()" /></span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanCapacity }" *ngIf="formErrors.LeanCapacity">
                       {{formErrors.LeanCapacity}}</span>
@@ -297,9 +299,9 @@
                     <label class="text">Remarks</label>
                     <span>
                       <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511"
-                        [ngClass]="{ 'is-invalid err': formErrors.Remarks }" />
+                        [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="LogValidationErrors()"/>
                     </span>
-                    <span [ngClass]="{ 'error-label':formErrors.Remarks}"
+                    <span [ngClass]="{ 'error-label-lg':formErrors.Remarks}"
                       *ngIf="formErrors.Remarks">{{formErrors.Remarks}}
                     </span>
                   </div>
@@ -336,9 +338,9 @@
         </button>
       </div>
       <div class="modal-body">This record no longer will be available in the system. Are you sure?</div>
-      <div class="modal-footer">
-        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="SaveProductionDetails()">Yes</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>

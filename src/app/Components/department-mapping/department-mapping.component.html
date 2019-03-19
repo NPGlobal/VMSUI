@@ -1,37 +1,119 @@
 <form [formGroup]="DepartmentMappingForm" (ngSubmit)="SaveVendorDepartment()" novalidate>
+  <div class="form-group col-lg-12 col-md-12">
+    <div class="row form-inline">
+      <div class="content-heading">Department Mapping</div>
+      <div class="form-group col-lg-12 col-md-12">
+        <div class="col-lg-3 col-md-3">
+          <fieldset class="fieldsetdivision">
+            <legend>Division Wise</legend>
+            <span>
+              <select (focus)="UnselectOptions(DepartmentMappingForm.controls.Department)" formControlName="DivList"
+                class="form-control input-sm DivisionClass" size="5" multiple="multiple">
+                <option *ngFor="let Div of DivisionList" class="DivisionClass" [value]="Div.MDDCode">
+                  {{ Div.MDDName }}</option>
+              </select>
+            </span>
+          </fieldset>
 
-  <div class="form-inline">
+          <fieldset class="fieldsetdepartment">
+            <legend>Department Wise</legend>
+            <span>
+              <select formControlName="Division" class="form-control input-sm DivisionClass"
+                (change)="GetDepartment($event)">
+                <option *ngIf="DivisionList.length === 0" [value]="0">No Division Left</option>
+                <option *ngIf="SelectedDD.length > 0" [value]="1">Select Division</option>
+                <option *ngIf="SelectedDD.length === 0" [value]="-1" selected="selected">All Division
+                </option>
+                <!-- <option *ngIf="DivisionList.length === DivisionCount" [value]="-1" selected="selected">All Division
+                </option> -->
+                <option *ngFor="let Div of DivisionList" [value]="Div.MDDCode">
+                  {{ Div.MDDName }}</option>
+              </select>
+
+              <select (focus)="UnselectOptions(DepartmentMappingForm.controls.DivList)" formControlName="Department"
+                class="form-control input-sm DepartmentClass" size="5" multiple="multiple">
+                <option *ngIf="FilteredDeptList.length === 0" [value]="0"></option>
+                <option *ngFor="let Dept of FilteredDeptList" class="DepartmentClass" [value]="Dept.MDDCode">
+                  {{ Dept.MDDName }}</option>
+              </select>
+            </span>
+          </fieldset>
+        </div>
+        <div class="col-lg-1 col-md-1" style="max-width:5%;">
+          <span>
+            <input type="button" [disabled]="EnableOnAdd()" class="form-control input-sm" value=">"
+              (click)="MoveToSelectedList()">
+            <br />
+            <input type="button" [disabled]="EnableOnRemove()" class="form-control input-sm" style="margin-top: 10px;" value="<"
+              (click)="RemoveFromSelectedList()">
+          </span>
+        </div>
+        <div class="col-lg-3 col-md-3">
+          <fieldset class="selected">
+            <legend>Selected Division/Department</legend>
+            <span>
+              <select onfocusout="event.target.value = ''" formControlName="SelectedList" class="form-control input-sm"
+                size="17" multiple="multiple" style="padding:0px;">
+                <option *ngFor="let DD of SelectedDD" [value]="DD.MDDCode" [ngStyle]="{background: DD.color}">
+                  &nbsp;&nbsp;&nbsp;&nbsp;{{ DD.MDHCode === 'DEPT' ? DD.MDDName + ' (Department)' : DD.MDDName + ' (Division)' }}
+                </option>
+              </select>
+            </span>
+          </fieldset>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12" style="margin-bottom:20px;"></div>
+    </div>
+  </div>
+
+
+
+
+  <!-- <div class="form-inline">
     <div class="content-heading" align="left">Department Mapping</div>
     <div class="row">
       <div class="col-sm-5">
-        <div class="col-sm-6 mt-1 mb-1 form-group dropdown">
-          <label class="text">Division</label>
-          <select (focus)="UnselectOptions(DepartmentMappingForm.controls.Department)" formControlName="DivList"
-            class="form-control input-sm DivisionClass" size="5" multiple="multiple">
-            <option *ngFor="let Div of DivisionList" class="DivisionClass" [value]="Div.MDDCode">
-              {{ Div.MDDName }}</option>
-          </select>
+
+        <div class="form-group col-md-12">
+          <fieldset class="DivisionClass">
+            <legend>Division Wise</legend>
+            <div class="col-sm-6 mt-1 mb-1 form-group dropdown">
+              
+              <select (focus)="UnselectOptions(DepartmentMappingForm.controls.Department)" formControlName="DivList"
+                class="form-control input-sm DivisionClass" size="5" multiple="multiple">
+                <option *ngFor="let Div of DivisionList" class="DivisionClass" [value]="Div.MDDCode">
+                  {{ Div.MDDName }}</option>
+              </select>
+            </div>
+          </fieldset>
         </div>
-        <div class="col-sm-6 form-group dropdown">
-          <select formControlName="Division" class="form-control input-sm DivisionClass"
-            (change)="GetDepartment($event)">
-            <option *ngIf="DivisionList.length === 0" [value]="0">No Division Left</option>
-            <option *ngIf="DivisionList.length !== DivisionCount" [value]="1">Select</option>
-            <option *ngIf="DivisionList.length === DivisionCount" [value]="-1" selected="selected">All</option>
-            <option *ngFor="let Div of DivisionList" [value]="Div.MDDCode">
-              {{ Div.MDDName }}</option>
-          </select>
-          <label class="text">Department</label>
-          <select (focus)="UnselectOptions(DepartmentMappingForm.controls.DivList)" formControlName="Department"
-            class="form-control input-sm dropdown DepartmentClass" size="5" multiple="multiple">
-            <option *ngIf="FilteredDeptList.length === 0" [value]="0"></option>
-            <option *ngFor="let Dept of FilteredDeptList" class="DepartmentClass" [value]="Dept.MDDCode">
-              {{ Dept.MDDName }}</option>
-          </select>
+
+        <div class="form-group col-md-12" style="margin-top: 15px;">
+          <fieldset class="DepartmentClass">
+            <legend>Department Wise</legend>
+            <div class="col-sm-6 form-group dropdown">
+              <select formControlName="Division" class="form-control input-sm DivisionClass"
+                (change)="GetDepartment($event)">
+                <option *ngIf="DivisionList.length === 0" [value]="0">No Division Left</option>
+                <option *ngIf="DivisionList.length !== DivisionCount" [value]="1">Select Division</option>
+                <option *ngIf="DivisionList.length === DivisionCount" [value]="-1" selected="selected">All Division
+                </option>
+                <option *ngFor="let Div of DivisionList" [value]="Div.MDDCode">
+                  {{ Div.MDDName }}</option>
+              </select>
+              
+              <select (focus)="UnselectOptions(DepartmentMappingForm.controls.DivList)" formControlName="Department"
+                class="form-control input-sm dropdown DepartmentClass" size="5" multiple="multiple">
+                <option *ngIf="FilteredDeptList.length === 0" [value]="0"></option>
+                <option *ngFor="let Dept of FilteredDeptList" class="DepartmentClass" [value]="Dept.MDDCode">
+                  {{ Dept.MDDName }}</option>
+              </select>
+            </div>
+          </fieldset>
         </div>
       </div>
-      <div class="col-sm-2" style="padding-left:25px;">
 
+      <div class="col-sm-2" style="padding-left:25px;">
         <input type="button" [disabled]="EnableOnAdd()" style="margin-top: 110px;" value=">"
           (click)="MoveToSelectedList()">
         <br />
@@ -40,18 +122,22 @@
 
       </div>
       <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-        <div class="mt-1 mb-1 col-sm-6 form-group" style="width: 250px; max-width: 250px;;">
-          <label class="text">Selected Division/Department</label>
-          <select onfocusout="event.target.value = ''" formControlName="SelectedList" class="form-control input-sm"
-            size="15" multiple="multiple">
-            <option *ngFor="let DD of SelectedDD"  [value]="DD.MDDCode" [ngStyle]="{background: DD.color}">
-              {{ DD.MDHCode === 'DEPT' ? DD.MDDName + ' (Department)' : DD.MDDName + ' (Division)' }}
-            </option>
-          </select>
+        <div class="form-group col-md-12">
+          <fieldset class="selected">
+            <legend>Selected Division/Department</legend>
+            <div class="col-sm-6 form-group mt-1 mb-1" style="width: 250px; max-width: 250px;;">
+              <select onfocusout="event.target.value = ''" formControlName="SelectedList" class="form-control input-sm"
+                size="15" multiple="multiple">
+                <option *ngFor="let DD of SelectedDD" [value]="DD.MDDCode" [ngStyle]="{background: DD.color}">
+                  {{ DD.MDHCode === 'DEPT' ? DD.MDDName + ' (Department)' : DD.MDDName + ' (Division)' }}
+                </option>
+              </select>
+            </div>
+          </fieldset>
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 
   <div class="col-md-12">
@@ -97,8 +183,8 @@
         </button>
       </div>
       <div class="modal-body">{{PopUpMessage}}</div>
-      <div class="modal-footer float-right">
-         <button class="btn btn-primary" data-dismiss="modal" (click)="DeleteExistingDepartment()">Yes</button>
+      <div class="modal-footer page-footer">
+        <button class="btn btn-primary" data-dismiss="modal" (click)="DeleteExistingDepartment()">Yes</button>
         <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="dismiss()">Cancel</button>
       </div>
     </div>
