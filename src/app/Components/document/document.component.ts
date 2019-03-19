@@ -265,7 +265,7 @@ export class DocumentComponent implements OnInit {
     const extension = ['XLS', 'XLSX', 'PDF', 'DOC', 'DOCX'];
     if (extension.indexOf(splitFileName[splitFileName.length - 1].toUpperCase()) !== -1) {
     } else {
-      this.PopUpMessage = 'Invalid file.';
+      this.PopUpMessage = 'Only ' + extension.join(', ').toLocaleLowerCase() + ' formats are allowed.';
       this.alertModalButton.click();
       this.docDetailsForm.get('FileName').patchValue(null);
       status = false;

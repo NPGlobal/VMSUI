@@ -171,7 +171,7 @@ export class AddressFormComponent implements OnInit {
       Address1: [this.VendorAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
       Address2: [this.VendorAddress.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
       Address3: [this.VendorAddress.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
-      CountryCode: ['IN', Validators.required],
+      CountryCode: [this.CountryList.length === 1 ? this.CountryList[0].MDDCode : null, Validators.required],
       CityCode: [this.VendorAddress.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       StateCode: [this.VendorAddress.StateCode, Validators.required],
       PIN: [this.VendorAddress.PIN,

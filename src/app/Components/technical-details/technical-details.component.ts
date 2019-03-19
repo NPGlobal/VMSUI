@@ -11,7 +11,7 @@ import { load } from '@angular/core/src/render3';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { and } from '@angular/router/src/utils/collection';
 import { VendorTechDefault } from 'src/app/Models/vendorTechDefault';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 declare var $: any;
 
 @Component({
@@ -97,7 +97,7 @@ export class TechnicalDetailsComponent implements OnInit {
     'UnitCount': '',
     'VendorTechConfigID': '',
     'Efficiency': '',
-    'Remarks' : ''
+    'Remarks': ''
   };
   //#endregion
 
@@ -114,6 +114,13 @@ export class TechnicalDetailsComponent implements OnInit {
   @ViewChild('deleteModalClose')
   deleteModalClose: ElementRef;
   dltModalCloseButton: HTMLElement;
+
+  @ViewChild('discardModalOpen')
+  discardModalOpen: ElementRef;
+  discardModalOpenButton: HTMLElement;
+
+  DeleteModalHeader: string;
+  DeleteModalBody: string;
   //#endregion
 
   unitCountList(n: number): any[] {
@@ -130,10 +137,10 @@ export class TechnicalDetailsComponent implements OnInit {
   ngOnInit() {
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
-
     this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
-
+    this.discardModalOpenButton = this.discardModalOpen.nativeElement as HTMLElement;
     this.dltModalCloseButton = this.deleteModalClose.nativeElement as HTMLElement;
+
     this.isTechDetailFormChanged = true;
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
@@ -323,7 +330,29 @@ export class TechnicalDetailsComponent implements OnInit {
     this.vendorTechDefault = JSON.parse(JSON.stringify(vobj));
     this.vendorTechDefault.Status = status;
     this.vendorTechDefault.VendorTechDetails.filter(x => x.Status = status);
+
+    this.DeleteModalHeader = 'Ready to ' + (this.vendorTechDefault !== undefined &&
+      (this.vendorTechDefault.Status === 'D' ? 'Delete' :
+        (this.vendorTechDefault.Status === 'B' ? 'Deactivate' : 'Activate'))) + '?';
+
+    this.DeleteModalBody = (this.vendorTechDefault !== undefined &&
+      (this.vendorTechDefault.Status === 'D' ? 'This record no longer will be available' :
+        (this.vendorTechDefault.Status === 'B' ? 'This record no longer will be available for allocation' :
+          'This record will be available for allocation'))) + ' in the system.<br>Are you sure ?';
+
     this.InitializeFormControls();
+  }
+
+  DiscardChanges() {
+    let vendorTechDefault = this.TechDefaultLst.find(x => x.VendorTechDefaultID === this.vendorTechDefault.VendorTechDefaultID);
+    if (vendorTechDefault === undefined) {
+      vendorTechDefault = new VendorTechDefault();
+    }
+    if (JSON.stringify(vendorTechDefault.VendorTechDetails) === JSON.stringify(this.vendorTechDefault.VendorTechDetails)) {
+      this.dismiss();
+    } else {
+      this.discardModalOpenButton.click();
+    }
   }
 
   AddMachine() {

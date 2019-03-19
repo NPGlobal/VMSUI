@@ -9,4 +9,5 @@ export class MasterDataDetails {
     Checked: boolean;
     color: string;
     type: string;
+    isDeletable: string;
 }

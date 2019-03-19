@@ -78,7 +78,7 @@ export class LoginComponent implements OnInit {
       this.data = result;
       if (this.data.Table !== undefined) {
         this.isUserLoggedIn = true;
-        sessionStorage.setItem('userid', result.Table[0].LoginID);
+        sessionStorage.setItem('userid', result.Table[0].LoginId);
         this._router.navigate(['/welcome']);
       } else {
         this.errormsg = 'User is not authenticated.';

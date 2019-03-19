@@ -1,0 +1,29 @@
+.dropdown {width: 200px;max-width: 200px;}
+form {margin: 20px;}
+.form-inline {border: 1px solid #bdbcbc;background-color: #f4f4f4;}
+.text {font-weight: 400;font-size:14px;}
+
+.DivisionClass {background-color: lightyellow;}
+.DepartmentClass {background-color: rgb(194, 248, 194);}
+
+/*
+fieldset legend{font-size: 13px;margin-bottom: -3px;padding: 0px 0px 5px 0px;font-weight: 600;}
+fieldset select{margin-left: -20px;padding: 5px;margin-right: 20px;}
+fieldset.DivisionClass legend{width: 47%;}
+fieldset.DepartmentClass legend{width: 59%;}
+fieldset.DivisionClass select,fieldset.DepartmentClass select{margin-left: -20px;padding: 5px;margin-right: 20px;}
+*/
+
+fieldset{padding-left: 15px;padding-right: 15px;border: solid 1px darkgray;}
+fieldset legend{font-size: 13px;margin-bottom: 3px;padding: 5px;font-weight: 600;}
+fieldset select{margin-bottom: 13px;cursor: pointer;}
+
+fieldset.fieldsetdivision{background-color: lightyellow;}
+fieldset.fieldsetdepartment{background-color:rgb(194, 248, 194);margin-top:12px;}
+fieldset.selected{background-color: beige;}
+
+.fieldsetdivision legend{width: 37%;}
+.fieldsetdepartment legend{width: 47%;}
+.selected legend{width: 77%;}
+
+input[type="button"].input-sm{cursor:pointer;}
