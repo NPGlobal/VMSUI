@@ -79,7 +79,7 @@ export class PersonalDetailsComponent implements OnInit {
   ValidationMessages = {
     'VendorName': {
       'required': '',
-      'pattern' : this._validationMess.ContactNamePattern
+      'pattern' : this._validationMess.RemarksPattern
     },
     'PANNo': {
       'minlength': '',
@@ -233,7 +233,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
-        VendorName: [this.vendor.VendorName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
+        VendorName: [this.vendor.VendorName, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [
           Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.maxLength(10), Validators.minLength(10)]],
@@ -253,9 +253,9 @@ export class PersonalDetailsComponent implements OnInit {
         GSTIN: [this.vendor.GSTIN],
         GSTDate: [this.FormatDate(this.vendor.GSTDate)],
         IsProvisional: [this.vendor.isProvisional],
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
-        Address2: [this.vendor.RegisteredOfficeAddress.Address2],
-        Address3: [this.vendor.RegisteredOfficeAddress.Address3],
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+        Address2: [this.vendor.RegisteredOfficeAddress.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
+        Address3: [this.vendor.RegisteredOfficeAddress.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
         // CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode === undefined ?
           (this.CountryList.length === 1 ? this.CountryList[0].MDDCode : null) :

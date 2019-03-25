@@ -74,7 +74,8 @@ export class LoginComponent implements OnInit {
     userCredential.UserName = this.LoginForm.get('UserName').value;
     userCredential.Password = this.LoginForm.get('Password').value;
 
-    this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
+    this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'Keflavik').subscribe(result => {
+    //  this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
       this.data = result;
       if (this.data.Table !== undefined) {
         this.isUserLoggedIn = true;
