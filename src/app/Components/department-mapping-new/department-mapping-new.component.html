@@ -8,7 +8,7 @@
             <legend>Division Wise</legend>
             <span>
               <select formControlName="DivList" class="form-control input-sm DivisionClass" size="5"
-                multiple="multiple">
+                multiple="multiple"  (change)="UnselectDept($event)">
                 <option *ngFor="let Div of DivisionList" class="DivisionClass" [value]="Div.MDDCode">
                   {{ Div.MDDName }}</option>
               </select>
@@ -29,7 +29,7 @@
               </select>
 
               <select formControlName="Department" class="form-control input-sm DepartmentClass" size="5"
-                multiple="multiple">
+                multiple="multiple" (change)="UnselectDiv($event)">
                 <option *ngFor="let Dept of DepartmentList" class="DepartmentClass" [value]="Dept.MDDCode">
                   {{ Dept.MDDName }}</option>
               </select>
