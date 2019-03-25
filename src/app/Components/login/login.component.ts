@@ -5,13 +5,13 @@ import { LoginService } from 'src/app/Services/login.service';
 import { Router } from '@angular/router';
 import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   //#region Variable Declaration
   isUserLoggedIn: boolean;
   PopUpMessage = '';
@@ -28,15 +28,18 @@ export class LoginComponent implements OnInit {
     },
     'Password': {
       'required': this._validationMess.Password
+    },
+    'PeriodicKey': {
+      'required': this._validationMess.PeriodicKey
     }
   };
 
   formErrors = {
     'UserName': '',
-    'Password': ''
+    'Password': '',
+    'PeriodicKey' : ''
   };
   //#endregion
-
 
   constructor(private _fb: FormBuilder,
     private _loginService: LoginService,
@@ -57,7 +60,8 @@ export class LoginComponent implements OnInit {
   InitializeFormControls() {
     this.LoginForm = this._fb.group({
       UserName: ['', Validators.required],
-      Password: ['', Validators.required]
+      Password: ['', Validators.required],
+      PeriodicKey: ['', Validators.required],
     });
   }
   //#endregion
@@ -73,8 +77,10 @@ export class LoginComponent implements OnInit {
     const userCredential = new Login();
     userCredential.UserName = this.LoginForm.get('UserName').value;
     userCredential.Password = this.LoginForm.get('Password').value;
+    userCredential.PeriodicKey = this.LoginForm.get('PeriodicKey').value;
 
-    this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'Keflavik').subscribe(result => {
+    this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, userCredential.PeriodicKey)
+    .subscribe(result => {
     //  this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
       this.data = result;
       if (this.data.Table !== undefined) {
@@ -112,5 +118,4 @@ export class LoginComponent implements OnInit {
     });
   }
   //#endregion
-
-}
+ }
