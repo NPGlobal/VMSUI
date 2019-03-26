@@ -3,7 +3,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Login } from 'src/app/Models/login';
 import { LoginService } from 'src/app/Services/login.service';
 import { Router } from '@angular/router';
-import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 import { window } from 'rxjs/operators';
 
 
@@ -15,7 +15,7 @@ import { window } from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
   //#region Variable Declaration
-  image: HTMLImageElement ;
+  image: HTMLImageElement;
   isUserLoggedIn: boolean;
   PopUpMessage = '';
   LoginForm: FormGroup;
@@ -44,8 +44,8 @@ export class LoginComponent implements OnInit {
   formErrors = {
     'UserName': '',
     'Password': '',
-    'PeriodicKey' : '',
-    'Captcha' : ''
+    'PeriodicKey': '',
+    'Captcha': ''
   };
   //#endregion
 
@@ -62,8 +62,8 @@ export class LoginComponent implements OnInit {
       this.errormsg = '';
       this.logValidationErrors(this.LoginForm);
     });
-   // this.GenerateCaptcha();
-  this.DrawCaptcha();
+    this.GenerateCaptcha();
+    // this.DrawCaptcha();
   }
 
   //#region Form Initialization
@@ -90,18 +90,18 @@ export class LoginComponent implements OnInit {
     userCredential.PeriodicKey = this.LoginForm.get('PeriodicKey').value;
 
     this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, userCredential.PeriodicKey)
-    .subscribe(result => {
-    //  this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
-      this.data = result;
-      if (this.data.Table !== undefined) {
-        this.isUserLoggedIn = true;
-        sessionStorage.setItem('userid', result.Table[0].LoginId);
-        this._router.navigate(['/welcome']);
-      } else {
-        this.errormsg = 'User is not authenticated.';
-        // this.LoginForm.get('Password').patchValue('');
-      }
-    });
+      .subscribe(result => {
+        //  this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
+        this.data = result;
+        if (this.data.Table !== undefined) {
+          this.isUserLoggedIn = true;
+          sessionStorage.setItem('userid', result.Table[0].LoginId);
+          this._router.navigate(['/welcome']);
+        } else {
+          this.errormsg = 'User is not authenticated.';
+          // this.LoginForm.get('Password').patchValue('');
+        }
+      });
 
   }
   //#endregion
@@ -129,55 +129,60 @@ export class LoginComponent implements OnInit {
   }
   //#endregion
 
-// added by shubhi for capcha
+  // added by shubhi for capcha
+  GenerateCaptcha() {
+    // const canvas = document.getElementById('txtCaptcha') as HTMLCanvasElement;
+    const code = Math.floor(Math.random() * 1000001).toString();
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const context = canvas.getContext('2d');
+    const imageObj = new Image();
+    imageObj.onload = function () {
+      context.drawImage(imageObj, 200, 200);
+      context.font = 'bold 60px Ink Free';
+      context.fillStyle = 'red';
+      localStorage.setItem('Captcha', code);
+      context.fillText(code, 50, 90);
+    };
+    imageObj.src = 'assets/images/1.JPG';
+  }
+  ValidCaptcha() {
+    const str1 = localStorage.getItem('Captcha').toString();
+    const str2 = (<HTMLInputElement>document.getElementById('txtInput')).value;
+    if (str1 === str2) {
+      // alert(1);
+      this.isValidCaptcha = true;
+    } else {
+      // alert(2);
+      this.isValidCaptcha = false;
+    }
+  }
+  // DrawCaptcha() {
+  //         const a = Math.ceil(Math.random() * 10) + '';
+  //         const b = Math.ceil(Math.random() * 10) + '';
+  //         const c = Math.ceil(Math.random() * 10) + '';
+  //         const d = Math.ceil(Math.random() * 10) + '';
+  //         const e = Math.ceil(Math.random() * 10) + '';
+  //         const f = Math.ceil(Math.random() * 10) + '';
+  //        // const g = Math.ceil(Math.random() * 10) + '';
+  //        // const code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f + ' ' + g;
+  //         const code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f ;
+  //         (<HTMLInputElement>document.getElementById('txtCaptcha')).value = code;
+  //     }
 
- GenerateRandomCode() {
-    let s = '';
-    // for (let i = 0; i < 6; i++) {
-    //     s = s.concat(s, Math.floor(Math.random() * 1000001).toString());
-    // }
-    s = Math.floor(Math.random() * 1000001).toString();
-    return s;
+  //     // Validate the Entered input aganist the generated security code function
+  //      ValidCaptcha() {
+  //       const str1 = this.removeSpaces( (<HTMLInputElement>document.getElementById('txtCaptcha')).value);
+  //       const str2 = this.removeSpaces( (<HTMLInputElement>document.getElementById('txtInput')).value);
+  //         if (str1 === str2) {
+  //           // alert(1);
+  //           this.isValidCaptcha = true;
+  //         } else {
+  //           // alert(2);
+  //           this.isValidCaptcha = false; }
+  //     }
+
+  //     // Remove the spaces from the entered and generated code
+  //      removeSpaces(string) {
+  //         return string.split(' ').join('');
+  //     }
 }
-// GenerateCaptcha() {
-//   // const canvas = document.getElementById('txtCaptcha') as HTMLCanvasElement;
-//   const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-//   const context = canvas.getContext('2d');
-//   const imageObj = new Image();
-//   imageObj.onload = function () {
-//       context.drawImage(imageObj, 0, 0);
-//       context.font = 'Century Schoolbook';
-//       context.fillText('My TEXT!', 50, 50);
-//   };
-//   imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
-// }
-DrawCaptcha() {
-        const a = Math.ceil(Math.random() * 10) + '';
-        const b = Math.ceil(Math.random() * 10) + '';
-        const c = Math.ceil(Math.random() * 10) + '';
-        const d = Math.ceil(Math.random() * 10) + '';
-        const e = Math.ceil(Math.random() * 10) + '';
-        const f = Math.ceil(Math.random() * 10) + '';
-       // const g = Math.ceil(Math.random() * 10) + '';
-       // const code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f + ' ' + g;
-        const code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f ;
-        (<HTMLInputElement>document.getElementById('txtCaptcha')).value = code;
-    }
-
-    // Validate the Entered input aganist the generated security code function
-     ValidCaptcha() {
-      const str1 = this.removeSpaces( (<HTMLInputElement>document.getElementById('txtCaptcha')).value);
-      const str2 = this.removeSpaces( (<HTMLInputElement>document.getElementById('txtInput')).value);
-        if (str1 === str2) {
-          // alert(1);
-          this.isValidCaptcha = true;
-        } else {
-          // alert(2);
-          this.isValidCaptcha = false; }
-    }
-
-    // Remove the spaces from the entered and generated code
-     removeSpaces(string) {
-        return string.split(' ').join('');
-    }
- }

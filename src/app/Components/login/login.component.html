@@ -17,20 +17,28 @@
             <input formControlName="Password" [ngClass]="{'is-invalid': formErrors.Password}" placeholder="Password"
               type="password" />
             <span style="color:bisque;" class="help-block" *ngIf="formErrors.Password">{{formErrors.Password}}</span>
-            <input formControlName="PeriodicKey" [ngClass]="{'is-invalid': formErrors.PeriodicKey}" placeholder="Periodic Key"
-              type="password" />
-            <span style="color:bisque;" class="help-block" *ngIf="formErrors.PeriodicKey">{{formErrors.PeriodicKey}}</span>
-         
+            <input formControlName="PeriodicKey" [ngClass]="{'is-invalid': formErrors.PeriodicKey}"
+              placeholder="Periodic Key" type="password" />
+            <span style="color:bisque;" class="help-block"
+              *ngIf="formErrors.PeriodicKey">{{formErrors.PeriodicKey}}</span>
+
             <div>
+              <canvas id="myCanvas" style="background-image:url(assets/images/captcha-back.png); text-align:center; border:none;
+              font-weight:bold; font-family:Modern; width:150px; height: 45px; margin-right: 10px;background-position: center;">
+              </canvas>
+              <input id="txtInput" style="background:#fff url('');width: 280px;float: right; " autocomplete="off" maxlength="10">
+              <span style="color:bisque;" class="help-block" *ngIf="!isValidCaptcha">Invalid Captcha</span>
+            </div>
+            <!-- <div>
                     <input type="text" id="txtCaptcha" 
                         style="background-image:url(assets/images/1.JPG); text-align:center; border:none;margin-top: 2px;
                         font-weight:bold; font-family:Modern; width:150px; height: 45px; margin-right: 10px;background-position: center;" />
-                    <!-- <input type="button" id="btnrefresh" value="Refresh" onclick="DrawCaptcha();" /> -->
                     <input type="text" id="txtInput" style="width:290px; height: 45px;background: #ffffff" required/>    
                     <span style="color:bisque;" class="help-block" *ngIf="formErrors.PeriodicKey">{{formErrors.captcha}}</span>
                     <span style="color:bisque;" class="help-block" *ngIf="!isValidCaptcha">Invalid Captcha</span>
-               <button type="submit" (click)="(ValidCaptcha())">Log In</button>
-           </div>
+               </div> -->
+            <button type="submit" (click)="(ValidCaptcha())">Log In</button>
+
           </form>
           <p><a class="hide" style="display: none" href="javascript:void(0);">Forgot Password ?</a> </p>
         </div>
