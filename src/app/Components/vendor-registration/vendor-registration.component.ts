@@ -49,15 +49,20 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   //#endregion
 
   //#region Validation Messages
+
+  // pattern
+  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+
   ValidationMessages = {
-   'VendorCode': {
+    'VendorCode': {
       'required': '',
       'maxlength': this._validationMess.MaxLength,
       'pattern': this._validationMess.VCodePattern,
       'CodeExist': this._validationMess.CodeExist
     },
     'VendorName': {
-      'required': this._validationMess.VNameRequired
+      'required': this._validationMess.VNameRequired,
+      'pattern': this._validationMess.RemarksPattern
     },
     'VendorType': {
       'required': this._validationMess.VTypeRequired
@@ -69,7 +74,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     },
     'MasterVendorId': {
       'required': ''
-     }
+    }
   };
   // ValidationMessages = {
   //   'VendorCode': {
@@ -107,8 +112,8 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     private _vendorService: VendorService,
     private _router: Router,
     private _validationMess: ValidationMessagesService
-    ) {
-     // this.validationsMess[0] = new validations();
+  ) {
+    // this.validationsMess[0] = new validations();
   }
 
   ngOnInit() {
@@ -148,7 +153,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   InitializeFormControls() {
     this.RegistrationForm = this._fb.group({
       VendorCode: ['', [Validators.required, Validators.maxLength(6), Validators.pattern(this.AlphanumericPattern)]],
-      VendorName: ['', Validators.required],
+      VendorName: ['', [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
       MasterVendorId: [null, Validators.required],
       RefVendorName: [''],
       PANNo: ['', [Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.minLength(10), Validators.maxLength(10)]],
