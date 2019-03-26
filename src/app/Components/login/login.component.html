@@ -21,11 +21,16 @@
               type="password" />
             <span style="color:bisque;" class="help-block" *ngIf="formErrors.PeriodicKey">{{formErrors.PeriodicKey}}</span>
          
-            
-         
-               <button type="submit">Log In</button>
-
-
+            <div>
+                    <input type="text" id="txtCaptcha" 
+                        style="background-image:url(assets/images/1.JPG); text-align:center; border:none;margin-top: 2px;
+                        font-weight:bold; font-family:Modern; width:150px; height: 45px; margin-right: 10px;background-position: center;" />
+                    <!-- <input type="button" id="btnrefresh" value="Refresh" onclick="DrawCaptcha();" /> -->
+                    <input type="text" id="txtInput" style="width:290px; height: 45px;background: #ffffff" required/>    
+                    <span style="color:bisque;" class="help-block" *ngIf="formErrors.PeriodicKey">{{formErrors.captcha}}</span>
+                    <span style="color:bisque;" class="help-block" *ngIf="!isValidCaptcha">Invalid Captcha</span>
+               <button type="submit" (click)="(ValidCaptcha())">Log In</button>
+           </div>
           </form>
           <p><a class="hide" style="display: none" href="javascript:void(0);">Forgot Password ?</a> </p>
         </div>
