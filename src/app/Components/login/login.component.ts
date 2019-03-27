@@ -3,7 +3,10 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Login } from 'src/app/Models/login';
 import { LoginService } from 'src/app/Services/login.service';
 import { Router } from '@angular/router';
-import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { window } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-login',
@@ -11,14 +14,15 @@ import {ValidationMessagesService} from 'src/app/Services/validation-messages.se
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   //#region Variable Declaration
+  image: HTMLImageElement;
   isUserLoggedIn: boolean;
   PopUpMessage = '';
   LoginForm: FormGroup;
   submitted = false;
   data: any;
   errormsg = '';
+  isValidCaptcha = true;
   //#endregion
 
   //#region Validation Messages
@@ -28,15 +32,22 @@ export class LoginComponent implements OnInit {
     },
     'Password': {
       'required': this._validationMess.Password
+    },
+    'PeriodicKey': {
+      'required': this._validationMess.PeriodicKey
+    },
+    'Captcha': {
+      'required': this._validationMess.Captcha
     }
   };
 
   formErrors = {
     'UserName': '',
-    'Password': ''
+    'Password': '',
+    'PeriodicKey': '',
+    'Captcha': ''
   };
   //#endregion
-
 
   constructor(private _fb: FormBuilder,
     private _loginService: LoginService,
@@ -51,13 +62,16 @@ export class LoginComponent implements OnInit {
       this.errormsg = '';
       this.logValidationErrors(this.LoginForm);
     });
+    this.GenerateCaptcha();
+    // this.DrawCaptcha();
   }
 
   //#region Form Initialization
   InitializeFormControls() {
     this.LoginForm = this._fb.group({
       UserName: ['', Validators.required],
-      Password: ['', Validators.required]
+      Password: ['', Validators.required],
+      PeriodicKey: ['', Validators.required],
     });
   }
   //#endregion
@@ -66,26 +80,28 @@ export class LoginComponent implements OnInit {
   UserAuthentication() {
     this.submitted = true;
 
-    if (this.LoginForm.invalid) {
+    if (this.LoginForm.invalid || !this.isValidCaptcha) {
       this.logValidationErrors();
       return;
     }
     const userCredential = new Login();
     userCredential.UserName = this.LoginForm.get('UserName').value;
     userCredential.Password = this.LoginForm.get('Password').value;
+    userCredential.PeriodicKey = this.LoginForm.get('PeriodicKey').value;
 
-    // this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'Keflavik').subscribe(result => {
-     this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
-      this.data = result;
-      if (this.data.Table !== undefined) {
-        this.isUserLoggedIn = true;
-        sessionStorage.setItem('userid', result.Table[0].LoginID);
-        this._router.navigate(['/welcome']);
-      } else {
-        this.errormsg = 'User is not authenticated.';
-        // this.LoginForm.get('Password').patchValue('');
-      }
-    });
+    this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, userCredential.PeriodicKey)
+      .subscribe(result => {
+        //  this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {
+        this.data = result;
+        if (this.data.Table !== undefined) {
+          this.isUserLoggedIn = true;
+          sessionStorage.setItem('userid', result.Table[0].LoginId);
+          this._router.navigate(['/welcome']);
+        } else {
+          this.errormsg = 'User is not authenticated.';
+          // this.LoginForm.get('Password').patchValue('');
+        }
+      });
 
   }
   //#endregion
@@ -113,4 +129,60 @@ export class LoginComponent implements OnInit {
   }
   //#endregion
 
+  // added by shubhi for capcha
+  GenerateCaptcha() {
+    // const canvas = document.getElementById('txtCaptcha') as HTMLCanvasElement;
+    const code = Math.floor(Math.random() * 1000001).toString();
+    const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
+    const context = canvas.getContext('2d');
+    const imageObj = new Image();
+    imageObj.onload = function () {
+      context.drawImage(imageObj, 200, 200);
+      context.font = 'bold 60px Ink Free';
+      context.fillStyle = 'red';
+      localStorage.setItem('Captcha', code);
+      context.fillText(code, 50, 90);
+    };
+    imageObj.src = 'assets/images/1.JPG';
+  }
+  ValidCaptcha() {
+    const str1 = localStorage.getItem('Captcha').toString();
+    const str2 = (<HTMLInputElement>document.getElementById('txtInput')).value;
+    if (str1 === str2) {
+      // alert(1);
+      this.isValidCaptcha = true;
+    } else {
+      // alert(2);
+      this.isValidCaptcha = false;
+    }
+  }
+  // DrawCaptcha() {
+  //         const a = Math.ceil(Math.random() * 10) + '';
+  //         const b = Math.ceil(Math.random() * 10) + '';
+  //         const c = Math.ceil(Math.random() * 10) + '';
+  //         const d = Math.ceil(Math.random() * 10) + '';
+  //         const e = Math.ceil(Math.random() * 10) + '';
+  //         const f = Math.ceil(Math.random() * 10) + '';
+  //        // const g = Math.ceil(Math.random() * 10) + '';
+  //        // const code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f + ' ' + g;
+  //         const code = a + ' ' + b + ' ' + ' ' + c + ' ' + d + ' ' + e + ' ' + f ;
+  //         (<HTMLInputElement>document.getElementById('txtCaptcha')).value = code;
+  //     }
+
+  //     // Validate the Entered input aganist the generated security code function
+  //      ValidCaptcha() {
+  //       const str1 = this.removeSpaces( (<HTMLInputElement>document.getElementById('txtCaptcha')).value);
+  //       const str2 = this.removeSpaces( (<HTMLInputElement>document.getElementById('txtInput')).value);
+  //         if (str1 === str2) {
+  //           // alert(1);
+  //           this.isValidCaptcha = true;
+  //         } else {
+  //           // alert(2);
+  //           this.isValidCaptcha = false; }
+  //     }
+
+  //     // Remove the spaces from the entered and generated code
+  //      removeSpaces(string) {
+  //         return string.split(' ').join('');
+  //     }
 }

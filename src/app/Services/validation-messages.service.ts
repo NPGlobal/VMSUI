@@ -27,7 +27,8 @@ UserName = 'Employee Id is required';
 Password = 'Password is Required';
 MaxLeanMonth = 'Month cannot exceed 500';
 NumericPattern = 'Numeric value allowed';
-
+PeriodicKey = 'Periodic Key is required';
+Captcha = 'Captcha is required';
   constructor() { }
 }
 
