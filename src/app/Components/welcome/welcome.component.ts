@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OriginService } from 'src/app/Services/origin.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome',
@@ -8,14 +8,15 @@ import { OriginService } from 'src/app/Services/origin.service';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor(private _originService: OriginService) { }
+  constructor(private _router: Router) { }
 
   ngOnInit() {
   }
   Redirect() {
     if (typeof (Storage) !== undefined) {
-      if (sessionStorage.getItem('userid') !== null) {
-        window.location.href = this._originService.GetOriginWithSubDirectoryPath() + 'vendor';
+      if (sessionStorage.getItem('userid') !== null && sessionStorage.getItem('userid') !== undefined) {
+        this._router.navigate(['/vendor']);
+        // window.location.href = this._originService.GetOriginWithSubDirectoryPath() + 'vendor';
       }
     } else {
       // alert('Sorry! No Web Storage support..');

@@ -1,9 +1,13 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div *ngIf="showOutlet">
+<!-- <div *ngIf="showOutlet">
     <router-outlet></router-outlet>
 </div>
 
 <div *ngIf="!showOutlet">
     <app-layout></app-layout>
-</div>
-
+</div> -->
+<ngx-spinner bdOpacity=0.6 bdColor="rgba(2, 1, 1, 0.43)" size="medium" color="#7d2d30" type="ball-spin"
+    fullScreen="false">
+    <p style="color: #7d2d30">Please wait... </p>
+</ngx-spinner>
+<router-outlet></router-outlet>
