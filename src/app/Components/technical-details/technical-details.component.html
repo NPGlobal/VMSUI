@@ -47,6 +47,9 @@
             <td>{{item.MachineName}}</td>
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
+            <ng-container *ngIf="isDeactVendor===true">
+              <td></td>
+            </ng-container>
             <ng-container *ngIf="isDeactVendor===false">
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               <a *ngIf="vendor.Status !== 'B'" title="Edit Machine" href="javascript:void(0)" data-toggle="modal"
