@@ -40,6 +40,7 @@ export class TechnicalDetailsComponent implements OnInit {
   isTechDetailEditing: any;
   AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
+  isDeactVendor = false;
   // vendortechList: VendorTech[];
   // VendorTech: VendorTech;
   deptList: any[];
@@ -169,6 +170,9 @@ export class TechnicalDetailsComponent implements OnInit {
     // this.techDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.techDetailsForm);
     // });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.isDeactVendor = true;
+    }
   }
 
   EditTechDetails(techDefault: VendorTechDefault) {

@@ -39,6 +39,7 @@ export class ProductionDetailsComponent implements OnInit {
   AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
+  isDeactVendor = false;
   // NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
   //#endregion
 
@@ -204,6 +205,9 @@ export class ProductionDetailsComponent implements OnInit {
     // this.ProductionDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.ProductionDetailsForm);
     // });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.isDeactVendor = true;
+    }
   }
 
   EditProductionDetail(production: VendorProduction) {

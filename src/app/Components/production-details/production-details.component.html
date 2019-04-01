@@ -1,7 +1,7 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
   <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchProductionDetails($event.target.value)"
     name="search"> -->
-  <button type="button" class="btn btn-primary float-right" (click)="EditProductionDetail(null)">
+  <button type="button" class="btn btn-primary float-right" (click)="EditProductionDetail(null)" *ngIf="isDeactVendor === false">
     <i class="fa fa-plus"></i>
     <span title="Add new" class="py-4">Add</span>
   </button>
@@ -53,7 +53,7 @@
           <td>{{production.LeanMonths}}</td>
           <td>{{production.LeanCapacity}}</td>
           <td>
-            <a title="Edit" href="javascript:void(0)" (click)="EditProductionDetail(production)">
+            <a title="Edit" href="javascript:void(0)" (click)="EditProductionDetail(production)" *ngIf="isDeactVendor === false">
               <i class="fa fa-edit"></i>
             </a>
 
@@ -62,7 +62,7 @@
               <i class="fa fa-address-book"></i>
             </a>
 
-            <a title="Delete Production Detail" href="javascript:void(0)" class="ml-2"
+            <a title="Delete Production Detail" href="javascript:void(0)" class="ml-2" *ngIf="isDeactVendor === false"
               (click)="DeleteProductionDetail(production)" data-target="#deleteModal">
               <i class="fa fa-remove"></i>
             </a>

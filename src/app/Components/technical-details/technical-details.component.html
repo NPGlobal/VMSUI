@@ -1,7 +1,7 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
   <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchTechDetails($event.target.value)"
     name="search"> -->
-  <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="EditTechDetails(null)"
+  <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="EditTechDetails(null)" *ngIf="isDeactVendor===false"
     data-target="#myModal" data-backdrop="static" data-keyboard="false">
     <i class="fa fa-plus"></i>
     <span title="Add new" class="py-4">Add</span>
@@ -47,6 +47,7 @@
             <td>{{item.MachineName}}</td>
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
+            <ng-container *ngIf="isDeactVendor===false">
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               <a *ngIf="vendor.Status !== 'B'" title="Edit Machine" href="javascript:void(0)" data-toggle="modal"
                 (click)="EditTechDetails(vendor)" data-target="#myModal" data-backdrop="static" data-keyboard="false"><i
@@ -69,8 +70,10 @@
                 <i class="fa fa-check"></i>
               </a>
             </td>
+              </ng-container>
           </tr>
-        </ng-container>
+      
+      </ng-container>
       </ng-container>
     </tbody>
   </table>

@@ -29,6 +29,7 @@ export class DocumentComponent implements OnInit {
   submitted = false;
   inEditedMode: boolean;
   isRemarksShown: boolean;
+  isDeactVendor = false;
 
   // pattern
   AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
@@ -298,6 +299,9 @@ export class DocumentComponent implements OnInit {
       FileName: [null, [Validators.required]],
       Remarks: [this.vendorDocument.Remarks]
     });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.isDeactVendor = true;
+    }
   }
 
   Dismiss() {

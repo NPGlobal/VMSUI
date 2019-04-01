@@ -31,6 +31,7 @@ export class VendorListComponent implements OnInit {
   searchByGST: string;
   searchByPAN: string;
   searchByCreatedOn: string;
+  searchByStatus: string;
   //#endregion
 
   constructor(private _http: HttpClient,
@@ -44,6 +45,7 @@ export class VendorListComponent implements OnInit {
     this.searchByGST = '';
     this.searchByPAN = '';
     this.searchByCreatedOn = '';
+    this.searchByStatus = '';
 
     this.GetVendors(this.currentPage);
   }
@@ -74,7 +76,7 @@ export class VendorListComponent implements OnInit {
 
   SearchVendorList() {
     this.searchText = this.searchByName + '~' + this.searchByShortName + '~' + this.searchByRefVendor + '~' +
-      this.searchByGST + '~' + this.searchByPAN + '~' + this.searchByCreatedOn;
+      this.searchByGST + '~' + this.searchByPAN + '~' + this.searchByCreatedOn + '~' + this.searchByStatus;
     this.SearchVendor(this.searchText);
   }
 
@@ -108,6 +110,10 @@ export class VendorListComponent implements OnInit {
     this.isSorted = !this.isSorted;
   }
   //#endregion
+
+GetVendorStatus(status: any) {
+  localStorage.setItem('VendorStatus', status);
+ }
 
   //#region Open Registration Modal
   OnRegistrationClick() {

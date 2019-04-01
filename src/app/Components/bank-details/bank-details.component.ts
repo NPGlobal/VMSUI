@@ -22,6 +22,7 @@ export class BankDetailsComponent implements OnInit {
   AccountType: any[];
   CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
+  isDeactVendor = false;
   //#endregion
 
   //#region Alert Modal
@@ -91,6 +92,10 @@ export class BankDetailsComponent implements OnInit {
     // this.BankDetailsForm.valueChanges.subscribe((data) => {
     //   this.logValidationErrors(this.BankDetailsForm);
     // });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.BankDetailsForm.disable();
+      this.isDeactVendor = true;
+    }
   }
 
   Editvendor(Code: string) {

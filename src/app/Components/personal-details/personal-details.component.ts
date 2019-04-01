@@ -45,6 +45,7 @@ export class PersonalDetailsComponent implements OnInit {
   SavedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
   vendorExpe_MDDCode: string[] = [];
+  isDeactVendor = false;
   //#endregion
 
   //#region Patterns
@@ -208,7 +209,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
-      if (this.VendorCode === null) {
+       if (this.VendorCode === null) {
         this.InitializeFormControls();
         this.GetPHList();
       } else {
@@ -219,7 +220,7 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
-  }
+   }
 
   //#region Form Initialization
   InitializeFormControls() {
@@ -317,6 +318,10 @@ export class PersonalDetailsComponent implements OnInit {
     // this.personalDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.personalDetailsForm);
     // });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.personalDetailsForm.disable();
+      this.isDeactVendor = true;
+    }
   }
 
   Editvendor(Code: string) {
@@ -350,7 +355,7 @@ export class PersonalDetailsComponent implements OnInit {
 
       // this.IsAddressSaved = false;
     });
-  }
+    }
   //#endregion
 
   //#region Data Binding

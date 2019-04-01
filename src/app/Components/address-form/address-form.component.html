@@ -2,7 +2,8 @@
 
 <div *ngIf="(VendorAddresses && VendorAddresses.length <= 2)" class="col-md-12 form-group">
   <div class="">
-    <button type="button" class="btn btn-primary float-right" (click)="OpenAddressModal(CreateNewAddress())">
+    <button type="button" class="btn btn-primary float-right" (click)="OpenAddressModal(CreateNewAddress())"
+    *ngIf="isDeactVendor === false">
       <i class="fa fa-plus"></i>
       <span title="Add new" class="py-4">Add</span>
     </button>
@@ -36,7 +37,7 @@
             <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}
             </td>
             <td>
-              <a title="Edit" href="javascript:void(0)" (click)="OpenAddressModal(address)">
+              <a title="Edit" href="javascript:void(0)" (click)="OpenAddressModal(address)" *ngIf="isDeactVendor === false">
                 <i class="fa fa-edit"></i>
               </a>
               <a class="ml-2" title="View Contacts" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"

@@ -25,6 +25,7 @@ export class DepartmentMappingNewComponent implements OnInit {
   isDataExist = false;
   CheckData = 0;
   Temp: MasterDataDetails[] = [];
+  isDeactVendor = false;
   //#endregion
 
   //#region Modal Popup and Alert
@@ -68,6 +69,10 @@ export class DepartmentMappingNewComponent implements OnInit {
       Department: [''],
       SelectedList: ['']
     });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.DepartmentMappingForm.disable();
+      this.isDeactVendor = true;
+    }
   }
   //#endregion
 

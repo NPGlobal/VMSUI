@@ -39,6 +39,7 @@ export class StaffDetailsComponent implements OnInit {
   vendorStaffDetail: StaffDetails;
   inEditedMode: boolean;
   inDeletedMode: boolean;
+  isDeactVendor = false;
 
   //#endregion
 
@@ -167,6 +168,9 @@ export class StaffDetailsComponent implements OnInit {
       ]],
       Remarks: [this.vendorStaffDetail.Remarks, Validators.pattern(this.AddressAndRemarksPattern)]
     });
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.isDeactVendor = true;
+    }
   }
 
   EditStaffDetails(vobj: StaffDetails) {
