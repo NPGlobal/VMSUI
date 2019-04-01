@@ -161,7 +161,7 @@
                                         class="mt-1 mb-1 col-sm-6 PHandStore form-group">
                                         <label class="text">Saved PH/Store</label>
                                         <select class="form-control input-sm" size="4" multiple="multiple"
-                                        [attr.disabled]=isDeactVendor>
+                                        [attr.disabled]="isDeactVendor ? 'disabled': null">
                                             <option *ngFor="let PHStore of SavedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                         </select>
@@ -846,7 +846,7 @@
                         <div class="col-md-22" *ngFor="let expertise of ExpertiseList">
                             <span class="checkbox-inline">
                                 <label>
-                                  <input class="mr-2" type="checkbox" [attr.checked]="expertise.Checked" [attr.disabled]= isDeactVendor
+                                  <input class="mr-2" type="checkbox" [attr.checked]="expertise.Checked" [attr.disabled]="isDeactVendor ? 'disabled': null"
                                   (change)="onChange(expertise.MDDCode, $event.target.checked)" value="{{expertise.MDDCode}}" />{{expertise.MDDName}}
                                 </label>
                             </span>
