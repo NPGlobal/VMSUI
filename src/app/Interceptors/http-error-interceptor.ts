@@ -7,10 +7,12 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
+import { OriginService } from '../Services/origin.service';
 
 export class HttpErrorInterceptor implements HttpInterceptor {
 
     userid: string;
+    private _originService: OriginService;
     constructor() { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -54,7 +56,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         } else {
             if (typeof (Storage) !== undefined) {
                 if (sessionStorage.getItem('userid') === null || sessionStorage.getItem('userid') === 'null') {
-                    const redirecturl = window.location.origin;
+                    const redirecturl = this._originService.GetOriginWithSubDirectoryPath();
                     window.location.href = redirecturl;
                 } else {
                     // alert('1');

@@ -117,7 +117,7 @@
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-3 col-md-3">
-                <label class="text">Tech Line No. <span class="error-label">*</span></label>
+                <label class="text">Tech Line No.<span class="error-label">*</span></label>
                 <span>
                   <input type="text" formControlName="TechLineNo" class="form-control input-sm" maxlength="50"
                     (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.TechLineNo }">
@@ -152,7 +152,7 @@
             <div class="row">
 
               <div class="col-lg-3 col-md-3">
-                <label class="text">Machine Type <span class="error-label">*</span></label>
+                <label class="text">Machine Type<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="Department" class="form-control input-sm"
                     [attr.disabled]="techDetailsForm.get('Department').disabled ? 'disabled': null"
@@ -167,7 +167,7 @@
               </div>
 
               <div class="col-lg-3 col-md-3">
-                <label class="text">Machine Name <span class="error-label">*</span></label>
+                <label class="text">Machine Name<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendorTechConfigID" class="form-control input-sm"
                     [attr.disabled]="techDetailsForm.get('VendorTechConfigID').disabled ? 'disabled': null"

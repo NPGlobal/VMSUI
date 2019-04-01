@@ -82,7 +82,7 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Document
+        <h6 class="modal-title">Documents
           <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span>
         </h6>
         <button type="button" class="close" (click)="Dismiss()" data-dismiss="modal">&times;</button>
@@ -93,7 +93,7 @@
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-6 col-md-6">
-                <label class="text">Action Header <span class="error-label">*</span></label>
+                <label class="text">Action Header<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendAction_MDDCode" class="form-control input-sm" (change)="GetDocument()"
                     [ngClass]="{ 'is-invalid': formErrors.VendAction_MDDCode }"
@@ -107,7 +107,7 @@
                 </span>
               </div>
               <div class="col-lg-6 col-md-6">
-                <label class="text">Document <span class="error-label">*</span></label>
+                <label class="text">Document<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendDoc_MDDCode" class="form-control input-sm"
                     [ngClass]="{ 'is-invalid': formErrors.VendDoc_MDDCode }" (change)="ShowRemarks()"
