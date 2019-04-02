@@ -283,7 +283,7 @@ export class DepartmentMappingNewComponent implements OnInit {
     vendor.Vendor_Depts = this.makeVendorDeptString();
 
     if (this.CheckData === this.SelectedDD.length) {
-      this.PopUpMessage = 'Please select atleast one data.';
+      this.PopUpMessage = 'There is no new data to update.';
       this.alertButton.click();
       return;
     }
