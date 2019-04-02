@@ -53,7 +53,11 @@
         <td>{{vendor.CreatedOn | date:'medium'}}</td>
         <td>{{vendor.Status}}</td>
         <td>
-          <a title="Edit" [routerLink]="['/vendor', vendor.VendorCode, 'personal']"><i class="fa fa-edit" (click)="GetVendorStatus(vendor.Status)"></i></a>
+          <a title="Edit"
+           [routerLink]="['/vendor', vendor.VendorCode, 'personal']">
+           <i *ngIf="vendor.Status==='A' || vendor.Status==='a'" class="fa fa-edit" (click)="GetVendorStatus(vendor.Status)"></i>
+           <i *ngIf="vendor.Status==='D' || vendor.Status==='d'" class="fa fa-eye" (click)="GetVendorStatus(vendor.Status)"></i>
+          </a>
         </td>
       </tr>
      <tr *ngIf="pagedItems && pagedItems.length === 0">
