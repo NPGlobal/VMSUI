@@ -104,7 +104,8 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     'VendorName': '',
     'VendorType': '',
     'PANNo': '',
-    'MasterVendorId': ''
+    'MasterVendorId': '',
+    'CodeExist': ''
   };
   //#endregion
 
@@ -362,6 +363,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
         this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
       } else if (statusObj.data.Table[0].ResultCode === 2) {
         this.CodeExists = true;
+        this.formErrors.CodeExist = this._validationMess.CodeExist;
       } else {
         this.PopUpMessage = statusObj.data.Table[0].ResultMessage;
         this.alertButton.click();

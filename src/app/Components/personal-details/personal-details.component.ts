@@ -8,7 +8,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
 import { DatePipe } from '@angular/common';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   providers: [DatePipe],
@@ -80,7 +80,7 @@ export class PersonalDetailsComponent implements OnInit {
   ValidationMessages = {
     'VendorName': {
       'required': '',
-      'pattern' : this._validationMess.RemarksPattern
+      'pattern': this._validationMess.RemarksPattern
     },
     'PANNo': {
       'minlength': '',
@@ -98,13 +98,13 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'Address1': {
       'required': '',
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'Address2': {
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'Address3': {
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'CountryCode': {
       'required': ''
@@ -209,7 +209,7 @@ export class PersonalDetailsComponent implements OnInit {
 
     this._route.parent.paramMap.subscribe((data) => {
       this.VendorCode = (data.get('code'));
-       if (this.VendorCode === null) {
+      if (this.VendorCode === null) {
         this.InitializeFormControls();
         this.GetPHList();
       } else {
@@ -220,7 +220,7 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
-   }
+  }
 
   //#region Form Initialization
   InitializeFormControls() {
@@ -303,7 +303,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: false,
         ExpertiseList: new FormArray([]),
         VendorWeaknesses: [this.vendor.Vendor_Weakness === null ? '' : this.vendor.Vendor_Weakness,
-         Validators.pattern(this.AddressAndRemarksPattern)]
+        Validators.pattern(this.AddressAndRemarksPattern)]
       })
     });
 
@@ -355,7 +355,7 @@ export class PersonalDetailsComponent implements OnInit {
 
       // this.IsAddressSaved = false;
     });
-    }
+  }
   //#endregion
 
   //#region Data Binding
@@ -451,20 +451,23 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   FormatDate(date: Date) {
-    const d = new Date(date),
-      year = d.getFullYear();
-    let month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate();
+    if (date !== null) {
+      const d = new Date(date),
+        year = d.getFullYear();
+      let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate();
 
-    if (month.length < 2) {
-      month = '0' + month;
+      if (month.length < 2) {
+        month = '0' + month;
 
+      }
+      if (day.length < 2) {
+        day = '0' + day;
+      }
+      return [year, month, day].join('-');
+    } else {
+      return date;
     }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
   }
   //#endregion
 
