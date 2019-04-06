@@ -29,6 +29,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
+import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DepartmentMappingNewComponent } from './Components/department-mapping-n
     LoginComponent,
     WelcomeComponent,
     DepartmentMappingComponent,
-    DepartmentMappingNewComponent
+    DepartmentMappingNewComponent,
+    VendorAssessmentComponent
     ],
   imports: [
     BrowserModule,

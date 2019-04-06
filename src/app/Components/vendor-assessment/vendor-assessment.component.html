@@ -1,0 +1,299 @@
+<table class="table table-sm table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th rowspan="2">Legend</th>
+      <th colspan="5">Apparel - Vendor Assessment Scores - 2018</th>
+    </tr>
+    <tr>
+      <th>EDA: Jan-Feb-March'18</th>
+      <th>EDA: April-May-June'18</th>
+      <th>EDA: July-Aug-Sept'18</th>
+      <th>EDA: Oct-Nov-Dec'18</th>
+      <th>Aggregate 2018</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-justify">A. Platnium: = > 90%</td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+    </tr>
+    <tr>
+      <td class="text-justify">B. Gold: 85 - 89%</td>
+    </tr>
+    <tr>
+      <td class="text-justify">C. Silver: 80 - 84%</td>
+    </tr>
+    <tr>
+
+      <td class="text-justify">D. Bronze: = &lt; 79 %</td>
+    </tr>
+  </tbody>
+</table>
+
+<h6 class="text-center">Producer Assessment Report Card</h6>
+<hr>
+
+<form *ngIf="AssessmentForm" [formGroup]="AssessmentForm" novalidate class="">
+  <div class="row">
+    <div class="form-group col-md-3">
+      <div class="">
+        <label>PH</label>
+        <select class="form-control input-sm">
+          <option [ngValue]="null">Select</option>
+          <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of AllPHList">{{ph.OrgUnitName}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="">
+        <label>EDA Year</label>
+        <select formControlName="EDAYear" (change)="PopulateMonths()" class="form-control input-sm">
+          <option [ngValue]="null">Select</option>
+          <option value="{{year}}" *ngFor="let year of YearList">{{year}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="">
+        <label>EDA Month</label>
+        <select formControlName="EDAMonth" class="form-control input-sm">
+          <option [ngValue]="null">Select</option>
+          <option value="{{i}}" *ngFor="let months of CreateRange(monthsToShow); index as i">{{MonthList[i]}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label for="VendorName">Producer<i class="mandatory">*</i></label>
+      <select class="form-control input-sm">
+        <option [ngValue]="null">Select</option>
+        <option value="{{vendor.VendorCode}}" *ngFor="let vendor of vendorList">{{vendor.VendorName}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">Product Specialities</label>
+      <input class="form-control input-sm" type="text" value="">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">Assessing PH</label>
+      <input class="form-control input-sm" type="text" value="">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">Assessment Period</label>
+      <input class="form-control input-sm" type="text" value="">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">Date of Assessment</label>
+      <input class="form-control input-sm" type="text" value="">
+    </div>
+  </div>
+</form>
+
+<div class="form-group">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <td>PH</td>
+        <td>Order Number</td>
+        <td>Order Quantity</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of OrderDetails">
+        <td>{{order.PH}}</td>
+        <td>{{order.OrderNumber}}</td>
+        <td>{{order.OrderQuantity}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-group">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Total number of Pcs placed with the Vendor during the Assessment Period</td>
+        <td>{{TotalPieces}}</td>
+      </tr>
+      <tr>
+        <td>Total number of Orders/Styles placed with the Vendor during the Assessment Period</td>
+        <td>{{TotalOrders}}</td>
+      </tr>
+      <tr>
+        <td>Ontime GRN Qty as per agreed Delivery Dates (PO or JW Delivery Dates)</td>
+        <td>{{GRNQtyAsPerDeliveryDate}}</td>
+      </tr>
+      <tr>
+        <td>Delayed (After Delivery Date GRN Qty)</td>
+        <td>{{TotalDelayedPieces}}</td>
+      </tr>
+      <tr>
+        <td>Total GRN Qty</td>
+        <td>{{TotalGRNQty}}</td>
+      </tr>
+      <tr>
+        <td>Difference Qty (Issued Vs. GRN Qty)</td>
+        <td>{{DifferenceQty}}</td>
+      </tr>
+      <tr>
+        <td>Difference Qty (Issued Vs. GRN Qty) Vendor responsibility e.g. Construction & Quality
+          issues</td>
+        <td>{{DifferenceQtyWithResp}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <table class="table table-bordered table-striped table-hover table-small">
+    <thead>
+      <tr>
+        <th colspan="2"></th>
+        <th>Number</th>
+        <th>Weightage</th>
+        <th>Marks Obtained</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 1a Details -->
+      <tr>
+        <td class="font-weight-bold">1a</td>
+        <td class="font-weight-bold">QUALITY (To be filled in by PPH QC)</td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+      </tr>
+      <tr>
+        <td rowspan="3"></td>
+        <td>Number of Pcs Delivered with Acceptable Quality</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Number of Styles Passed in First Final Inspection</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Number of Styles produced following Quality Protocols(PP,PPM,Inline Inspection,Final Inspection)</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <!-- 1b Details -->
+      <tr>
+        <td class="font-weight-bold">1b</td>
+        <td class="font-weight-bold">SAMPLE APPROVAL RATE  (To be filled in by HO QC)</td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Number of Pre Production Samples Approved on First Submission</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <!-- 2a Details-->
+      <tr>
+        <td class="font-weight-bold">2a</td>
+        <td class="font-weight-bold">ON TIME DELIVERY (To be filled in by PPH Merchant)</td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Number of Ontime Shipments (Styles)</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <!-- 2b Details -->
+      <tr>
+        <td class="font-weight-bold">2b</td>
+        <td class="font-weight-bold">ISSUED QUANTITY TO GRN QUANTITY (To be filled in by PPH Merchant)</td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+      </tr>
+      <tr>
+        <td rowspan="4"></td>
+        <td>95%-100% of the Issued Qty Received  - Score 100%</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>90%-94% of the Issued Qty Received - Score 95%</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>85%-89% of the Issued Qty Received  - Score 80%</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>84% and Below of the Issued Qty Received  - Score 0%</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="font-weight-bold" colspan="2">Average % Score</td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+        <td class="font-weight-bold"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- Hidden button to open alert modal -->
+<button #alertModalButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<!-- Modal to open alert modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="msgModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
