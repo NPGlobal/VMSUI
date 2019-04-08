@@ -20,6 +20,8 @@ export class VendorAssessmentComponent implements OnInit {
   inputParams: string;
   YearList: number[];
   MonthList: string[];
+  GradeDetails: any;
+  DeptList: any;
 
   TotalPieces: number;
   TotalOrders: number;
@@ -56,15 +58,15 @@ export class VendorAssessmentComponent implements OnInit {
     this.PopulateYears();
     this.GetVendors();
     this.GetPHList();
-
-    this.GetVendorAssessmentReport();
   }
 
   //#region GetData
   InitializeFormControls() {
     this.AssessmentForm = this._fb.group({
-      EDAYear: [null, [Validators.required]],
-      EDAMonth: [null]
+      ShortName: [null],
+      EDAFrom: [null, [Validators.required]],
+      EDATo: [null],
+      DeptCode: [null]
     });
   }
 
@@ -72,6 +74,18 @@ export class VendorAssessmentComponent implements OnInit {
     this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
       this.vendorList = result.data.Vendors;
     });
+  }
+
+  GetVendorsWithDepartments() {
+    this.DeptList = [];
+
+    const shortName = this.AssessmentForm.get('ShortName').value;
+
+    if (shortName !== null) {
+      this._vendorService.GetVendorsWithDepartments(shortName).subscribe((result) => {
+        this.DeptList = result.data.Table;
+      });
+    }
   }
 
   GetPHList() {
@@ -93,6 +107,8 @@ export class VendorAssessmentComponent implements OnInit {
       this.TotalGRNQty = result.data.Table1[0].TotalGRNQty;
       this.DifferenceQty = result.data.Table1[0].DifferenceQty;
       this.DifferenceQtyWithResp = result.data.Table1[0].DifferenceQtyWithResp;
+
+      this.GradeDetails = result.data.Table2;
     });
   }
 
@@ -127,4 +143,19 @@ export class VendorAssessmentComponent implements OnInit {
   }
   //#endregion
 
+  //#region GetReportDetails
+
+  GetReport() {
+    const shortName = this.AssessmentForm.get('ShortName').value;
+    const deptCode = this.AssessmentForm.get('DeptCode').value;
+    const edaFrom = this.AssessmentForm.get('EDAFrom').value;
+    const edaTo = this.AssessmentForm.get('EDATo').value;
+
+    this.inputParams = edaFrom + '~' + edaTo + '~' +
+      shortName + '~' + deptCode;
+
+    this.GetVendorAssessmentReport();
+  }
+
+  //#endregion
 }
