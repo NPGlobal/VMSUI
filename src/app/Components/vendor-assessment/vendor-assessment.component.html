@@ -87,8 +87,7 @@
   </div>
 </form>
 
-<div *ngIf="OrderDetails && OrderDetails">
-
+<div *ngIf="submitted">
   <hr>
   <div class="form-group">
     <label class="float-left">Assessment Period:</label>
@@ -98,6 +97,15 @@
     <label class="float-left">Date of Assessment:</label>
     <label class="col-md-2">{{AssessmentDate}}</label>
   </div>
+
+  <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
+    class="form-group ml-auto mr-auto">
+    <br>
+    <h6>No orders available under assessment period</h6>
+  </div>
+</div>
+
+<div *ngIf="OrderDetails && OrderDetails.length > 0">
 
   <div class="form-group">
     <table class="table table-bordered table-striped table-hover">

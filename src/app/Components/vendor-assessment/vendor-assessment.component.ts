@@ -190,6 +190,7 @@ export class VendorAssessmentComponent implements OnInit {
     if (this.AssessmentForm.invalid) {
       this.LogValidationErrors();
       this.ValidateDepartment();
+      this.submitted = false;
       return;
     }
 
