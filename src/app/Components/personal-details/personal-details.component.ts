@@ -220,6 +220,7 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
+
   }
 
   //#region Form Initialization
@@ -230,7 +231,6 @@ export class PersonalDetailsComponent implements OnInit {
     const isGSTControlsDisabled = this.vendor.isGSTRegistered ? true : false;
     const isDPDisabled = this.vendor.IsDirectVendor ? true : false;
     const isJWDisabled = this.vendor.IsJWVendor ? true : false;
-
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
@@ -245,7 +245,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: true,
         IsJWVendor: [this.vendor.IsJWVendor],
         IsDirectVendor: [this.vendor.IsDirectVendor],
-        NameofInsuranceCompany: [{ value: this.vendor.NameofInsuranceCompany, disabled: true }],
+        NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
         IsInsured: [this.vendor.isInsured]
       }),
       RegisteredOfficeAddress: this._fb.group({
@@ -306,7 +306,7 @@ export class PersonalDetailsComponent implements OnInit {
         Validators.pattern(this.AddressAndRemarksPattern)]
       })
     });
-
+    this.IfInsured(this.personalDetailsForm.get('PersonalDetails.IsInsured').value); // by Shubhi on 9 Apr
     this.personalDetailsForm.updateValueAndValidity();
 
     this.DisableControls(disablePan, isGSTControlsDisabled, disableRef, isDPDisabled, isJWDisabled);
@@ -318,6 +318,7 @@ export class PersonalDetailsComponent implements OnInit {
     // this.personalDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.personalDetailsForm);
     // });
+   
     if (localStorage.getItem('VendorStatus') === 'D') {
       this.personalDetailsForm.disable();
       this.isDeactVendor = true;
@@ -992,7 +993,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.alertButton.click();
         // this.IsAddressSaved = true;
         this.submitted = false;
-        this.IfInsured(true);
+        // this.IfInsured(true); // by Shubhi on 9 Apr
         this.clearValidator();
         this.Editvendor(this.VendorCode);
       } else {
