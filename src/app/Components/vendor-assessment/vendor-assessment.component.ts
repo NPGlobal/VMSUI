@@ -187,9 +187,17 @@ export class VendorAssessmentComponent implements OnInit {
 
   GetReport() {
     this.submitted = true;
+    this.OrderDetails = [];
     if (this.AssessmentForm.invalid) {
       this.LogValidationErrors();
       this.ValidateDepartment();
+      this.submitted = false;
+      return;
+    }
+
+    this.ValidateDepartment();
+
+    if (this.invalidDept) {
       this.submitted = false;
       return;
     }

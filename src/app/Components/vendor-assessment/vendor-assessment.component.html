@@ -34,27 +34,27 @@
   </tbody>
 </table> -->
 
-<h6 class="text-center">Producer Assessment Report Card</h6>
+<h2>Producer Assessment Report Card</h2>
 <hr>
 
 <form *ngIf="AssessmentForm" (ngSubmit)="GetReport()" [formGroup]="AssessmentForm" novalidate class="">
 
   <div class="row">
-    <div class="form-group col-md-2">
+    <div class="col-md-2">
       <div class="">
         <label>EDA From<i class="mandatory">*</i></label>
         <input [ngClass]="{'is-invalid': formErrors.EDAFrom}" formControlName="EDAFrom" type="date" [max]="maxDate"
           (blur)="LogValidationErrors()" class="form-control input-sm" />
       </div>
     </div>
-    <div class="form-group col-md-2">
+    <div class="col-md-2">
       <div class="">
         <label>EDA To<i class="mandatory">*</i></label>
         <input [ngClass]="{'is-invalid': formErrors.EDATo}" formControlName="EDATo" type="date" [max]="maxDate"
           (blur)="LogValidationErrors()" class="form-control input-sm" />
       </div>
     </div>
-    <div class="form-group col-md-2">
+    <div class="col-md-2">
       <label for="">Assessing PH<i class="mandatory">*</i></label>
       <select [ngClass]="{'is-invalid': formErrors.AssessingPHCode}" formControlName="AssessingPHCode"
         (blur)="LogValidationErrors()" class="form-control input-sm">
@@ -62,7 +62,7 @@
         <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of AllPHList">{{ph.OrgUnitName}}</option>
       </select>
     </div>
-    <div class="form-group col-md-3">
+    <div class="col-md-3">
       <label for="VendorName">Producer<i class="mandatory">*</i></label>
       <select [ngClass]="{'is-invalid': formErrors.ShortName}" formControlName="ShortName"
         (change)="GetVendorsWithDepartments()" (blur)="LogValidationErrors()" class="form-control input-sm">
@@ -70,7 +70,7 @@
         <option value="{{vendor.VendorCode}}" *ngFor="let vendor of vendorList">{{vendor.VendorName}}</option>
       </select>
     </div>
-    <div class="form-group col-md-3">
+    <div class="col-md-3">
       <label for="">Product Specialities (Departments)<i class="mandatory">*</i></label>
       <ng-multiselect-dropdown required class="input-sm dropdown" [placeholder]="'Select'"
         [ngClass]="{ 'invalid-dept': invalidDept }" [ngModelOptions]="{standalone: true}" [data]="DeptList"
@@ -89,19 +89,20 @@
 
 <div *ngIf="submitted">
   <hr>
-  <div class="form-group">
-    <label class="float-left">Assessment Period:</label>
-    <label class="col-md-3">{{FromDate + ' to ' + ToDate}}</label>
-  </div>
-  <div class="form-group">
-    <label class="float-left">Date of Assessment:</label>
-    <label class="col-md-2">{{AssessmentDate}}</label>
+  <div class="row">
+    <div class="form-group col-md-4">
+      <label class="float-left mr-2">Assessment Period:</label>
+      <label class="">{{FromDate + ' to ' + ToDate}}</label>
+    </div>
+    <div class="form-group col-md-4">
+      <label class="float-left mr-2">Date of Assessment:</label>
+      <label class="">{{AssessmentDate}}</label>
+    </div>
   </div>
 
   <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
     class="form-group ml-auto mr-auto">
-    <br>
-    <h6>No orders available under assessment period</h6>
+    <h6 class="text-center">No orders available under assessment period</h6>
   </div>
 </div>
 
