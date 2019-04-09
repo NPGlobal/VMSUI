@@ -55,6 +55,7 @@ export class VendorListComponent implements OnInit {
     this.loading = true;
     this.currentPage = index;
     this._vendorService.GetVendors(this.currentPage, this.pageSize, this.searchText).subscribe(result => {
+      localStorage.removeItem('VendorStatus');
       this.loading = false;
       this.vendors = result.data.Vendors;
       this.totalItems = result.data.VendorsCount[0].TotalVendors;
@@ -111,9 +112,9 @@ export class VendorListComponent implements OnInit {
   }
   //#endregion
 
-GetVendorStatus(status: any) {
-  localStorage.setItem('VendorStatus', status);
- }
+  GetVendorStatus(status: any) {
+    localStorage.setItem('VendorStatus', status.toUpperCase());
+  }
 
   //#region Open Registration Modal
   OnRegistrationClick() {

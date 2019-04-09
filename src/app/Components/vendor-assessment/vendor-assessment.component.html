@@ -1,0 +1,285 @@
+<!-- <table class="table table-sm table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th rowspan="2">Legend</th>
+      <th colspan="5">Apparel - Vendor Assessment Scores - 2018</th>
+    </tr>
+    <tr>
+      <th>EDA: Jan-Feb-March'18</th>
+      <th>EDA: April-May-June'18</th>
+      <th>EDA: July-Aug-Sept'18</th>
+      <th>EDA: Oct-Nov-Dec'18</th>
+      <th>Aggregate 2018</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-justify">A. Platnium: = > 90%</td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+      <td rowspan="4"></td>
+    </tr>
+    <tr>
+      <td class="text-justify">B. Gold: 85 - 89%</td>
+    </tr>
+    <tr>
+      <td class="text-justify">C. Silver: 80 - 84%</td>
+    </tr>
+    <tr>
+
+      <td class="text-justify">D. Bronze: = &lt; 79 %</td>
+    </tr>
+  </tbody>
+</table> -->
+
+<h6 class="text-center">Producer Assessment Report Card</h6>
+<hr>
+
+<form *ngIf="AssessmentForm" (ngSubmit)="GetReport()" [formGroup]="AssessmentForm" novalidate class="">
+
+  <div class="row">
+    <div class="form-group col-md-3">
+      <div class="">
+        <label>EDA From</label>
+        <input formControlName="EDAFrom" type="date" [min]="AssociatedWithDate" [max]="maxDate"
+          class="form-control input-sm" />
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="">
+        <label>EDA To</label>
+        <input formControlName="EDATo" type="date" [min]="AssociatedWithDate" [max]="maxDate"
+          class="form-control input-sm" />
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label for="VendorName">Producer<i class="mandatory">*</i></label>
+      <select formControlName="ShortName" (change)="GetVendorsWithDepartments()" class="form-control input-sm">
+        <option [ngValue]="null">Select</option>
+        <option value="{{vendor.VendorCode}}" *ngFor="let vendor of vendorList">{{vendor.VendorName}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-3">
+      <label for="">Product Specialities</label>
+      <select formControlName="DeptCode" class="form-control input-sm">
+        <option [ngValue]="null">Select</option>
+        <option value="{{dept.MDDCode}}" *ngFor="let dept of DeptList">{{dept.MDDName}}</option>
+      </select>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="page-footer">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</form>
+
+<div *ngIf="OrderDetails && OrderDetails">
+
+  <hr>
+  <div class="row">
+    <div class="form-group col-md-2">
+      <label for="">Assessing PH</label>
+      <select class="form-control input-sm">
+        <option [ngValue]="null">Select</option>
+        <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of AllPHList">{{ph.OrgUnitName}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">Assessment Period</label>
+      <input class="form-control input-sm" type="text" value="">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="">Date of Assessment</label>
+      <input type="date" [min]="AssociatedWithDate" [max]="maxDate" class="form-control input-sm" />
+    </div>
+  </div>
+  <div class="form-group">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <td>PH</td>
+          <td>Order Number</td>
+          <td>Order Quantity</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of OrderDetails">
+          <td>{{order.PH}}</td>
+          <td>{{order.OrderNumber}}</td>
+          <td>{{order.OrderQuantity}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-group">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total number of Pcs placed with the Vendor during the Assessment Period</td>
+          <td>{{TotalPieces}}</td>
+        </tr>
+        <tr>
+          <td>Total number of Orders/Styles placed with the Vendor during the Assessment Period</td>
+          <td>{{TotalOrders}}</td>
+        </tr>
+        <tr>
+          <td>Ontime GRN Qty as per agreed Delivery Dates (PO or JW Delivery Dates)</td>
+          <td>{{GRNQtyAsPerDeliveryDate}}</td>
+        </tr>
+        <tr>
+          <td>Delayed (After Delivery Date GRN Qty)</td>
+          <td>{{TotalDelayedPieces}}</td>
+        </tr>
+        <tr>
+          <td>Total GRN Qty</td>
+          <td>{{TotalGRNQty}}</td>
+        </tr>
+        <tr>
+          <td>Difference Qty (Issued Vs. GRN Qty)</td>
+          <td>{{DifferenceQty}}</td>
+        </tr>
+        <tr>
+          <td>Difference Qty (Issued Vs. GRN Qty) Vendor responsibility e.g. Construction & Quality
+            issues</td>
+          <td>{{DifferenceQtyWithResp}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-group">
+    <table class="table table-bordered table-striped table-hover table-small">
+      <thead>
+        <tr>
+          <th colspan="2"></th>
+          <th>Number</th>
+          <th>Weightage</th>
+          <th>Marks Obtained</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 1a Details -->
+        <tr>
+          <td class="font-weight-bold">1a</td>
+          <td class="font-weight-bold">QUALITY (To be filled in by PPH QC)</td>
+          <td class="font-weight-bold">{{GradeDetails[0].Number}}</td>
+          <td class="font-weight-bold">{{GradeDetails[0].Weightage}}</td>
+          <td class="font-weight-bold">{{GradeDetails[0].MarksObtained}}</td>
+          <td rowspan="6" class="font-weight-bold">{{GradeDetails[0].Grade}}</td>
+        </tr>
+        <tr>
+          <td rowspan="3"></td>
+          <td>Number of Pcs Delivered with Acceptable Quality</td>
+          <td>{{GradeDetails[1].Number}}</td>
+          <td>{{GradeDetails[1].Weightage}}</td>
+          <td>{{GradeDetails[1].MarksObtained}}</td>
+        </tr>
+        <tr>
+          <td>Number of Styles Passed in First Final Inspection</td>
+          <td>{{GradeDetails[2].Number}}</td>
+          <td>{{GradeDetails[2].Weightage}}</td>
+          <td>{{GradeDetails[2].MarksObtained}}</td>
+        </tr>
+        <tr>
+          <td>Number of Styles produced following Quality Protocols(PP,PPM,Inline Inspection,Final Inspection)</td>
+          <td>{{GradeDetails[3].Number}}</td>
+          <td>{{GradeDetails[3].Weightage}}</td>
+          <td>{{GradeDetails[3].MarksObtained}}</td>
+        </tr>
+        <!-- 1b Details -->
+        <tr>
+          <td class="font-weight-bold">1b</td>
+          <td class="font-weight-bold">SAMPLE APPROVAL RATE  (To be filled in by HO QC)</td>
+          <td class="font-weight-bold">{{GradeDetails[4].Number}}</td>
+          <td class="font-weight-bold">{{GradeDetails[4].Weightage}}</td>
+          <td class="font-weight-bold">{{GradeDetails[4].MarksObtained}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Number of Pre Production Samples Approved on First Submission</td>
+          <td>{{GradeDetails[5].Number}}</td>
+          <td>{{GradeDetails[5].Weightage}}</td>
+          <td>{{GradeDetails[5].MarksObtained}}</td>
+        </tr>
+        <!-- 2a Details-->
+        <tr>
+          <td class="font-weight-bold">2a</td>
+          <td class="font-weight-bold">ON TIME DELIVERY (To be filled in by PPH Merchant)</td>
+          <td class="font-weight-bold">{{GradeDetails[6].Number}}</td>
+          <td class="font-weight-bold">{{GradeDetails[6].Weightage}}</td>
+          <td class="font-weight-bold">{{GradeDetails[6].MarksObtained}}</td>
+          <td rowspan="7" class="font-weight-bold">{{GradeDetails[6].Grade}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Number of Ontime Shipments (Styles)</td>
+          <td class="font-weight-bold">{{GradeDetails[7].Number}}</td>
+          <td class="font-weight-bold">{{GradeDetails[7].Weightage}}</td>
+          <td class="font-weight-bold">{{GradeDetails[7].MarksObtained}}</td>
+        </tr>
+        <!-- 2b Details -->
+        <tr>
+          <td class="font-weight-bold">2b</td>
+          <td class="font-weight-bold">ISSUED QUANTITY TO GRN QUANTITY (To be filled in by PPH Merchant)</td>
+          <td class="font-weight-bold">{{GradeDetails[8].Number}}</td>
+          <td class="font-weight-bold">{{GradeDetails[8].Weightage}}</td>
+          <td class="font-weight-bold">{{GradeDetails[8].MarksObtained}}</td>
+        </tr>
+        <tr>
+          <td rowspan="4"></td>
+          <td>95%-100% of the Issued Qty Received - Score 100%</td>
+          <td rowspan="4">{{GradeDetails[9].Number}}</td>
+          <td rowspan="4">{{GradeDetails[9].Weightage}}</td>
+          <td rowspan="4">{{GradeDetails[9].MarksObtained}}</td>
+        </tr>
+        <tr>
+          <td>90%-94% of the Issued Qty Received - Score 95%</td>
+        </tr>
+        <tr>
+          <td>85%-89% of the Issued Qty Received - Score 80%</td>
+        </tr>
+        <tr>
+          <td>84% and Below of the Issued Qty Received - Score 0%</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold" colspan="2">Average % Score</td>
+          <td class="font-weight-bold">{{GradeDetails[10].Number}}</td>
+          <td class="font-weight-bold">{{GradeDetails[10].Weightage}}</td>
+          <td class="font-weight-bold">{{GradeDetails[10].MarksObtained}}</td>
+          <td class="font-weight-bold">{{GradeDetails[10].Grade}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Hidden button to open alert modal -->
+<button #alertModalButton type="button" data-target="#alertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<!-- Modal to open alert modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="msgModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>

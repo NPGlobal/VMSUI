@@ -15,6 +15,7 @@ import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 import { AddressFormComponent } from './Components/address-form/address-form.component';
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
+import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path: 'welcome',
     component: WelcomeComponent
+  },
+  {
+    path: 'vendor/assessment',
+    component: VendorAssessmentComponent
   },
   {
     path: 'vendor/add',

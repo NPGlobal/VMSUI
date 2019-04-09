@@ -93,6 +93,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="text">Name of Insurance Company</label>
+                                <i class="mandatory" *ngIf="personalDetailsForm.get('PersonalDetails.IsInsured').value">*</i>
                                 <span>
                                     <input type="text" (blur)="LogValidationErrors()" maxlength="50"
                                         [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"

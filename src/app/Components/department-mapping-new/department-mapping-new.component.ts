@@ -23,7 +23,7 @@ export class DepartmentMappingNewComponent implements OnInit {
   DepartmentMappingForm: FormGroup;
   vendor: Vendor = new Vendor();
   isDataExist = false;
-  CheckData = 0;
+  CheckData: any;
   Temp: MasterDataDetails[] = [];
   isDeactVendor = false;
   //#endregion
@@ -54,7 +54,7 @@ export class DepartmentMappingNewComponent implements OnInit {
         .subscribe((result) => {
           this.AllList = result.data.Table;
           this.SelectedDD = result.data.Table1;
-          this.CheckData = this.SelectedDD.length;
+          this.CheckData = JSON.parse(JSON.stringify(this.SelectedDD));
           this.BindData();
         });
     });
@@ -131,8 +131,8 @@ export class DepartmentMappingNewComponent implements OnInit {
   }
 
   GetDepartment() {
-   // this.DepartmentMappingForm.get('DivList').patchValue(0);
-   const divisionCode = this.DepartmentMappingForm.get('Division').value;
+    // this.DepartmentMappingForm.get('DivList').patchValue(0);
+    const divisionCode = this.DepartmentMappingForm.get('Division').value;
     if (divisionCode !== '1') {
       // Here we filtered those department which belongs to selected division from selected list.
       const selectedDepartmentList = this.SelectedDD.filter(x => x.MDHCode === 'DEPT' &&
@@ -154,10 +154,10 @@ export class DepartmentMappingNewComponent implements OnInit {
 
   // added by shubhi
   UnselectDept() {
-  this.DepartmentMappingForm.get('Department').patchValue(0);
+    this.DepartmentMappingForm.get('Department').patchValue(0);
   }
   UnselectDiv() {
-  this.DepartmentMappingForm.get('DivList').patchValue(0);
+    this.DepartmentMappingForm.get('DivList').patchValue(0);
   }
 
 
@@ -174,7 +174,7 @@ export class DepartmentMappingNewComponent implements OnInit {
     const div = this.DepartmentMappingForm.get('DivList').value as Array<string>;
     const dept = this.DepartmentMappingForm.get('Department').value as Array<string>;
     if (div.length > 0) {
-    //  this.DepartmentMappingForm.get('Department').value = '';
+      //  this.DepartmentMappingForm.get('Department').value = '';
       if (this.checkAddedDivisionDepartment(div)) {
         this.PopUpMessage = 'Department(s) of selected division already exist. Do you want to replace it?';
         this.isDataExist = false;
@@ -188,11 +188,11 @@ export class DepartmentMappingNewComponent implements OnInit {
             this.SelectedDD.push(this.DivisionList[i]);
           }
         }
-      this.BindData();
+        this.BindData();
       }
     }
     if (dept.length > 0) {
-    for (let i = 0; i < this.DepartmentList.length; i++) {
+      for (let i = 0; i < this.DepartmentList.length; i++) {
         if (dept.includes(this.DepartmentList[i].MDDCode)) {
           this.DepartmentList[i].color = 'rgb(194, 248, 194)';
           this.DepartmentList[i].isDeletable = 'Y';
@@ -238,6 +238,7 @@ export class DepartmentMappingNewComponent implements OnInit {
         this.SelectedDD.push(this.DivisionList[i]);
       }
     }
+    this.DepartmentMappingForm.get('Division').patchValue('-1');
     this.BindData();
   }
 
@@ -282,7 +283,7 @@ export class DepartmentMappingNewComponent implements OnInit {
     vendor.VendorCode = this.VendorCode;
     vendor.Vendor_Depts = this.makeVendorDeptString();
 
-    if (this.CheckData === this.SelectedDD.length) {
+    if (JSON.stringify(this.CheckData) === JSON.stringify(this.SelectedDD)) {
       this.PopUpMessage = 'There is no new data to update.';
       this.alertButton.click();
       return;
@@ -295,7 +296,7 @@ export class DepartmentMappingNewComponent implements OnInit {
             .subscribe((NewResult) => {
               this.AllList = NewResult.data.Table;
               this.SelectedDD = NewResult.data.Table1;
-              this.CheckData = this.SelectedDD.length;
+              this.CheckData = JSON.parse(JSON.stringify(this.SelectedDD));
               this.BindData();
             });
           this.PopUpMessage = result.data.Table[0].Message;
