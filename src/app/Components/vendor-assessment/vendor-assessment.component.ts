@@ -18,10 +18,15 @@ export class VendorAssessmentComponent implements OnInit {
   vendorList: Vendor[];
   AllPHList: OrgUnit[];
   OrderDetails: any;
+  QuantityDetails: any;
+  GradeDetails1a: any;
+  GradeDetails1b: any;
+  GradeDetails2a: any;
+  GradeDetails2b: any;
+  AverageGradeDetails: any;
   inputParams: string;
   YearList: number[];
   MonthList: string[];
-  GradeDetails: any;
   DeptList: any;
   FromDate: any;
   ToDate: any;
@@ -147,15 +152,13 @@ export class VendorAssessmentComponent implements OnInit {
     this._vendorAssessmentService.GetVendorAssessmentReport(this.inputParams).subscribe((result) => {
       this.OrderDetails = result.data.Table;
 
-      this.TotalPieces = result.data.Table1[0].TotalPieces;
-      this.TotalOrders = result.data.Table1[0].TotalOrders;
-      this.GRNQtyAsPerDeliveryDate = result.data.Table1[0].GRNQtyAsPerDeliveryDate;
-      this.TotalDelayedPieces = result.data.Table1[0].TotalDelayedPieces;
-      this.TotalGRNQty = result.data.Table1[0].TotalGRNQty;
-      this.DifferenceQty = result.data.Table1[0].DifferenceQty;
-      this.DifferenceQtyWithResp = result.data.Table1[0].DifferenceQtyWithResp;
+      this.QuantityDetails = result.data.Table1;
 
-      this.GradeDetails = result.data.Table2;
+      this.GradeDetails1a = result.data.Table2;
+      this.GradeDetails1b = result.data.Table3;
+      this.GradeDetails2a = result.data.Table4;
+      this.GradeDetails2b = result.data.Table5;
+      this.AverageGradeDetails = result.data.Table6;
     });
   }
 

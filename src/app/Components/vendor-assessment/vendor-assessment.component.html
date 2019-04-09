@@ -102,7 +102,7 @@
 
   <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
     class="form-group ml-auto mr-auto">
-    <h6 class="text-center">No orders available under assessment period</h6>
+    <h6 class="text-center">No orders available under selected assessment period</h6>
   </div>
 </div>
 
@@ -136,34 +136,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Total number of Pcs placed with the Vendor during the Assessment Period</td>
-          <td>{{TotalPieces}}</td>
-        </tr>
-        <tr>
-          <td>Total number of Orders/Styles placed with the Vendor during the Assessment Period</td>
-          <td>{{TotalOrders}}</td>
-        </tr>
-        <tr>
-          <td>Ontime GRN Qty as per agreed Delivery Dates (PO or JW Delivery Dates)</td>
-          <td>{{GRNQtyAsPerDeliveryDate}}</td>
-        </tr>
-        <tr>
-          <td>Delayed (After Delivery Date GRN Qty)</td>
-          <td>{{TotalDelayedPieces}}</td>
-        </tr>
-        <tr>
-          <td>Total GRN Qty</td>
-          <td>{{TotalGRNQty}}</td>
-        </tr>
-        <tr>
-          <td>Difference Qty (Issued Vs. GRN Qty)</td>
-          <td>{{DifferenceQty}}</td>
-        </tr>
-        <tr>
-          <td>Difference Qty (Issued Vs. GRN Qty) Vendor responsibility e.g. Construction & Quality
-            issues</td>
-          <td>{{DifferenceQtyWithResp}}</td>
+        <tr *ngFor="let qtydetail of QuantityDetails;">
+          <td>{{qtydetail.LabelText}}</td>
+          <td>{{qtydetail.Number}}</td>
         </tr>
       </tbody>
     </table>
@@ -182,94 +157,72 @@
       </thead>
       <tbody>
         <!-- 1a Details -->
-        <tr>
-          <td class="font-weight-bold">1a</td>
-          <td class="font-weight-bold">QUALITY (To be filled in by PPH QC)</td>
-          <td class="font-weight-bold">{{GradeDetails[0].Number}}</td>
-          <td class="font-weight-bold">{{GradeDetails[0].Weightage}}</td>
-          <td class="font-weight-bold">{{GradeDetails[0].MarksObtained}}</td>
-          <td rowspan="6" class="font-weight-bold">{{GradeDetails[0].Grade}}</td>
+        <tr *ngFor="let gradedetail1a of GradeDetails1a;index as i;">
+          <td *ngIf="i===1 || i === 0" [attr.rowspan]="i===1 ? (GradeDetails1a.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">
+            {{gradedetail1a.SerialText}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Parameter}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Number}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Weightage}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.MarksObtained}}</td>
+          <td *ngIf="i === 0" [attr.rowspan]="(GradeDetails1a.length + GradeDetails1b.length)"
+            [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Grade}}</td>
         </tr>
-        <tr>
-          <td rowspan="3"></td>
-          <td>Number of Pcs Delivered with Acceptable Quality</td>
-          <td>{{GradeDetails[1].Number}}</td>
-          <td>{{GradeDetails[1].Weightage}}</td>
-          <td>{{GradeDetails[1].MarksObtained}}</td>
-        </tr>
-        <tr>
-          <td>Number of Styles Passed in First Final Inspection</td>
-          <td>{{GradeDetails[2].Number}}</td>
-          <td>{{GradeDetails[2].Weightage}}</td>
-          <td>{{GradeDetails[2].MarksObtained}}</td>
-        </tr>
-        <tr>
-          <td>Number of Styles produced following Quality Protocols(PP,PPM,Inline Inspection,Final Inspection)</td>
-          <td>{{GradeDetails[3].Number}}</td>
-          <td>{{GradeDetails[3].Weightage}}</td>
-          <td>{{GradeDetails[3].MarksObtained}}</td>
-        </tr>
+
         <!-- 1b Details -->
-        <tr>
-          <td class="font-weight-bold">1b</td>
-          <td class="font-weight-bold">SAMPLE APPROVAL RATE  (To be filled in by HO QC)</td>
-          <td class="font-weight-bold">{{GradeDetails[4].Number}}</td>
-          <td class="font-weight-bold">{{GradeDetails[4].Weightage}}</td>
-          <td class="font-weight-bold">{{GradeDetails[4].MarksObtained}}</td>
+        <tr *ngFor="let gradedetail1b of GradeDetails1b;index as i;">
+          <td *ngIf="i===1 || i === 0" [attr.rowspan]="i===1 ? (GradeDetails1b.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">
+            {{gradedetail1b.SerialText}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Parameter}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Number}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Weightage}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.MarksObtained}}</td>
         </tr>
-        <tr>
-          <td></td>
-          <td>Number of Pre Production Samples Approved on First Submission</td>
-          <td>{{GradeDetails[5].Number}}</td>
-          <td>{{GradeDetails[5].Weightage}}</td>
-          <td>{{GradeDetails[5].MarksObtained}}</td>
+
+        <!-- 2a Details -->
+        <tr *ngFor="let gradedetail2a of GradeDetails2a;index as i;">
+          <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+            {{gradedetail2a.SerialText}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Parameter}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Number}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Weightage}}</td>
+          <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.MarksObtained}}</td>
+          <td *ngIf="i === 0" [attr.rowspan]="(GradeDetails2a.length + GradeDetails2b.length)"
+            [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Grade}}</td>
         </tr>
-        <!-- 2a Details-->
-        <tr>
-          <td class="font-weight-bold">2a</td>
-          <td class="font-weight-bold">ON TIME DELIVERY (To be filled in by PPH Merchant)</td>
-          <td class="font-weight-bold">{{GradeDetails[6].Number}}</td>
-          <td class="font-weight-bold">{{GradeDetails[6].Weightage}}</td>
-          <td class="font-weight-bold">{{GradeDetails[6].MarksObtained}}</td>
-          <td rowspan="7" class="font-weight-bold">{{GradeDetails[6].Grade}}</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>Number of Ontime Shipments (Styles)</td>
-          <td class="font-weight-bold">{{GradeDetails[7].Number}}</td>
-          <td class="font-weight-bold">{{GradeDetails[7].Weightage}}</td>
-          <td class="font-weight-bold">{{GradeDetails[7].MarksObtained}}</td>
-        </tr>
+
         <!-- 2b Details -->
-        <tr>
-          <td class="font-weight-bold">2b</td>
-          <td class="font-weight-bold">ISSUED QUANTITY TO GRN QUANTITY (To be filled in by PPH Merchant)</td>
-          <td class="font-weight-bold">{{GradeDetails[8].Number}}</td>
-          <td class="font-weight-bold">{{GradeDetails[8].Weightage}}</td>
-          <td class="font-weight-bold">{{GradeDetails[8].MarksObtained}}</td>
+        <tr *ngFor="let gradedetail2b of GradeDetails2b;index as i;">
+          <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+            {{gradedetail2b.SerialText}}
+          </td>
+          <td [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+            {{gradedetail2b.Parameter}}
+          </td>
+          <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+            {{gradedetail2b.Number}}
+          </td>
+          <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+            {{gradedetail2b.Weightage}}
+          </td>
+          <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+            [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+            {{gradedetail2b.MarksObtained}}
+          </td>
         </tr>
-        <tr>
-          <td rowspan="4"></td>
-          <td>95%-100% of the Issued Qty Received - Score 100%</td>
-          <td rowspan="4">{{GradeDetails[9].Number}}</td>
-          <td rowspan="4">{{GradeDetails[9].Weightage}}</td>
-          <td rowspan="4">{{GradeDetails[9].MarksObtained}}</td>
-        </tr>
-        <tr>
-          <td>90%-94% of the Issued Qty Received - Score 95%</td>
-        </tr>
-        <tr>
-          <td>85%-89% of the Issued Qty Received - Score 80%</td>
-        </tr>
-        <tr>
-          <td>84% and Below of the Issued Qty Received - Score 0%</td>
-        </tr>
-        <tr>
-          <td class="font-weight-bold" colspan="2">Average % Score</td>
-          <td class="font-weight-bold">{{GradeDetails[10].Number}}</td>
-          <td class="font-weight-bold">{{GradeDetails[10].Weightage}}</td>
-          <td class="font-weight-bold">{{GradeDetails[10].MarksObtained}}</td>
-          <td class="font-weight-bold">{{GradeDetails[10].Grade}}</td>
+
+        <!-- Average Details -->
+        <tr *ngFor="let averagGrade of AverageGradeDetails;index as i;">
+          <td colspan="2" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Parameter}}</td>
+          <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Number}}</td>
+          <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Weightage}}</td>
+          <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.MarksObtained}}</td>
+          <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Grade}}</td>
         </tr>
       </tbody>
     </table>
