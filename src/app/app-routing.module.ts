@@ -14,8 +14,8 @@ import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { AddressFormComponent } from './Components/address-form/address-form.component';
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
-import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
 import { LayoutComponent } from './Components/layout/layout.component';
+import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
 
 const routes: Routes = [
   {
@@ -32,13 +32,13 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'vendor/assessment',
-    component: VendorAssessmentComponent
-  },
-  {
     path: '',
     component: LayoutComponent,
     children: [
+      {
+        path: 'vendor/assessment',
+        component: VendorAssessmentNewComponent
+      },
       {
         path: 'vendor', component: VendorListComponent
       },

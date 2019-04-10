@@ -31,6 +31,7 @@ import { DepartmentMappingComponent } from './Components/department-mapping/depa
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
 import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
 
 @NgModule({
   declarations: [
@@ -52,8 +53,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     WelcomeComponent,
     DepartmentMappingComponent,
     DepartmentMappingNewComponent,
-    VendorAssessmentComponent
-    ],
+    VendorAssessmentComponent,
+    VendorAssessmentNewComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
