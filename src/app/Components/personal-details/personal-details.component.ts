@@ -155,7 +155,8 @@ export class PersonalDetailsComponent implements OnInit {
       'pattern': this._validationMess.WebsitePattern
     },
     'NameofInsuranceCompany': {
-      'required': ''
+      'required': '',
+      'pattern': this._validationMess.RemarksPattern
     },
     'VendorWeaknesses': {
       'pattern': this._validationMess.RemarksPattern
@@ -318,7 +319,7 @@ export class PersonalDetailsComponent implements OnInit {
     // this.personalDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.personalDetailsForm);
     // });
-   
+
     if (localStorage.getItem('VendorStatus') === 'D') {
       this.personalDetailsForm.disable();
       this.isDeactVendor = true;
@@ -602,7 +603,8 @@ export class PersonalDetailsComponent implements OnInit {
 
   IfInsured(isInsured: boolean) {
     if (isInsured) {
-      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators(Validators.required);
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators(
+        [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]);
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
     } else {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
