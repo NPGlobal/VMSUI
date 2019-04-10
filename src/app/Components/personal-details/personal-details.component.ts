@@ -205,7 +205,9 @@ export class PersonalDetailsComponent implements OnInit {
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
     this.GetMasterDataDetails('VendorType', '-1');
+
     this.GetMasterDataDetails('COUNTRY', '-1');
+    // this.GetMasterDataDetails('COUNTRY', '-1');
     // this.GetMasterDataDetails('VendorExpe');
 
     this._route.parent.paramMap.subscribe((data) => {
@@ -214,7 +216,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.InitializeFormControls();
         this.GetPHList();
       } else {
-        this.Editvendor(this.VendorCode);
+        this.GetMasterDataDetails('COUNTRY', '-1');
       }
     });
 
@@ -352,7 +354,6 @@ export class PersonalDetailsComponent implements OnInit {
       this.GetPHList();
 
       this.InitializeFormControls();
-
       this.SetStateCodeLabel();
 
       // this.IsAddressSaved = false;
@@ -392,6 +393,7 @@ export class PersonalDetailsComponent implements OnInit {
         case 'STATE': {
           lst = result.data.Table;
           this.StateList = lst.filter(x => x.IsDeleted === 'N');
+          this.Editvendor(this.VendorCode);
           break;
         }
         case 'VendorExpe': {
