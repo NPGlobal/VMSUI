@@ -30,6 +30,7 @@ import { BusinessDetailsComponent } from './Components/business-details/business
 import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
 import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor
     LoginModule,
     NgMultiSelectDropDownModule.forRoot(),
     CommonModule,
+    NgxSpinnerModule
   ],
   providers: [
     {

@@ -6,8 +6,6 @@ import { Router } from '@angular/router';
 import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 import { window } from 'rxjs/operators';
 
-
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -88,7 +86,6 @@ export class LoginComponent implements OnInit {
     userCredential.UserName = this.LoginForm.get('UserName').value;
     userCredential.Password = this.LoginForm.get('Password').value;
     userCredential.PeriodicKey = this.LoginForm.get('PeriodicKey').value;
-
     this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, userCredential.PeriodicKey)
       .subscribe(result => {
         //  this._loginService.UserAuthentication(userCredential.UserName, userCredential.Password, 'BlackTiger').subscribe(result => {

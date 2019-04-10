@@ -39,10 +39,10 @@
       </thead>
     
     <tbody>
-      <tr *ngIf="loading">
-        <td colspan="8">
+      <!-- <tr *ngIf="loading">
+        <td colspan="7">
           <img src="assets/images/giphy.gif"/></td>
-      </tr>
+      </tr> -->
        <tr *ngFor="let vendor of pagedItems;index as i;">
         <!-- <td>{{vendor.RowNumber}}</td> -->
         <td>{{vendor.VendorName}}</td>
