@@ -5,7 +5,7 @@ import { PagerService } from 'src/app/Services/pager.service';
 import { VendorStaffService } from 'src/app/Services/vendor-staff.service';
 import { VendorStaff } from 'src/app/Models/VendorStaff';
 import { StaffDetails } from 'src/app/Models/staff-details';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-staff-details',
@@ -94,7 +94,7 @@ export class StaffDetailsComponent implements OnInit {
     },
     'ContactName': {
       'required': '',
-      'pattern' : this._validationMess.ContactNamePattern
+      'pattern': this._validationMess.ContactNamePattern
     },
     'ContactEmail': {
       'email': this._validationMess.EmailPattern
@@ -251,10 +251,22 @@ export class StaffDetailsComponent implements OnInit {
         .subscribe((data) => {
           this.deptList = data;
           if (this.staffDetailsForm.get('Designation').value !== null && this.deptSelectList[0] !== undefined) {
-            const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode);
-            if (strArray === undefined) {
-              this.deptSelectList = [];
+
+            const deptArry = [];
+            for (let counterVar = 0; counterVar < this.deptSelectList.length; ++counterVar) {
+              const index = this.deptList.findIndex((obj) => obj.DeptCode === this.deptSelectList[counterVar].DeptCode);
+              if (index > -1) {
+                deptArry.push(this.deptList[index]);
+              }
             }
+
+            this.deptSelectList = deptArry;
+
+            // const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode
+            //   && this.staffDetailsForm.get('Designation').value === obj.Designation);
+            // if (strArray === undefined) {
+            //   this.deptSelectList = [];
+            // }
           }
         });
     }

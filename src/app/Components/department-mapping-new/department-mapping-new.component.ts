@@ -204,22 +204,32 @@ export class DepartmentMappingNewComponent implements OnInit {
       this.BindData();
     }
   }
+
   RemoveFromSelectedList() {
     const stringArr = this.DepartmentMappingForm.get('SelectedList').value as Array<string>;
-    for (let i = 0; i < stringArr.length; ++i) {
-      if (this.SelectedDD[i].isDeletable === 'Y') {
-        this.SelectedDD = this.SelectedDD.filter(function (value) {
-          if (value.MDDCode !== stringArr[i]) {
-            return value;
-          }
-        });
-        this.BindData();
-      } else {
-        this.PopUpMessage = 'Cannot delete this data.';
-        this.alertButton.click();
-        return;
+    let count = 0;
+
+    for (let i = 0; i < stringArr.length; i++) {
+      for (let j = 0; j < this.SelectedDD.length; j++) {
+        if (this.SelectedDD[j].isDeletable === 'Y' && this.SelectedDD[j].MDDCode === stringArr[i]) {
+          this.SelectedDD = this.SelectedDD.filter(function (value) {
+            if (value.MDDCode !== stringArr[i]) {
+              return value;
+            }
+          });
+          this.BindData();
+        } else if (this.SelectedDD[j].isDeletable === 'N' && this.SelectedDD[j].MDDCode === stringArr[i]) {
+          count++;
+        }
       }
     }
+    if (count > 0) {
+      count = 0;
+      this.PopUpMessage = 'Cannot delete this data.';
+      this.alertButton.click();
+      return;
+    }
+
   }
 
   DeleteExistingDepartment() {
