@@ -153,13 +153,13 @@ export class TechnicalDetailsComponent implements OnInit {
 
   //#region  Initialization
   InitializeFormControls() {
-    const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
+    // const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
     this.techDetailsForm = this._fb.group({
       Department: [null],
       VendorTechConfigID: [null],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
-      DefaultEfficiency: [{ value: this.vendorTechDefault.DefaultEfficiency, disabled: isDefaultEfficiencyDisabled },
-      Validators.pattern(this.efficiencyPattern)],
+      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency,
+      [Validators.required, Validators.pattern(this.efficiencyPattern)]],
       UnitCount: [],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks, Validators.pattern(this.AddressAndRemarksPattern)],
@@ -441,6 +441,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   ResetMachine() {
     this.isTechDetailEditing = 0;
+    this.vendorTech = undefined;
     this.techDetailsForm.get('Department').patchValue(null);
     this.techDetailsForm.get('UnitCount').patchValue(null);
     this.GetVendorTechSpec();

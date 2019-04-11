@@ -188,6 +188,7 @@ export class DepartmentMappingNewComponent implements OnInit {
             this.SelectedDD.push(this.DivisionList[i]);
           }
         }
+        this.DepartmentMappingForm.get('Division').patchValue('-1');
         this.BindData();
       }
     }
