@@ -23,10 +23,12 @@ export class BankDetailsComponent implements OnInit {
   CurrencyList: any[];
   AccountNumberValidation = '^[0-9]*$';
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
-  MICRPattern = '^[0-9]{9}$';
+  // MICRPattern = '^[0-9]{9}$';
   AlphaNumSpecialCharPattern = /^[-@\.\-'&()\/\w\s]*$/;
   AlphabetPattern = '^[a-zA-Z ]*$';
   AlphaNumericWithSpace = '^[a-zA-Z0-9 ]*$';
+  NumericPattern = '^[0-9]*$';
+
 
 
   // NumberPattern: '^[1-9][0-9]*$';
@@ -52,26 +54,26 @@ export class BankDetailsComponent implements OnInit {
       'required': ''
     },
     'PaymentTerms': {
-      'required': '',
+      // 'required': '',
       'pattern': this._validationMess.PaymentTerms
     },
     'AccountNo': {
-      'required': '',
+      // 'required': '',
       'pattern': this._validationMess.AccountNoPattern
     },
     'NameAsPerBankAccount': {
-      'required': '',
+      // 'required': '',
       'pattern': this._validationMess.NamePattern
     },
     'BankName': {
-      'required': '',
+      // 'required': '',
       'pattern': this._validationMess.BankName
     },
     'BranchName': {
       'pattern': this._validationMess.BranchName
     },
     'IFSCCode': {
-      'required': '',
+      // 'required': '',
       'pattern': this._validationMess.IFSCCode,
       // 'maxlength': this._validationMess.IFSCCode,
       // 'minlength': this._validationMess.IFSCCode
@@ -129,21 +131,27 @@ export class BankDetailsComponent implements OnInit {
   //#region Form Initialization
   InitializeFormControls() {
     this.BankDetailsForm = this._fb.group({
-      NameAsPerBankAccount: [this.vendor.NameAsPerBankAccount, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
-      BankName: [this.vendor.BankName, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      // NameAsPerBankAccount: [this.vendor.NameAsPerBankAccount, [Validators.required,
+      // Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      NameAsPerBankAccount: [this.vendor.NameAsPerBankAccount, [Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      // BankName: [this.vendor.BankName, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      BankName: [this.vendor.BankName, [Validators.pattern(this.AlphaNumSpecialCharPattern)]],
       BranchName: [this.vendor.BranchName, [Validators.pattern(this.AlphaNumericWithSpace)]],
       isECSenabled: [this.vendor.isECSenabled],
-      AccountNo: [this.vendor.BankAcctNo, [Validators.required, Validators.pattern(this.AccountNumberValidation)]],
+      // AccountNo: [this.vendor.BankAcctNo, [Validators.required, Validators.pattern(this.AccountNumberValidation)]],
+      AccountNo: [this.vendor.BankAcctNo, [Validators.pattern(this.AccountNumberValidation)]],
       AccountType: [this.vendor.accountType === null ? '-1' : this.vendor.accountType],
       CurrencyCode: [this.vendor.CurrencyCode === null ? 'INR' : this.vendor.CurrencyCode],
-      PaymentTerms: [this.vendor.PaymentTerms, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      PaymentTerms: [this.vendor.PaymentTerms, [Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      // PaymentTerms: [this.vendor.PaymentTerms, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
       // IFSCCode: [this.vendor.IFSCCode, [Validators.required, Validators.pattern(this.AlphanumericPattern),
       // Validators.maxLength(11), Validators.minLength(11)]],
       // MICRNo: [this.vendor.MICRNo, [Validators.pattern(this.MICRPattern), Validators.maxLength(9), Validators.minLength(9)]],
       // SWIFTCode: [this.vendor.SwiftCode, [Validators.pattern(this.AlphanumericPattern),
       // Validators.maxLength(11), Validators.minLength(8)]],
-      IFSCCode: [this.vendor.IFSCCode, [Validators.required, Validators.pattern(this.AlphanumericPattern)]],
-      MICRNo: [this.vendor.MICRNo, [Validators.pattern(this.MICRPattern)]],
+      // IFSCCode: [this.vendor.IFSCCode, [Validators.required, Validators.pattern(this.AlphanumericPattern)]],
+      IFSCCode: [this.vendor.IFSCCode, [Validators.pattern(this.AlphanumericPattern)]],
+      MICRNo: [this.vendor.MICRNo, [Validators.pattern(this.NumericPattern)]],
       SWIFTCode: [this.vendor.SwiftCode, [Validators.pattern(this.AlphanumericPattern)]],
       RemittanceInfavourof: [this.vendor.RemittanceInfavourof, [Validators.pattern(this.AlphaNumSpecialCharPattern)]]
     });

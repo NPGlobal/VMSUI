@@ -1,0 +1,38 @@
+.appreal-head {
+    background: #dddddd;
+    color: #882933;
+    vertical-align: middle;
+    font-weight: normal;
+    text-align: center;
+    padding: 5px;
+    flex: 0 0 98%;
+}
+
+
+.platinum, .gold, .silver, .bronze {vertical-align: middle;
+    font-weight: normal;padding: 5px;
+    border: 1px solid #bdbcbc;}
+
+.platinum {
+    background-color: rgb(102, 255, 51) !important;
+}
+
+.gold {
+    background-color: rgb(255, 192, 0) !important;
+}
+
+.silver {
+    background-color: rgb(255, 255, 0) !important;
+}
+
+.bronze {
+    background-color: rgb(255, 0, 0) !important;
+}
+
+.bold-text {
+    font-weight: 600;
+}
+
+table.table-striped a {
+    color: #fff !important;
+}

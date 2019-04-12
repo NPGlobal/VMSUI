@@ -29,6 +29,9 @@ export class VendorAssessmentNewComponent implements OnInit {
   DeptList: any;
   FromDate: any;
   ToDate: any;
+  VendorName: string;
+  VendorCode: string;
+  ProductSpecialities: string;
   AssessmentDate: any;
   SelectedDeptList: any;
   submitted = false;
@@ -108,6 +111,8 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.InitializeFormControls();
     this.GetVendors();
     this.GetPHList();
+    // this.inputParams = '2018-01-01~2018-12-31~5EL~WI~DL11';
+    // this.GetVendorAssessmentReport();
   }
 
   //#region GetData
@@ -289,8 +294,13 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.FromDate = this.ToDateCustomFormat(edaFrom);
     this.ToDate = this.ToDateCustomFormat(edaTo);
     this.AssessmentDate = this.ToDateCustomFormat(new Date());
+    this.VendorCode = shortName;
+    this.VendorName = this.vendorList.find(x => x.VendorCode === this.VendorCode).VendorName;
 
-    this.GetVendorAssessmentReport();
+    this.ProductSpecialities = deptCode;
+    console.log(this.inputParams);
+
+    // this.GetVendorAssessmentReport();
   }
 
   //#endregion
