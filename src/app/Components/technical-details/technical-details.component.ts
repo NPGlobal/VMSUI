@@ -159,11 +159,11 @@ export class TechnicalDetailsComponent implements OnInit {
       Department: [null],
       VendorTechConfigID: [null],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
-      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency, [Validators.required, this.EfficiencyValidator()]],
+      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
       UnitCount: [],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks, Validators.pattern(this.AddressAndRemarksPattern)],
-      Efficiency: [null, [this.EfficiencyValidator()]]
+      Efficiency: [null]
     });
 
     this.SetEfficiencyAsDefault();
@@ -176,13 +176,14 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   EditTechDetails(techDefault: VendorTechDefault) {
+    const defaultEff = this.TechDefaultLst.find(x => x.TechLineNo === '-').DefaultEfficiency;
     if (techDefault === null) {
       techDefault = new VendorTechDefault();
       techDefault.TechLineNo = this.maxTechLineNo;
+      techDefault.DefaultEfficiency = defaultEff;
     }
     if (techDefault !== null && (techDefault.TechLineNo.trim() === '-')) {
       if (techDefault.VendorTechDetails[0].VendorTechDetailsID === null) {
-        const defaultEff = techDefault.DefaultEfficiency;
         techDefault = new VendorTechDefault();
         techDefault.TechLineNo = '-';
         techDefault.DefaultEfficiency = defaultEff;
@@ -275,11 +276,9 @@ export class TechnicalDetailsComponent implements OnInit {
         this.vendorTechDefault.VendorShortCode = this.vendorcode;
 
         const defaultEff = this.techDetailsForm.get('DefaultEfficiency').value;
-        if (!this.CheckEfficiencyFormat(defaultEff)) {
-          this.formErrors.DefaultEfficiency = this.ValidationMessages.Efficiency.pattern;
+        if ((defaultEff === '' || defaultEff === null) || !this.CheckEfficiencyFormat(defaultEff)) {
+          this.LogEfficiencyValidation('DefaultEfficiency');
           return;
-        } else {
-          this.formErrors.DefaultEfficiency = '';
         }
 
         this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
@@ -327,11 +326,15 @@ export class TechnicalDetailsComponent implements OnInit {
     // this.LogValidationErrors();
     this.modalClose.click();
     this.dltModalCloseButton.click();
+    this.formErrors.Efficiency = '';
+    this.formErrors.DefaultEfficiency = '';
   }
 
   DisableSaveFormButton() {
     if (this.vendorTechDefault.VendorTechDetails !== undefined) {
       this.isTechDetailFormChanged = this.vendorTechDefault.VendorTechDetails.filter(x => x.Status !== 'D').length === 0;
+    } else {
+      this.isTechDetailFormChanged = true;
     }
     // this.isTechDetailFormChanged = (this.vendorTechDefault !== null && this.vendorTechDefault !== undefined &&
     //   this.vendorTechDefault.VendorTechDetails !== null && this.vendorTechDefault.VendorTechDetails !== undefined &&
@@ -372,12 +375,10 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   AddMachine() {
-
-    if (!this.CheckEfficiencyFormat(this.techDetailsForm.get('Efficiency').value)) {
-      this.formErrors.Efficiency = this.ValidationMessages.Efficiency.pattern;
+    const efficiency = this.techDetailsForm.get('Efficiency').value;
+    if (efficiency !== null && efficiency !== '' && !this.CheckEfficiencyFormat(efficiency)) {
+      this.LogEfficiencyValidation('Efficiency');
       return;
-    } else {
-      this.formErrors.Efficiency = '';
     }
 
     if (this.vendorTechDefault.VendorTechDetails === undefined) {
@@ -510,25 +511,40 @@ export class TechnicalDetailsComponent implements OnInit {
     });
   }
 
-  EfficiencyValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const status = this.CheckEfficiencyFormat(control.value);
-      if (!status) {
-        return { 'pattern': status };
+  LogEfficiencyValidation(type: string) {
+    switch (type) {
+      case 'Efficiency': {
+        const efficiecny = this.techDetailsForm.get('Efficiency').value;
+        if (efficiecny !== null && efficiecny !== '' && !this.CheckEfficiencyFormat(this.techDetailsForm.get('Efficiency').value)) {
+          this.formErrors.Efficiency = this.ValidationMessages.Efficiency.pattern;
+        } else {
+          this.formErrors.Efficiency = '';
+        }
+        break;
       }
-      return null;
-    };
+      case 'DefaultEfficiency': {
+        const defaultEff = this.techDetailsForm.get('DefaultEfficiency').value;
+        if (defaultEff === '' || defaultEff === null) {
+          this.formErrors.DefaultEfficiency = ' ';
+        } else if (!this.CheckEfficiencyFormat(this.techDetailsForm.get('DefaultEfficiency').value)) {
+          this.formErrors.DefaultEfficiency = this.ValidationMessages.DefaultEfficiency.pattern;
+        } else {
+          this.formErrors.DefaultEfficiency = '';
+        }
+        break;
+      }
+    }
   }
 
   CheckEfficiencyFormat(value: string) {
-    let status = false;
+    let success = false;
     const regex = new RegExp(this.efficiencyPattern);
 
     if (value !== null && value !== '' && regex.test(value) && Number(value) >= 1 && Number(value) <= 100) {
-      status = true;
+      success = true;
     }
 
-    return status;
+    return success;
   }
 
   specChange(event) {

@@ -30,6 +30,13 @@ export class ValidationMessagesService {
   PeriodicKey = 'Periodic Key is required';
   Captcha = 'Captcha is required';
   NamePattern = 'Only ,@\.\-\'&()_/\' are allowed.';
+  IFSCCode = 'Please enter a valid IFSC Code';
+  MICRNo = 'Please enter a valid MICR No.';
+  SwiftCode = 'Please enter a valid SWIFT Code';
+  RemittanceInfavourof = 'Only ,@\.\-\'&()_/\' are allowed.';
+  PaymentTerms = 'Only ,@\.\-\'&()_/\' are allowed.';
+  BankName = 'Please enter a valid Bank Name';
+  BranchName = 'Please enter a valid Branch Name';
   constructor() { }
 }
 

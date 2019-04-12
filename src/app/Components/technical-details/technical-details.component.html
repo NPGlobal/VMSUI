@@ -135,7 +135,8 @@
                   <input [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }" type="text"
                     formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
-                    (blur)="SetEfficiencyAsDefault();" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
+                    (blur)="SetEfficiencyAsDefault();LogEfficiencyValidation('DefaultEfficiency')"
+                    [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
                   {{formErrors.DefaultEfficiency}}
@@ -201,8 +202,8 @@
               <div class="col-lg-2 col-md-2">
                 <label class="text">Efficiency (%)</label>
                 <span>
-                  <input type="text" formControlName="Efficiency" class="form-control input-sm" maxlength="8"
-                    [ngClass]="{ 'is-invalid': formErrors.Efficiency }" />
+                  <input (blur)="LogEfficiencyValidation('Efficiency')" type="text" formControlName="Efficiency"
+                    class="form-control input-sm" maxlength="8" [ngClass]="{ 'is-invalid': formErrors.Efficiency }" />
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.Efficiency }" *ngIf="formErrors.Efficiency">
                   {{formErrors.Efficiency}}
