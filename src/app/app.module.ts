@@ -29,6 +29,9 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
+import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
 
 @NgModule({
   declarations: [
@@ -49,8 +52,10 @@ import { DepartmentMappingNewComponent } from './Components/department-mapping-n
     LoginComponent,
     WelcomeComponent,
     DepartmentMappingComponent,
-    DepartmentMappingNewComponent
-    ],
+    DepartmentMappingNewComponent,
+    VendorAssessmentComponent,
+    VendorAssessmentNewComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -61,6 +66,7 @@ import { DepartmentMappingNewComponent } from './Components/department-mapping-n
     LoginModule,
     NgMultiSelectDropDownModule.forRoot(),
     CommonModule,
+    NgxSpinnerModule
   ],
   providers: [
     {

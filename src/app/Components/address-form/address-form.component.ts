@@ -33,6 +33,7 @@ export class AddressFormComponent implements OnInit {
   WebsitePattern = '^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$';
   // AlphabetPattern = '^[a-zA-Z ]*$';
   AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
+  isDeactVendor = false;
   //#endregion
 
   //#region Modal Popup and Alert
@@ -155,6 +156,9 @@ export class AddressFormComponent implements OnInit {
     this.GetCountryList();
     this.GetStateList();
     this.Editvendor(this.VendorCode);
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.isDeactVendor = true;
+    }
   }
 
   //#region Form Initialization
@@ -191,7 +195,7 @@ export class AddressFormComponent implements OnInit {
     // this.AddressForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.AddressForm);
     // });
-  }
+   }
   //#endregion
 
   //#region Data Binding

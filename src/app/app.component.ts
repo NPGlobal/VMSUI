@@ -14,17 +14,17 @@ export class AppComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    const host = window.location.host.toLowerCase();
-    let url = window.location.pathname.toLowerCase();
-    if (host.indexOf('localhost') === -1) {
-      const replaceParm = url.split('/')[1];
-      url = url.replace('/' + replaceParm, '');
-    }
-    if (url.indexOf('login') > 0 || url.indexOf('welcome') > 0 || url === '/') {
-      this.showOutlet = true;
-    } else {
-      this.showOutlet = false;
-    }
+  //   const host = window.location.host.toLowerCase();
+  //   let url = window.location.pathname.toLowerCase();
+  //   if (host.indexOf('localhost') === -1) {
+  //     const replaceParm = url.split('/')[1];
+  //     url = url.replace('/' + replaceParm, '');
+  //   }
+  //   if (url.indexOf('login') > 0 || url.indexOf('welcome') > 0 || url === '/') {
+  //     this.showOutlet = true;
+  //   } else {
+  //     this.showOutlet = false;
+  //   }
   }
 }
 

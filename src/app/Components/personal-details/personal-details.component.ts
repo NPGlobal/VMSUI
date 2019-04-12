@@ -8,7 +8,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { VendorAddress } from 'src/app/Models/vendor-address';
 import { DatePipe } from '@angular/common';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   providers: [DatePipe],
@@ -45,6 +45,7 @@ export class PersonalDetailsComponent implements OnInit {
   SavedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
   vendorExpe_MDDCode: string[] = [];
+  isDeactVendor = false;
   //#endregion
 
   //#region Patterns
@@ -79,7 +80,7 @@ export class PersonalDetailsComponent implements OnInit {
   ValidationMessages = {
     'VendorName': {
       'required': '',
-      'pattern' : this._validationMess.ContactNamePattern
+      'pattern': this._validationMess.RemarksPattern
     },
     'PANNo': {
       'minlength': '',
@@ -97,13 +98,13 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'Address1': {
       'required': '',
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'Address2': {
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'Address3': {
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'CountryCode': {
       'required': ''
@@ -154,7 +155,8 @@ export class PersonalDetailsComponent implements OnInit {
       'pattern': this._validationMess.WebsitePattern
     },
     'NameofInsuranceCompany': {
-      'required': ''
+      'required': '',
+      'pattern': this._validationMess.RemarksPattern
     },
     'VendorWeaknesses': {
       'pattern': this._validationMess.RemarksPattern
@@ -203,7 +205,9 @@ export class PersonalDetailsComponent implements OnInit {
   ngOnInit() {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
     this.GetMasterDataDetails('VendorType', '-1');
+
     this.GetMasterDataDetails('COUNTRY', '-1');
+    // this.GetMasterDataDetails('COUNTRY', '-1');
     // this.GetMasterDataDetails('VendorExpe');
 
     this._route.parent.paramMap.subscribe((data) => {
@@ -212,13 +216,14 @@ export class PersonalDetailsComponent implements OnInit {
         this.InitializeFormControls();
         this.GetPHList();
       } else {
-        this.Editvendor(this.VendorCode);
+        this.GetMasterDataDetails('COUNTRY', '-1');
       }
     });
 
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
+
   }
 
   //#region Form Initialization
@@ -229,11 +234,10 @@ export class PersonalDetailsComponent implements OnInit {
     const isGSTControlsDisabled = this.vendor.isGSTRegistered ? true : false;
     const isDPDisabled = this.vendor.IsDirectVendor ? true : false;
     const isJWDisabled = this.vendor.IsJWVendor ? true : false;
-
     this.personalDetailsForm = this._fb.group({
       PersonalDetails: this._fb.group({
         VendorCode: [{ value: this.vendor.VendorCode, disabled: true }],
-        VendorName: [this.vendor.VendorName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
+        VendorName: [this.vendor.VendorName, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
         MasterVendorId: [{ value: this.vendor.MasterVendorId, disabled: true }],
         PANNo: [this.vendor.PANNo, [
           Validators.pattern('[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}'), Validators.maxLength(10), Validators.minLength(10)]],
@@ -244,7 +248,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: true,
         IsJWVendor: [this.vendor.IsJWVendor],
         IsDirectVendor: [this.vendor.IsDirectVendor],
-        NameofInsuranceCompany: [{ value: this.vendor.NameofInsuranceCompany, disabled: true }],
+        NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
         IsInsured: [this.vendor.isInsured]
       }),
       RegisteredOfficeAddress: this._fb.group({
@@ -253,9 +257,9 @@ export class PersonalDetailsComponent implements OnInit {
         GSTIN: [this.vendor.GSTIN],
         GSTDate: [this.FormatDate(this.vendor.GSTDate)],
         IsProvisional: [this.vendor.isProvisional],
-        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required]],
-        Address2: [this.vendor.RegisteredOfficeAddress.Address2],
-        Address3: [this.vendor.RegisteredOfficeAddress.Address3],
+        Address1: [this.vendor.RegisteredOfficeAddress.Address1, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+        Address2: [this.vendor.RegisteredOfficeAddress.Address2, Validators.pattern(this.AddressAndRemarksPattern)],
+        Address3: [this.vendor.RegisteredOfficeAddress.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
         // CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode, [Validators.required]],
         CountryCode: [this.vendor.RegisteredOfficeAddress.CountryCode === undefined ?
           (this.CountryList.length === 1 ? this.CountryList[0].MDDCode : null) :
@@ -302,10 +306,10 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: false,
         ExpertiseList: new FormArray([]),
         VendorWeaknesses: [this.vendor.Vendor_Weakness === null ? '' : this.vendor.Vendor_Weakness,
-         Validators.pattern(this.AddressAndRemarksPattern)]
+        Validators.pattern(this.AddressAndRemarksPattern)]
       })
     });
-
+    this.IfInsured(this.personalDetailsForm.get('PersonalDetails.IsInsured').value); // by Shubhi on 9 Apr
     this.personalDetailsForm.updateValueAndValidity();
 
     this.DisableControls(disablePan, isGSTControlsDisabled, disableRef, isDPDisabled, isJWDisabled);
@@ -317,6 +321,11 @@ export class PersonalDetailsComponent implements OnInit {
     // this.personalDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.personalDetailsForm);
     // });
+
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.personalDetailsForm.disable();
+      this.isDeactVendor = true;
+    }
   }
 
   Editvendor(Code: string) {
@@ -345,7 +354,6 @@ export class PersonalDetailsComponent implements OnInit {
       this.GetPHList();
 
       this.InitializeFormControls();
-
       this.SetStateCodeLabel();
 
       // this.IsAddressSaved = false;
@@ -385,6 +393,7 @@ export class PersonalDetailsComponent implements OnInit {
         case 'STATE': {
           lst = result.data.Table;
           this.StateList = lst.filter(x => x.IsDeleted === 'N');
+          this.Editvendor(this.VendorCode);
           break;
         }
         case 'VendorExpe': {
@@ -446,20 +455,23 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   FormatDate(date: Date) {
-    const d = new Date(date),
-      year = d.getFullYear();
-    let month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate();
+    if (date !== null) {
+      const d = new Date(date),
+        year = d.getFullYear();
+      let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate();
 
-    if (month.length < 2) {
-      month = '0' + month;
+      if (month.length < 2) {
+        month = '0' + month;
 
+      }
+      if (day.length < 2) {
+        day = '0' + day;
+      }
+      return [year, month, day].join('-');
+    } else {
+      return date;
     }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
   }
   //#endregion
 
@@ -593,7 +605,8 @@ export class PersonalDetailsComponent implements OnInit {
 
   IfInsured(isInsured: boolean) {
     if (isInsured) {
-      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators(Validators.required);
+      this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').setValidators(
+        [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]);
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').enable();
     } else {
       this.personalDetailsForm.get('PersonalDetails.NameofInsuranceCompany').disable();
@@ -984,6 +997,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.alertButton.click();
         // this.IsAddressSaved = true;
         this.submitted = false;
+        // this.IfInsured(true); // by Shubhi on 9 Apr
         this.clearValidator();
         this.Editvendor(this.VendorCode);
       } else {

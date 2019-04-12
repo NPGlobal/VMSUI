@@ -47,7 +47,7 @@
                         <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <label class="text">PAN No.
-                                 </label>&nbsp;&nbsp;
+                                </label>&nbsp;&nbsp;
                                 <span>
                                     <input type="text" formControlName="PANNo" style="text-transform: uppercase"
                                         (blur)="LogValidationErrors()" maxlength="10"
@@ -93,10 +93,15 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="text">Name of Insurance Company</label>
+                                <i class="mandatory"
+                                    *ngIf="personalDetailsForm.get('PersonalDetails.IsInsured').value">*</i>
                                 <span>
                                     <input type="text" (blur)="LogValidationErrors()" maxlength="50"
                                         [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
                                         formControlName="NameofInsuranceCompany" class="form-control input-sm" />
+                                    <span class="error-label-lg" *ngIf="formErrors.NameofInsuranceCompany">
+                                        {{formErrors.NameofInsuranceCompany}}
+                                    </span>
                                 </span>
                             </div>
                         </div>
@@ -160,7 +165,8 @@
                                     <div *ngIf="SavedPHStoreList.length > 0"
                                         class="mt-1 mb-1 col-sm-6 PHandStore form-group">
                                         <label class="text">Saved PH/Store</label>
-                                        <select class="form-control input-sm" size="4" multiple="multiple">
+                                        <select class="form-control input-sm" size="4" multiple="multiple"
+                                            [attr.disabled]="isDeactVendor ? 'disabled': null">
                                             <option *ngFor="let PHStore of SavedPHStoreList"
                                                 [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
                                         </select>
@@ -203,7 +209,7 @@
                             <label class="text">GST Registered</label>
                             <div class="col-md-2">
                                 <label class="radio-inline">
-                                    <input [value]="true" type="radio" formControlName="IsGSTRegistered" 
+                                    <input [value]="true" type="radio" formControlName="IsGSTRegistered"
                                         [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                         (change)="SetValidationForGSTControls($event)" />
                                     <span style="margin-left:5px;">Yes</span>
@@ -240,7 +246,7 @@
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
-                                </label>
+                            </label>
                             <span>
                                 <input formControlName="GSTIN" type="text" style="text-transform: uppercase"
                                     (blur)="LogValidationErrors()" maxlength="15"
@@ -248,9 +254,9 @@
                                     [ngClass]="{'is-invalid': formErrors.GSTIN}" class="form-control input-sm" />
                             </span>
                             <span class="error-label-lg"
-                                    *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
-                                    {{formErrors.GSTIN}}
-                                </span>
+                                *ngIf="formErrors.GSTIN && personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value">
+                                {{formErrors.GSTIN}}
+                            </span>
                         </div>
 
                         <div class="col-md-4" style="display:none">
@@ -285,7 +291,8 @@
                             </label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address1}"
-                                    formControlName="Address1" type="text" class="form-control input-sm" maxlength="50"/>
+                                    formControlName="Address1" type="text" class="form-control input-sm"
+                                    maxlength="50" />
                             </span>
                             <span class="error-label-lg" *ngIf="formErrors.Address1">
                                 {{formErrors.Address1}}
@@ -296,7 +303,8 @@
                             <label class="text">Address2</label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address2}"
-                                formControlName="Address2" type="text" class="form-control input-sm" maxlength="50"/>
+                                    formControlName="Address2" type="text" class="form-control input-sm"
+                                    maxlength="50" />
                             </span>
                             <span class="error-label-lg" *ngIf="formErrors.Address2">
                                 {{formErrors.Address2}}
@@ -307,7 +315,8 @@
                             <label class="text">Address3</label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.Address3}"
-                                formControlName="Address3" type="text" class="form-control input-sm" maxlength="50"/>
+                                    formControlName="Address3" type="text" class="form-control input-sm"
+                                    maxlength="50" />
                             </span>
                             <span class="error-label-lg" *ngIf="formErrors.Address3">
                                 {{formErrors.Address3}}
@@ -325,7 +334,8 @@
                                     [ngClass]="{'is-invalid': formErrors.CountryCode}" formControlName="CountryCode"
                                     [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
                                     class="form-control input-sm">
-                                    <option *ngIf="CountryList && CountryList.length > 1" [ngValue]="null">Select</option>
+                                    <option *ngIf="CountryList && CountryList.length > 1" [ngValue]="null">Select
+                                    </option>
                                     <option *ngFor="let country of CountryList" value="{{country.MDDCode}}">
                                         {{country.MDDName}}</option>
                                 </select>
@@ -374,7 +384,8 @@
                             <label class="text">City<i class="mandatory">*</i></label>
                             <span>
                                 <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.CityCode}"
-                                    formControlName="CityCode" type="text" class="form-control input-sm" maxlength="50" />
+                                    formControlName="CityCode" type="text" class="form-control input-sm"
+                                    maxlength="50" />
                             </span>
                             <span class="error-label-lg" *ngIf="formErrors.CityCode">
                                 {{formErrors.CityCode}}
@@ -846,6 +857,7 @@
                             <span class="checkbox-inline">
                                 <label>
                                     <input class="mr-2" type="checkbox" [attr.checked]="expertise.Checked"
+                                        [attr.disabled]="isDeactVendor ? 'disabled': null"
                                         (change)="onChange(expertise.MDDCode, $event.target.checked)"
                                         value="{{expertise.MDDCode}}" />{{expertise.MDDName}}
                                 </label>
@@ -854,15 +866,16 @@
                     </div>
                     <div class="col-md-12">
                         <label style="font-weight: 600;" class="text mr-2">Weaknesses (If any)</label>
-                        <input class="input-sm col-md-6"  [ngClass]="{'is-invalid': formErrors.VendorWeaknesses}"
-                        type="text" formControlName="VendorWeaknesses" (blur)="LogValidationErrors()"  maxlength="250">
+                        <input class="input-sm col-md-6" [ngClass]="{'is-invalid': formErrors.VendorWeaknesses}"
+                            type="text" formControlName="VendorWeaknesses" (blur)="LogValidationErrors()"
+                            maxlength="250">
                         <span class="mandatory" style="font-size: 13px;font-weight: 500;"> (Only 250 character
                             allowed)</span>
                         <br> <span class="error-label-lg" *ngIf="formErrors.VendorWeaknesses" style="margin-left: 9%;">
                             {{formErrors.VendorWeaknesses}}
                         </span>
-                        
-                          
+
+
                     </div>
                 </div>
             </div>
@@ -872,7 +885,7 @@
         <!-- End of Detail Page -->
 
         <div class="col-md-12 page-footer">
-            <button type="submit" class="mr-3 btn btn-primary">Save</button>
+            <button type="submit" class="mr-3 btn btn-primary" *ngIf="isDeactVendor === false">Save</button>
             <button [routerLink]="['/vendor']" type="button" class="btn btn-secondary">Cancel</button>
         </div>
     </div>

@@ -1,11 +1,11 @@
 <!-- Vendor Factory Address -->
 
 <div *ngIf="(VendorAddresses && VendorAddresses.length <= 2)" class="col-md-12 form-group">
-  <div class="col-lg-12 col-sm-12 col-md-12">
-    <button style="margin-left: 15px; margin-top: 10px;" type="button" class="btn btn-primary float-right"
-      (click)="OpenAddressModal(CreateNewAddress())">
+  <div class="">
+    <button type="button" class="btn btn-primary float-right" (click)="OpenAddressModal(CreateNewAddress())"
+    *ngIf="isDeactVendor === false">
       <i class="fa fa-plus"></i>
-      <span title="Add new" class="py-4">Add New Address</span>
+      <span title="Add new" class="py-4">Add</span>
     </button>
   </div>
 </div>
@@ -37,7 +37,7 @@
             <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}
             </td>
             <td>
-              <a title="Edit" href="javascript:void(0)" (click)="OpenAddressModal(address)">
+              <a title="Edit" href="javascript:void(0)" (click)="OpenAddressModal(address)" *ngIf="isDeactVendor === false">
                 <i class="fa fa-edit"></i>
               </a>
               <a class="ml-2" title="View Contacts" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
@@ -108,7 +108,8 @@
       <div class="modal-header">
         <h6 class="modal-title">
           {{(VendorAddress.AddressCode !== null && VendorAddress.AddressCode !== '') ? 'Edit' : 'Add New'}}
-          Address</h6>
+          Address <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span>
+        </h6>
         <button class="close" aria-label="Close" (click)="ResetForm()" data-dismiss="modal"><span
             aria-hidden="true">&times;</span></button>
       </div>

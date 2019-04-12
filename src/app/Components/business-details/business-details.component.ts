@@ -52,6 +52,7 @@ export class BusinessDetailsComponent implements OnInit {
   CurrentFinancialYear: string;
   NextFinancialYear: string;
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
+  isDeactVendor = false;
   //#endregion
 
   constructor(
@@ -72,6 +73,9 @@ export class BusinessDetailsComponent implements OnInit {
       this.GetVendorBusiness(this.currentPage);
     });
     // this.GetDivisions();
+    if (localStorage.getItem('VendorStatus') === 'D') {
+      this.isDeactVendor = true;
+    }
   }
 
   //#region Data Binding
@@ -96,7 +100,7 @@ export class BusinessDetailsComponent implements OnInit {
       x.ErrorList = [];
     });
     this.pagedItems = this.businessList;
-  }
+    }
   //#endregion
 
   //#region Error Validator

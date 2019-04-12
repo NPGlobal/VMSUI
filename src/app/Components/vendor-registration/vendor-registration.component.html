@@ -6,7 +6,8 @@
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h6 class="modal-title">Producer Registration <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span></h6>
+          <h6 class="modal-title">Producer Registration <span class="req-popup-label">(<b>Note:</b> All (*) marked
+              fields are mandatory)</span></h6>
           <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
         </div>
 
@@ -20,6 +21,9 @@
                 <label for="VendorName">Producer Name<i class="mandatory">*</i></label>
                 <input type="text" [ngClass]="{'is-invalid': formErrors.VendorName}" maxlength="50"
                   class="form-control col-md-12 input-sm" formControlName="VendorName" (blur)="logValidationErrors()" />
+                  <span class="error-label-lg" *ngIf="formErrors.VendorName">
+                    {{formErrors.VendorName}}
+                  </span>
               </div>
               <div class="form-group col-md-4">
                 <label for="VendorCode">Short Name<i class="mandatory">*</i></label>
@@ -34,7 +38,7 @@
               <div class="form-group col-md-4">
                 <label for="PANNo">PAN</label>
                 <input type="text" [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control col-md-12  input-sm"
-                maxlength="10" formControlName="PANNo" (blur)="logValidationErrors()">
+                  maxlength="10" formControlName="PANNo" (blur)="logValidationErrors()">
                 <span class="error-label-lg" *ngIf="formErrors.PANNo">
                   {{formErrors.PANNo}}
                 </span>
@@ -62,7 +66,7 @@
                     {{item.VendorName + ' (' + item.VendorCode + ')'}}</option>
                 </select>
               </div>
-              <div class="form-group ml-5 col-md-2">
+              <div class="form-group col-md-4">
                 <label>Producer Type<i class="mandatory">*</i></label>
                 <div>
                   <span class="">
@@ -128,12 +132,10 @@
           </div>
           <!-- Modal footer -->
 
-          <div class="modal-footer">
-            <div class="mr-auto ml-auto float-right">
-              <button type="submit" class="mr-3 btn btn-primary">Register</button>
-              <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
-                data-dismiss="modal">Cancel</button>
-            </div>
+          <div class="modal-footer col-md-12 page-footer">
+            <button type="submit" class="mr-2 btn btn-primary">Register</button>
+            <button #modalCloseButton type="button" class="btn btn-secondary" (click)="dismiss()"
+              data-dismiss="modal">Cancel</button>
           </div>
         </form>
 

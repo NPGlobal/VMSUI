@@ -2,7 +2,7 @@
   <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchTechDetails($event.target.value)"
     name="search"> -->
   <button type="button" class="btn btn-primary float-right" data-toggle="modal" (click)="EditTechDetails(null)"
-    data-target="#myModal" data-backdrop="static" data-keyboard="false">
+    *ngIf="isDeactVendor===false" data-target="#myModal" data-backdrop="static" data-keyboard="false">
     <i class="fa fa-plus"></i>
     <span title="Add new" class="py-4">Add</span>
   </button>
@@ -39,37 +39,43 @@
         <ng-container *ngFor="let item of vendor.VendorTechDetails;index as j;">
           <tr>
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
-              {{vendor.TechLineNo === '' || vendor.TechLineNo === null ? '-' : 'Line ' + vendor.TechLineNo}}
+              {{'Line ' + vendor.TechLineNo}}
               <br>
-              {{vendor.TechLineNo === '' || vendor.TechLineNo === null ? '' : 'Default Efficiency: ' + vendor.DefaultEfficiency}}
+              {{'Default Efficiency: ' + vendor.DefaultEfficiency}}
             </td>
             <td>{{item.MachineType}}</td>
             <td>{{item.MachineName}}</td>
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
-            <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
-              <a *ngIf="vendor.Status !== 'B'" title="Edit Machine" href="javascript:void(0)" data-toggle="modal"
-                (click)="EditTechDetails(vendor)" data-target="#myModal" data-backdrop="static" data-keyboard="false"><i
-                  class="fa fa-edit"></i>
-              </a>
+            <ng-container *ngIf="isDeactVendor===true">
+              <td></td>
+            </ng-container>
+            <ng-container *ngIf="isDeactVendor===false">
+              <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
+                <a *ngIf="vendor.Status !== 'B'" title="Edit Machine" href="javascript:void(0)" data-toggle="modal"
+                  (click)="EditTechDetails(vendor)" data-target="#myModal" data-backdrop="static"
+                  data-keyboard="false"><i class="fa fa-edit"></i>
+                </a>
 
-              <a *ngIf="vendor.TechLineNo.length>0" title="Delete Machine" href="javascript:void(0)" class="ml-2"
-                data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i
-                  class="fa fa-trash"></i>
-              </a>
+                <a *ngIf="vendor.TechLineNo.trim()!=='-'" title="Delete Machine" href="javascript:void(0)" class="ml-2"
+                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i
+                    class="fa fa-trash"></i>
+                </a>
 
-              <a *ngIf="vendor.TechLineNo.length>0 && vendor.Status !== 'B'" title="Deactivate Machine"
-                href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'B')"
-                data-target="#deleteModal"><i class="fa fa-remove"></i>
-              </a>
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && vendor.Status !== 'B'" title="Deactivate Machine"
+                  href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                  (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
+                </a>
 
-              <a *ngIf="vendor.TechLineNo.length>0 && vendor.Status === 'B'" title="Activate Machine"
-                href="javascript:void(0)" class="ml-2" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'A')"
-                data-target="#deleteModal">
-                <i class="fa fa-check"></i>
-              </a>
-            </td>
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && vendor.Status === 'B'" title="Activate Machine"
+                  href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                  (click)="DeleteTechDetailsPopup(vendor, 'A')" data-target="#deleteModal">
+                  <i class="fa fa-check"></i>
+                </a>
+              </td>
+            </ng-container>
           </tr>
+
         </ng-container>
       </ng-container>
     </tbody>
@@ -117,19 +123,19 @@
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
               <div class="col-lg-3 col-md-3">
-                <label class="text">Tech Line No. <span class="error-label">*</span></label>
+                <label class="text">Tech Line No.<span class="error-label">*</span></label>
                 <span>
                   <input type="text" formControlName="TechLineNo" class="form-control input-sm" maxlength="50"
                     (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.TechLineNo }">
                 </span>
               </div>
               <div class="col-lg-3 col-md-3">
-                <label class="text">Default Line Efficiency (%)</label>
+                <label class="text">Default Line Efficiency (%)<span class="error-label">*</span></label>
                 <span>
-                  <input type="text" formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
+                  <input [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }" type="text"
+                    formControlName="DefaultEfficiency" class="form-control input-sm" maxlength="8"
                     [attr.disabled]="techDetailsForm.get('DefaultEfficiency').disabled ? 'disabled' : null"
-                    (blur)="SetEfficiencyAsDefault(); LogValidationErrors();"
-                    [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
+                    (blur)="SetEfficiencyAsDefault();" [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }">
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.DefaultEfficiency }" *ngIf="formErrors.DefaultEfficiency">
                   {{formErrors.DefaultEfficiency}}
@@ -152,7 +158,7 @@
             <div class="row">
 
               <div class="col-lg-3 col-md-3">
-                <label class="text">Machine Type <span class="error-label">*</span></label>
+                <label class="text">Machine Type<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="Department" class="form-control input-sm"
                     [attr.disabled]="techDetailsForm.get('Department').disabled ? 'disabled': null"
@@ -167,7 +173,7 @@
               </div>
 
               <div class="col-lg-3 col-md-3">
-                <label class="text">Machine Name <span class="error-label">*</span></label>
+                <label class="text">Machine Name<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendorTechConfigID" class="form-control input-sm"
                     [attr.disabled]="techDetailsForm.get('VendorTechConfigID').disabled ? 'disabled': null"
@@ -196,7 +202,7 @@
                 <label class="text">Efficiency (%)</label>
                 <span>
                   <input type="text" formControlName="Efficiency" class="form-control input-sm" maxlength="8"
-                    [ngClass]="{ 'is-invalid': formErrors.Efficiency }" (blur)="LogValidationErrors()" />
+                    [ngClass]="{ 'is-invalid': formErrors.Efficiency }" />
                 </span>
                 <span [ngClass]="{ 'error-label': formErrors.Efficiency }" *ngIf="formErrors.Efficiency">
                   {{formErrors.Efficiency}}
@@ -204,7 +210,7 @@
               </div>
 
               <div class="col-lg-2 col-md-2">
-                <button type="submit" class="btn btn-primary mt-4">
+                <button type="button" class="btn btn-primary mt-4" (click)="AddMachine()">
                   <i class="fa fa-plus"></i>
                 </button>
                 <button type="button" class="btn btn-secondary mt-4 ml-2" (click)="ResetMachine()">
