@@ -57,6 +57,7 @@ export class PersonalDetailsComponent implements OnInit {
   // AlphabetPattern = '^[a-zA-Z ]*$';
   AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   GSTPattern: string;
+  NamePattern = /^[,-@\.\-'&()\/\w\s]*$/;
   //#endregion
 
   //#region Modal Popup and Alert
@@ -160,6 +161,21 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'VendorWeaknesses': {
       'pattern': this._validationMess.RemarksPattern
+    },
+    'OtherCustomer1': {
+      'pattern': this._validationMess.NamePattern
+    },
+    'OtherCustomer2': {
+      'pattern': this._validationMess.NamePattern
+    },
+    'OtherCustomer3': {
+      'pattern': this._validationMess.NamePattern
+    },
+    'OtherCustomer4': {
+      'pattern': this._validationMess.NamePattern
+    },
+    'OtherCustomer5': {
+      'pattern': this._validationMess.NamePattern
     }
   };
 
@@ -185,7 +201,12 @@ export class PersonalDetailsComponent implements OnInit {
     'NameofInsuranceCompany': '',
     'PrimaryContactWebsite': '',
     'SecondaryContactWebsite': '',
-    'VendorWeaknesses': ''
+    'VendorWeaknesses': '',
+    'OtherCustomer1': '',
+    'OtherCustomer2': '',
+    'OtherCustomer3': '',
+    'OtherCustomer4': '',
+    'OtherCustomer5': ''
   };
   //#endregion
 
@@ -295,11 +316,11 @@ export class PersonalDetailsComponent implements OnInit {
         IsExpanded: false
       }),
       CustomerDetails: this._fb.group({
-        OtherCustomer1: [this.vendor.OtherCustomer1],
-        OtherCustomer2: [this.vendor.OtherCustomer2],
-        OtherCustomer3: [this.vendor.OtherCustomer3],
-        OtherCustomer4: [this.vendor.OtherCustomer4],
-        OtherCustomer5: [this.vendor.OtherCustomer5],
+        OtherCustomer1: [this.vendor.OtherCustomer1, [Validators.pattern(this.NamePattern)]],
+        OtherCustomer2: [this.vendor.OtherCustomer2, [Validators.pattern(this.NamePattern)]],
+        OtherCustomer3: [this.vendor.OtherCustomer3, [Validators.pattern(this.NamePattern)]],
+        OtherCustomer4: [this.vendor.OtherCustomer4, [Validators.pattern(this.NamePattern)]],
+        OtherCustomer5: [this.vendor.OtherCustomer5, [Validators.pattern(this.NamePattern)]],
         IsExpanded: false
       }),
       ExpertiseDetails: this._fb.group({

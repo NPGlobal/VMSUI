@@ -260,8 +260,9 @@ export class StaffDetailsComponent implements OnInit {
               }
             }
 
+            this.onDeptDeSelectAll(this.deptSelectList);
             this.deptSelectList = deptArry;
-
+            this.onDeptSelectAll(this.deptSelectList);
             // const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode
             //   && this.staffDetailsForm.get('Designation').value === obj.Designation);
             // if (strArray === undefined) {
@@ -325,6 +326,14 @@ export class StaffDetailsComponent implements OnInit {
 
     for (let i = 0; i < items.length; ++i) {
       this.onDeptSelect(items[i]);
+    }
+  }
+
+  onDeptDeSelectAll(items: any) {
+    this.invalid = false;
+
+    for (let i = 0; i < items.length; ++i) {
+      this.onDeptDeselect(items[i]);
     }
   }
   //#endregion
@@ -494,6 +503,7 @@ export class StaffDetailsComponent implements OnInit {
     this.modalCloseBtn.click();
     this.deptList = [];
     this.deptSelectList = null;
+    this.vendorstaffList = [];
     this.vendorStaffDetail = new StaffDetails();
     this.InitializeFormControls();
     this.logValidationErrors();

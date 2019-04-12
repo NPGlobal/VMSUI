@@ -182,8 +182,10 @@ export class TechnicalDetailsComponent implements OnInit {
     }
     if (techDefault !== null && (techDefault.TechLineNo.trim() === '-')) {
       if (techDefault.VendorTechDetails[0].VendorTechDetailsID === null) {
+        const defaultEff = techDefault.DefaultEfficiency;
         techDefault = new VendorTechDefault();
         techDefault.TechLineNo = '-';
+        techDefault.DefaultEfficiency = defaultEff;
       }
     }
     techDefault.Status = 'A';

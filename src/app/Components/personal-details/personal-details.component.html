@@ -807,33 +807,61 @@
                         <div class="col-md-22">
                             <label class="text">Customer1</label>
                             <span>
-                                <input formControlName="OtherCustomer1" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer1" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer1}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer1 && personalDetailsForm.get('CustomerDetails.OtherCustomer1').value">
+                                {{formErrors.OtherCustomer1}}
                             </span>
                         </div>
                         <div class="col-md-22">
                             <label class="text">Customer2</label>
                             <span>
-                                <input formControlName="OtherCustomer2" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer2" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer2}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer2 && personalDetailsForm.get('CustomerDetails.OtherCustomer2').value">
+                                {{formErrors.OtherCustomer2}}
                             </span>
                         </div>
                         <div class="col-md-22">
                             <label class="text">Customer3</label>
                             <span>
-                                <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer3" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer3}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer3 && personalDetailsForm.get('CustomerDetails.OtherCustomer3').value">
+                                {{formErrors.OtherCustomer3}}
                             </span>
                         </div>
-                        <!-- </div>
-                    <div class="col-md-12 form-group"> -->
                         <div class="col-md-22">
                             <label class="text">Customer4</label>
                             <span>
-                                <input formControlName="OtherCustomer4" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer4" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer4}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer4 && personalDetailsForm.get('CustomerDetails.OtherCustomer4').value">
+                                {{formErrors.OtherCustomer4}}
                             </span>
                         </div>
                         <div class="col-md-22">
                             <label class="text">Customer5</label>
                             <span>
-                                <input formControlName="OtherCustomer5" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer5" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer5}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer5 && personalDetailsForm.get('CustomerDetails.OtherCustomer5').value">
+                                {{formErrors.OtherCustomer5}}
                             </span>
                         </div>
                     </div>
