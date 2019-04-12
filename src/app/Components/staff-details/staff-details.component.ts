@@ -7,8 +7,6 @@ import { VendorStaff } from 'src/app/Models/VendorStaff';
 import { StaffDetails } from 'src/app/Models/staff-details';
 import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
-declare var $: any;
-
 @Component({
   selector: 'app-staff-details',
   templateUrl: './staff-details.component.html',
@@ -139,6 +137,7 @@ export class StaffDetailsComponent implements OnInit {
     this.searchByDesignation = '';
     this.searchByEmail = '';
     this.searchByPhone = '';
+
     this.alertModalOpenBtn = this.alertModalOpen.nativeElement as HTMLElement;
     this.modalCloseBtn = this.modalClose.nativeElement as HTMLElement;
     this.deleteModalOpenBtn = this.deleteModalOpen.nativeElement as HTMLElement;
@@ -263,8 +262,11 @@ export class StaffDetailsComponent implements OnInit {
 
             if (!this.inEditedMode) {
               this.vendorstaffList = [];
-              this.onDeptDeSelectAll(this.deptSelectList);
-              this.deptSelectList = deptArry;
+            }
+
+            this.deptSelectList = deptArry;
+
+            if (!this.inEditedMode) {
               this.onDeptSelectAll(this.deptSelectList);
             }
             // const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode
@@ -306,7 +308,7 @@ export class StaffDetailsComponent implements OnInit {
 
     if (this.inEditedMode && existingIndex > -1) {
       this.vendorstaffList[existingIndex].Status = 'A';
-    } else if (existingIndex === -1) {
+    } else {
       this.vendorstaffList.push(vStaff);
     }
   }
@@ -335,7 +337,7 @@ export class StaffDetailsComponent implements OnInit {
 
   onDeptDeSelectAll(items: any) {
     this.invalid = false;
-
+    items = this.deptSelectList;
     for (let i = 0; i < items.length; ++i) {
       this.onDeptDeselect(items[i]);
     }
@@ -413,18 +415,6 @@ export class StaffDetailsComponent implements OnInit {
         return;
       }
     }
-
-    // for (let counterVar = 0; counterVar < this.deptSelectList.length; ++counterVar) {
-    //   for (let innerCounterVar = 0; innerCounterVar < this.vendorstaffList.length; ++innerCounterVar) {
-    //     const element = this.vendorstaffList[innerCounterVar];
-    //     const index = innerCounterVar;
-    //     const existingIndex = (element.DeptCode === this.deptSelectList[counterVar].DeptCode) ? index : -1;
-    //     if (existingIndex === -1) {
-    //       this.vendorstaffList.splice(index, 1);
-    //     }
-    //   }
-    // }
-
     this.sendFormData();
   }
 

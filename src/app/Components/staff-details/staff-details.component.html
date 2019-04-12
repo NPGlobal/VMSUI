@@ -114,11 +114,20 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Technical Department<span class="error-label">*</span></label>
                 <span>
+                  <!-- <ng-multiselect-dropdown required class="form-control input-sm dropdown"
+                    [placeholder]="'Select Department'" [ngClass]="{ 'red': invalid }"
+                    [ngModelOptions]="{standalone: true}" [data]="deptList" [(ngModel)]="deptSelectList"
+                    [settings]="deptDropdownSettings" (onSelect)="onDeptSelect($event)"
+                    (onDeSelect)="onDeptDeselect($event)" (onSelectAll)="onDeptSelectAll($event)"
+                    (onDeSelectAll)="ashu($event)">
+                    <option [ngValue]=null>Select Technical Department</option>
+                  </ng-multiselect-dropdown> -->
                   <ng-multiselect-dropdown required class="form-control input-sm dropdown"
                     [placeholder]="'Select Department'" [ngClass]="{ 'red': invalid }"
                     [ngModelOptions]="{standalone: true}" [data]="deptList" [(ngModel)]="deptSelectList"
                     [settings]="deptDropdownSettings" (onSelect)="onDeptSelect($event)"
-                    (onDeSelect)="onDeptDeselect($event)" (onSelectAll)="onDeptSelectAll($event)">
+                    (onDeSelect)="onDeptDeselect($event)" (onSelectAll)="onDeptSelectAll($event)"
+                    (onDeSelectAll)="onDeptDeSelectAll($event)">
                     <option [ngValue]=null>Select Technical Department</option>
                   </ng-multiselect-dropdown>
                 </span>

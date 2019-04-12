@@ -72,7 +72,7 @@
 
     <div class="form-group col-md-3">
       <label class="text" for="IFSCCode">IFSC Code</label>
-      <input type="text" maxlength="11" class="form-control col-md-12  input-sm" formControlName="IFSCCode"
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="IFSCCode"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.IFSCCode}">
       <span class="error-label-lg"
         *ngIf="formErrors.IFSCCode && BankDetailsForm.get('IFSCCode').value">
@@ -81,7 +81,7 @@
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="MICRNo">MICR No</label>
-      <input type="text" maxlength="9" class="form-control col-md-12  input-sm" formControlName="MICRNo"
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="MICRNo"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MICRNo}">
       <span class="error-label-lg"
         *ngIf="formErrors.MICRNo && BankDetailsForm.get('MICRNo').value">
@@ -90,7 +90,7 @@
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="SWIFTCode">SWIFT Code</label>
-      <input type="text" maxlength="11" class="form-control col-md-12  input-sm" formControlName="SWIFTCode"
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="SWIFTCode"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.SWIFTCode}">
       <span class="error-label-lg"
         *ngIf="formErrors.SWIFTCode && BankDetailsForm.get('SWIFTCode').value">

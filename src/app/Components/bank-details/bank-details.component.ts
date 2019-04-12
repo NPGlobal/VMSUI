@@ -24,8 +24,9 @@ export class BankDetailsComponent implements OnInit {
   AccountNumberValidation = '^[0-9]*$';
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   MICRPattern = '^[0-9]{9}$';
-  AlphaNumSpecialCharPattern = /^[,-@\.\-'&()\/\w\s]*$/;
+  AlphaNumSpecialCharPattern = /^[-@\.\-'&()\/\w\s]*$/;
   AlphabetPattern = '^[a-zA-Z ]*$';
+  AlphaNumericWithSpace = '^[a-zA-Z0-9 ]*$';
 
 
   // NumberPattern: '^[1-9][0-9]*$';
@@ -72,18 +73,18 @@ export class BankDetailsComponent implements OnInit {
     'IFSCCode': {
       'required': '',
       'pattern': this._validationMess.IFSCCode,
-      'maxlength': this._validationMess.IFSCCode,
-      'minlength': this._validationMess.IFSCCode
+      // 'maxlength': this._validationMess.IFSCCode,
+      // 'minlength': this._validationMess.IFSCCode
     },
     'MICRNo': {
       'pattern': this._validationMess.MICRNo,
-      'maxlength': this._validationMess.MICRNo,
-      'minlength': this._validationMess.MICRNo
+      // 'maxlength': this._validationMess.MICRNo,
+      // 'minlength': this._validationMess.MICRNo
     },
     'SWIFTCode': {
       'pattern': this._validationMess.SwiftCode,
-      'maxlength': this._validationMess.SwiftCode,
-      'minlength': this._validationMess.MICRNo
+      // 'maxlength': this._validationMess.SwiftCode,
+      // 'minlength': this._validationMess.MICRNo
     },
     'RemittanceInfavourof': {
       'pattern': this._validationMess.RemittanceInfavourof
@@ -129,17 +130,21 @@ export class BankDetailsComponent implements OnInit {
   InitializeFormControls() {
     this.BankDetailsForm = this._fb.group({
       NameAsPerBankAccount: [this.vendor.NameAsPerBankAccount, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
-      BankName: [this.vendor.BankName, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
-      BranchName: [this.vendor.BranchName, [Validators.pattern(this.AlphabetPattern)]],
+      BankName: [this.vendor.BankName, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      BranchName: [this.vendor.BranchName, [Validators.pattern(this.AlphaNumericWithSpace)]],
       isECSenabled: [this.vendor.isECSenabled],
       AccountNo: [this.vendor.BankAcctNo, [Validators.required, Validators.pattern(this.AccountNumberValidation)]],
       AccountType: [this.vendor.accountType === null ? '-1' : this.vendor.accountType],
       CurrencyCode: [this.vendor.CurrencyCode === null ? 'INR' : this.vendor.CurrencyCode],
       PaymentTerms: [this.vendor.PaymentTerms, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
-      IFSCCode: [this.vendor.IFSCCode, [Validators.required, Validators.pattern(this.AlphanumericPattern),
-      Validators.maxLength(11), Validators.minLength(11)]],
-      MICRNo: [this.vendor.MICRNo, [Validators.pattern(this.MICRPattern), Validators.maxLength(9), Validators.minLength(9)]],
-      SWIFTCode: [this.vendor.SwiftCode, [Validators.pattern(this.AlphanumericPattern), Validators.maxLength(11), Validators.minLength(8)]],
+      // IFSCCode: [this.vendor.IFSCCode, [Validators.required, Validators.pattern(this.AlphanumericPattern),
+      // Validators.maxLength(11), Validators.minLength(11)]],
+      // MICRNo: [this.vendor.MICRNo, [Validators.pattern(this.MICRPattern), Validators.maxLength(9), Validators.minLength(9)]],
+      // SWIFTCode: [this.vendor.SwiftCode, [Validators.pattern(this.AlphanumericPattern),
+      // Validators.maxLength(11), Validators.minLength(8)]],
+      IFSCCode: [this.vendor.IFSCCode, [Validators.required, Validators.pattern(this.AlphanumericPattern)]],
+      MICRNo: [this.vendor.MICRNo, [Validators.pattern(this.MICRPattern)]],
+      SWIFTCode: [this.vendor.SwiftCode, [Validators.pattern(this.AlphanumericPattern)]],
       RemittanceInfavourof: [this.vendor.RemittanceInfavourof, [Validators.pattern(this.AlphaNumSpecialCharPattern)]]
     });
     // this.BankDetailsForm.valueChanges.subscribe((data) => {

@@ -33,9 +33,9 @@ export class ValidationMessagesService {
   IFSCCode = 'Please enter a valid IFSC Code';
   MICRNo = 'Please enter a valid MICR No.';
   SwiftCode = 'Please enter a valid SWIFT Code';
-  RemittanceInfavourof = 'Only ,@\.\-\'&()_/\' are allowed.';
-  PaymentTerms = 'Only ,@\.\-\'&()_/\' are allowed.';
-  BankName = 'Please enter a valid Bank Name';
+  RemittanceInfavourof = 'Only @\.\-\'&()_/\' are allowed.';
+  PaymentTerms = 'Only @\.\-\'&()_/\' are allowed.';
+  BankName = 'Only @\.\-\'&()_/\' are allowed.';
   BranchName = 'Please enter a valid Branch Name';
   constructor() { }
 }
