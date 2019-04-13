@@ -260,7 +260,8 @@
         <!-- Modal footer -->
         <div class="modal-footer col-md-12  page-footer">
           <button type="button" (click)="SaveTechDetails()"
-            [attr.disabled]="isTechDetailFormChanged ? 'disabled' : null" class="mr-3 btn btn-primary">
+            [attr.disabled]="isTechDetailFormChanged ? 'disabled' : null" class="mr-3 btn btn-primary"
+            [ngClass]="{ 'disabledbtn': isTechDetailFormChanged}">
             Save
           </button>
           <button type="button" class="btn btn-secondary" (click)="DiscardChanges()">Cancel</button>

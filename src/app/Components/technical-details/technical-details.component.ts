@@ -179,12 +179,15 @@ export class TechnicalDetailsComponent implements OnInit {
     const defaultEff = this.TechDefaultLst.find(x => x.TechLineNo === '-').DefaultEfficiency;
     if (techDefault === null) {
       techDefault = new VendorTechDefault();
+      techDefault.VendorTechDefaultID = 0;
       techDefault.TechLineNo = this.maxTechLineNo;
       techDefault.DefaultEfficiency = defaultEff;
     }
     if (techDefault !== null && (techDefault.TechLineNo.trim() === '-')) {
+      const techDefaultID = techDefault.VendorTechDefaultID;
       if (techDefault.VendorTechDetails[0].VendorTechDetailsID === null) {
         techDefault = new VendorTechDefault();
+        techDefault.VendorTechDefaultID = techDefaultID;
         techDefault.TechLineNo = '-';
         techDefault.DefaultEfficiency = defaultEff;
       }
@@ -376,7 +379,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   AddMachine() {
     const efficiency = this.techDetailsForm.get('Efficiency').value;
-    if (efficiency !== null && efficiency !== '' && !this.CheckEfficiencyFormat(efficiency)) {
+    if ((efficiency == null && efficiency === '') || !this.CheckEfficiencyFormat(efficiency)) {
       this.LogEfficiencyValidation('Efficiency');
       return;
     }
@@ -515,7 +518,9 @@ export class TechnicalDetailsComponent implements OnInit {
     switch (type) {
       case 'Efficiency': {
         const efficiecny = this.techDetailsForm.get('Efficiency').value;
-        if (efficiecny !== null && efficiecny !== '' && !this.CheckEfficiencyFormat(this.techDetailsForm.get('Efficiency').value)) {
+        if (efficiecny === '' || efficiecny === null) {
+          this.formErrors.Efficiency = ' ';
+        } else if (efficiecny !== null && efficiecny !== '' && !this.CheckEfficiencyFormat(this.techDetailsForm.get('Efficiency').value)) {
           this.formErrors.Efficiency = this.ValidationMessages.Efficiency.pattern;
         } else {
           this.formErrors.Efficiency = '';

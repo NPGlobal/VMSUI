@@ -37,6 +37,7 @@ export class ProductionDetailsComponent implements OnInit {
   PinPattern = '^[1-9][0-9]{5}$';
   // CityPattern = '^[A-Za-z]+$';
   AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  NamePattern = /^[@\.\-'&%\/\w\s]*$/;
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   isDeactVendor = false;
@@ -70,10 +71,11 @@ export class ProductionDetailsComponent implements OnInit {
     },
     'SubContractingName': {
       'required': '',
-      'pattern': this._validationMess.NumericPattern
+      'pattern': this._validationMess.NamePattern
     },
     'NatureOfSubContracting': {
-      'required': ''
+      'required': '',
+      'pattern': this._validationMess.NamePattern
     },
     'MonthlyCapacity': {
       'required': '',
@@ -186,8 +188,10 @@ export class ProductionDetailsComponent implements OnInit {
     this.ProductionDetailsForm = this._fb.group({
       ApprovedProductionCount: [this.VendorProduction.ApprovedProductionCount,
       [Validators.required, Validators.pattern(this.NumericPattern)]],
-      SubContractingName: [this.VendorProduction.SubContractingName, Validators.required],
-      NatureOfSubContracting: [this.VendorProduction.NatureOfSubContracting, Validators.required],
+      SubContractingName: [this.VendorProduction.SubContractingName, [Validators.required,
+      Validators.pattern(this.NamePattern)]],
+      NatureOfSubContracting: [this.VendorProduction.NatureOfSubContracting, [Validators.required,
+      Validators.pattern(this.NamePattern)]],
       MonthlyCapacity: [this.VendorProduction.MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       MinimalCapacity: [this.VendorProduction.MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       LeanMonths: [this.VendorProduction.LeanMonths,
@@ -306,10 +310,12 @@ export class ProductionDetailsComponent implements OnInit {
 
   Dismiss() {
     this.submitted = false;
-    this.VendorProduction = new VendorProduction();
-    this.InitializeFormControls();
+    // this.VendorProduction = new VendorProduction();
+    // this.ProductionDetailsForm.reset();
 
-    this.ProductionDetailsForm.reset();
+    this.InitializeFormControls();
+    this.LogValidationErrors();
+
     this.modalOpenButton.click();
   }
   //#endregion

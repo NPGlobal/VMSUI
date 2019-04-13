@@ -776,15 +776,23 @@
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
                             <span>
-                                <input formControlName="PersonTopRanker1" name="PersonTopRanker1" type="text"
-                                    class="form-control input-sm" />
+                                <input formControlName="PersonTopRanker1" name="PersonTopRanker1" type="text" class="form-control input-sm"
+                                (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PersonTopRanker1}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.PersonTopRanker1 && personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value">
+                                {{formErrors.PersonTopRanker1}}
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 2</label>
                             <span>
-                                <input formControlName="PersonTopRanker2" name="PersonTopRanker2" type="text"
-                                    class="form-control input-sm" />
+                                <input formControlName="PersonTopRanker2" name="PersonTopRanker2" type="text" class="form-control input-sm" 
+                                (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.PersonTopRanker2}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.PersonTopRanker2 && personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value">
+                                {{formErrors.PersonTopRanker2}}
                             </span>
                         </div>
                     </div>

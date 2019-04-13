@@ -314,6 +314,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
   dismiss() {
     this.submitted = false;
+    this.CodeExists = false;
     this.RegistrationForm.reset();
     this.InitializeFormControls();
     this.logValidationErrors();

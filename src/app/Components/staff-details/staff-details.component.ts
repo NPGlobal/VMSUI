@@ -260,13 +260,10 @@ export class StaffDetailsComponent implements OnInit {
               }
             }
 
-            if (!this.inEditedMode) {
-              this.vendorstaffList = [];
-            }
-
             this.deptSelectList = deptArry;
 
             if (!this.inEditedMode) {
+              this.vendorstaffList = [];
               this.onDeptSelectAll(this.deptSelectList);
             }
             // const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode
@@ -308,7 +305,7 @@ export class StaffDetailsComponent implements OnInit {
 
     if (this.inEditedMode && existingIndex > -1) {
       this.vendorstaffList[existingIndex].Status = 'A';
-    } else {
+    } else if (existingIndex === -1) {
       this.vendorstaffList.push(vStaff);
     }
   }

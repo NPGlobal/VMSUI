@@ -176,6 +176,12 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'OtherCustomer5': {
       'pattern': this._validationMess.NamePattern
+    },
+    'PersonTopRanker1': {
+      'pattern': this._validationMess.NamePattern
+    },
+    'PersonTopRanker2': {
+      'pattern': this._validationMess.NamePattern
     }
   };
 
@@ -206,7 +212,9 @@ export class PersonalDetailsComponent implements OnInit {
     'OtherCustomer2': '',
     'OtherCustomer3': '',
     'OtherCustomer4': '',
-    'OtherCustomer5': ''
+    'OtherCustomer5': '',
+    'PersonTopRanker1': '',
+    'PersonTopRanker2': ''
   };
   //#endregion
 
@@ -244,7 +252,6 @@ export class PersonalDetailsComponent implements OnInit {
     this._vendorService.GetMasterVendorList().subscribe(mvResult => {
       this.MasterVendorList = mvResult.data.MasterVendors;
     });
-
   }
 
   //#region Form Initialization
@@ -311,8 +318,8 @@ export class PersonalDetailsComponent implements OnInit {
       OtherRegDetails: this._fb.group({
         AssociatedSinceYear: [this.FormatDate(this.vendor.AssociatedSinceYear)],
         VendorType_MDDCode: [this.vendor.VendorType_MDDCode],
-        PersonTopRanker1: [this.vendor.PersonTopRanker1],
-        PersonTopRanker2: [this.vendor.PersonTopRanker2],
+        PersonTopRanker1: [this.vendor.PersonTopRanker1, [Validators.pattern(this.NamePattern)]],
+        PersonTopRanker2: [this.vendor.PersonTopRanker2, [Validators.pattern(this.NamePattern)]],
         IsExpanded: false
       }),
       CustomerDetails: this._fb.group({
@@ -347,6 +354,12 @@ export class PersonalDetailsComponent implements OnInit {
       this.personalDetailsForm.disable();
       this.isDeactVendor = true;
     }
+
+    if (this.submitted) {
+      this.submitted = false;
+      this.ExpandAllSections();
+    }
+
   }
 
   Editvendor(Code: string) {
@@ -850,6 +863,15 @@ export class PersonalDetailsComponent implements OnInit {
     return ex;
   }
 
+  ExpandAllSections() {
+    this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
+    this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
+    this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
+    this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
+    this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
+    this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
+  }
+
   SavePersonalDetails() {
     this.submitted = true;
 
@@ -1017,7 +1039,7 @@ export class PersonalDetailsComponent implements OnInit {
         this.PopUpMessage = StatusObj.data.Table[0].ResultMessage;
         this.alertButton.click();
         // this.IsAddressSaved = true;
-        this.submitted = false;
+        // this.submitted = false;
         // this.IfInsured(true); // by Shubhi on 9 Apr
         this.clearValidator();
         this.Editvendor(this.VendorCode);
