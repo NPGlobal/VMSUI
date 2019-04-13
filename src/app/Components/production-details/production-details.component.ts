@@ -6,7 +6,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
-import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-production-details',
@@ -357,11 +357,13 @@ export class ProductionDetailsComponent implements OnInit {
           this.totalItems = result.data.Table2[0].TotalVendors;
           this.GetVendorsProductionList();
           this.Dismiss();
+          this.GetVendorProduction(this.currentPage);
           this.PopUpMessage = result.data.Table[0].Message;
           this.alertModalButton.click();
         } else if (result.data.Table[0].ResultCode === 2) { // delete condition
           this.VendorProductionList = result.data.Table1;
           this.totalItems = result.data.Table2[0].TotalVendors;
+          this.GetVendorProduction(this.currentPage);
           this.GetVendorsProductionList();
           this.PopUpMessage = result.data.Table[0].Message;
           this.deleteModalCloseBtn.click();

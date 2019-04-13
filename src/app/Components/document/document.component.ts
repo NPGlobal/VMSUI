@@ -8,7 +8,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { VendorDocumentService } from 'src/app/Services/vendor-document.service';
 import { VendorDocument } from 'src/app/Models/vendor-document';
 import { HttpRequest } from '@angular/common/http';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 declare var $: any;
 
 @Component({
@@ -233,6 +233,7 @@ export class DocumentComponent implements OnInit {
             this.totalItems = result.data.VendorDocCount[0].TotalVendors;
             this.GetVendorDocumentsList();
             this.Dismiss();
+            this.GetVendorDocuments(this.currentPage);
             this.modalCloseBtn.click();
             this.PopUpMessage = result.data.Msg[0].Message;
             this.alertModalButton.click();

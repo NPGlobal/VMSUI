@@ -47,6 +47,8 @@ export class TechnicalDetailsComponent implements OnInit {
   deptList: any[];
   techSpecList: any[];
   TechDefaultLst: VendorTechDefault[];
+  DefaultEfficiency: any;
+  IsFirstTime: boolean;
   // isLine = 0;
   // isEfficiency = 0;
   // isDisable = false;
@@ -137,6 +139,7 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.IsFirstTime = true;
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
     this.modalClose = this.modalCloseButton.nativeElement as HTMLElement;
@@ -156,11 +159,11 @@ export class TechnicalDetailsComponent implements OnInit {
   InitializeFormControls() {
     // const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
     this.techDetailsForm = this._fb.group({
-      Department: [null],
-      VendorTechConfigID: [null],
+      Department: [null, [Validators.required]],
+      VendorTechConfigID: [null, [Validators.required]],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
       DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
-      UnitCount: [],
+      UnitCount: [null, [Validators.required]],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks, Validators.pattern(this.AddressAndRemarksPattern)],
       Efficiency: [null]
@@ -175,15 +178,14 @@ export class TechnicalDetailsComponent implements OnInit {
     }
   }
 
-  EditTechDetails(techDefault: VendorTechDefault) {
-    const defaultEff = this.TechDefaultLst.find(x => x.TechLineNo === '-').DefaultEfficiency;
+  SetEfficiencyAndMaxLine(techDefault: VendorTechDefault) {
+    const defaultEff = this.DefaultEfficiency;
     if (techDefault === null) {
       techDefault = new VendorTechDefault();
       techDefault.VendorTechDefaultID = 0;
       techDefault.TechLineNo = this.maxTechLineNo;
       techDefault.DefaultEfficiency = defaultEff;
-    }
-    if (techDefault !== null && (techDefault.TechLineNo.trim() === '-')) {
+    } else if (techDefault !== null && (techDefault.TechLineNo.trim() === '-')) {
       const techDefaultID = techDefault.VendorTechDefaultID;
       if (techDefault.VendorTechDetails[0].VendorTechDetailsID === null) {
         techDefault = new VendorTechDefault();
@@ -196,6 +198,16 @@ export class TechnicalDetailsComponent implements OnInit {
     this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
     this.DisableSaveFormButton();
     this.InitializeFormControls();
+  }
+
+  EditTechDetails(techDefault: VendorTechDefault) {
+    this._vendorService.GetTechEfficiency(this.vendorcode).subscribe((result) => {
+      if (result.Error === '') {
+        this.DefaultEfficiency = result.data.Table[0].DefaultEfficiency;
+        this.maxTechLineNo = result.data.Table[0].MaxTechLineNo;
+        this.SetEfficiencyAndMaxLine(techDefault);
+      }
+    });
   }
   //#endregion
 
@@ -215,13 +227,14 @@ export class TechnicalDetailsComponent implements OnInit {
     this.currentPage = index;
     this._vendorService.GetVendorTechByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText).
       subscribe(result => {
-        this.totalItems = result.TotalCount;
-        this.TechDefaultLst = result.data;
-        const lineNo = this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo.trim();
-        this.maxTechLineNo = (lineNo === '-' ? '1' : (Number(lineNo) + 1).toString());
-
-        this.EditTechDetails(null);
-        this.GetVendorsTechList();
+        if (result.data.length > 0) {
+          this.totalItems = result.TotalCount;
+          this.TechDefaultLst = result.data;
+          this.EditTechDetails(null);
+          this.GetVendorsTechList();
+        } else {
+          this.pagedItems = undefined;
+        }
       });
   }
 
@@ -287,16 +300,17 @@ export class TechnicalDetailsComponent implements OnInit {
         this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
           if (result.Msg !== '') {
             if (result.Status === 0) {
+              this.submitted = false;
               this.PopUpMessage = result.Msg;
 
               this.totalItems = result.TotalCount;
               this.TechDefaultLst = result.data;
 
-              const lineNo = this.TechDefaultLst[this.TechDefaultLst.length - 1].TechLineNo.trim();
-              this.maxTechLineNo = (lineNo === '-' ? '1' : (Number(lineNo) + 1).toString());
+              this.EditTechDetails(null);
 
               this.GetVendorsTechList();
               this.dismiss();
+              this.GetVendorTech(this.currentPage);
             } else {
               this.PopUpMessage = result.Msg;
             }
@@ -319,6 +333,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.isTechDetailEditing = 0;
     this.submitted = false;
     this.techDetailsForm.reset();
+    this.LogValidationErrors();
     this.techSpecList = [];
     // this.CreateNewVendorTech();
     this.InitializeFormControls();
@@ -431,14 +446,18 @@ export class TechnicalDetailsComponent implements OnInit {
           if (add === 0) {
             this.PopUpMessage = 'This data already exist.';
             this.alertButton.click();
+            return;
           }
         }
       } else {
         this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
       }
     } else {
+      this.submitted = true;
+      this.LogValidationErrors(this.techDetailsForm);
       this.PopUpMessage = 'Please select data for add.';
       this.alertButton.click();
+      return;
     }
 
     this.DisableSaveFormButton();

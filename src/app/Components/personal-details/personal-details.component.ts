@@ -57,7 +57,7 @@ export class PersonalDetailsComponent implements OnInit {
   // AlphabetPattern = '^[a-zA-Z ]*$';
   AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   GSTPattern: string;
-  NamePattern = /^[,-@\.\-'&()\/\w\s]*$/;
+  NamePattern = /^[-@\.\-'&()\/\w\s]*$/;
   //#endregion
 
   //#region Modal Popup and Alert
@@ -450,6 +450,8 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.StateCodeLabel = (state === undefined ||
       state.MDDShortName === undefined || state.MDDShortName === null) ? '' : state.MDDShortName + '.' + state.MDDName;
+
+    this.SetValidationForGSTControls();
   }
 
   FillPHLists() {
@@ -880,12 +882,13 @@ export class PersonalDetailsComponent implements OnInit {
         this.SelectedPHStoreList.length === 0)) {
       this.PopUpMessage = 'Please fill required fields.';
       this.alertButton.click();
-      this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
+      this.ExpandAllSections();
       this.HasPHSelected = false;
       return;
     }
@@ -894,12 +897,13 @@ export class PersonalDetailsComponent implements OnInit {
       this.LogValidationErrors();
       this.PopUpMessage = 'Please fill required fields.';
       this.alertButton.click();
-      this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
-      this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('PersonalDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('Address.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('OtherRegDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('CustomerDetails.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('RegisteredOfficeAddress.IsExpanded').patchValue(true);
+      // this.personalDetailsForm.get('ExpertiseDetails.IsExpanded').patchValue(true);
+      this.ExpandAllSections();
       return;
     }
 

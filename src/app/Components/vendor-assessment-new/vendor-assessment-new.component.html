@@ -27,34 +27,43 @@
       </div>
     </div>
 
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'B'" class="col-md-2">
-      <div class="form-group">
-        <label>Blocks<i class="mandatory">*</i></label>
-        <select class="form-control input-sm" formControlName="Quarter" [ngClass]="{'is-invalid': formErrors.Quarter}">
-          <option [ngValue]="null">Select</option>
-          <option value="1">Quarter 1(Jan-Feb-Mar)</option>
-          <option value="2">Quarter 2(Apr-May-Jun)</option>
-          <option value="3">Quarter 3(Jul-Aug-Sep)</option>
-          <option value="4">Quarter 4(Oct-Nov-Dec)</option>
-        </select>
-      </div>
-    </div>
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2">
-      <div class="form-group">
-        <label>Month<i class="mandatory">*</i></label>
-        <select class="form-control input-sm" formControlName="Month" [ngClass]="{'is-invalid': formErrors.Month}">
-          <option [ngValue]="null">Select</option>
-          <option value="{{i}}" *ngFor="let month of MonthList;index as i;">{{month}}</option>
-        </select>
-      </div>
-    </div>
-
     <div class="col-md-1">
       <div class="form-group">
         <label>Year<i class="mandatory">*</i></label>
         <select class="form-control input-sm" formControlName="Year" [ngClass]="{'is-invalid': formErrors.Year}">
           <option [ngValue]="null">Select</option>
           <option value="{{year}}" *ngFor="let year of YearList">{{year}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'B'" class="col-md-2">
+      <div class="">
+        <label>Blocks<i class="mandatory">*</i></label>
+
+        <ng-multiselect-dropdown required class="input-sm dropdown" [placeholder]="'Select'"
+          [ngClass]="{ 'invalid-dept': invalidQuarter }" [ngModelOptions]="{standalone: true}" [data]="QuarterList"
+          [(ngModel)]="SelectedQuarterList" [settings]="quarterDropdownSettings">
+          <option [ngValue]="null">Select</option>
+        </ng-multiselect-dropdown>
+
+        <!-- <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Quarter"
+          [ngClass]="{'is-invalid': formErrors.Quarter}">
+          <option [ngValue]="null">Select</option>
+          <option value="1">Quarter 1(Jan-Feb-Mar)</option>
+          <option value="2">Quarter 2(Apr-May-Jun)</option>
+          <option value="3">Quarter 3(Jul-Aug-Sep)</option>
+          <option value="4">Quarter 4(Oct-Nov-Dec)</option>
+        </select> -->
+      </div>
+    </div>
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2">
+      <div class="form-group">
+        <label>Month<i class="mandatory">*</i></label>
+        <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Months"
+          [ngClass]="{'is-invalid': formErrors.Month}">
+          <option [ngValue]="null">Select</option>
+          <option [ngValue]="i" *ngFor="let month of MonthList;index as i;">{{month}}</option>
         </select>
       </div>
     </div>
@@ -88,18 +97,19 @@
 <hr>
 <div *ngIf="submitted">
 
-  <table class="table table-sm table-bordered table-striped table-hover" style="font-size:13px;">
+  <table *ngIf="AssessmentScoreTable" class="table table-sm table-bordered table-striped table-hover"
+    style="font-size:13px;">
     <thead>
       <tr>
         <th rowspan="2">Legend</th>
-        <th colspan="5">Apparel - Vendor Assessment Scores - 2018</th>
+        <th [attr.colspan]="AssessmentScoreTable.length">Apparel - Vendor Assessment Scores - {{Year}}</th>
       </tr>
       <tr>
-        <th>EDA: Jan-Feb-March'18</th>
-        <th>EDA: April-May-June'18</th>
+        <th *ngFor="let tr of AssessmentScoreTable;">{{tr.HeaderText}}</th>
+        <!-- <th>EDA: April-May-June'18</th>
         <th>EDA: July-Aug-Sept'18</th>
         <th>EDA: Oct-Nov-Dec'18</th>
-        <th>Aggregate 2018</th>
+        <th>Aggregate 2018</th> -->
       </tr>
     </thead>
     <tbody>
@@ -108,12 +118,11 @@
           <div class="text-justify platinum">A. Platnium: = > 90%</div>
           <div class="text-justify gold">B. Gold: 85 - 89%</div>
           <div class="text-justify silver">C. Silver: 80 - 84%</div>
-          <div class="text-justify bronze">D. Bronze: = < 79 %</div> </td> <td>
+          <div class="text-justify bronze">D. Bronze: = &lt; 79 %</div>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td *ngFor="let td of AssessmentScoreTable;">
+          {{td.BodyText}}
+        </td>
       </tr>
     </tbody>
   </table>
@@ -141,7 +150,7 @@
                 </tr>
                 <tr>
                   <td class="text-justify">Assessment Period :</td>
-                  <td class="text-justify">{{FromDate + ' to ' + ToDate}}</td>
+                  <td class="text-justify">{{AssessingPeriods}}</td>
                 </tr>
                 <tr>
                   <td class="text-justify">Date of Assessment :</td>
@@ -160,41 +169,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="text-justify">Total number of Pcs placed with the Vendor during the Assessment Period
-                    </td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Total number of Orders/Styles placed with the Vendor during the Assessment
-                      Period</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Ontime GRN Qty as per agreed Delivery Dates (PO or JW Delivery Dates)</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Delayed (After Delivery Date GRN Qty)</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Total GRN Qty</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Difference Qty (Issued Vs. GRN Qty)</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Difference Qty (Issued Vs. GRN Qty) Vendor responsibility e.g. Construction
-                      &
-                      Quality issues</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td class="text-justify">Number of Batches/ Lots offered for all Styles</td>
-                    <td>0</td>
+                  <tr *ngFor="let qty of QuantityDetails;">
+                    <td class="text-justify">{{qty.LabelText}}</td>
+                    <td>{{qty.Number}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -203,7 +180,6 @@
         </div>
         <div class="row form-group col-md-6">
           <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
-
             <thead>
               <tr>
                 <th>Style No.</th>
@@ -214,188 +190,46 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <a class="glyphicon-expand" (click)="ExpandCollpase(1)" title="View Orders" href="javascript:void(0)"
-                    data-target="#Collapse1" data-toggle="collapse">
-                    <span>+</span>
-                  </a>
-                  <span>1</span>
-                </td>
-                <td>Mens</td>
-                <td>100</td>
-                <td>10</td>
-                <td>100</td>
-              </tr>
-              <tr class="collapse" id="Collapse1">
-                <td colspan="9">
-                  <table class="table table-warning table-sm">
-                    <thead>
-                      <tr>
-                        <th>Order No.</th>
-                        <th>Order Qty.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>10</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>20</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="glyphicon-expand" (click)="ExpandCollpase(1)" title="View Orders" href="javascript:void(0)"
-                    data-target="#Collapse2" data-toggle="collapse">
-                    <span>+</span>
-                  </a>
-                  <span>1</span>
-                </td>
-                <td>Mens</td>
-                <td>100</td>
-                <td>10</td>
-                <td>100</td>
-              </tr>
-              <tr class="collapse" id="Collapse2">
-                <td colspan="9">
-                  <table class="table table-warning table-sm">
-                    <thead>
-                      <tr>
-                        <th>Order No.</th>
-                        <th>Order Qty.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>10</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>20</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="glyphicon-expand" (click)="ExpandCollpase(1)" title="View Orders" href="javascript:void(0)"
-                    data-target="#Collapse3" data-toggle="collapse">
-                    <span>+</span>
-                  </a>
-                  <span>1</span>
-                </td>
-                <td>Mens</td>
-                <td>100</td>
-                <td>10</td>
-                <td>100</td>
-              </tr>
-              <tr class="collapse" id="Collapse3">
-                <td colspan="9">
-                  <table class="table table-warning table-sm">
-                    <thead>
-                      <tr>
-                        <th>Order No.</th>
-                        <th>Order Qty.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>10</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>20</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="glyphicon-expand" (click)="ExpandCollpase(1)" title="View Orders" href="javascript:void(0)"
-                    data-target="#Collapse4" data-toggle="collapse">
-                    <span>+</span>
-                  </a>
-                  <span>1</span>
-                </td>
-                <td>Mens</td>
-                <td>100</td>
-                <td>10</td>
-                <td>100</td>
-              </tr>
-              <tr class="collapse" id="Collapse4">
-                <td colspan="9">
-                  <table class="table table-warning table-sm">
-                    <thead>
-                      <tr>
-                        <th>Order No.</th>
-                        <th>Order Qty.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>10</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>20</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="glyphicon-expand" (click)="ExpandCollpase(1)" title="View Orders" href="javascript:void(0)"
-                    data-target="#Collapse5" data-toggle="collapse">
-                    <span>+</span>
-                  </a>
-                  <span>1</span>
-                </td>
-                <td>Mens</td>
-                <td>100</td>
-                <td>10</td>
-                <td>100</td>
-              </tr>
-              <tr class="collapse" id="Collapse5">
-                <td colspan="9">
-                  <table class="table table-warning table-sm">
-                    <thead>
-                      <tr>
-                        <th>Order No.</th>
-                        <th>Order Qty.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>10</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>20</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
+              <ng-container *ngFor="let order of OrderDetails;index as i;">
+                <tr>
+                  <td>
+                    <a class="glyphicon-expand" (click)="ExpandCollpase(i)" title="View Orders"
+                      href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1).toString()"
+                      data-toggle="collapse">
+                      <span>{{order.IsExpanded ? '-' : '+'}}</span>
+                    </a>
+                    <span>{{order.StyleMDDCode}}</span>
+                  </td>
+                  <td>{{order.DeptCode}}</td>
+                  <td>{{order.BuyPlanQty}}</td>
+                  <td>{{order.BatchQty}}</td>
+                  <td>{{order.PurchaseOrderQty}}</td>
+                </tr>
+                <tr class="collapse" id="{{'Collapse' + (i + 1).toString()}}">
+                  <td colspan="9">
+                    <table class="table table-warning table-sm">
+                      <thead>
+                        <tr>
+                          <th>Order No.</th>
+                          <th>Order Qty.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let qty of order.QtyDetails;">
+                          <td>{{qty.OrderNo}}</td>
+                          <td>{{qty.OrderQty}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
-
-          <!-- <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
-                class="form-group ml-auto mr-auto">
-                <h6 class="text-center">No orders available under selected assessment period</h6>
-              </div> -->
+          <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
+            class="form-group ml-auto mr-auto">
+            <h6 class="text-center">No orders available under selected assessment period</h6>
+          </div>
         </div>
       </div>
     </div>

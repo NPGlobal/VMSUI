@@ -88,6 +88,11 @@ export class VendorService {
     return this._http.get<any>(apiUrl);
   }
 
+  GetTechEfficiency(VendorShortCode: string): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorTech/GetTechEfficiency/' + VendorShortCode;
+    return this._http.get<any>(apiUrl);
+  }
+
   SaveVendorPersonalDetails(PersonalDetails: Vendor): Observable<any> {
     const apiUrl = this._origin.origin + 'api/Vendor/SaveVendorPersonalDetails';
     return this._http.post<any>(apiUrl, PersonalDetails);

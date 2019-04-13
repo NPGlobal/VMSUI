@@ -451,6 +451,7 @@ export class StaffDetailsComponent implements OnInit {
           this.PopUpMessage = result.data.Msg[0].Message;
           this.alertModalOpenBtn.click();
           this.dismiss();
+          this.GetVendorStaffs(this.currentPage);
         } else {
           this.PopUpMessage = result.data.Msg[0].Message;
           this.alertModalOpenBtn.click();

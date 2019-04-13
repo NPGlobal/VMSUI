@@ -23,10 +23,13 @@ export class VendorAssessmentNewComponent implements OnInit {
   GradeDetails2a: any;
   GradeDetails2b: any;
   AverageGradeDetails: any;
+  AssessmentScoreTable: any;
   inputParams: string;
   YearList: number[];
   MonthList: string[];
   DeptList: any;
+  SelectedQuarterList: any;
+  QuarterList: any;
   FromDate: any;
   ToDate: any;
   VendorName: string;
@@ -38,6 +41,7 @@ export class VendorAssessmentNewComponent implements OnInit {
 
   Month: any;
   Year: any;
+  AssessingPeriods: any;
   //#endregion
 
   //#region  Form Variables
@@ -63,11 +67,22 @@ export class VendorAssessmentNewComponent implements OnInit {
     allowSearchFilter: true,
     noDataAvailablePlaceholderText: 'No records'
   };
+
+  quarterDropdownSettings = {
+    singleSelection: false,
+    idField: 'QuarterValue',
+    textField: 'QuarterText',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 1,
+    allowSearchFilter: true,
+    noDataAvailablePlaceholderText: 'No records'
+  };
   //#endregion
 
   //#region  ValidationMessages
   ValidationMessages = {
-    'Month': {
+    'Months': {
       'required': ''
     },
     'Year': {
@@ -78,21 +93,18 @@ export class VendorAssessmentNewComponent implements OnInit {
     },
     'ShortName': {
       'required': ''
-    },
-    'Quarter': {
-      'required': ''
-    },
+    }
   };
 
   formErrors = {
     'Year': '',
-    'Month': '',
+    'Months': '',
     'AssessingPHCode': '',
-    'ShortName': '',
-    'Quarter': ''
+    'ShortName': ''
   };
 
   invalidDept = false;
+  invalidQuarter = false;
   //#endregion
 
   constructor(private _vendorService: VendorService,
@@ -102,6 +114,10 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.PopUpMessage = '';
     this.MonthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     this.SelectedDeptList = [];
+    this.QuarterList = [{ QuarterText: 'Quarter 1(Jan-Feb-Mar)', QuarterValue: 1 },
+    { QuarterText: 'Quarter 2(Apr-May-Jun)', QuarterValue: 2 },
+    { QuarterText: 'Quarter 3(Jul-Aug-Sep)', QuarterValue: 3 },
+    { QuarterText: 'Quarter 4(Oct-Nov-Dec)', QuarterValue: 4 }];
   }
 
   ngOnInit() {
@@ -111,8 +127,6 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.InitializeFormControls();
     this.GetVendors();
     this.GetPHList();
-    // this.inputParams = '2018-01-01~2018-12-31~5EL~WI~DL11';
-    // this.GetVendorAssessmentReport();
   }
 
   //#region GetData
@@ -121,10 +135,10 @@ export class VendorAssessmentNewComponent implements OnInit {
       ShortName: [null, [Validators.required]],
       Year: [null, [Validators.required]],
       PeriodType: ['M'],
-      Month: [null],
-      Quarter: [null],
+      Months: [null],
       AssessingPHCode: [null, [Validators.required]]
     });
+    this.SetValidationForBlocks();
   }
 
   GetVendors() {
@@ -156,7 +170,8 @@ export class VendorAssessmentNewComponent implements OnInit {
 
   GetVendorAssessmentReport() {
     this._vendorAssessmentService.GetVendorAssessmentReport(this.inputParams).subscribe((result) => {
-      this.OrderDetails = result.data.Table;
+      const orderQtyDetails = result.data.Table;
+      this.SetOrderDetails(orderQtyDetails);
 
       this.QuantityDetails = result.data.Table1;
 
@@ -165,7 +180,49 @@ export class VendorAssessmentNewComponent implements OnInit {
       this.GradeDetails2a = result.data.Table4;
       this.GradeDetails2b = result.data.Table5;
       this.AverageGradeDetails = result.data.Table6;
+
+      this.AssessmentScoreTable = result.data.Table7;
     });
+  }
+
+  SetOrderDetails(details: any[]) {
+    this.OrderDetails = [];
+    for (let counterVar = 0; counterVar < details.length; ++counterVar) {
+      const styleMDD = details[counterVar].StyleMDDCode;
+      const deptCode = details[counterVar].DeptCode;
+      const buyPlanQty = details[counterVar].BuyPlanQty;
+      const batchQty = details[counterVar].BatchQty;
+      const purchaseOrderQty = details[counterVar].PurchaseOrderQty;
+
+      const existingIndex = this.OrderDetails.findIndex(x => x.StyleMDDCode === styleMDD &&
+        x.DeptCode === deptCode &&
+        x.BuyPlanQty === buyPlanQty &&
+        x.BatchQty === batchQty &&
+        x.PurchaseOrderQty === purchaseOrderQty);
+
+      if (existingIndex === -1) {
+        this.OrderDetails.push({
+          IsExpanded: false,
+          StyleMDDCode: styleMDD,
+          DeptCode: deptCode,
+          BuyPlanQty: buyPlanQty,
+          BatchQty: batchQty,
+          PurchaseOrderQty: purchaseOrderQty,
+          QtyDetails: details.filter(function (x) {
+            return x.StyleMDDCode === styleMDD &&
+              x.DeptCode === deptCode &&
+              x.BuyPlanQty === buyPlanQty &&
+              x.BatchQty === batchQty &&
+              x.PurchaseOrderQty === purchaseOrderQty;
+          }).map(function (element) {
+            return {
+              OrderNo: element.OrderNo,
+              OrderQty: element.OrderQty
+            };
+          })
+        });
+      }
+    }
   }
 
   ToDateCustomFormat(date: Date) {
@@ -217,13 +274,20 @@ export class VendorAssessmentNewComponent implements OnInit {
     } else { this.invalidDept = false; }
   }
 
+  ValidateQuarters() {
+    if (this.QuarterList.length === 0) {
+      this.invalidQuarter = true;
+    } else { this.invalidQuarter = false; }
+  }
+
   SetValidationForBlocks() {
     if (this.AssessmentForm.get('PeriodType').value === 'B') {
-      this.AssessmentForm.get('Quarter').setValidators([Validators.required]);
-      this.AssessmentForm.get('Month').setValidators([]);
+      // this.AssessmentForm.get('Quarter').setValidators([Validators.required]);
+      this.AssessmentForm.get('Months').setValidators([]);
     } else {
-      this.AssessmentForm.get('Quarter').setValidators([]);
-      this.AssessmentForm.get('Month').setValidators([Validators.required]);
+      this.SelectedQuarterList = [];
+      // this.AssessmentForm.get('Quarter').setValidators([]);
+      this.AssessmentForm.get('Months').setValidators([Validators.required]);
     }
   }
   //#endregion
@@ -236,13 +300,20 @@ export class VendorAssessmentNewComponent implements OnInit {
     if (this.AssessmentForm.invalid) {
       this.LogValidationErrors();
       this.ValidateDepartment();
+      this.ValidateQuarters();
       this.submitted = false;
       return;
     }
 
     this.ValidateDepartment();
+    this.ValidateQuarters();
 
     if (this.invalidDept) {
+      this.submitted = false;
+      return;
+    }
+
+    if (this.invalidQuarter) {
       this.submitted = false;
       return;
     }
@@ -258,37 +329,57 @@ export class VendorAssessmentNewComponent implements OnInit {
     const periodType = this.AssessmentForm.get('PeriodType').value;
     const assessingPHCode = this.AssessmentForm.get('AssessingPHCode').value;
 
+    let periods = '';
+    this.AssessingPeriods = '';
+
     if (periodType === 'M') {
-      const month = this.AssessmentForm.get('Month').value;
+      const month = this.AssessmentForm.get('Months').value;
       edaFrom = new Date(Number(year), Number(month), 1);
       edaTo = new Date(Number(year), Number(month) + 1, 0);
+
+      periods += this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo);
+      this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo);
+
     } else {
-      const quarter = Number(this.AssessmentForm.get('Quarter').value);
-      switch (quarter) {
-        case 1: {
-          edaFrom = new Date(Number(year), 0, 1);
-          edaTo = new Date(Number(year), 3, 0);
-          break;
+      const quarterValueArr = this.SelectedQuarterList.map(function (element) {
+        return element.QuarterValue;
+      });
+      for (let counter = 0; counter < quarterValueArr.length; ++counter) {
+        const quarter = quarterValueArr[counter];
+        switch (quarter) {
+          case 1: {
+            edaFrom = new Date(Number(year), 0, 1);
+            edaTo = new Date(Number(year), 3, 0);
+            break;
+          }
+          case 2: {
+            edaFrom = new Date(Number(year), 3, 1);
+            edaTo = new Date(Number(year), 6, 0);
+            break;
+          }
+          case 3: {
+            edaFrom = new Date(Number(year), 6, 1);
+            edaTo = new Date(Number(year), 9, 0);
+            break;
+          }
+          case 4: {
+            edaFrom = new Date(Number(year), 9, 1);
+            edaTo = new Date(Number(year), 12, 0);
+            break;
+          }
         }
-        case 2: {
-          edaFrom = new Date(Number(year), 3, 1);
-          edaTo = new Date(Number(year), 6, 0);
-          break;
-        }
-        case 3: {
-          edaFrom = new Date(Number(year), 6, 1);
-          edaTo = new Date(Number(year), 9, 0);
-          break;
-        }
-        case 4: {
-          edaFrom = new Date(Number(year), 9, 1);
-          edaTo = new Date(Number(year), 12, 0);
-          break;
+
+        if (counter === quarterValueArr.length - 1) {
+          periods += this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo);
+          this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo);
+        } else {
+          periods += this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo) + ',';
+          this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo) + ',';
         }
       }
     }
 
-    this.inputParams = this.ToDateCustomFormat(edaFrom) + '~' + this.ToDateCustomFormat(edaTo) + '~' +
+    this.inputParams = periods + '~' +
       shortName + '~' + deptCode + '~' + assessingPHCode;
 
     this.FromDate = this.ToDateCustomFormat(edaFrom);
@@ -296,12 +387,15 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.AssessmentDate = this.ToDateCustomFormat(new Date());
     this.VendorCode = shortName;
     this.VendorName = this.vendorList.find(x => x.VendorCode === this.VendorCode).VendorName;
+    this.Year = year;
 
     this.ProductSpecialities = deptCode;
-    console.log(this.inputParams);
 
-    // this.GetVendorAssessmentReport();
+    this.GetVendorAssessmentReport();
   }
 
+  ExpandCollpase(index: number) {
+    this.OrderDetails[index].IsExpanded = !this.OrderDetails[index].IsExpanded;
+  }
   //#endregion
 }
