@@ -49,7 +49,7 @@ export class PersonalDetailsComponent implements OnInit {
   //#endregion
 
   //#region Patterns
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   PhonePattern = '^[0-9]{10}$';
   EmailPattern = '[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*';

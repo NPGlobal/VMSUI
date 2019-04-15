@@ -38,7 +38,7 @@ export class TechnicalDetailsComponent implements OnInit {
   isTechDetailFormChanged: boolean;
   vendorTech: VendorTech;
   isTechDetailEditing: any;
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   // efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   efficiencyPattern = /^\d+(\.\d{1,2})?$/;
   isDeactVendor = false;

@@ -25,7 +25,7 @@ export class AddressFormComponent implements OnInit {
   //#endregion
 
   //#region Patterns
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   PinPattern = '^[1-9][0-9]{5}$';
   NumberPattern: '^[1-9][0-9]*$';
   PhonePattern = '^[0-9]{10}$';

@@ -25,18 +25,10 @@ export class BankDetailsComponent implements OnInit {
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   // MICRPattern = '^[0-9]{9}$';
   AlphaNumSpecialCharPattern = /^[-@\.\-'&()\/\w\s]*$/;
+  AlphaNumWithCommaPattern = /^[,-@\.\-'&()\/\w\s]*$/;
   AlphabetPattern = '^[a-zA-Z ]*$';
   AlphaNumericWithSpace = '^[a-zA-Z0-9 ]*$';
   NumericPattern = '^[0-9]*$';
-
-
-
-  // NumberPattern: '^[1-9][0-9]*$';
-  // PhonePattern = '^[0-9]{10}$';
-  // AlphabetPattern = '^[a-zA-Z ]*$';
-  // AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
-
-
 
   isDeactVendor = false;
   //#endregion
@@ -135,7 +127,7 @@ export class BankDetailsComponent implements OnInit {
       // Validators.pattern(this.AlphaNumSpecialCharPattern)]],
       NameAsPerBankAccount: [this.vendor.NameAsPerBankAccount, [Validators.pattern(this.AlphaNumSpecialCharPattern)]],
       // BankName: [this.vendor.BankName, [Validators.required, Validators.pattern(this.AlphaNumSpecialCharPattern)]],
-      BankName: [this.vendor.BankName, [Validators.pattern(this.AlphaNumSpecialCharPattern)]],
+      BankName: [this.vendor.BankName, [Validators.pattern(this.AlphaNumWithCommaPattern)]],
       BranchName: [this.vendor.BranchName, [Validators.pattern(this.AlphaNumericWithSpace)]],
       isECSenabled: [this.vendor.isECSenabled],
       // AccountNo: [this.vendor.BankAcctNo, [Validators.required, Validators.pattern(this.AccountNumberValidation)]],

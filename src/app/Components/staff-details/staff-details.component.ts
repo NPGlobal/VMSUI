@@ -19,7 +19,7 @@ export class StaffDetailsComponent implements OnInit {
   priority = 1;
   vendorcode: string;
   AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   PhonePattern = '^[0-9]{10}$';
   NumericPattern = '^[0-9]*$';
   deptList: any[];

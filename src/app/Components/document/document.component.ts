@@ -32,8 +32,7 @@ export class DocumentComponent implements OnInit {
   isDeactVendor = false;
 
   // pattern
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
-
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   // for searching
   searchText = '';
   searchByAction = '';

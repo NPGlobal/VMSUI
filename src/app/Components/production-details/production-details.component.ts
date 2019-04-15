@@ -36,8 +36,8 @@ export class ProductionDetailsComponent implements OnInit {
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
   // CityPattern = '^[A-Za-z]+$';
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
-  NamePattern = /^[@\.\-'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
+  NamePattern = /^[@\.\-'&()_\/\w\s]*$/;
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   isDeactVendor = false;
