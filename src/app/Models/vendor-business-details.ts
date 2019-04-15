@@ -26,16 +26,16 @@ export class VendorBusinessDetails {
 
     // For New Changes
     CurrentYearVendorBusinessDetailsID: number | null;
+    CurrentYearProposedDPGrnValue: number | null;
     CurrentYearProposedDPGrnQty: number | null;
-    CurrentYearProposedDPValueQty: number | null;
+    CurrentYearProposedJWGrnValue: number | null;
     CurrentYearProposedJWGrnQty: number | null;
-    CurrentYearProposedJWValueQty: number | null;
 
     NextYearVendorBusinessDetailsID: number | null;
+    NextYearProposedDPGrnValue: number | null;
     NextYearProposedDPGrnQty: number | null;
-    NextYearProposedDPValueQty: number | null;
+    NextYearProposedJWGrnValue: number | null;
     NextYearProposedJWGrnQty: number | null;
-    NextYearProposedJWValueQty: number | null;
 
     ErrorList: string[];
 }
