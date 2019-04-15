@@ -113,7 +113,8 @@ export class VendorListComponent implements OnInit {
   //#endregion
 
   GetVendorStatus(status: any) {
-    localStorage.setItem('VendorStatus', status.toUpperCase());
+    status = status.toUpperCase() !== 'A' ? 'D' : status.toUpperCase();
+    localStorage.setItem('VendorStatus', status);
   }
 
   //#region Open Registration Modal
