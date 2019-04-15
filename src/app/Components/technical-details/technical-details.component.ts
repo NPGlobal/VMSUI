@@ -471,6 +471,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
     this.techDetailsForm.get('UnitCount').patchValue(vTech1.UnitCount);
     this.techDetailsForm.get('Efficiency').patchValue(vTech1.Efficiency);
+    this.LogValidationErrors();
     this.GetVendorTechSpec();
     this.vendorTech = JSON.parse(JSON.stringify(vTech1));
     this.EnableDisableMachine(1);
@@ -478,9 +479,12 @@ export class TechnicalDetailsComponent implements OnInit {
 
   ResetMachine() {
     this.isTechDetailEditing = 0;
+    this.submitted = false;
     this.vendorTech = undefined;
     this.techDetailsForm.get('Department').patchValue(null);
     this.techDetailsForm.get('UnitCount').patchValue(null);
+    this.InitializeFormControls();
+    this.LogValidationErrors();
     this.GetVendorTechSpec();
     this.SetEfficiencyAsDefault();
     this.EnableDisableMachine(0);

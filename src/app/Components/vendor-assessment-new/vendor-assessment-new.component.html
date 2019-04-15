@@ -30,7 +30,8 @@
     <div class="col-md-1">
       <div class="form-group">
         <label>Year<i class="mandatory">*</i></label>
-        <select class="form-control input-sm" formControlName="Year" [ngClass]="{'is-invalid': formErrors.Year}">
+        <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Year"
+          [ngClass]="{'is-invalid': formErrors.Year}">
           <option [ngValue]="null">Select</option>
           <option value="{{year}}" *ngFor="let year of YearList">{{year}}</option>
         </select>

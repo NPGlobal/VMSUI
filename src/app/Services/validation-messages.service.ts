@@ -11,8 +11,8 @@ export class ValidationMessagesService {
   VNameRequired = 'Please give a Producer Name';
   VTypeRequired = 'Please select Producer Type';
   PanPattern = 'Please enter a valid pan no.';
-  AddressPattern = 'Only +,?-_@.#&%/\' are allowed.';
-  RemarksPattern = 'Only +,?-_@.#&%/\' are allowed.';
+  AddressPattern = 'Only +,?-_@.#()&%/\' are allowed.';
+  RemarksPattern = 'Only +,?-_@.#()&%/\' are allowed.';
   CityPattern = 'Please enter a valid city';
   GSTPattern = 'Please enter a valid GSTIN no.';
   PinPattern = 'Please enter a valid pin no.';
@@ -29,13 +29,13 @@ export class ValidationMessagesService {
   NumericPattern = 'Numeric value allowed';
   PeriodicKey = 'Periodic Key is required';
   Captcha = 'Captcha is required';
-  NamePattern = 'Only ,@\.\-\'&()_/\' are allowed.';
+  NamePattern = 'Only @\.\-\'&()_/ are allowed.';
   IFSCCode = 'Please enter a valid IFSC Code';
   MICRNo = 'Please enter a valid MICR No.';
   SwiftCode = 'Please enter a valid SWIFT Code';
-  RemittanceInfavourof = 'Only @\.\-\'&()_/\' are allowed.';
-  PaymentTerms = 'Only @\.\-\'&()_/\' are allowed.';
-  BankName = 'Only @\.\-\'&()_/\' are allowed.';
+  RemittanceInfavourof = 'Only @\.\-\'&()_/ are allowed.';
+  PaymentTerms = 'Only @\.\-\'&()_/ are allowed.';
+  BankName = 'Only ,@\.\-\'&()_/ are allowed.';
   BranchName = 'Please enter a valid Branch Name';
   constructor() { }
 }
