@@ -275,19 +275,21 @@ export class VendorAssessmentNewComponent implements OnInit {
   }
 
   ValidateQuarters() {
-    if (this.QuarterList.length === 0) {
+    if (this.SelectedQuarterList.length === 0) {
       this.invalidQuarter = true;
     } else { this.invalidQuarter = false; }
   }
 
   SetValidationForBlocks() {
     if (this.AssessmentForm.get('PeriodType').value === 'B') {
-      // this.AssessmentForm.get('Quarter').setValidators([Validators.required]);
-      this.AssessmentForm.get('Months').setValidators([]);
+      this.AssessmentForm.get('Months').patchValue(null);
+      this.AssessmentForm.get('Months').setValidators(null);
+      this.AssessmentForm.get('Months').updateValueAndValidity();
     } else {
+      this.invalidQuarter = false;
       this.SelectedQuarterList = [];
-      // this.AssessmentForm.get('Quarter').setValidators([]);
       this.AssessmentForm.get('Months').setValidators([Validators.required]);
+      this.AssessmentForm.get('Months').updateValueAndValidity();
     }
   }
   //#endregion
@@ -306,7 +308,9 @@ export class VendorAssessmentNewComponent implements OnInit {
     }
 
     this.ValidateDepartment();
-    this.ValidateQuarters();
+    if (this.AssessmentForm.get('PeriodType').value === 'B') {
+      this.ValidateQuarters();
+    }
 
     if (this.invalidDept) {
       this.submitted = false;
@@ -337,13 +341,14 @@ export class VendorAssessmentNewComponent implements OnInit {
       edaFrom = new Date(Number(year), Number(month), 1);
       edaTo = new Date(Number(year), Number(month) + 1, 0);
 
-      periods += this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo);
+      periods += 'Month~' + this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo);
       this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo);
 
     } else {
       const quarterValueArr = this.SelectedQuarterList.map(function (element) {
         return element.QuarterValue;
       });
+      periods += 'Block~';
       for (let counter = 0; counter < quarterValueArr.length; ++counter) {
         const quarter = quarterValueArr[counter];
         switch (quarter) {

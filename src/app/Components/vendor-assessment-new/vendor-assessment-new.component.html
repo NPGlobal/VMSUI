@@ -61,7 +61,7 @@
       <div class="form-group">
         <label>Month<i class="mandatory">*</i></label>
         <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Months"
-          [ngClass]="{'is-invalid': formErrors.Month}">
+          [ngClass]="{'is-invalid': formErrors.Months}">
           <option [ngValue]="null">Select</option>
           <option [ngValue]="i" *ngFor="let month of MonthList;index as i;">{{month}}</option>
         </select>
@@ -159,7 +159,7 @@
               </tbody>
             </table>
           </div>
-          <div class="col-lg-12" style="padding-right:0px;">
+          <div *ngIf="OrderDetails && OrderDetails.length > 0" class="col-lg-12" style="padding-right:0px;">
             <div class="form-group">
               <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
                 <thead>
@@ -178,7 +178,7 @@
             </div>
           </div>
         </div>
-        <div class="row form-group col-md-6">
+        <div *ngIf="OrderDetails && OrderDetails.length > 0" class="row form-group col-md-6">
           <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
             <thead>
               <tr>
@@ -226,11 +226,11 @@
               </ng-container>
             </tbody>
           </table>
-          <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
-            class="form-group ml-auto mr-auto">
-            <h6 class="text-center">No orders available under selected assessment period</h6>
-          </div>
         </div>
+      </div>
+      <div *ngIf="OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
+        class="form-group ml-auto mr-auto">
+        <h6 class="text-center">No orders available under selected assessment period</h6>
       </div>
     </div>
   </div>
