@@ -40,6 +40,7 @@ export class ProductionDetailsComponent implements OnInit {
   NamePattern = /^[@\.\-'&()_\/\w\s]*$/;
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
+  AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   isDeactVendor = false;
   // NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
   //#endregion
@@ -202,7 +203,7 @@ export class ProductionDetailsComponent implements OnInit {
       Address3: [this.VendorProduction.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
       Phone: [this.VendorProduction.Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: [this.VendorProduction.StateCode, [Validators.required, Validators.required]],
-      CityCode: [this.VendorProduction.CityCode, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+      CityCode: [this.VendorProduction.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       Pin: [this.VendorProduction.Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
       Remarks: [this.VendorProduction.Remarks, Validators.pattern(this.AddressAndRemarksPattern)]
     });

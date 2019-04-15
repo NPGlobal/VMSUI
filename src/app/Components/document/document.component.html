@@ -126,7 +126,7 @@
               <div class="col-lg-6 col-md-6">
                 <label class="text">Upload Document<span *ngIf="!inEditedMode" class="error-label">*</span></label>
                 <span>
-                  <input class="form-control input-sm" type="file" formControlName="FileName"
+                  <input class="form-control input-sm filename" type="file" formControlName="FileName"
                     (change)="OnFileChange($event)" [ngClass]="{ 'is-invalid': formErrors.FileName }"
                     (blur)="LogValidationErrors()" />
                   <br />
