@@ -27,7 +27,7 @@
         <th scope="col">JW GRN Qty</th>
         <th scope="col">DP Business Value (In lakh(s))</th>
         <th scope="col">DP Qty</th>
-        <th scope="col">JW Business  (In lakh(s))</th>
+        <th scope="col">JW Business (In lakh(s))</th>
         <th scope="col">JW Qty</th>
       </tr>
     </thead>
@@ -41,59 +41,59 @@
           <td>{{business.DeptName}}</td>
           <!-- <td>{{business.FinancialYear}}</td> -->
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[0]}"
-              [(ngModel)]="business.CurrentYearProposedDPGrnValue" type="text"
-              (blur)="ValidateField(business, business.CurrentYearProposedDPGrnValue, 0)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[0]}" [(ngModel)]="business.CurrentYearProposedDPGrnValue"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.CurrentYearProposedDPGrnValue, 0)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[0]}"
               *ngIf="business.ErrorList[0]">{{business.ErrorList[0]}}</span>
           </td>
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[1]}"
-              [(ngModel)]="business.CurrentYearProposedDPGrnQty" type="text"
-              (blur)="ValidateField(business, business.CurrentYearProposedDPGrnQty, 1)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[1]}" [(ngModel)]="business.CurrentYearProposedDPGrnQty"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.CurrentYearProposedDPGrnQty, 1)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[1]}"
               *ngIf="business.ErrorList[1]">{{business.ErrorList[1]}}</span>
           </td>
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[2]}"
-              [(ngModel)]="business.CurrentYearProposedJWGrnValue" type="text"
-              (blur)="ValidateField(business, business.CurrentYearProposedJWGrnValue, 2)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[2]}" [(ngModel)]="business.CurrentYearProposedJWGrnValue"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.CurrentYearProposedJWGrnValue, 2)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[2]}"
               *ngIf="business.ErrorList[2]">{{business.ErrorList[2]}}</span>
           </td>
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[3]}"
-              [(ngModel)]="business.CurrentYearProposedJWGrnQty" type="text"
-              (blur)="ValidateField(business, business.CurrentYearProposedJWGrnQty, 3)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[3]}" [(ngModel)]="business.CurrentYearProposedJWGrnQty"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.CurrentYearProposedJWGrnQty, 3)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[3]}"
               *ngIf="business.ErrorList[3]">{{business.ErrorList[3]}}</span>
           </td>
 
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[4]}"
-              [(ngModel)]="business.NextYearProposedDPGrnValue" type="text"
-              (blur)="ValidateField(business, business.NextYearProposedDPGrnValue, 4)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[4]}" [(ngModel)]="business.NextYearProposedDPGrnValue"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.NextYearProposedDPGrnValue, 4)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[4]}"
               *ngIf="business.ErrorList[4]">{{business.ErrorList[4]}}</span>
           </td>
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[5]}"
-              [(ngModel)]="business.NextYearProposedDPGrnQty" type="text"
-              (blur)="ValidateField(business, business.NextYearProposedDPGrnQty, 5)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[5]}" [(ngModel)]="business.NextYearProposedDPGrnQty"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.NextYearProposedDPGrnQty, 5)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[5]}"
               *ngIf="business.ErrorList[5]">{{business.ErrorList[5]}}</span>
           </td>
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[6]}"
-              [(ngModel)]="business.NextYearProposedJWGrnValue" type="text"
-              (blur)="ValidateField(business, business.NextYearProposedJWGrnValue, 6)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[6]}" [(ngModel)]="business.NextYearProposedJWGrnValue"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.NextYearProposedJWGrnValue, 6)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[6]}"
               *ngIf="business.ErrorList[6]">{{business.ErrorList[6]}}</span>
           </td>
           <td>
-            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm" [ngClass]="{'is-invalid': business.ErrorList[7]}"
-              [(ngModel)]="business.NextYearProposedJWGrnQty" type="text"
-              (blur)="ValidateField(business, business.NextYearProposedJWGrnQty, 7)" />
+            <input [attr.disabled]="isDeactVendor ? 'disabled': null" class="form-control input-sm"
+              [ngClass]="{'is-invalid': business.ErrorList[7]}" [(ngModel)]="business.NextYearProposedJWGrnQty"
+              type="text" maxlength="12" (blur)="ValidateField(business, business.NextYearProposedJWGrnQty, 7)" />
             <span [ngClass]="{ 'error-label':business.ErrorList[7]}"
               *ngIf="business.ErrorList[7]">{{business.ErrorList[7]}}</span>
           </td>
@@ -102,7 +102,8 @@
       <tr>
         <td colspan="10" *ngIf="pagedItems.length > 0">
           <div class="modal-footer col-md-12  page-footer">
-            <button (click)="SaveBusinessDetails()" type="button" class="mr-3 btn btn-primary" *ngIf="isDeactVendor === false">Save</button>
+            <button (click)="SaveBusinessDetails()" type="button" class="mr-3 btn btn-primary"
+              *ngIf="isDeactVendor === false">Save</button>
           </div>
         </td>
       </tr>

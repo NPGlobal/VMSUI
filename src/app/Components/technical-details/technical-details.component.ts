@@ -446,6 +446,8 @@ export class TechnicalDetailsComponent implements OnInit {
           if (add === 0) {
             this.PopUpMessage = 'This data already exist.';
             this.alertButton.click();
+            this.submitted = false;
+            this.vendorTech = undefined;
             return;
           }
         }
@@ -457,6 +459,8 @@ export class TechnicalDetailsComponent implements OnInit {
       this.LogValidationErrors(this.techDetailsForm);
       this.PopUpMessage = 'Please select data for add.';
       this.alertButton.click();
+      this.submitted = false;
+      this.vendorTech = undefined;
       return;
     }
 
