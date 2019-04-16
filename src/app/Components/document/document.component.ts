@@ -317,6 +317,17 @@ export class DocumentComponent implements OnInit {
   LogValidationErrors(group: FormGroup = this.docDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
+
+      if (this.ValidationMessages[key] &&
+        this.ValidationMessages[key].required !== undefined &&
+        this.ValidationMessages[key].required !== null &&
+        abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.trim());
+      }
+    });
+
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
         this.LogValidationErrors(abstractControl);
       } else {

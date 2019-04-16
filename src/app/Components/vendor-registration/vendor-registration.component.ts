@@ -173,6 +173,14 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   logValidationErrors(group: FormGroup = this.RegistrationForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
+
+      if (this.ValidationMessages[key] && this.ValidationMessages[key].required && abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.trim());
+      }
+    });
+
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
       } else {
