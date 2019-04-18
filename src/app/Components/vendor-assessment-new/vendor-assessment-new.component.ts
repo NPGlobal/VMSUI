@@ -38,6 +38,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   AssessmentDate: any;
   SelectedDeptList: any;
   submitted = false;
+  isDataRecieved = false;
 
   Month: any;
   Year: any;
@@ -125,6 +126,7 @@ export class VendorAssessmentNewComponent implements OnInit {
 
     this.PopulateYears();
     this.InitializeFormControls();
+    this.PopulateMonths();
     this.GetVendors();
     this.GetPHList();
   }
@@ -139,6 +141,22 @@ export class VendorAssessmentNewComponent implements OnInit {
       AssessingPHCode: [null, [Validators.required]]
     });
     this.SetValidationForBlocks();
+  }
+
+  PopulateMonths() {
+    const monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    this.AssessmentForm.get('Months').patchValue(null);
+
+    const year = this.AssessmentForm.get('Year').value;
+    const currentYear = new Date().getFullYear();
+    if (year !== null && currentYear === Number(year)) {
+      this.monthsToShow = new Date().getMonth() + 1;
+    } else {
+      this.monthsToShow = 12;
+    }
+
+    this.MonthList = monthList.splice(0, this.monthsToShow);
   }
 
   GetVendors() {
@@ -169,6 +187,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   }
 
   GetVendorAssessmentReport() {
+    this.isDataRecieved = false;
     this._vendorAssessmentService.GetVendorAssessmentReport(this.inputParams).subscribe((result) => {
       const orderQtyDetails = result.data.Table;
       this.SetOrderDetails(orderQtyDetails);
@@ -182,6 +201,12 @@ export class VendorAssessmentNewComponent implements OnInit {
       this.AverageGradeDetails = result.data.Table6;
 
       this.AssessmentScoreTable = result.data.Table7;
+
+      this.AssessingPeriods = result.data.Table8.map(function (element) {
+        return element.AssessmentPeriod;
+      }).join(',');
+
+      this.isDataRecieved = true;
     });
   }
 
@@ -342,7 +367,6 @@ export class VendorAssessmentNewComponent implements OnInit {
       edaTo = new Date(Number(year), Number(month) + 1, 0);
 
       periods += 'Month~' + this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo);
-      this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo);
 
     } else {
       const quarterValueArr = this.SelectedQuarterList.map(function (element) {
@@ -376,10 +400,8 @@ export class VendorAssessmentNewComponent implements OnInit {
 
         if (counter === quarterValueArr.length - 1) {
           periods += this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo);
-          this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo);
         } else {
           periods += this.ToDateCustomFormat(edaFrom) + '^' + this.ToDateCustomFormat(edaTo) + ',';
-          this.AssessingPeriods += this.ToDateCustomFormat(edaFrom) + ' to ' + this.ToDateCustomFormat(edaTo) + ',';
         }
       }
     }

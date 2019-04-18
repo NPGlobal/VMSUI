@@ -318,7 +318,7 @@ export class DocumentComponent implements OnInit {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
 
-      if (this.ValidationMessages[key] &&
+      if (key !== 'FileName' && this.ValidationMessages[key] &&
         this.ValidationMessages[key].required !== undefined &&
         this.ValidationMessages[key].required !== null &&
         abstractControl.value !== null) {

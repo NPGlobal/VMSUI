@@ -56,6 +56,7 @@ export class VendorListComponent implements OnInit {
     this.currentPage = index;
     this._vendorService.GetVendors(this.currentPage, this.pageSize, this.searchText).subscribe(result => {
       localStorage.removeItem('VendorStatus');
+      localStorage.removeItem('VendorName');
       this.loading = false;
       this.vendors = result.data.Vendors;
       this.totalItems = result.data.VendorsCount[0].TotalVendors;
@@ -112,9 +113,11 @@ export class VendorListComponent implements OnInit {
   }
   //#endregion
 
-  GetVendorStatus(status: any) {
-    status = status.toUpperCase() !== 'A' ? 'D' : status.toUpperCase();
+  GetVendorStatus(vendor: Vendor) {
+    status = vendor.Status.toUpperCase() !== 'A' ? 'D' : status.toUpperCase();
     localStorage.setItem('VendorStatus', status);
+
+    localStorage.setItem('VendorName', vendor.VendorName);
   }
 
   //#region Open Registration Modal

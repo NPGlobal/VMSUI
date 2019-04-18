@@ -38,7 +38,7 @@
         <td>
           <a title="Edit" href="javascript:void(0)" (click)="EditDocDetails(doc)" data-target="#myModal"
             data-backdrop="static" data-keyboard="false" data-toggle="modal">
-            <i class="fa fa-edit"  *ngIf="isDeactVendor === false"></i>
+            <i class="fa fa-edit" *ngIf="isDeactVendor === false"></i>
           </a>
           <a title="Download" class="ml-2" href="javascript:void(0)" (click)="DownloadDocument(doc)">
             <i class="fa fa-download"></i>
@@ -137,7 +137,8 @@
                 <span>
                   <input class="form-control input-sm" type="text" formControlName="Remarks"
                     [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="LogValidationErrors()" maxlength="511" />
-                </span><span [ngClass]="{ 'error-label':formErrors.Remarks}" *ngIf="formErrors.Remarks">
+                </span>
+                <span [ngClass]="{ 'error-label':formErrors.Remarks}" *ngIf="formErrors.Remarks">
                   {{formErrors.Remarks}}
                 </span>
               </div>

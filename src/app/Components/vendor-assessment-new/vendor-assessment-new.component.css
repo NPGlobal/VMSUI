@@ -8,31 +8,44 @@
     flex: 0 0 98%;
 }
 
+.platinum, .gold, .silver, .bronze, .GradeA, .GradeB, .GradeC, .GradeD {
+    vertical-align: middle;
+    font-weight: normal;
+    padding: 5px;
+    border: 1px solid #bdbcbc;
+    font-weight: 700;
+}
 
-.platinum, .gold, .silver, .bronze {vertical-align: middle;
-    font-weight: normal;padding: 5px;
-    border: 1px solid #bdbcbc;}
-
-.platinum {
+.platinum, .GradeA {
     background-color: rgb(102, 255, 51) !important;
 }
 
-.gold {
+.gold, .GradeB {
     background-color: rgb(255, 192, 0) !important;
 }
 
-.silver {
+.silver, .GradeC {
     background-color: rgb(255, 255, 0) !important;
 }
 
-.bronze {
+.bronze, .GradeD {
     background-color: rgb(255, 0, 0) !important;
 }
 
 .bold-text {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 table.table-striped a {
     color: #fff !important;
+}
+
+.col-md-13 {
+    flex: 0 0 13%;
+    max-width: 13%;
+}
+
+.col-md-19 {
+    flex: 0 0 19%;
+    max-width: 19%;
 }
