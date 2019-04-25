@@ -279,7 +279,7 @@ export class ProductionDetailsComponent implements OnInit {
         this.ValidationMessages[key].required !== undefined &&
         this.ValidationMessages[key].required !== null &&
         abstractControl.value !== null) {
-        abstractControl.patchValue(abstractControl.value.trim());
+        abstractControl.patchValue(abstractControl.value.toString().trim());
       }
     });
 
