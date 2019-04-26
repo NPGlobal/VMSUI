@@ -277,7 +277,9 @@ export class PersonalDetailsComponent implements OnInit {
         IsJWVendor: [this.vendor.IsJWVendor],
         IsDirectVendor: [this.vendor.IsDirectVendor],
         NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
-        IsInsured: [this.vendor.isInsured]
+        IsInsured: [this.vendor.isInsured],
+        IsSemiDP: [this.vendor.IsSemiDP],
+        IsDesignDP: [this.vendor.IsDesignDP]
       }),
       RegisteredOfficeAddress: this._fb.group({
         IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
@@ -544,6 +546,11 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   SetPHListValidation($event) {
+    if (!this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value) {
+      this.personalDetailsForm.get('PersonalDetails.IsSemiDP').patchValue(false);
+      this.personalDetailsForm.get('PersonalDetails.IsDesignDP').patchValue(false);
+    }
+
     this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue('');
     this.personalDetailsForm.get('PersonalDetails.PHList').patchValue('');
     this.personalDetailsForm.get('PersonalDetails.SelectedPHStoreList').patchValue('');
@@ -982,6 +989,10 @@ export class PersonalDetailsComponent implements OnInit {
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join() : '';
+
+    vendor.IsSemiDP = this.personalDetailsForm.get('PersonalDetails.IsSemiDP').value;
+    vendor.IsDesignDP = this.personalDetailsForm.get('PersonalDetails.IsDesignDP').value;
+
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
     vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null

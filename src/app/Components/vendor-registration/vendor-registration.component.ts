@@ -164,7 +164,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       PHListCSV: '',
       Ref_VendorCode: '-1',
       IsJWVendor: [false],
-      IsDirectVendor: [false]
+      IsDirectVendor: [false],
+      IsSemiDP: [false],
+      IsDesignDP: [false]
     });
   }
   //#endregion
@@ -212,6 +214,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
     if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+    } else {
+      this.RegistrationForm.get('IsSemiDP').patchValue(false);
+      this.RegistrationForm.get('IsDesignDP').patchValue(false);
     }
   }
   //#endregion
@@ -364,6 +369,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join();
+
+    vendor.IsSemiDP = this.RegistrationForm.get('IsSemiDP').value;
+    vendor.IsDesignDP = this.RegistrationForm.get('IsDesignDP').value;
 
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
       statusObj = result;

@@ -21,9 +21,9 @@
                 <label for="VendorName">Producer Name<i class="mandatory">*</i></label>
                 <input type="text" [ngClass]="{'is-invalid': formErrors.VendorName}" maxlength="50"
                   class="form-control col-md-12 input-sm" formControlName="VendorName" (blur)="logValidationErrors()" />
-                  <span class="error-label-lg" *ngIf="formErrors.VendorName">
-                    {{formErrors.VendorName}}
-                  </span>
+                <span class="error-label-lg" *ngIf="formErrors.VendorName">
+                  {{formErrors.VendorName}}
+                </span>
               </div>
               <div class="form-group col-md-4">
                 <label for="VendorCode">Short Name<i class="mandatory">*</i></label>
@@ -81,6 +81,26 @@
                       <span style="margin-left:5px;">JW</span>
                     </label>
                   </span>
+                </div>
+                <div *ngIf="RegistrationForm.controls.IsDirectVendor.value" class="row">
+                  <div class="">
+                    <div class="form-group col-md-12">
+                      <div>
+                        <span class="">
+                          <label class="radio-inline">
+                            <input type="checkbox" formControlName="IsSemiDP">
+                            <span style="margin-left:5px;">Semi DP</span>
+                          </label>
+                        </span>
+                        <span class="ml-2">
+                          <label class="radio-inline">
+                            <input type="checkbox" formControlName="IsDesignDP">
+                            <span style="margin-left:5px;">Design DP</span>
+                          </label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
