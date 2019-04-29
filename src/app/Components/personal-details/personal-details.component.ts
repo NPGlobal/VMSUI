@@ -45,6 +45,7 @@ export class PersonalDetailsComponent implements OnInit {
   SavedPHStoreList: OrgUnit[] = [];
   ReferenceVendorList: Vendor[] = [];
   vendorExpe_MDDCode: string[] = [];
+  vendDPType_MDDCode: string[] = [];
   isDeactVendor = false;
   //#endregion
 
@@ -374,6 +375,8 @@ export class PersonalDetailsComponent implements OnInit {
 
       this.vendorExpe_MDDCode = this.vendor.VendorExpe_MDDCode === null ? null : this.vendor.VendorExpe_MDDCode.split(',');
 
+      this.SetVendorDPTypes();
+
       if (this.vendor.Ref_VendorCode === '-1') {
         this._vendorService.GetVendors(-1, -1, '').subscribe((mvResult) => {
           this.ReferenceVendorList = mvResult.data.Vendors;
@@ -395,9 +398,17 @@ export class PersonalDetailsComponent implements OnInit {
       // this.IsAddressSaved = false;
     });
   }
+
   //#endregion
 
   //#region Data Binding
+
+  SetVendorDPTypes() {
+    this.vendDPType_MDDCode = this.vendor.VendDPType_MDDCode === null ? [] : this.vendor.VendDPType_MDDCode.split(',');
+    this.vendor.IsSemiDP = this.vendDPType_MDDCode.findIndex(x => x === 'SEMIDP') > -1;
+    this.vendor.IsDesignDP = this.vendDPType_MDDCode.findIndex(x => x === 'DESIGNDP') > -1;
+  }
+
   PopulateYears() {
     for (let i = (new Date()).getFullYear(); i >= ((new Date()).getFullYear() - 20); i--) {
       this.YearList.push(i);
@@ -547,8 +558,8 @@ export class PersonalDetailsComponent implements OnInit {
 
   SetPHListValidation($event) {
     if (!this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value) {
-      this.personalDetailsForm.get('PersonalDetails.IsSemiDP').patchValue(false);
-      this.personalDetailsForm.get('PersonalDetails.IsDesignDP').patchValue(false);
+      this.personalDetailsForm.get('PersonalDetails.IsSemiDP').patchValue(this.vendor.IsSemiDP);
+      this.personalDetailsForm.get('PersonalDetails.IsDesignDP').patchValue(this.vendor.IsDesignDP);
     }
 
     this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue('');
@@ -990,9 +1001,12 @@ export class PersonalDetailsComponent implements OnInit {
         return element.OrgUnitCode;
       }).join() : '';
 
+    this.vendDPType_MDDCode = [];
     vendor.IsSemiDP = this.personalDetailsForm.get('PersonalDetails.IsSemiDP').value;
     vendor.IsDesignDP = this.personalDetailsForm.get('PersonalDetails.IsDesignDP').value;
-
+    if (vendor.IsSemiDP) { this.vendDPType_MDDCode.push('SEMIDP'); }
+    if (vendor.IsDesignDP) { this.vendDPType_MDDCode.push('DESIGNDP'); }
+    vendor.VendDPType_MDDCode = this.vendDPType_MDDCode.join();
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
     vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null

@@ -30,6 +30,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   ReferenceVendorList: Vendor[] = [];
   HasPHSelected: boolean;
   submitted = false;
+  vendDPType_MDDCode: string[];
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   //#endregion
 
@@ -118,6 +119,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.vendDPType_MDDCode = [];
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
 
@@ -372,6 +374,12 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
     vendor.IsSemiDP = this.RegistrationForm.get('IsSemiDP').value;
     vendor.IsDesignDP = this.RegistrationForm.get('IsDesignDP').value;
+
+    this.vendDPType_MDDCode = [];
+    if (vendor.IsSemiDP) { this.vendDPType_MDDCode.push('SEMIDP'); }
+    if (vendor.IsDesignDP) { this.vendDPType_MDDCode.push('DESIGNDP'); }
+
+    vendor.VendDPType_MDDCode = this.vendDPType_MDDCode.join();
 
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
       statusObj = result;
