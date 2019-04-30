@@ -34,6 +34,8 @@ export class PersonalDetailsComponent implements OnInit {
   MasterVendorList: Vendor[] = [];
   VendorTypeList: MasterDataDetails[];
   ExpertiseList: MasterDataDetails[];
+  DPTypeList: MasterDataDetails[];
+  dptypeArray: any[] = [];
   expertiseArray: any[] = [];
   VendorCode: string;
   StateCodeLabel: string;
@@ -236,7 +238,8 @@ export class PersonalDetailsComponent implements OnInit {
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
     this.GetMasterDataDetails('VendorType', '-1');
 
-    this.GetMasterDataDetails('COUNTRY', '-1');
+    this.GetMasterDataDetails('VendorType', '-1');
+    this.GetMasterDataDetails('VendDPType', '-1');
     // this.GetMasterDataDetails('COUNTRY', '-1');
     // this.GetMasterDataDetails('VendorExpe');
 
@@ -279,8 +282,7 @@ export class PersonalDetailsComponent implements OnInit {
         IsDirectVendor: [this.vendor.IsDirectVendor],
         NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
         IsInsured: [this.vendor.isInsured],
-        IsSemiDP: [this.vendor.IsSemiDP],
-        IsDesignDP: [this.vendor.IsDesignDP]
+        DPTypeList: new FormArray([])
       }),
       RegisteredOfficeAddress: this._fb.group({
         IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
@@ -404,9 +406,8 @@ export class PersonalDetailsComponent implements OnInit {
   //#region Data Binding
 
   SetVendorDPTypes() {
-    this.vendDPType_MDDCode = this.vendor.VendDPType_MDDCode === null ? [] : this.vendor.VendDPType_MDDCode.split(',');
-    this.vendor.IsSemiDP = this.vendDPType_MDDCode.findIndex(x => x === 'SEMIDP') > -1;
-    this.vendor.IsDesignDP = this.vendDPType_MDDCode.findIndex(x => x === 'DESIGNDP') > -1;
+    this.vendDPType_MDDCode = this.vendor.VendDPType_MDDCode === null ? null : this.vendor.VendDPType_MDDCode.split(',');
+    this.UpdateVendorDPType();
   }
 
   PopulateYears() {
@@ -446,6 +447,10 @@ export class PersonalDetailsComponent implements OnInit {
         case 'VendorExpe': {
           this.ExpertiseList = result.data.Table;
           this.updateExpertise();
+          break;
+        }
+        case 'VendDPType': {
+          this.DPTypeList = result.data.Table;
           break;
         }
       }
@@ -497,6 +502,18 @@ export class PersonalDetailsComponent implements OnInit {
         for (let j = 0; j < this.ExpertiseList.length; j++) {
           if (this.vendorExpe_MDDCode[i] === this.ExpertiseList[j].MDDCode) {
             this.ExpertiseList[j].Checked = true;
+          }
+        }
+      }
+    }
+  }
+
+  UpdateVendorDPType() {
+    if (this.dptypeArray !== null && this.vendDPType_MDDCode !== null) {
+      for (let i = 0; i < this.vendDPType_MDDCode.length; i++) {
+        for (let j = 0; j < this.DPTypeList.length; j++) {
+          if (this.vendDPType_MDDCode[i] === this.DPTypeList[j].MDDCode) {
+            this.DPTypeList[j].Checked = true;
           }
         }
       }
@@ -558,8 +575,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   SetPHListValidation($event) {
     if (!this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value) {
-      this.personalDetailsForm.get('PersonalDetails.IsSemiDP').patchValue(this.vendor.IsSemiDP);
-      this.personalDetailsForm.get('PersonalDetails.IsDesignDP').patchValue(this.vendor.IsDesignDP);
+      this.DPTypeList.filter(x => x.Checked = false);
     }
 
     this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue('');
@@ -879,6 +895,10 @@ export class PersonalDetailsComponent implements OnInit {
   onChange(expertise: string, isChecked: boolean) {
     this.ExpertiseList.find(x => x.MDDCode === expertise).Checked = isChecked;
   }
+
+  onDPTypeChange(dpType: string, isChecked: boolean) {
+    this.DPTypeList.find(x => x.MDDCode === dpType).Checked = isChecked;
+  }
   //#endregion
 
   //#region Save Form Data
@@ -892,6 +912,16 @@ export class PersonalDetailsComponent implements OnInit {
 
     ex += '~' + this.personalDetailsForm.get('ExpertiseDetails.VendorWeaknesses').value;
     return ex;
+  }
+
+  makeVendorDPTypeString(): string {
+    let dpType = '';
+    dpType = this.DPTypeList.filter(function (el) {
+      return el.Checked;
+    }).map(function (val) {
+      return val.MDDCode;
+    }).join();
+    return dpType;
   }
 
   ExpandAllSections() {
@@ -971,6 +1001,7 @@ export class PersonalDetailsComponent implements OnInit {
     let StatusObj: any;
     const vendor = new Vendor();
     vendor.VendorExpertise = this.makeVendorExpertiseString();
+    vendor.VendDPType_MDDCode = this.makeVendorDPTypeString();
     vendor.VendorCode = this.VendorCode;
     vendor.VendorName = this.personalDetailsForm.get('PersonalDetails.VendorName').value;
     vendor.PANNo = this.personalDetailsForm.get('PersonalDetails.PANNo').value === null ? '' :
@@ -1000,13 +1031,6 @@ export class PersonalDetailsComponent implements OnInit {
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join() : '';
-
-    this.vendDPType_MDDCode = [];
-    vendor.IsSemiDP = this.personalDetailsForm.get('PersonalDetails.IsSemiDP').value;
-    vendor.IsDesignDP = this.personalDetailsForm.get('PersonalDetails.IsDesignDP').value;
-    if (vendor.IsSemiDP) { this.vendDPType_MDDCode.push('SEMIDP'); }
-    if (vendor.IsDesignDP) { this.vendDPType_MDDCode.push('DESIGNDP'); }
-    vendor.VendDPType_MDDCode = this.vendDPType_MDDCode.join();
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
     vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null

@@ -132,19 +132,16 @@
 
                         <div style="margin-left: 90px;"
                             *ngIf="personalDetailsForm.get('PersonalDetails.IsDirectVendor').value" class="row">
-                            <div class="col-md-4">
-                                <label class="radio-inline">
-                                    <input type="checkbox" formControlName="IsSemiDP" />
-                                    <span style="margin-left:5px;" class="text">Semi DP</span>
-                                </label>
-                            </div>
-                            &nbsp;
-                            <div class="col-md-5">
-                                <label class="radio-inline">
-                                    <input type="checkbox" formControlName="IsDesignDP" />
-                                    <span style="margin-left:5px;" class="text">Design DP</span>
-                                </label>
-                            </div>
+                            <ul class="DPTypUL">
+                                <li *ngFor="let dptype of DPTypeList">
+                                    <input class="mr-2" type="checkbox"
+                                        [attr.checked]="dptype.Checked ? 'checked' : null"
+                                        [attr.disabled]="isDeactVendor ? 'disabled': null"
+                                        (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)"
+                                        value="{{dptype.MDDCode}}" />
+                                    <span>{{dptype.MDDName}}</span>
+                                </li>
+                            </ul>
                         </div>
 
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
