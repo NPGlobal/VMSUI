@@ -49,14 +49,8 @@ export class TechnicalDetailsComponent implements OnInit {
   TechDefaultLst: VendorTechDefault[];
   DefaultEfficiency: any;
   IsFirstTime: boolean;
-  // isLine = 0;
-  // isEfficiency = 0;
-  // isDisable = false;
-  // modalBody: string;
-  // obj1: JSON;
-  // obj2: JSON;
-  // flag: boolean;
-  // Action: string;
+  IsUserAdmin: boolean;
+
   // for searching
   searchText = '';
   searchByTechLine = '';
@@ -64,9 +58,6 @@ export class TechnicalDetailsComponent implements OnInit {
   searchByMachineName = '';
   searchByEfficiency = '';
   searchByUnitCount = '';
-  // ExistingVendorTech: FormGroup;
-  // machineItems: Array<{ MachineType: string, MachineName: string, UnitCount: string, Efficiency: string }> = [];
-  //#endregion
 
   //#region Error Message
   ValidationMessages = {
@@ -153,6 +144,8 @@ export class TechnicalDetailsComponent implements OnInit {
     });
     this.GetVendorDepartments();
     this.isTechDetailEditing = 0;
+
+    this.IsUserAdmin = sessionStorage.getItem('userid') === '3034' ? true : false;
   }
 
   //#region  Initialization
@@ -236,6 +229,9 @@ export class TechnicalDetailsComponent implements OnInit {
           this.pagedItems = undefined;
         }
       });
+
+    this.EditTechDetails(null);
+    this.GetVendorsTechList();
   }
 
   GetVendorsTechList() {
@@ -378,6 +374,11 @@ export class TechnicalDetailsComponent implements OnInit {
           'This record will be available for allocation'))) + ' in the system.<br>Are you sure ?';
 
     this.InitializeFormControls();
+  }
+
+  ApproveRejectMachine(status: string) {
+    this.DeleteModalHeader = 'Ready to' + (status === 'R' ? ' reject?' : ' approve?');
+    this.DeleteModalBody = 'Are you sure you want to' + (status === 'R' ? ' reject' : ' approve');
   }
 
   DiscardChanges() {
