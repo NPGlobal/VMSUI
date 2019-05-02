@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class LayoutComponent implements OnInit {
 
   constructor(private _originService: OriginService,
-              private _router: Router) { }
+    private _router: Router) { }
 
   ngOnInit() {
   }
@@ -18,6 +18,7 @@ export class LayoutComponent implements OnInit {
   //#region Logout and Clear Session
   LogoutUser() {
     sessionStorage.removeItem('userid');
+    sessionStorage.clear();
     this._router.navigate(['/login']);
     // const host = window.location.host.toLowerCase();
     // window.location.href = this._originService.GetOriginWithSubDirectoryPath();

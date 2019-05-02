@@ -145,7 +145,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.GetVendorDepartments();
     this.isTechDetailEditing = 0;
 
-    this.IsUserAdmin = sessionStorage.getItem('userid') === '3034' ? true : false;
+    this.IsUserAdmin = sessionStorage.getItem('isuseradmin') === 'Y' ? true : false;
   }
 
   //#region  Initialization
@@ -186,6 +186,13 @@ export class TechnicalDetailsComponent implements OnInit {
         techDefault.TechLineNo = '-';
         techDefault.DefaultEfficiency = defaultEff;
       }
+
+      techDefault.VendorTechDetails.filter(x => {
+        if (x.Status === 'P') {
+          x.UnitCount = x.ProposedUnitCount;
+          x.Efficiency = x.ProposedEfficiency;
+        }
+      });
     }
     techDefault.Status = 'A';
     this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
@@ -418,11 +425,15 @@ export class TechnicalDetailsComponent implements OnInit {
           el.DeptCode === this.vendorTech.DeptCode)[0].DeptName;
         this.vendorTech.MachineName = this.techSpecList.filter((el) =>
           el.VendorConfigID === Number(this.vendorTech.VendorTechConfigID))[0].TechSpec;
-        this.vendorTech.Status = 'A';
+        this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
       }
       this.vendorTech.VendorShortCode = this.vendorcode;
       this.vendorTech.UnitCount = this.techDetailsForm.get('UnitCount').value;
       this.vendorTech.Efficiency = this.techDetailsForm.get('Efficiency').value;
+      if (this.vendorTech.Status === 'P') {
+        this.vendorTech.ProposedUnitCount = this.techDetailsForm.get('UnitCount').value;
+        this.vendorTech.ProposedEfficiency = this.techDetailsForm.get('Efficiency').value;
+      }
 
       let add = 0;
       if (this.vendorTechDefault.VendorTechDetails.length > 0) {
@@ -431,7 +442,9 @@ export class TechnicalDetailsComponent implements OnInit {
           x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID &&
           x.VendorTechConfigID === this.vendorTech.VendorTechConfigID &&
           x.DeptCode === this.vendorTech.DeptCode);
+
         if (existingIndex >= 0 && this.isTechDetailEditing > 0) {
+          this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
           this.isTechDetailEditing = 0;
           // this.vendorTech = undefined;
@@ -474,8 +487,13 @@ export class TechnicalDetailsComponent implements OnInit {
     this.isTechDetailEditing = 1;
     this.techDetailsForm.get('Department').patchValue(vTech1.DeptCode);
     this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
-    this.techDetailsForm.get('UnitCount').patchValue(vTech1.UnitCount);
-    this.techDetailsForm.get('Efficiency').patchValue(vTech1.Efficiency);
+    if (vTech1.Status === 'P') {
+      this.techDetailsForm.get('UnitCount').patchValue(vTech1.ProposedUnitCount);
+      this.techDetailsForm.get('Efficiency').patchValue(vTech1.ProposedEfficiency);
+    } else {
+      this.techDetailsForm.get('UnitCount').patchValue(vTech1.UnitCount);
+      this.techDetailsForm.get('Efficiency').patchValue(vTech1.Efficiency);
+    }
     this.LogValidationErrors();
     this.GetVendorTechSpec();
     this.vendorTech = JSON.parse(JSON.stringify(vTech1));
@@ -582,5 +600,45 @@ export class TechnicalDetailsComponent implements OnInit {
 
   specChange(event) {
     this.SetEfficiencyAsDefault();
+  }
+
+  CheckIfLineCanAdd(): boolean {
+    let success = true;
+
+    success = this.TechDefaultLst.filter(function (element) {
+      return element.VendorTechDetails.findIndex(x => x.Status === 'P') > -1;
+    }).length === 0;
+
+    return success;
+  }
+
+  CheckIfLineCanEdit(): boolean {
+    let success = true;
+
+    const currentLine = this.vendorTechDefault.TechLineNo;
+    // if machines with less line no are not approved or rejected.
+    if (currentLine !== '-') {
+      const lstWithLessLineNumber = this.TechDefaultLst.filter(function (element) {
+        return element.TechLineNo !== '-' && (Number(element.TechLineNo) < Number(currentLine));
+      });
+
+      success = lstWithLessLineNumber.filter(function (element) {
+        return element.VendorTechDetails.findIndex(x => x.Status === 'P') > -1;
+      }).length === 0;
+
+      if (!success) {
+        this.PopUpMessage = 'Please approve/reject lower line no machines first.';
+        this.alertButton.click();
+      }
+    }
+
+    // sewing machine not approved/rejected
+    success = this.vendorTechDefault.VendorTechDetails.find(x => x.VendorTechConfigID === 88).Status !== 'P';
+    if (!success) {
+      this.PopUpMessage = 'Please approve sewing machine first.';
+      this.alertButton.click();
+    }
+
+    return success;
   }
 }
