@@ -39,17 +39,15 @@ export class TechnicalDetailsComponent implements OnInit {
   vendorTech: VendorTech;
   isTechDetailEditing: any;
   AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
-  // efficiencyPattern = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
   efficiencyPattern = /^\d+(\.\d{1,2})?$/;
   isDeactVendor = false;
-  // vendortechList: VendorTech[];
-  // VendorTech: VendorTech;
   deptList: any[];
   techSpecList: any[];
   TechDefaultLst: VendorTechDefault[];
   DefaultEfficiency: any;
   IsFirstTime: boolean;
   IsUserAdmin: boolean;
+  inputXml = '';
 
   // for searching
   searchText = '';
@@ -116,6 +114,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   DeleteModalHeader: string;
   DeleteModalBody: string;
+  IsGoingToApprove: boolean;
   //#endregion
 
   unitCountList(n: number): any[] {
@@ -373,7 +372,11 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DeleteTechDetails() {
-    this.sendFormData();
+    if (!this.IsGoingToApprove) {
+      this.sendFormData();
+    } else {
+    }
+    this.ApproveRejectTechLine();
   }
 
   DeleteTechDetailsPopup(vobj: VendorTechDefault, status: string) {
@@ -393,9 +396,41 @@ export class TechnicalDetailsComponent implements OnInit {
     this.InitializeFormControls();
   }
 
-  ApproveRejectMachine(status: string) {
+  ApproveRejectMachine(vendortech: VendorTech, status: string) {
+    this.IsGoingToApprove = true;
+    this.SetApproveRejectInputString(vendortech, status);
     this.DeleteModalHeader = 'Ready to' + (status === 'R' ? ' reject?' : ' approve?');
     this.DeleteModalBody = 'Are you sure you want to' + (status === 'R' ? ' reject' : ' approve');
+  }
+
+  ApproveRejectTechLine() {
+    this.DismissDeleteModal();
+    this._vendorService.ApproveRejectTechLine(this.inputXml).subscribe((result) => {
+      if (result.Error === '' && result.data.Table[0].Result === 0) {
+        this.PopUpMessage = result.data.Table[0].Message;
+      } else {
+        this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+      }
+      this.alertButton.click();
+    });
+  }
+
+  DismissDeleteModal() {
+    this.inputXml = '';
+    this.IsGoingToApprove = false;
+    this.dltModalCloseButton.click();
+  }
+
+  SetApproveRejectInputString(vendortech: VendorTech, status: string) {
+    this.inputXml = '<Data>' +
+      '<ApproveMachine ' +
+      'UserId="' + sessionStorage.getItem('userid') + '" ' +
+      'VendorShortCode="' + this.vendorcode + '" ' +
+      'LineNumber="' + vendortech.TechLineNo + '" ' +
+      'MachineId ="' + vendortech.VendorTechDetailsID + '" ' +
+      'IsApprove ="' + (status === 'Approve' ? 0 : 1) + '">' +
+      '</ApproveMachine>' +
+      '</Data>';
   }
 
   DiscardChanges() {

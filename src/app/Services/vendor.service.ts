@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vendor } from '../Models/vendor';
 import { OriginService } from './origin.service';
@@ -45,6 +45,16 @@ export class VendorService {
     const apiUrl = this._origin.origin + 'api/VendorTech/SaveVendorTechInfo';
     return this._http.post<any>(apiUrl, VendorTech);
   }
+
+  // ApproveTechLine
+  ApproveRejectTechLine(xml: string): Observable<any> {
+    const formdata = new FormData();
+    formdata.append('xml', xml);
+    const apiUrl = this._origin.origin + 'api/VendorTech/ApproveRejectTechLine';
+    // const options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
+    return this._http.post<any>(apiUrl, formdata);
+  }
+
   // For Vendor Staff Department
   GetVendorsDeptStaff(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;

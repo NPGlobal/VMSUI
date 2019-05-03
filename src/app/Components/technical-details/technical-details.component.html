@@ -60,12 +60,12 @@
               <span>{{item.ActionPerformed}}</span>
               <div>
                 <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="ApproveRejectMachine('AP')" data-target="#deleteModal">
+                  data-toggle="modal" (click)="ApproveRejectMachine(item, 'Approve')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-up"></i>
                 </a>
 
                 <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="ApproveRejectMachine('R')" data-target="#deleteModal">
+                  (click)="ApproveRejectMachine(item, 'Reject')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-down"></i>
                 </a>
               </div>
@@ -312,7 +312,7 @@
       </div>
       <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
-        <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" (click)="DismissDeleteModal()" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
