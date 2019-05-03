@@ -58,12 +58,12 @@
             <td>
               <span>{{item.ActionPerformed}}</span>
               <div>
-                <a *ngIf="IsUserAdmin" title="Approve Machine" href="javascript:void(0)" class="ml-2"
+                <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
                   data-toggle="modal" (click)="ApproveRejectMachine('AP')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-up"></i>
                 </a>
 
-                <a *ngIf="IsUserAdmin" title="Reject Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
                   (click)="ApproveRejectMachine('R')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-down"></i>
                 </a>

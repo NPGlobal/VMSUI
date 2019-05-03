@@ -16,4 +16,5 @@ export class VendorTech {
     MachineName: string;
     MachineType: string;
     ActionPerformed: string;
+    IsApprovable: boolean;
 }
