@@ -217,7 +217,8 @@ export class TechnicalDetailsComponent implements OnInit {
       techDefault.VendorTechDetails = [];
     }
 
-    techDefault.Status = 'P';
+    // techDefault.Status = 'P';
+    techDefault.Status = this.IsUserAdmin ? 'A' : 'P';
     this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
     this.DisableSaveFormButton();
     this.InitializeFormControls();

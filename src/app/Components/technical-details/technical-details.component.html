@@ -37,7 +37,8 @@
         <th scope="col">Prop. Efficiency</th>
         <th scope="col">Appr. Unit Count</th>
         <th scope="col">Prop. Unit Count</th>
-        <th colspan="2" scope="col">Action</th>
+        <th *ngIf="IsUserAdmin" scope="col">Approve/Reject</th>
+        <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -55,7 +56,7 @@
             <td>{{item.ProposedEfficiency}}</td>
             <td>{{item.UnitCount}}</td>
             <td>{{item.ProposedUnitCount}}</td>
-            <td>
+            <td *ngIf="IsUserAdmin">
               <span>{{item.ActionPerformed}}</span>
               <div>
                 <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
@@ -261,8 +262,8 @@
                   <tr *ngIf="m.Status !== 'D'">
                     <td>{{m.MachineType}}</td>
                     <td>{{m.MachineName}}</td>
-                    <td>{{m.ProposedEfficiency === null ? m.Efficiency : m.ProposedEfficiency}}</td>
-                    <td>{{m.ProposedUnitCount===null ? m.UnitCount : m.ProposedUnitCount}}</td>
+                    <td>{{!m.ProposedEfficiency ? m.Efficiency : m.ProposedEfficiency}}</td>
+                    <td>{{!m.ProposedUnitCount ? m.UnitCount : m.ProposedUnitCount}}</td>
                     <td>{{m.Status}}</td>
                     <td>
                       <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
