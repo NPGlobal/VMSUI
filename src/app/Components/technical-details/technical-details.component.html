@@ -30,6 +30,21 @@
         <td colspan="2"></td>
       </tr>
       <tr>
+        <th scope="col" rowspan="2">Tech Line No.</th>
+        <th scope="col" rowspan="2">Machine Type</th>
+        <th scope="col" rowspan="2">Machine Name</th>
+        <th scope="col" colspan="2">Approved</th>
+        <th scope="col" colspan="2">Proposed</th>
+        <th *ngIf="IsUserAdmin" scope="col" rowspan="2">Approve/Reject</th>
+        <th scope="col" rowspan="2">Action</th>
+      </tr>
+      <tr>
+        <th scope="col">Efficiency</th>
+        <th scope="col">Unit Count</th>
+        <th scope="col">Efficiency</th>
+        <th scope="col">Unit Count</th>
+      </tr>
+      <!-- <tr>
         <th scope="col">Tech Line No.</th>
         <th scope="col">Machine Type</th>
         <th scope="col">Machine Name</th>
@@ -39,7 +54,7 @@
         <th scope="col">Prop. Unit Count</th>
         <th *ngIf="IsUserAdmin" scope="col">Approve/Reject</th>
         <th scope="col">Action</th>
-      </tr>
+      </tr> -->
     </thead>
     <tbody>
       <ng-container *ngFor="let vendor of pagedItems;index as i;">
@@ -52,9 +67,13 @@
             </td>
             <td>{{item.MachineType}}</td>
             <td>{{item.MachineName}}</td>
-            <td>{{item.Efficiency}}</td>
+            <!-- <td>{{item.Efficiency}}</td>
             <td>{{item.ProposedEfficiency}}</td>
             <td>{{item.UnitCount}}</td>
+            <td>{{item.ProposedUnitCount}}</td> -->
+            <td>{{item.Efficiency}}</td>
+            <td>{{item.UnitCount}}</td>
+            <td>{{item.ProposedEfficiency}}</td>
             <td>{{item.ProposedUnitCount}}</td>
             <td *ngIf="IsUserAdmin">
               <span>{{item.ActionPerformed}}</span>

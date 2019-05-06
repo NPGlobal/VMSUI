@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vendor } from '../Models/vendor';
+
 import { OriginService } from './origin.service';
 import { BusinessProduction } from '../Models/business-production';
 import { VendorProduction } from '../Models/VendorProduction';
@@ -9,6 +10,7 @@ import { VendorProduction } from '../Models/VendorProduction';
 @Injectable({
   providedIn: 'root'
 })
+
 export class VendorService {
 
   constructor(private _http: HttpClient, private _origin: OriginService) { }
@@ -47,12 +49,9 @@ export class VendorService {
   }
 
   // ApproveTechLine
-  ApproveRejectTechLine(xml: string): Observable<any> {
-    const formdata = new FormData();
-    formdata.append('xml', xml);
+  ApproveRejectTechLine(data: {content: string}): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorTech/ApproveRejectTechLine';
-    // const options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
-    return this._http.post<any>(apiUrl, formdata);
+    return this._http.post<any>(apiUrl, data);
   }
 
   // For Vendor Staff Department

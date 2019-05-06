@@ -32,30 +32,32 @@ export class TechnicalDetailsComponent implements OnInit {
   //#region Form Variables
   techDetailsForm: FormGroup;
   vendorTechDefault: VendorTechDefault;
-  submitted = false;
-  vendorcode: string;
-  maxTechLineNo: string;
-  isTechDetailFormChanged: boolean;
   vendorTech: VendorTech;
-  isTechDetailEditing: any;
-  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
-  efficiencyPattern = /^\d+(\.\d{1,2})?$/;
-  isDeactVendor = false;
   deptList: any[];
   techSpecList: any[];
   TechDefaultLst: VendorTechDefault[];
+  isDeactVendor = false;
+  submitted = false;
+  vendorcode: string;
+  maxTechLineNo: string;
+  inputXml = '';
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
+  efficiencyPattern = /^\d+(\.\d{1,2})?$/;
   DefaultEfficiency: any;
+  isTechDetailEditing: any;
+  isTechDetailFormChanged: boolean;
   IsFirstTime: boolean;
   IsUserAdmin: boolean;
-  inputXml = '';
+  //#endregion
 
-  // for searching
+  //#region for searching
   searchText = '';
   searchByTechLine = '';
   searchByMachineType = '';
   searchByMachineName = '';
   searchByEfficiency = '';
   searchByUnitCount = '';
+  //#endregion
 
   //#region Error Message
   ValidationMessages = {
@@ -396,31 +398,14 @@ export class TechnicalDetailsComponent implements OnInit {
     this.InitializeFormControls();
   }
 
+  //#region Approve/Reject Machines
   ApproveRejectMachine(vendortech: VendorTech, status: string) {
+    status = status.substring(0 , 1);
     this.IsGoingToApprove = true;
     this.SetApproveRejectInputString(vendortech, status);
     this.DeleteModalHeader = 'Ready to' + (status === 'R' ? ' reject?' : ' approve?');
-    this.DeleteModalBody = 'Are you sure you want to' + (status === 'R' ? ' reject' : ' approve');
+    this.DeleteModalBody = 'Are you sure you want to' + (status === 'R' ? ' reject?' : ' approve?');
   }
-
-  ApproveRejectTechLine() {
-    this.DismissDeleteModal();
-    this._vendorService.ApproveRejectTechLine(this.inputXml).subscribe((result) => {
-      if (result.Error === '' && result.data.Table[0].Result === 0) {
-        this.PopUpMessage = result.data.Table[0].Message;
-      } else {
-        this.PopUpMessage = 'There is some technical error. Please contact administrator.';
-      }
-      this.alertButton.click();
-    });
-  }
-
-  DismissDeleteModal() {
-    this.inputXml = '';
-    this.IsGoingToApprove = false;
-    this.dltModalCloseButton.click();
-  }
-
   SetApproveRejectInputString(vendortech: VendorTech, status: string) {
     this.inputXml = '<Data>' +
       '<ApproveMachine ' +
@@ -432,6 +417,24 @@ export class TechnicalDetailsComponent implements OnInit {
       '</ApproveMachine>' +
       '</Data>';
   }
+  ApproveRejectTechLine() {
+    const xmldata =  this.inputXml;
+    this.DismissDeleteModal();
+    this._vendorService.ApproveRejectTechLine({content: xmldata}).subscribe((result) => {
+      if (result.Error === '' && result.data.Table[0].Result === 0) {
+        this.PopUpMessage = result.data.Table[0].Message;
+      } else {
+        this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+      }
+      this.alertButton.click();
+    });
+  }
+  DismissDeleteModal() {
+    this.inputXml = '';
+    this.IsGoingToApprove = false;
+    this.dltModalCloseButton.click();
+  }
+  //#endregion
 
   DiscardChanges() {
     let vendorTechDefault = this.TechDefaultLst.find(x => x.VendorTechDefaultID === this.vendorTechDefault.VendorTechDefaultID);
@@ -445,6 +448,7 @@ export class TechnicalDetailsComponent implements OnInit {
     }
   }
 
+  //#region Machine Functionality
   AddMachine() {
     const efficiency = this.techDetailsForm.get('Efficiency').value;
 
@@ -572,6 +576,7 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DeleteMachine(m) {
+    debugger;
     const strArray = this.vendorTechDefault.VendorTechDetails
       .find((obj) => obj.MachineType === m.MachineType && obj.MachineName === m.MachineName);
 
@@ -587,7 +592,9 @@ export class TechnicalDetailsComponent implements OnInit {
 
     this.DisableSaveFormButton();
   }
-
+  //#endregion
+  
+  //#region Validator
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -607,7 +614,6 @@ export class TechnicalDetailsComponent implements OnInit {
       }
     });
   }
-
   LogEfficiencyValidation(type: string) {
     switch (type) {
       case 'Efficiency': {
@@ -634,7 +640,6 @@ export class TechnicalDetailsComponent implements OnInit {
       }
     }
   }
-
   CheckEfficiencyFormat(value: string) {
     let success = false;
     const regex = new RegExp(this.efficiencyPattern);
@@ -642,14 +647,8 @@ export class TechnicalDetailsComponent implements OnInit {
     if (value !== null && value !== '' && regex.test(value) && Number(value) >= 1 && Number(value) <= 100) {
       success = true;
     }
-
     return success;
   }
-
-  specChange(event) {
-    this.SetEfficiencyAsDefault();
-  }
-
   CheckIfLineCanAdd(): boolean {
     let success = true;
 
@@ -659,7 +658,6 @@ export class TechnicalDetailsComponent implements OnInit {
 
     return success;
   }
-
   CheckIfLineCanEdit(): boolean {
     let success = true;
 
@@ -689,4 +687,8 @@ export class TechnicalDetailsComponent implements OnInit {
 
     return success;
   }
+  specChange(event) {
+    this.SetEfficiencyAsDefault();
+  }
+  //#endregion
 }
