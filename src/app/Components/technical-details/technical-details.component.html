@@ -83,8 +83,8 @@
                   <i class="fa fa-thumbs-up"></i>
                 </a>
 
-                <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="ApproveRejectMachine(item, 'Reject')" data-target="#deleteModal">
+                <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2"
+                  data-toggle="modal" (click)="ApproveRejectMachine(item, 'Reject')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-down"></i>
                 </a>
               </div>
@@ -99,19 +99,29 @@
                   data-keyboard="false"><i class="fa fa-edit"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-'" title="Delete Machine" href="javascript:void(0)" class="ml-2"
+                <a *ngIf="vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)" class="ml-2"
+                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'Approve')" data-target="#deleteModal">
+                  <i class="fa fa-thumbs-up"></i>
+                </a>
+
+                <a *ngIf="vendor.IsLineApprovable" title="Reject Line" href="javascript:void(0)" class="ml-2"
+                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'Reject')" data-target="#deleteModal">
+                  <i class="fa fa-thumbs-down"></i>
+                </a>
+
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && ((vendor.IsLineBlockable || IsUserAdmin))" title="Delete Machine" href="javascript:void(0)" class="ml-2"
                   data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i
                     class="fa fa-trash"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && vendor.Status !== 'B'" title="Deactivate Machine"
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && ((vendor.IsLineBlockable && !vendor.IsLineBlocked))" title="Deactivate Machine"
                   href="javascript:void(0)" class="ml-2" data-toggle="modal"
                   (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && vendor.Status === 'B'" title="Activate Machine"
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && ((vendor.IsLineBlockable && vendor.IsLineBlocked))" title="Activate Machine"
                   href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="DeleteTechDetailsPopup(vendor, 'A')" data-target="#deleteModal">
+                  (click)="DeleteTechDetailsPopup(vendor, (IsUserAdmin ? 'A' : 'P'))" data-target="#deleteModal">
                   <i class="fa fa-check"></i>
                 </a>
               </td>
@@ -278,7 +288,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let m of vendorTechDefault.VendorTechDetails">
-                  <tr *ngIf="m.Status !== 'D'">
+                  <tr *ngIf="(IsUserAdmin && m.Status !== 'D') || (!IsUserAdmin)">
                     <td>{{m.MachineType}}</td>
                     <td>{{m.MachineName}}</td>
                     <td>{{!m.ProposedEfficiency ? m.Efficiency : m.ProposedEfficiency}}</td>
@@ -331,7 +341,8 @@
       </div>
       <div class="modal-footer page-footer">
         <button class="btn btn-primary" (click)="DeleteTechDetails()">Yes</button>
-        <button #deleteModalClose class="btn btn-secondary" type="button" (click)="DismissDeleteModal()" data-dismiss="modal">Cancel</button>
+        <button #deleteModalClose class="btn btn-secondary" type="button" (click)="DismissDeleteModal()"
+          data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>

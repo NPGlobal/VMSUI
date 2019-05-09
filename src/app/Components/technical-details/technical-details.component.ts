@@ -199,7 +199,7 @@ export class TechnicalDetailsComponent implements OnInit {
       techDefault.DefaultEfficiency = defaultEff;
     } else if (techDefault !== null && (techDefault.TechLineNo.trim() === '-')) { // for line no '-' case
       const techDefaultID = techDefault.VendorTechDefaultID;
-      if (techDefault.VendorTechDetails[0].VendorTechDetailsID === null) {
+      if (techDefault.VendorTechDetails[0].VendorTechDetailsID === null && techDefault.VendorTechDetails[0].VendorTechConfigID === null) {
         techDefault = new VendorTechDefault();
         techDefault.VendorTechDefaultID = techDefaultID;
         techDefault.TechLineNo = '-';
@@ -207,20 +207,20 @@ export class TechnicalDetailsComponent implements OnInit {
       }
     }
 
-    if (techDefault.VendorTechDetails) {
-      techDefault.VendorTechDetails.filter(x => {
+    // techDefault.Status = 'P';
+    techDefault.Status = 'A';
+    this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
+
+    if (this.vendorTechDefault.VendorTechDetails) {
+      this.vendorTechDefault.VendorTechDetails.filter(x => {
         if (x.Status === 'P') {
           x.UnitCount = x.ProposedUnitCount;
           x.Efficiency = x.ProposedEfficiency;
         }
       });
     } else {
-      techDefault.VendorTechDetails = [];
+      this.vendorTechDefault.VendorTechDetails = [];
     }
-
-    // techDefault.Status = 'P';
-    techDefault.Status = this.IsUserAdmin ? 'A' : 'P';
-    this.vendorTechDefault = JSON.parse(JSON.stringify(techDefault));
     this.DisableSaveFormButton();
     this.InitializeFormControls();
   }
@@ -287,6 +287,8 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   SetEfficiencyAsDefault() {
+    this.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
+    this.vendorTechDefault.DefaultEfficiency = this.DefaultEfficiency;
     this.techDetailsForm.get('Efficiency').patchValue(this.techDetailsForm.get('DefaultEfficiency').value);
   }
   //#endregion
@@ -384,6 +386,18 @@ export class TechnicalDetailsComponent implements OnInit {
   DeleteTechDetailsPopup(vobj: VendorTechDefault, status: string) {
     this.vendorTechDefault = JSON.parse(JSON.stringify(vobj));
     this.vendorTechDefault.Status = status;
+
+    if (this.vendorTechDefault.VendorTechDetails) {
+      this.vendorTechDefault.VendorTechDetails.filter(x => {
+        if (x.Status === 'P' || x.Status === 'B' || x.Status === 'D') {
+          x.UnitCount = x.ProposedUnitCount;
+          x.Efficiency = x.ProposedEfficiency;
+        }
+      });
+    } else {
+      this.vendorTechDefault.VendorTechDetails = [];
+    }
+
     this.vendorTechDefault.VendorTechDetails.filter(x => x.Status = status);
 
     this.DeleteModalHeader = 'Ready to ' + (this.vendorTechDefault !== undefined &&
@@ -400,7 +414,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   //#region Approve/Reject Machines
   ApproveRejectMachine(vendortech: VendorTech, status: string) {
-    status = status.substring(0 , 1);
+    status = status.substring(0, 1);
     this.IsGoingToApprove = true;
     this.SetApproveRejectInputString(vendortech, status);
     this.DeleteModalHeader = 'Ready to' + (status === 'R' ? ' reject?' : ' approve?');
@@ -412,17 +426,22 @@ export class TechnicalDetailsComponent implements OnInit {
       'UserId="' + sessionStorage.getItem('userid') + '" ' +
       'VendorShortCode="' + this.vendorcode + '" ' +
       'LineNumber="' + vendortech.TechLineNo + '" ' +
-      'MachineId ="' + vendortech.VendorTechDetailsID + '" ' +
-      'IsApprove ="' + (status === 'Approve' ? 0 : 1) + '">' +
+      'MachineId ="' + vendortech.VendorTechConfigID + '" ' +
+      'IsApprove ="' + (status === 'A' ? 1 : 0) + '">' +
       '</ApproveMachine>' +
       '</Data>';
   }
   ApproveRejectTechLine() {
-    const xmldata =  this.inputXml;
+    const xmldata = this.inputXml;
     this.DismissDeleteModal();
-    this._vendorService.ApproveRejectTechLine({content: xmldata}).subscribe((result) => {
-      if (result.Error === '' && result.data.Table[0].Result === 0) {
-        this.PopUpMessage = result.data.Table[0].Message;
+    this._vendorService.ApproveRejectTechLine({ content: xmldata }).subscribe((result) => {
+      if (result.Error === '') {
+        if (result.data.Table[0].Result === 0) {
+          this.PopUpMessage = result.data.Table[0].Message;
+          this.GetVendorTech(1);
+        } else {
+          this.PopUpMessage = result.data.Table[0].Message;
+        }
       } else {
         this.PopUpMessage = 'There is some technical error. Please contact administrator.';
       }
@@ -496,6 +515,13 @@ export class TechnicalDetailsComponent implements OnInit {
 
         if (existingIndex > -1 && this.isTechDetailEditing > 0) {
           this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
+
+          const defaultTech = this.TechDefaultLst.find(x => x.TechLineNo === this.vendorTech.TechLineNo);
+          if (defaultTech.VendorTechDetails.findIndex(x => x.VendorTechConfigID === this.vendorTech.VendorTechConfigID
+            && x.Status === 'A') > -1) {
+            this.vendorTech.VendorTechDetailsID = 0;
+          }
+
           this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
           this.isTechDetailEditing = 0;
         } else {
@@ -576,14 +602,18 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DeleteMachine(m) {
-    debugger;
     const strArray = this.vendorTechDefault.VendorTechDetails
       .find((obj) => obj.MachineType === m.MachineType && obj.MachineName === m.MachineName);
 
     if (strArray !== undefined) {
       const index = this.vendorTechDefault.VendorTechDetails.indexOf(strArray);
 
-      if (this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID > 0) {
+      const defaultTech = this.TechDefaultLst.find(x => x.TechLineNo === this.vendorTechDefault.TechLineNo);
+
+      const existingIndex = defaultTech.VendorTechDetails.findIndex(x =>
+        x.VendorTechConfigID === this.vendorTechDefault.VendorTechDetails[index].VendorTechConfigID);
+
+      if (existingIndex > -1) {
         this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
       } else {
         this.vendorTechDefault.VendorTechDetails.splice(index, 1);
@@ -593,7 +623,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.DisableSaveFormButton();
   }
   //#endregion
-  
+
   //#region Validator
   LogValidationErrors(group: FormGroup = this.techDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
