@@ -94,34 +94,35 @@
             </ng-container>
             <ng-container *ngIf="isDeactVendor===false">
               <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
-                <a *ngIf="vendor.Status !== 'B'" title="Edit Machine" href="javascript:void(0)" data-toggle="modal"
-                  (click)="EditTechDetails(vendor)" data-target="#myModal" data-backdrop="static"
+                <a *ngIf="!vendor.IsLineApprovable && (!vendor.IsLineBlocked && !vendor.IsLineDeleted)" title="Edit Machine" href="javascript:void(0)"
+                  data-toggle="modal" (click)="EditTechDetails(vendor)" data-target="#myModal" data-backdrop="static"
                   data-keyboard="false"><i class="fa fa-edit"></i>
                 </a>
 
                 <a *ngIf="vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'Approve')" data-target="#deleteModal">
+                  data-toggle="modal" (click)="ApproveRejectLine(vendor, 'ApproveLine')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-up"></i>
                 </a>
 
                 <a *ngIf="vendor.IsLineApprovable" title="Reject Line" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'Reject')" data-target="#deleteModal">
+                  data-toggle="modal" (click)="ApproveRejectLine(vendor, 'RejectLine')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-down"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && ((vendor.IsLineBlockable || IsUserAdmin))" title="Delete Machine" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal"><i
-                    class="fa fa-trash"></i>
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlockable && !vendor.IsLineDeleted)"
+                  title="Delete Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                  (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal">
+                  <i class="fa fa-trash"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && ((vendor.IsLineBlockable && !vendor.IsLineBlocked))" title="Deactivate Machine"
-                  href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlockable && !vendor.IsLineBlocked)"
+                  title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
                   (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && ((vendor.IsLineBlockable && vendor.IsLineBlocked))" title="Activate Machine"
-                  href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="DeleteTechDetailsPopup(vendor, (IsUserAdmin ? 'A' : 'P'))" data-target="#deleteModal">
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlockable && vendor.IsLineBlocked)"
+                  title="Activate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                  (click)="DeleteTechDetailsPopup(vendor, 'AT')" data-target="#deleteModal">
                   <i class="fa fa-check"></i>
                 </a>
               </td>
@@ -288,7 +289,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let m of vendorTechDefault.VendorTechDetails">
-                  <tr *ngIf="(IsUserAdmin && m.Status !== 'D') || (!IsUserAdmin)">
+                  <tr *ngIf="(m.Status !== 'D')">
                     <td>{{m.MachineType}}</td>
                     <td>{{m.MachineName}}</td>
                     <td>{{!m.ProposedEfficiency ? m.Efficiency : m.ProposedEfficiency}}</td>
