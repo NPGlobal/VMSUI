@@ -57,6 +57,8 @@ export class TechnicalDetailsComponent implements OnInit {
   searchByMachineName = '';
   searchByEfficiency = '';
   searchByUnitCount = '';
+  searchByProposedEfficiency = '';
+  searchByProposedUnitCount = '';
   //#endregion
 
   //#region Error Message
@@ -234,7 +236,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   SearchTechDetailsList() {
     this.searchText = this.searchByTechLine + '~' + this.searchByMachineType + '~' + this.searchByMachineName + '~' +
-      this.searchByEfficiency + '~' + this.searchByUnitCount;
+      this.searchByEfficiency + '~' + this.searchByUnitCount + '~' + this.searchByProposedEfficiency + '~' + this.searchByProposedUnitCount;
     this.SearchTechDetails(this.searchText);
   }
 
@@ -386,17 +388,6 @@ export class TechnicalDetailsComponent implements OnInit {
   DeleteTechDetailsPopup(vobj: VendorTechDefault, status: string) {
     this.vendorTechDefault = JSON.parse(JSON.stringify(vobj));
     this.vendorTechDefault.Status = status;
-
-    // if (this.vendorTechDefault.VendorTechDetails) {
-    //   this.vendorTechDefault.VendorTechDetails.filter(x => {
-    //     if (x.Status === 'P' || x.Status === 'B' || x.Status === 'D') {
-    //       x.UnitCount = x.ProposedUnitCount;
-    //       x.Efficiency = x.ProposedEfficiency;
-    //     }
-    //   });
-    // } else {
-    //   this.vendorTechDefault.VendorTechDetails = [];
-    // }
 
     status = this.IsUserAdmin ? 'A' : 'P';
 
@@ -660,6 +651,9 @@ export class TechnicalDetailsComponent implements OnInit {
     this.vendorTech = undefined;
     this.techDetailsForm.get('Department').patchValue(null);
     this.techDetailsForm.get('UnitCount').patchValue(null);
+
+    this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
+
     this.InitializeFormControls();
     this.LogValidationErrors();
     this.GetVendorTechSpec();
