@@ -87,6 +87,11 @@
             </ng-container>
             <ng-container *ngIf="isDeactVendor===false">
               <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
+                <div *ngIf="vendor.IsLineApprovable">
+                  <span *ngIf="vendor.IsLineBlocked">Block</span>
+                  <span *ngIf="vendor.IsLineDeleted">Deleted</span>
+                  <span *ngIf="vendor.IsLineActivated">Activated</span>
+                </div>
                 <a *ngIf="!vendor.IsLineApprovable && (!vendor.IsLineBlocked && !vendor.IsLineDeleted)"
                   title="Edit Machine" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
                   data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
