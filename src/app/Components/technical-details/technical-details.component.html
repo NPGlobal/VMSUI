@@ -60,10 +60,6 @@
             </td>
             <td>{{item.MachineType}}</td>
             <td>{{item.MachineName}}</td>
-            <!-- <td>{{item.Efficiency}}</td>
-            <td>{{item.ProposedEfficiency}}</td>
-            <td>{{item.UnitCount}}</td>
-            <td>{{item.ProposedUnitCount}}</td> -->
             <td>{{item.Efficiency}}</td>
             <td>{{item.UnitCount}}</td>
             <td>{{item.ProposedEfficiency}}</td>
@@ -88,7 +84,7 @@
             <ng-container *ngIf="isDeactVendor===false">
               <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
                 <div *ngIf="vendor.IsLineApprovable">
-                  <span *ngIf="vendor.IsLineBlocked">Block</span>
+                  <span *ngIf="vendor.IsLineBlocked && !vendor.IsLineActivated && !vendor.IsLineDeleted">Block</span>
                   <span *ngIf="vendor.IsLineDeleted">Deleted</span>
                   <span *ngIf="vendor.IsLineActivated">Activated</span>
                 </div>
@@ -118,7 +114,7 @@
                   (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlocked &&
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlocked &&
                 vendor.IsLineBlockable && !vendor.IsLineActivated)" title="Activate Machine" href="javascript:void(0)"
                   class="ml-2" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'O')"
                   data-target="#deleteModal">
@@ -283,6 +279,7 @@
                   <th>Efficiency</th>
                   <th>Unit Count</th>
                   <th>Status</th>
+                  <th>Remarks</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -294,6 +291,7 @@
                     <td>{{!m.ProposedEfficiency ? m.Efficiency : m.ProposedEfficiency}}</td>
                     <td>{{!m.ProposedUnitCount ? m.UnitCount : m.ProposedUnitCount}}</td>
                     <td>{{m.Status}}</td>
+                    <td>{{m.Remarks}}</td>
                     <td>
                       <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
                         <i class="fa fa-edit"></i>

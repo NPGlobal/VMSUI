@@ -494,6 +494,7 @@ export class TechnicalDetailsComponent implements OnInit {
       this.techDetailsForm.get('UnitCount').value !== null) {
 
       if (this.vendorTech !== undefined) {
+        this.vendorTech.Remarks = this.techDetailsForm.get('Remarks').value;
       } else {
         this.vendorTech = new VendorTech();
         this.vendorTech.VendorTechDetailsID = 0;
@@ -505,6 +506,7 @@ export class TechnicalDetailsComponent implements OnInit {
         this.vendorTech.MachineName = this.techSpecList.filter((el) =>
           el.VendorConfigID === Number(this.vendorTech.VendorTechConfigID))[0].TechSpec;
         this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
+        this.vendorTech.Remarks = this.techDetailsForm.get('Remarks').value;
       }
 
       this.vendorTech.VendorShortCode = this.vendorcode;
@@ -651,6 +653,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.vendorTech = undefined;
     this.techDetailsForm.get('Department').patchValue(null);
     this.techDetailsForm.get('UnitCount').patchValue(null);
+    this.techDetailsForm.get('Remarks').patchValue(null);
 
     this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
 
