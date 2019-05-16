@@ -109,9 +109,10 @@
                   <i class="fa fa-trash"></i>
                 </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlockable && !vendor.IsLineBlocked)"
-                  title="Deactivate Machine" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i class="fa fa-remove"></i>
+                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlockable 
+                && !vendor.IsLineBlocked)" title="Deactivate Machine" href="javascript:void(0)" class="ml-2"
+                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i
+                    class="fa fa-remove"></i>
                 </a>
 
                 <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlocked &&
@@ -293,12 +294,14 @@
                     <td>{{m.Status}}</td>
                     <td>{{m.Remarks}}</td>
                     <td>
-                      <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
-                        <i class="fa fa-edit"></i>
-                      </a>
-                      <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
-                          class="fa fa-trash"></i>
-                      </a>
+                      <div *ngIf="m.ActionPerformed !== 'Deleted'">
+                        <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
+                            class="fa fa-trash"></i>
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 </ng-container>

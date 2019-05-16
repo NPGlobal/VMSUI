@@ -215,7 +215,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
     if (this.vendorTechDefault.VendorTechDetails) {
       this.vendorTechDefault.VendorTechDetails.filter(x => {
-        if (x.Status === 'P') {
+        if (x.Status === 'P' && x.ActionPerformed !== 'Deleted') {
           x.UnitCount = x.ProposedUnitCount;
           x.Efficiency = x.ProposedEfficiency;
         }
@@ -463,6 +463,7 @@ export class TechnicalDetailsComponent implements OnInit {
   DismissDeleteModal() {
     this.inputXml = '';
     this.IsGoingToApprove = false;
+    this.vendorTechDefault = new VendorTechDefault();
     this.dltModalCloseButton.click();
   }
   //#endregion
@@ -507,6 +508,12 @@ export class TechnicalDetailsComponent implements OnInit {
           el.VendorConfigID === Number(this.vendorTech.VendorTechConfigID))[0].TechSpec;
         this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
         this.vendorTech.Remarks = this.techDetailsForm.get('Remarks').value;
+      }
+
+      if (this.vendorTech.VendorTechDetailsID) {
+        this.vendorTech.ActionPerformed = 'Edited';
+      } else {
+        this.vendorTech.ActionPerformed = 'New';
       }
 
       this.vendorTech.VendorShortCode = this.vendorcode;
@@ -634,6 +641,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.isTechDetailEditing = 1;
     this.techDetailsForm.get('Department').patchValue(vTech1.DeptCode);
     this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
+    this.techDetailsForm.get('Remarks').patchValue(vTech1.Remarks);
     if (vTech1.Status === 'P') {
       this.techDetailsForm.get('UnitCount').patchValue(vTech1.ProposedUnitCount);
       this.techDetailsForm.get('Efficiency').patchValue(vTech1.ProposedEfficiency);
@@ -695,8 +703,8 @@ export class TechnicalDetailsComponent implements OnInit {
         if (this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID) {
           this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsProposedID = null;
         }
-
-        this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
+        this.vendorTechDefault.VendorTechDetails[index].ActionPerformed = 'Deleted';
+        this.vendorTechDefault.VendorTechDetails[index].Status = this.IsUserAdmin ? 'D' : 'P';
       } else {
         this.vendorTechDefault.VendorTechDetails.splice(index, 1);
       }
