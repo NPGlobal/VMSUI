@@ -8,5 +8,10 @@ export class VendorTechDefault {
     DefaultEfficiency: number;
     Status: string;
     Remarks: string;
+    IsLineApprovable: boolean;
+    IsLineBlocked: boolean;
+    IsLineDeleted: boolean;
+    IsLineActivated: boolean;
+    IsLineBlockable: boolean;
     VendorTechDetails: VendorTech[];
 }

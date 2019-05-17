@@ -19,7 +19,7 @@ export class StaffDetailsComponent implements OnInit {
   priority = 1;
   vendorcode: string;
   AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   PhonePattern = '^[0-9]{10}$';
   NumericPattern = '^[0-9]*$';
   deptList: any[];
@@ -262,6 +262,10 @@ export class StaffDetailsComponent implements OnInit {
 
             this.deptSelectList = deptArry;
 
+            if (!this.inEditedMode) {
+              this.vendorstaffList = [];
+              this.onDeptSelectAll(this.deptSelectList);
+            }
             // const strArray = this.deptList.find((obj) => obj.DeptCode === this.deptSelectList[0].DeptCode
             //   && this.staffDetailsForm.get('Designation').value === obj.Designation);
             // if (strArray === undefined) {
@@ -301,7 +305,7 @@ export class StaffDetailsComponent implements OnInit {
 
     if (this.inEditedMode && existingIndex > -1) {
       this.vendorstaffList[existingIndex].Status = 'A';
-    } else {
+    } else if (existingIndex === -1) {
       this.vendorstaffList.push(vStaff);
     }
   }
@@ -327,10 +331,29 @@ export class StaffDetailsComponent implements OnInit {
       this.onDeptSelect(items[i]);
     }
   }
+
+  onDeptDeSelectAll(items: any) {
+    this.invalid = false;
+    items = this.deptSelectList;
+    for (let i = 0; i < items.length; ++i) {
+      this.onDeptDeselect(items[i]);
+    }
+  }
   //#endregion
 
   //#region Validations
   logValidationErrors(group: FormGroup = this.staffDetailsForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+
+      if (this.ValidationMessages[key] &&
+        this.ValidationMessages[key].required !== undefined &&
+        this.ValidationMessages[key].required !== null &&
+        abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.trim());
+      }
+    });
+
     // this.ValidateDepartment();
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
@@ -439,6 +462,7 @@ export class StaffDetailsComponent implements OnInit {
           this.PopUpMessage = result.data.Msg[0].Message;
           this.alertModalOpenBtn.click();
           this.dismiss();
+          this.GetVendorStaffs(this.currentPage);
         } else {
           this.PopUpMessage = result.data.Msg[0].Message;
           this.alertModalOpenBtn.click();
@@ -494,6 +518,7 @@ export class StaffDetailsComponent implements OnInit {
     this.modalCloseBtn.click();
     this.deptList = [];
     this.deptSelectList = null;
+    this.vendorstaffList = [];
     this.vendorStaffDetail = new StaffDetails();
     this.InitializeFormControls();
     this.logValidationErrors();

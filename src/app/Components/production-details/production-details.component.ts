@@ -6,7 +6,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { VendorProduction } from 'src/app/Models/VendorProduction';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
-import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-production-details',
@@ -36,9 +36,11 @@ export class ProductionDetailsComponent implements OnInit {
   PhonePattern = '^[0-9]{10}$';
   PinPattern = '^[1-9][0-9]{5}$';
   // CityPattern = '^[A-Za-z]+$';
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
+  NamePattern = /^[@\.\-'&()_\/\w\s]*$/;
   NumericPattern = '^[0-9]*$';
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
+  AlphabetPattern = '^[a-zA-Z ]*[\.\]?[a-zA-Z ]*$';
   isDeactVendor = false;
   // NumericRange = '([0-9]|[1-8][0-9]|9[0-9]|[1-4][0-9]{2}|500)';
   //#endregion
@@ -70,10 +72,11 @@ export class ProductionDetailsComponent implements OnInit {
     },
     'SubContractingName': {
       'required': '',
-      'pattern': this._validationMess.NumericPattern
+      'pattern': this._validationMess.NamePattern
     },
     'NatureOfSubContracting': {
-      'required': ''
+      'required': '',
+      'pattern': this._validationMess.NamePattern
     },
     'MonthlyCapacity': {
       'required': '',
@@ -186,8 +189,10 @@ export class ProductionDetailsComponent implements OnInit {
     this.ProductionDetailsForm = this._fb.group({
       ApprovedProductionCount: [this.VendorProduction.ApprovedProductionCount,
       [Validators.required, Validators.pattern(this.NumericPattern)]],
-      SubContractingName: [this.VendorProduction.SubContractingName, Validators.required],
-      NatureOfSubContracting: [this.VendorProduction.NatureOfSubContracting, Validators.required],
+      SubContractingName: [this.VendorProduction.SubContractingName, [Validators.required,
+      Validators.pattern(this.NamePattern)]],
+      NatureOfSubContracting: [this.VendorProduction.NatureOfSubContracting, [Validators.required,
+      Validators.pattern(this.NamePattern)]],
       MonthlyCapacity: [this.VendorProduction.MonthlyCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       MinimalCapacity: [this.VendorProduction.MinimalCapacity, [Validators.required, Validators.pattern(this.DecimalPattern)]],
       LeanMonths: [this.VendorProduction.LeanMonths,
@@ -198,7 +203,7 @@ export class ProductionDetailsComponent implements OnInit {
       Address3: [this.VendorProduction.Address3, Validators.pattern(this.AddressAndRemarksPattern)],
       Phone: [this.VendorProduction.Phone, [Validators.required, Validators.pattern(this.PhonePattern)]],
       StateCode: [this.VendorProduction.StateCode, [Validators.required, Validators.required]],
-      CityCode: [this.VendorProduction.CityCode, [Validators.required, Validators.pattern(this.AddressAndRemarksPattern)]],
+      CityCode: [this.VendorProduction.CityCode, [Validators.required, Validators.pattern(this.AlphabetPattern)]],
       Pin: [this.VendorProduction.Pin, [Validators.required, Validators.pattern(this.PinPattern)]],
       Remarks: [this.VendorProduction.Remarks, Validators.pattern(this.AddressAndRemarksPattern)]
     });
@@ -269,6 +274,17 @@ export class ProductionDetailsComponent implements OnInit {
   LogValidationErrors(group: FormGroup = this.ProductionDetailsForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
+
+      if (this.ValidationMessages[key] &&
+        this.ValidationMessages[key].required !== undefined &&
+        this.ValidationMessages[key].required !== null &&
+        abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.toString().trim());
+      }
+    });
+
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
         this.LogValidationErrors(abstractControl);
       } else {
@@ -306,10 +322,12 @@ export class ProductionDetailsComponent implements OnInit {
 
   Dismiss() {
     this.submitted = false;
-    this.VendorProduction = new VendorProduction();
-    this.InitializeFormControls();
+    // this.VendorProduction = new VendorProduction();
+    // this.ProductionDetailsForm.reset();
 
-    this.ProductionDetailsForm.reset();
+    this.InitializeFormControls();
+    this.LogValidationErrors();
+
     this.modalOpenButton.click();
   }
   //#endregion
@@ -351,11 +369,13 @@ export class ProductionDetailsComponent implements OnInit {
           this.totalItems = result.data.Table2[0].TotalVendors;
           this.GetVendorsProductionList();
           this.Dismiss();
+          this.GetVendorProduction(this.currentPage);
           this.PopUpMessage = result.data.Table[0].Message;
           this.alertModalButton.click();
         } else if (result.data.Table[0].ResultCode === 2) { // delete condition
           this.VendorProductionList = result.data.Table1;
           this.totalItems = result.data.Table2[0].TotalVendors;
+          this.GetVendorProduction(this.currentPage);
           this.GetVendorsProductionList();
           this.PopUpMessage = result.data.Table[0].Message;
           this.deleteModalCloseBtn.click();

@@ -21,9 +21,9 @@
                 <label for="VendorName">Producer Name<i class="mandatory">*</i></label>
                 <input type="text" [ngClass]="{'is-invalid': formErrors.VendorName}" maxlength="50"
                   class="form-control col-md-12 input-sm" formControlName="VendorName" (blur)="logValidationErrors()" />
-                  <span class="error-label-lg" *ngIf="formErrors.VendorName">
-                    {{formErrors.VendorName}}
-                  </span>
+                <span class="error-label-lg" *ngIf="formErrors.VendorName">
+                  {{formErrors.VendorName}}
+                </span>
               </div>
               <div class="form-group col-md-4">
                 <label for="VendorCode">Short Name<i class="mandatory">*</i></label>
@@ -81,6 +81,15 @@
                       <span style="margin-left:5px;">JW</span>
                     </label>
                   </span>
+                </div>
+                <div *ngIf="RegistrationForm.controls.IsDirectVendor.value" class="row">
+                  <ul class="DPTypUL">
+                    <li *ngFor="let dptype of DPTypeList">
+                      <input class="mr-2" type="checkbox" [attr.checked]="dptype.Checked ? 'checked' : null"
+                        (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)" value="{{dptype.MDDCode}}" />
+                      <span>{{dptype.MDDName}}</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

@@ -4,15 +4,32 @@
     <div class="content-heading" align="left">Bank Details</div>
     <div class="form-group col-md-3">
       <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
-      <input type="text" maxlength="199" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount">
+        <input type="text" maxlength="199" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount" 
+        (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.NameAsPerBankAccount}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.NameAsPerBankAccount && BankDetailsForm.get('NameAsPerBankAccount').value">
+        {{formErrors.NameAsPerBankAccount}}
+      </span>
     </div>
+
+
     <div class="form-group col-md-3">
       <label class="text" for="BankName">Bank Name</label>
-      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BankName">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BankName"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.BankName}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.BankName && BankDetailsForm.get('BankName').value">
+        {{formErrors.BankName}}
+      </span>
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="BranchName">Branch Name</label>
-      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BranchName">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BranchName"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.BranchName}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.BranchName && BankDetailsForm.get('BranchName').value">
+        {{formErrors.BranchName}}
+      </span>
     </div>
     <div style="margin-top: 10px;" class="form-group col-md-3">
       <div>
@@ -27,7 +44,7 @@
       <label class="text" for="AccountNo">Account No</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="AccountNo"
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.AccountNo}">
-        <span class="error-label-lg" *ngIf="formErrors.AccountNo">{{formErrors.AccountNo}}</span>
+      <span class="error-label-lg" *ngIf="formErrors.AccountNo">{{formErrors.AccountNo}}</span>
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="AccountType">Account Type</label>
@@ -47,23 +64,47 @@
       <label class="text" for="PaymentTerms">Payment Terms</label>
       <input type="text" maxlength="1999" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PaymentTerms}">
+        <span class="error-label-lg"
+        *ngIf="formErrors.PaymentTerms && BankDetailsForm.get('PaymentTerms').value">
+        {{formErrors.PaymentTerms}}
+      </span>
     </div>
 
     <div class="form-group col-md-3">
       <label class="text" for="IFSCCode">IFSC Code</label>
-      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="IFSCCode">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="IFSCCode"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.IFSCCode}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.IFSCCode && BankDetailsForm.get('IFSCCode').value">
+        {{formErrors.IFSCCode}}
+      </span>
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="MICRNo">MICR No</label>
-      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="MICRNo">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="MICRNo"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MICRNo}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.MICRNo && BankDetailsForm.get('MICRNo').value">
+        {{formErrors.MICRNo}}
+      </span>
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="SWIFTCode">SWIFT Code</label>
-      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="SWIFTCode">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="SWIFTCode"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.SWIFTCode}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.SWIFTCode && BankDetailsForm.get('SWIFTCode').value">
+        {{formErrors.SWIFTCode}}
+      </span>
     </div>
     <div class="form-group col-md-3">
       <label class="text" for="RemittanceInfavourof">Remittance Infavourof</label>
-      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof">
+      <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof"
+      (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.RemittanceInfavourof}">
+      <span class="error-label-lg"
+        *ngIf="formErrors.RemittanceInfavourof && BankDetailsForm.get('RemittanceInfavourof').value">
+        {{formErrors.RemittanceInfavourof}}
+      </span>
     </div>
   </div>
 
@@ -81,17 +122,17 @@
 <!-- Saved Conformantion Modal -->
 
 <button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
-    data-toggle="modal" style="display:none;">
+  data-toggle="modal" style="display:none;">
 </button>
 
 <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
-                <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
-            </div>
-        </div>
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+      </div>
     </div>
+  </div>
 </div>

@@ -1,7 +1,8 @@
 <div class="col-lg-12 col-sm-12 col-md-12">
   <!-- <input type="text" class="SearchBox mr-2" placeholder="Search" (keyup)="SearchProductionDetails($event.target.value)"
     name="search"> -->
-  <button type="button" class="btn btn-primary float-right" (click)="EditProductionDetail(null)" *ngIf="isDeactVendor === false">
+  <button type="button" class="btn btn-primary float-right" (click)="EditProductionDetail(null)"
+    *ngIf="isDeactVendor === false">
     <i class="fa fa-plus"></i>
     <span title="Add new" class="py-4">Add</span>
   </button>
@@ -53,7 +54,8 @@
           <td>{{production.LeanMonths}}</td>
           <td>{{production.LeanCapacity}}</td>
           <td>
-            <a title="Edit" href="javascript:void(0)" (click)="EditProductionDetail(production)" *ngIf="isDeactVendor === false">
+            <a title="Edit" href="javascript:void(0)" (click)="EditProductionDetail(production)"
+              *ngIf="isDeactVendor === false">
               <i class="fa fa-edit"></i>
             </a>
 
@@ -64,7 +66,7 @@
 
             <a title="Delete Production Detail" href="javascript:void(0)" class="ml-2" *ngIf="isDeactVendor === false"
               (click)="DeleteProductionDetail(production)" data-target="#deleteModal">
-              <i class="fa fa-remove"></i>
+              <i class="fa fa-trash"></i>
             </a>
           </td>
         </tr>
@@ -132,8 +134,9 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Production <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are mandatory)</span></h6>
-        <button type="button" class="close" (click)="dismiss()" data-dismiss="modal">&times;</button>
+        <h6 class="modal-title">Production <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are
+            mandatory)</span></h6>
+        <button type="button" class="close" (click)="Dismiss()" data-dismiss="modal">&times;</button>
       </div>
       <!-- modal-body -->
       <div class="modal-body">
@@ -148,13 +151,21 @@
                     <label class="text">Name of Sub Contracting Unit<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="SubContractingName" maxlength="254"
                         class="form-control input-sm" (blur)="LogValidationErrors()"
-                        [ngClass]="{ 'is-invalid ': formErrors.SubContractingName }" /></span>
+                        [ngClass]="{ 'is-invalid ': formErrors.SubContractingName }" />
+                    </span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.SubContractingName}" *ngIf="formErrors.SubContractingName">
+                      {{formErrors.SubContractingName}}
+                    </span>
                   </div>
                   <div class="col-lg-4 col-md-4">
                     <label class="text">Nature of Sub Contracting Unit<span class="error-label">*</span></label>
                     <span><input type="text" maxlength="99" (blur)="LogValidationErrors()"
                         formControlName="NatureOfSubContracting" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid ': formErrors.NatureOfSubContracting }" /></span>
+                        [ngClass]="{ 'is-invalid ': formErrors.NatureOfSubContracting }" />
+                    </span>
+                    <span [ngClass]="{ 'error-label-lg':formErrors.NatureOfSubContracting}" *ngIf="formErrors.NatureOfSubContracting">
+                      {{formErrors.NatureOfSubContracting}}
+                    </span>
                   </div>
                 </div>
                 <hr>
@@ -281,7 +292,8 @@
                       <!-- <input type="text" formControlName="LeanMonths" class="form-control input-sm"
                         [ngClass]="{ 'is-invalid err': formErrors.LeanMonths }" (blur)="LogValidationErrors()" /> -->
                       <input type="text" formControlName="LeanMonths" max="500" class="form-control input-sm"
-                        [ngClass]="{ 'is-invalid': formErrors.LeanMonths }" (blur)="LogValidationErrors(); CheckLeanMonth()" />
+                        [ngClass]="{ 'is-invalid': formErrors.LeanMonths }"
+                        (blur)="LogValidationErrors(); CheckLeanMonth()" />
                     </span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanMonths}"
                       *ngIf="formErrors.LeanMonths">{{formErrors.LeanMonths}}
@@ -290,8 +302,7 @@
                   <div class="col-lg-2 col-md-2">
                     <label class="text">Lean Capacity<span class="error-label">*</span></label>
                     <span><input type="text" formControlName="LeanCapacity" class="form-control input-sm" maxlength="13"
-                        [ngClass]="{ 'is-invalid': formErrors.LeanCapacity }"
-                        (blur)="LogValidationErrors()" /></span>
+                        [ngClass]="{ 'is-invalid': formErrors.LeanCapacity }" (blur)="LogValidationErrors()" /></span>
                     <span [ngClass]="{ 'error-label':formErrors.LeanCapacity }" *ngIf="formErrors.LeanCapacity">
                       {{formErrors.LeanCapacity}}</span>
                   </div>
@@ -299,7 +310,7 @@
                     <label class="text">Remarks</label>
                     <span>
                       <input type="text" formControlName="Remarks" class="form-control input-sm" maxlength="511"
-                        [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="LogValidationErrors()"/>
+                        [ngClass]="{ 'is-invalid': formErrors.Remarks }" (blur)="LogValidationErrors()" />
                     </span>
                     <span [ngClass]="{ 'error-label-lg':formErrors.Remarks}"
                       *ngIf="formErrors.Remarks">{{formErrors.Remarks}}

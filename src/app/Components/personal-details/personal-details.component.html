@@ -130,6 +130,20 @@
                             </div>
                         </div>
 
+                        <div style="margin-left: 90px;"
+                            *ngIf="personalDetailsForm.get('PersonalDetails.IsDirectVendor').value" class="row">
+                            <ul class="DPTypUL">
+                                <li *ngFor="let dptype of DPTypeList">
+                                    <input class="mr-2" type="checkbox"
+                                        [attr.checked]="dptype.Checked ? 'checked' : null"
+                                        [attr.disabled]="isDeactVendor ? 'disabled': null"
+                                        (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)"
+                                        value="{{dptype.MDDCode}}" />
+                                    <span>{{dptype.MDDName}}</span>
+                                </li>
+                            </ul>
+                        </div>
+
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
                                 <div class="col-sm-5">
@@ -777,14 +791,24 @@
                             <label class="text">Name Of Partner/Proprietor/etc 1</label>
                             <span>
                                 <input formControlName="PersonTopRanker1" name="PersonTopRanker1" type="text"
-                                    class="form-control input-sm" />
+                                    class="form-control input-sm" (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PersonTopRanker1}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.PersonTopRanker1 && personalDetailsForm.get('OtherRegDetails.PersonTopRanker1').value">
+                                {{formErrors.PersonTopRanker1}}
                             </span>
                         </div>
                         <div class="col-md-4">
                             <label class="text">Name Of Partner/Proprietor/etc 2</label>
                             <span>
                                 <input formControlName="PersonTopRanker2" name="PersonTopRanker2" type="text"
-                                    class="form-control input-sm" />
+                                    class="form-control input-sm" (blur)="LogValidationErrors()"
+                                    [ngClass]="{'is-invalid': formErrors.PersonTopRanker2}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.PersonTopRanker2 && personalDetailsForm.get('OtherRegDetails.PersonTopRanker2').value">
+                                {{formErrors.PersonTopRanker2}}
                             </span>
                         </div>
                     </div>
@@ -807,33 +831,61 @@
                         <div class="col-md-22">
                             <label class="text">Customer1</label>
                             <span>
-                                <input formControlName="OtherCustomer1" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer1" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer1}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer1 && personalDetailsForm.get('CustomerDetails.OtherCustomer1').value">
+                                {{formErrors.OtherCustomer1}}
                             </span>
                         </div>
                         <div class="col-md-22">
                             <label class="text">Customer2</label>
                             <span>
-                                <input formControlName="OtherCustomer2" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer2" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer2}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer2 && personalDetailsForm.get('CustomerDetails.OtherCustomer2').value">
+                                {{formErrors.OtherCustomer2}}
                             </span>
                         </div>
                         <div class="col-md-22">
                             <label class="text">Customer3</label>
                             <span>
-                                <input formControlName="OtherCustomer3" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer3" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer3}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer3 && personalDetailsForm.get('CustomerDetails.OtherCustomer3').value">
+                                {{formErrors.OtherCustomer3}}
                             </span>
                         </div>
-                        <!-- </div>
-                    <div class="col-md-12 form-group"> -->
                         <div class="col-md-22">
                             <label class="text">Customer4</label>
                             <span>
-                                <input formControlName="OtherCustomer4" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer4" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer4}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer4 && personalDetailsForm.get('CustomerDetails.OtherCustomer4').value">
+                                {{formErrors.OtherCustomer4}}
                             </span>
                         </div>
                         <div class="col-md-22">
                             <label class="text">Customer5</label>
                             <span>
-                                <input formControlName="OtherCustomer5" type="text" class="form-control input-sm" />
+                                <input formControlName="OtherCustomer5" (blur)="LogValidationErrors()" type="text"
+                                    class="form-control input-sm"
+                                    [ngClass]="{'is-invalid': formErrors.OtherCustomer5}" />
+                            </span>
+                            <span class="error-label-lg"
+                                *ngIf="formErrors.OtherCustomer5 && personalDetailsForm.get('CustomerDetails.OtherCustomer5').value">
+                                {{formErrors.OtherCustomer5}}
                             </span>
                         </div>
                     </div>
