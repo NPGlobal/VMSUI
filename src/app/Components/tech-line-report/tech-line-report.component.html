@@ -1,0 +1,66 @@
+<form *ngIf="TechLineReportForm" [formGroup]="TechLineReportForm" novalidate>
+
+  <div class="form-inline">
+    <div class="content-heading" align="left">Tech Line Report</div>
+
+    <div class="form-group col-md-3" style="margin-top: -15px;">
+      <label class="text">Tech Line No.</label>
+      <select type="text" class="form-control col-md-12  input-sm" formControlName="TechLineDD">
+        <option value="-1" selected="selected">Select Line No.</option>
+        <option *ngFor="let line of TechLineNos" value="{{line.TechLineNo}}">{{line.TechLineNo}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-1">
+      <input type="button" class="form-control col-md-12 btn btn-primary" (click)="GetTechLineReports()" value="Search">
+    </div>
+    <div class="form-group col-md-2  float-right">
+      <input type="button" class="form-control col-md-12 btn btn-primary" (click)="ExportToExcel()" value="Export To Excel">
+    </div>
+
+    <table style="margin: 15px" class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Line No.</th>
+          <th scope="col">Machine Name</th>
+          <th scope="col">Department</th>
+          <th scope="col">Status</th>
+          <th scope="col">Prop Effeciency</th>
+          <th scope="col">Prop Unit Count</th>
+          <th scope="col">Created By</th>
+          <th scope="col">Created On</th>
+          <th scope="col">Modified By</th>
+          <th scope="col">Modified On</th>
+          <th scope="col">App Rejected By</th>
+          <th scope="col">App Rejected On</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="12" *ngIf="TechLineReport && TechLineReport.length === 0">No Record Found</td>
+        </tr>
+        <tr *ngFor="let rpt of TechLineReport">
+          <td>{{rpt.TechLineNo}}</td>
+          <td>{{rpt.MachineName}}</td>
+          <td>{{rpt.Department}}</td>
+          <td>{{rpt.Status}}</td>
+          <td>{{rpt.ProposedEfficiency}}</td>
+          <td>{{rpt.ProposedUnitCount}}</td>
+          <td>{{rpt.CreatedBy}}</td>
+          <td>{{rpt.CreatedOn}}</td>
+          <td>{{rpt.ModifiedBy}}</td>
+          <td>{{rpt.ModifiedOn}}</td>
+          <td>{{rpt.AppRejectBy}}</td>
+          <td>{{rpt.AppRejectOn}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="col-md-12">
+      <hr>
+      <div class="page-footer md-auto mr-auto" style="margin-bottom: 10px">
+        <button [routerLink]="['/vendor']" type="button" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</form>

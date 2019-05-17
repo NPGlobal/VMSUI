@@ -92,6 +92,10 @@ export class LoginComponent implements OnInit {
         this.data = result;
         if (this.data.Table !== undefined) {
           this.isUserLoggedIn = true;
+
+          sessionStorage.setItem('isuseradmin',
+            result.Table3.findIndex(x => x.SysRoleCode === 'EPRADMIN') > -1 ? 'Y' : 'N');
+
           sessionStorage.setItem('userid', result.Table[0].LoginId);
           this._router.navigate(['/welcome']);
         } else {

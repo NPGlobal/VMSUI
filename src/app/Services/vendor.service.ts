@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vendor } from '../Models/vendor';
+
 import { OriginService } from './origin.service';
 import { BusinessProduction } from '../Models/business-production';
 import { VendorProduction } from '../Models/VendorProduction';
@@ -9,6 +10,7 @@ import { VendorProduction } from '../Models/VendorProduction';
 @Injectable({
   providedIn: 'root'
 })
+
 export class VendorService {
 
   constructor(private _http: HttpClient, private _origin: OriginService) { }
@@ -45,6 +47,13 @@ export class VendorService {
     const apiUrl = this._origin.origin + 'api/VendorTech/SaveVendorTechInfo';
     return this._http.post<any>(apiUrl, VendorTech);
   }
+
+  // ApproveTechLine
+  ApproveRejectTechLine(data: {content: string}): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorTech/ApproveRejectTechLine';
+    return this._http.post<any>(apiUrl, data);
+  }
+
   // For Vendor Staff Department
   GetVendorsDeptStaff(companycode: string, deptcode: string, vcode: string, type: string): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorStaff/GetVendorsDeptStaff/' + companycode + '/' + deptcode + '/' + vcode + '/' + type;
@@ -85,6 +94,11 @@ export class VendorService {
   // Get Technical Information for Edit
   GetTechDetails(id: number): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorTech/GetTechDetails/' + id;
+    return this._http.get<any>(apiUrl);
+  }
+
+  GetTechEfficiency(VendorShortCode: string): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorTech/GetTechEfficiency/' + VendorShortCode;
     return this._http.get<any>(apiUrl);
   }
 

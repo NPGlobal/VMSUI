@@ -8,7 +8,7 @@ import { MasterDataDetailsService } from 'src/app/Services/master-data-details.s
 import { VendorDocumentService } from 'src/app/Services/vendor-document.service';
 import { VendorDocument } from 'src/app/Models/vendor-document';
 import { HttpRequest } from '@angular/common/http';
-import {ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 declare var $: any;
 
 @Component({
@@ -32,8 +32,7 @@ export class DocumentComponent implements OnInit {
   isDeactVendor = false;
 
   // pattern
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
-
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   // for searching
   searchText = '';
   searchByAction = '';
@@ -233,6 +232,7 @@ export class DocumentComponent implements OnInit {
             this.totalItems = result.data.VendorDocCount[0].TotalVendors;
             this.GetVendorDocumentsList();
             this.Dismiss();
+            this.GetVendorDocuments(this.currentPage);
             this.modalCloseBtn.click();
             this.PopUpMessage = result.data.Msg[0].Message;
             this.alertModalButton.click();
@@ -315,6 +315,17 @@ export class DocumentComponent implements OnInit {
   }
 
   LogValidationErrors(group: FormGroup = this.docDetailsForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+
+      if (key !== 'FileName' && this.ValidationMessages[key] &&
+        this.ValidationMessages[key].required !== undefined &&
+        this.ValidationMessages[key].required !== null &&
+        abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.trim());
+      }
+    });
+
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {

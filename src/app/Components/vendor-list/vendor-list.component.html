@@ -55,7 +55,7 @@
         <td>
           <a [attr.title]= "vendor.Status.toUpperCase()==='A' ? 'Edit' : 'View'"
            [routerLink]="['/vendor', vendor.VendorCode, 'personal']">
-           <i [ngClass]= "vendor.Status.toUpperCase()==='A' ? 'fa fa-edit' : 'fa fa-user'" (click)="GetVendorStatus(vendor.Status)"></i>
+           <i [ngClass]= "vendor.Status.toUpperCase()==='A' ? 'fa fa-edit' : 'fa fa-user'" (click)="GetVendorStatus(vendor)"></i>
            <!-- <i *ngIf="vendor.Status==='A' || vendor.Status==='a'" class="fa fa-edit" (click)="GetVendorStatus(vendor.Status)"></i>
            <i *ngIf="vendor.Status==='D' || vendor.Status==='d'" class="fa fa-user" (click)="GetVendorStatus(vendor.Status)"></i> -->
           </a>
