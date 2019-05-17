@@ -32,6 +32,7 @@ import { DepartmentMappingNewComponent } from './Components/department-mapping-n
 import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor-assessment.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
+import { TechLineReportComponent } from './Components/tech-line-report/tech-line-report.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new
     DepartmentMappingComponent,
     DepartmentMappingNewComponent,
     VendorAssessmentComponent,
-    VendorAssessmentNewComponent
+    VendorAssessmentNewComponent,
+    TechLineReportComponent
   ],
   imports: [
     BrowserModule,

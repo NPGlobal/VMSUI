@@ -184,7 +184,7 @@
                     <label class="text">Pin Code<i class="mandatory">*</i>
                     </label>
                     <input formControlName="PIN" [pattern]="NumberPattern" (blur)="LogValidationErrors()" type="text"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PIN}">
+                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PIN}"  maxlength="6">
                     <span class="error-label-lg" *ngIf="formErrors.PIN">{{formErrors.PIN}}</span>
                   </div>
                 </div>
@@ -205,7 +205,7 @@
                   <div class="col-md-22">
                     <label class="text">Phone No.<i class="mandatory">*</i></label>
                     <input type="text" (blur)="LogValidationErrors()" formControlName="PrimaryContactPhone"
-                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}">
+                      class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}" maxlength="10">
                     <span class="error-label-lg"
                       *ngIf="formErrors.PrimaryContactPhone">{{formErrors.PrimaryContactPhone}}</span>
                   </div>
@@ -213,7 +213,7 @@
                     <label class="text">Fax</label>
                     <input type="text" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}" formControlName="PrimaryContactFax"
-                      class="form-control input-sm">
+                      class="form-control input-sm" maxlength="10">
                     <span class="error-label-lg"
                       *ngIf="formErrors.PrimaryContactFax">{{formErrors.PrimaryContactFax}}</span>
                   </div>
@@ -251,7 +251,7 @@
                     <label class="text">Phone No.</label>
                     <input type="text" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}"
-                      formControlName="SecondaryContactPhone" class="form-control input-sm">
+                      formControlName="SecondaryContactPhone" class="form-control input-sm" maxlength="10">
                     <span class="error-label-lg"
                       *ngIf="formErrors.SecondaryContactPhone">{{formErrors.SecondaryContactPhone}}</span>
                   </div>
@@ -259,7 +259,7 @@
                     <label class="text">Fax</label>
                     <input type="text" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}" formControlName="SecondaryContactFax"
-                      class="form-control input-sm">
+                      class="form-control input-sm" maxlength="10">
                     <span class="error-label-lg"
                       *ngIf="formErrors.SecondaryContactFax">{{formErrors.SecondaryContactFax}}</span>
                   </div>

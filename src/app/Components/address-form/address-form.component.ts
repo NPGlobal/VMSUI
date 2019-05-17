@@ -5,7 +5,7 @@ import { VendorAddress } from 'src/app/Models/vendor-address';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { ActivatedRoute } from '@angular/router';
-import {ValidationMessagesService} from 'src/app/Services/validation-messages.service';
+import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
 @Component({
   selector: 'app-address-form',
@@ -25,7 +25,7 @@ export class AddressFormComponent implements OnInit {
   //#endregion
 
   //#region Patterns
-  AddressAndRemarksPattern = /^[+,?-@\.\-#'&%\/\w\s]*$/;
+  AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
   PinPattern = '^[1-9][0-9]{5}$';
   NumberPattern: '^[1-9][0-9]*$';
   PhonePattern = '^[0-9]{10}$';
@@ -73,13 +73,13 @@ export class AddressFormComponent implements OnInit {
     },
     'Address1': {
       'required': '',
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'Address2': {
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'Address3': {
-      'pattern' : this._validationMess.AddressPattern
+      'pattern': this._validationMess.AddressPattern
     },
     'PrimaryContactName': {
       'required': '',
@@ -141,7 +141,7 @@ export class AddressFormComponent implements OnInit {
     private _vendorService: VendorService,
     private _mddService: MasterDataDetailsService,
     private _route: ActivatedRoute,
-    private _validationMess: ValidationMessagesService ) {
+    private _validationMess: ValidationMessagesService) {
     this.VendorAddress = this.CreateNewAddress();
   }
 
@@ -195,7 +195,7 @@ export class AddressFormComponent implements OnInit {
     // this.AddressForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.AddressForm);
     // });
-   }
+  }
   //#endregion
 
   //#region Data Binding
@@ -245,6 +245,17 @@ export class AddressFormComponent implements OnInit {
   LogValidationErrors(group: FormGroup = this.AddressForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
+
+      if (this.ValidationMessages[key] &&
+        this.ValidationMessages[key].required !== undefined &&
+        this.ValidationMessages[key].required !== null &&
+        abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.trim());
+      }
+    });
+
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
         this.LogValidationErrors(abstractControl);
       } else {
@@ -291,7 +302,7 @@ export class AddressFormComponent implements OnInit {
     this.VendorAddress.AddressReference = 'V';
     this.VendorAddress.VendorCode = this.VendorCode;
     this.VendorAddress.AddressCode = this.VendorAddress.AddressCode === null || this.VendorAddress.AddressCode === undefined ?
-    '' : this.VendorAddress.AddressCode;
+      '' : this.VendorAddress.AddressCode;
     this.VendorAddress.PrimaryContactName = this.AddressForm.get('PrimaryContactName').value;
     this.VendorAddress.PrimaryContactPhone = this.AddressForm.get('PrimaryContactPhone').value;
     this.VendorAddress.PrimaryContactFax = this.AddressForm.get('PrimaryContactFax').value === null

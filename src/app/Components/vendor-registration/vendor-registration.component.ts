@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, SimpleChanges, OnChanges, Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl, FormArray } from '@angular/forms';
 import { VendorService } from 'src/app/Services/vendor.service';
 import { OrgUnit } from 'src/app/Models/OrgUnit';
 import { Vendor } from 'src/app/Models/vendor';
 import { Router } from '@angular/router';
 import { MasterVendor } from 'src/app/Models/master-vendor';
 import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { MasterDataDetails } from 'src/app/Models/master-data-details';
+import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   ReferenceVendorList: Vendor[] = [];
   HasPHSelected: boolean;
   submitted = false;
+  vendDPType_MDDCode: string[];
+  DPTypeList: MasterDataDetails[];
+  dptypeArray: any[] = [];
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
   //#endregion
 
@@ -112,14 +117,16 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
     private _router: Router,
-    private _validationMess: ValidationMessagesService
-  ) {
-    // this.validationsMess[0] = new validations();
+    private _validationMess: ValidationMessagesService,
+    private _mDDService: MasterDataDetailsService) {
   }
 
   ngOnInit() {
+    this.vendDPType_MDDCode = [];
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+
+    this.GetMasterDataDetails('VendDPType', '-1');
 
     this._vendorService.GetPHList().subscribe(result => {
       this.AllPHList = result.data.Table;
@@ -164,13 +171,46 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       PHListCSV: '',
       Ref_VendorCode: '-1',
       IsJWVendor: [false],
-      IsDirectVendor: [false]
+      IsDirectVendor: [false],
+      DPTypeList: new FormArray([])
     });
+  }
+
+  GetMasterDataDetails(MDHCode: string, ParentMDDCode: string) {
+    this._mDDService.GetMasterDataDetails(MDHCode, ParentMDDCode).subscribe((result) => {
+      switch (MDHCode) {
+        case 'VendDPType': {
+          this.DPTypeList = result.data.Table;
+          this.UpdateVendorDPType();
+          break;
+        }
+      }
+    });
+  }
+
+  UpdateVendorDPType() {
+    if (this.dptypeArray !== null && this.vendDPType_MDDCode !== null) {
+      for (let i = 0; i < this.vendDPType_MDDCode.length; i++) {
+        for (let j = 0; j < this.DPTypeList.length; j++) {
+          if (this.vendDPType_MDDCode[i] === this.DPTypeList[j].MDDCode) {
+            this.DPTypeList[j].Checked = true;
+          }
+        }
+      }
+    }
   }
   //#endregion
 
   //#region Form Validation
   logValidationErrors(group: FormGroup = this.RegistrationForm): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+
+      if (this.ValidationMessages[key] && this.ValidationMessages[key].required && abstractControl.value !== null) {
+        abstractControl.patchValue(abstractControl.value.trim());
+      }
+    });
+
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {
@@ -204,11 +244,17 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
     if (this.RegistrationForm.get('IsDirectVendor').value) {
       this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+    } else {
+      this.DPTypeList.filter(x => x.Checked = false);
     }
   }
   //#endregion
 
   //#region Dropdown Change Events
+  onDPTypeChange(dpType: string, isChecked: boolean) {
+    this.DPTypeList.find(x => x.MDDCode === dpType).Checked = isChecked;
+  }
+
   MoveToSelectedPHList() {
     const phValues = this.RegistrationForm.get('PHList').value as Array<string>;
     const storeValues = this.RegistrationForm.get('StoreList').value as Array<string>;
@@ -314,6 +360,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
   dismiss() {
     this.submitted = false;
+    this.CodeExists = false;
     this.RegistrationForm.reset();
     this.InitializeFormControls();
     this.logValidationErrors();
@@ -324,6 +371,16 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   //#endregion
 
   //#region Save Form Data
+  makeVendorDPTypeString(): string {
+    let dpType = '';
+    dpType = this.DPTypeList.filter(function (el) {
+      return el.Checked;
+    }).map(function (val) {
+      return val.MDDCode;
+    }).join();
+    return dpType;
+  }
+
   SaveVendorPrimaryInfo() {
     this.submitted = true;
 
@@ -355,6 +412,8 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join();
+
+    vendor.VendDPType_MDDCode = this.makeVendorDPTypeString();
 
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
       statusObj = result;

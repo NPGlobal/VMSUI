@@ -48,4 +48,7 @@ export class Vendor {
     Vendor_Depts: string;
     CreatedOn: Date;
     MasterVendorName: string;
+    IsSemiDP: boolean;
+    IsDesignDP: boolean;
+    VendDPType_MDDCode: string;
 }

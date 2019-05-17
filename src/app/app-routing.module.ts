@@ -16,6 +16,7 @@ import { AddressFormComponent } from './Components/address-form/address-form.com
 import { DepartmentMappingNewComponent } from './Components/department-mapping-new/department-mapping-new.component';
 import { LayoutComponent } from './Components/layout/layout.component';
 import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
+import { TechLineReportComponent } from './Components/tech-line-report/tech-line-report.component';
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
           { path: 'document', component: DocumentComponent },
           { path: 'bank', component: BankDetailsComponent },
           { path: 'department', component: DepartmentMappingNewComponent },
-          { path: 'address', component: AddressFormComponent }
+          { path: 'address', component: AddressFormComponent },
+          { path: 'techlinereport', component: TechLineReportComponent}
         ]
       }
     ]

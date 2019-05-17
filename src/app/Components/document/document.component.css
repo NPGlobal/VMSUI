@@ -1,10 +1,18 @@
-.modal label{font-size: 13px;}
-.table > tbody > tr > td{
+.modal label {
+    font-size: 13px;
+}
+
+.table>tbody>tr>td {
     font-family: verdana;
     color: #000000;
     font-size: 13px;
     /*font-weight: 700;*/
 }
+
 input[type="text"], select {
-    margin-bottom:0px !important;
+    margin-bottom: 0px !important;
+}
+
+.filename {
+    padding-top: 1.5px;
 }
