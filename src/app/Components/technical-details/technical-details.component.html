@@ -37,6 +37,7 @@
         <th scope="col" colspan="2">Approved</th>
         <th scope="col" colspan="2">Proposed</th>
         <th *ngIf="IsUserAdmin" scope="col" rowspan="2">Approve/Reject</th>
+        <th *ngIf="!IsUserAdmin" scope="col" rowspan="2">Undo Request</th>
         <th scope="col" rowspan="2">Action</th>
       </tr>
       <tr>
@@ -64,9 +65,9 @@
             <td>{{item.UnitCount}}</td>
             <td>{{item.ProposedEfficiency}}</td>
             <td>{{item.ProposedUnitCount}}</td>
-            <td *ngIf="IsUserAdmin">
+            <td>
               <span>{{item.ActionPerformed}}</span>
-              <div>
+              <div *ngIf="IsUserAdmin">
                 <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
                   data-toggle="modal" (click)="ApproveRejectMachine(item, 'Approve')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-up"></i>
@@ -75,6 +76,13 @@
                 <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2"
                   data-toggle="modal" (click)="ApproveRejectMachine(item, 'Reject')" data-target="#deleteModal">
                   <i class="fa fa-thumbs-down"></i>
+                </a>
+              </div>
+
+              <div *ngIf="!IsUserAdmin">
+                <a *ngIf="item.VendorTechDetailsProposedID" title="Undo Request"
+                  href="javascript:void(0)" data-toggle="modal" (click)="UndoMachineRequest(item, 'U')"
+                  data-target="#deleteModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-undo"></i>
                 </a>
               </div>
             </td>
@@ -91,6 +99,14 @@
                 <a *ngIf="!vendor.IsLineApprovable && (!vendor.IsLineBlocked && !vendor.IsLineDeleted)"
                   title="Edit Machine" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
                   data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
+                </a>
+
+                <!-- Added by Shubhi on 17-05-2019 for undo icon -->
+                <a *ngIf="!IsUserAdmin && (vendor.IsLineBlocked || vendor.IsLineDeleted || vendor.IsLineApprovable)"
+                  title="Undo Request" href="javascript:void(0)" data-toggle="modal"
+                  (click)="UndoLineRequest(vendor, 'U')" data-target="#deleteModal" data-backdrop="static"
+                  data-keyboard="false">
+                  <i class="fa fa-undo"></i>
                 </a>
 
                 <a *ngIf="vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)" class="ml-2"
@@ -300,6 +316,12 @@
                         </a>
                         <a title="Delete Machine" href="javascript:void(0)" class="ml-2" (click)="DeleteMachine(m)"><i
                             class="fa fa-trash"></i>
+                        </a>
+                        <!-- Added by Shubhi on 17-05-2019 for undo icon -->
+                        <a *ngIf="!IsUserAdmin && m.status && ActionPerformed === 'Deleted'" title="Undo Request"
+                          href="javascript:void(0)" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'U')"
+                          data-target="#deleteModal" data-backdrop="static" data-keyboard="false"><i
+                            class="fa fa-undo"></i>
                         </a>
                       </div>
                     </td>

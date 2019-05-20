@@ -49,8 +49,14 @@ export class VendorService {
   }
 
   // ApproveTechLine
-  ApproveRejectTechLine(data: {content: string}): Observable<any> {
+  ApproveRejectTechLine(data: { content: string }): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorTech/ApproveRejectTechLine';
+    return this._http.post<any>(apiUrl, data);
+  }
+
+  // ApproveTechLine
+  UndoTechRequest(data: { content: string }): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorTech/UndoTechRequest';
     return this._http.post<any>(apiUrl, data);
   }
 

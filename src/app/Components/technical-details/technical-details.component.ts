@@ -118,7 +118,8 @@ export class TechnicalDetailsComponent implements OnInit {
 
   DeleteModalHeader: string;
   DeleteModalBody: string;
-  IsGoingToApprove: boolean;
+  IsGoingToApprove = false;
+  IsGoingToUndo = false;
   //#endregion
 
   unitCountList(n: number): any[] {
@@ -378,7 +379,9 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DeleteTechDetails() {
-    if (!this.IsGoingToApprove) {
+    if (this.IsGoingToUndo) {
+      this.UndoTechRequest();
+    } else if (!this.IsGoingToApprove) {
       this.sendFormData();
     } else if (this.IsGoingToApprove) {
       this.ApproveRejectTechLine();
@@ -393,14 +396,19 @@ export class TechnicalDetailsComponent implements OnInit {
 
     this.vendorTechDefault.VendorTechDetails.filter(x => x.Status = status);
 
+    // Added by Shubhi on 17-05-2019 for undo
+    //#region Undo Changes
     this.DeleteModalHeader = 'Ready to ' + (this.vendorTechDefault !== undefined &&
       (this.vendorTechDefault.Status === 'D' ? 'Delete' :
-        (this.vendorTechDefault.Status === 'B' ? 'Deactivate' : 'Activate'))) + '?';
+        (this.vendorTechDefault.Status === 'B' ? 'Deactivate' :
+          (this.vendorTechDefault.Status === 'O' ? 'Activate' : ''))
+      )) + '?';
 
     this.DeleteModalBody = (this.vendorTechDefault !== undefined &&
       (this.vendorTechDefault.Status === 'D' ? 'This record no longer will be available' :
         (this.vendorTechDefault.Status === 'B' ? 'This record no longer will be available for allocation' :
-          'This record will be available for allocation'))) + ' in the system.<br>Are you sure ?';
+          (this.vendorTechDefault.Status === 'O' ? 'This record will be available for allocation' :
+            '')))) + ' in the system.<br>Are you sure ?';
 
     this.InitializeFormControls();
   }
@@ -463,6 +471,7 @@ export class TechnicalDetailsComponent implements OnInit {
   DismissDeleteModal() {
     this.inputXml = '';
     this.IsGoingToApprove = false;
+    this.IsGoingToUndo = false;
     this.vendorTechDefault = new VendorTechDefault();
     this.dltModalCloseButton.click();
   }
@@ -810,6 +819,64 @@ export class TechnicalDetailsComponent implements OnInit {
   }
   specChange(event) {
     this.SetEfficiencyAsDefault();
+  }
+  //#endregion
+
+  //#region UndoFunctionality
+  UndoLineRequest(vendorTechDefault: VendorTechDefault) {
+    this.IsGoingToUndo = true;
+    this.SetUndoInputString('Line', null, vendorTechDefault);
+    this.DeleteModalHeader = 'Ready to Undo?';
+    this.DeleteModalBody = 'Are you sure you want to undo?';
+  }
+
+  UndoMachineRequest(vendorTech: VendorTech) {
+    this.IsGoingToUndo = true;
+    this.SetUndoInputString('Machine', vendorTech);
+    this.DeleteModalHeader = 'Ready to Undo?';
+    this.DeleteModalBody = 'Are you sure you want to undo?';
+  }
+
+  SetUndoInputString(type: string, vendortech?: VendorTech, vendorTechDefault?: VendorTechDefault) {
+    this.inputXml = '';
+    if (type === 'Line') {
+      this.inputXml = '<Data>' +
+        '<UndoRequest ' +
+        'UserId="' + sessionStorage.getItem('userid') + '" ' +
+        'VendorShortCode="' + this.vendorcode + '" ' +
+        'LineNumber="' + vendorTechDefault.TechLineNo + '" ' +
+        'MachineId =""' +
+        '></UndoRequest>' +
+        '</Data>';
+    } else {
+      this.inputXml = '<Data>' +
+        '<UndoRequest ' +
+        'UserId="' + sessionStorage.getItem('userid') + '" ' +
+        'VendorShortCode="' + this.vendorcode + '" ' +
+        'LineNumber="' + vendortech.TechLineNo + '" ' +
+        'MachineId ="' + vendortech.VendorTechConfigID + '"' +
+        '></UndoRequest>' +
+        '</Data>';
+    }
+  }
+
+  UndoTechRequest() {
+    const xmldata = this.inputXml;
+    this._vendorService.UndoTechRequest({ content: xmldata }).subscribe((result) => {
+      if (result.Error === '') {
+        if (result.data.Table[0].Result === 0) {
+          this.PopUpMessage = result.data.Table[0].Message;
+          this.GetVendorTech(1);
+        } else {
+          this.PopUpMessage = result.data.Table[0].Message;
+        }
+      } else {
+        this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+      }
+      this.alertButton.click();
+    });
+
+    this.DismissDeleteModal();
   }
   //#endregion
 }
