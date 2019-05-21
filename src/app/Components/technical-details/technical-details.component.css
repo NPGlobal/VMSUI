@@ -30,3 +30,8 @@ input[type="text"], select {
     background-color: lightsalmon;
     border-color: lightsalmon;
 }
+
+.scrollableTable {
+    overflow-y: auto;
+    max-height: 250px;
+}

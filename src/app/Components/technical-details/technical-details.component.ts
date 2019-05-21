@@ -713,7 +713,12 @@ export class TechnicalDetailsComponent implements OnInit {
           this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsProposedID = null;
         }
         this.vendorTechDefault.VendorTechDetails[index].ActionPerformed = 'Deleted';
-        this.vendorTechDefault.VendorTechDetails[index].Status = this.IsUserAdmin ? 'D' : 'P';
+        if (this.IsUserAdmin || (!this.IsUserAdmin && this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID === null)) {
+          this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
+        } else {
+          this.vendorTechDefault.VendorTechDetails[index].Status = 'P';
+        }
+
       } else {
         this.vendorTechDefault.VendorTechDetails.splice(index, 1);
       }
