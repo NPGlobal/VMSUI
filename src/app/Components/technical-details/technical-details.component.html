@@ -67,23 +67,25 @@
             <td>{{item.ProposedUnitCount}}</td>
             <td>
               <span>{{item.ActionPerformed}}</span>
-              <div *ngIf="IsUserAdmin">
-                <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="ApproveRejectMachine(item, 'Approve')" data-target="#deleteModal">
-                  <i class="fa fa-thumbs-up"></i>
-                </a>
+              <div *ngIf="!isDeactVendor">
+                <div *ngIf="IsUserAdmin">
+                  <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
+                    data-toggle="modal" (click)="ApproveRejectMachine(item, 'Approve')" data-target="#deleteModal">
+                    <i class="fa fa-thumbs-up"></i>
+                  </a>
 
-                <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="ApproveRejectMachine(item, 'Reject')" data-target="#deleteModal">
-                  <i class="fa fa-thumbs-down"></i>
-                </a>
-              </div>
+                  <a *ngIf="item.IsApprovable" title="Reject Machine" href="javascript:void(0)" class="ml-2"
+                    data-toggle="modal" (click)="ApproveRejectMachine(item, 'Reject')" data-target="#deleteModal">
+                    <i class="fa fa-thumbs-down"></i>
+                  </a>
+                </div>
 
-              <div *ngIf="!IsUserAdmin">
-                <a *ngIf="item.VendorTechDetailsProposedID" title="Undo Request"
-                  href="javascript:void(0)" data-toggle="modal" (click)="UndoMachineRequest(item, 'U')"
-                  data-target="#deleteModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-undo"></i>
-                </a>
+                <div *ngIf="!IsUserAdmin">
+                  <a *ngIf="item.VendorTechDetailsProposedID" title="Undo Request" href="javascript:void(0)"
+                    data-toggle="modal" (click)="UndoMachineRequest(item, 'U')" data-target="#deleteModal"
+                    data-backdrop="static" data-keyboard="false"><i class="fa fa-undo"></i>
+                  </a>
+                </div>
               </div>
             </td>
             <ng-container *ngIf="isDeactVendor===true">
@@ -101,20 +103,21 @@
                   data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
                 </a>
 
-                <a *ngIf="!IsUserAdmin && vendor.IsLineApprovable"
-                  title="Undo Request" href="javascript:void(0)" data-toggle="modal"
-                  (click)="UndoLineRequest(vendor, 'U')" data-target="#deleteModal" data-backdrop="static"
-                  data-keyboard="false">
+                <a *ngIf="!IsUserAdmin && vendor.IsLineApprovable" title="Undo Request" href="javascript:void(0)"
+                  data-toggle="modal" (click)="UndoLineRequest(vendor, 'U')" data-target="#deleteModal"
+                  data-backdrop="static" data-keyboard="false">
                   <i class="fa fa-undo"></i>
                 </a>
 
-                <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="ApproveRejectLine(vendor, 'ApproveLine')" data-target="#deleteModal">
+                <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)"
+                  class="ml-2" data-toggle="modal" (click)="ApproveRejectLine(vendor, 'ApproveLine')"
+                  data-target="#deleteModal">
                   <i class="fa fa-thumbs-up"></i>
                 </a>
 
-                <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Reject Line" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="ApproveRejectLine(vendor, 'RejectLine')" data-target="#deleteModal">
+                <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Reject Line" href="javascript:void(0)"
+                  class="ml-2" data-toggle="modal" (click)="ApproveRejectLine(vendor, 'RejectLine')"
+                  data-target="#deleteModal">
                   <i class="fa fa-thumbs-down"></i>
                 </a>
 

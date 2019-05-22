@@ -453,7 +453,6 @@ export class TechnicalDetailsComponent implements OnInit {
   }
   ApproveRejectTechLine() {
     const xmldata = this.inputXml;
-    this.DismissDeleteModal();
     this._vendorService.ApproveRejectTechLine({ content: xmldata }).subscribe((result) => {
       if (result.Error === '') {
         if (result.data.Table[0].Result === 0) {
@@ -467,6 +466,8 @@ export class TechnicalDetailsComponent implements OnInit {
       }
       this.alertButton.click();
     });
+
+    this.DismissDeleteModal();
   }
   DismissDeleteModal() {
     this.inputXml = '';
@@ -712,7 +713,9 @@ export class TechnicalDetailsComponent implements OnInit {
         if (this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID) {
           this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsProposedID = null;
         }
+
         this.vendorTechDefault.VendorTechDetails[index].ActionPerformed = 'Deleted';
+
         if (this.IsUserAdmin || (!this.IsUserAdmin && this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID === null)) {
           this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
         } else {
