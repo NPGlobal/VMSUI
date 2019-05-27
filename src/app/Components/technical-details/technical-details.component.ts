@@ -154,12 +154,13 @@ export class TechnicalDetailsComponent implements OnInit {
 
   //#region  Initialization
   InitializeFormControls() {
-    // const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
+    const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === '-');
+    const defaultEfficiency = isDefaultEfficiencyDisabled ? null : this.vendorTechDefault.DefaultEfficiency;
     this.techDetailsForm = this._fb.group({
       Department: [null, [Validators.required]],
       VendorTechConfigID: [null, [Validators.required]],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
-      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
+      DefaultEfficiency: [{ value: defaultEfficiency, disabled: isDefaultEfficiencyDisabled }],
       UnitCount: [null, [Validators.required]],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks, Validators.pattern(this.AddressAndRemarksPattern)],
@@ -277,7 +278,12 @@ export class TechnicalDetailsComponent implements OnInit {
     } else {
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('Department').value, this.vendorcode, 'TechSpec')
         .subscribe((result) => {
-          this.techSpecList = result;
+          if (this.vendorTechDefault.TechLineNo === '-') {
+            this.techSpecList = result.filter(x => x.VendorConfigID !== 88);
+          } else {
+            this.techSpecList = result;
+          }
+
           if (this.techDetailsForm.get('VendorTechConfigID').value !== null) {
             const strArray = this.techSpecList.find((obj) => obj.VendorConfigID ===
               Number(this.techDetailsForm.get('VendorTechConfigID').value));
@@ -308,14 +314,16 @@ export class TechnicalDetailsComponent implements OnInit {
       if (this.vendorTechDefault.VendorTechDetails !== undefined && this.vendorTechDefault.VendorTechDetails !== null
         && this.vendorTechDefault.VendorTechDetails.length > 0) {
 
-        this.vendorTechDefault.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
+        this.vendorTechDefault.DefaultEfficiency = this.vendorTechDefault.TechLineNo === '-' ?
+          this.DefaultEfficiency : this.techDetailsForm.get('DefaultEfficiency').value;
         this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
         this.vendorTechDefault.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
         this.vendorTechDefault.Status = st;
         this.vendorTechDefault.VendorShortCode = this.vendorcode;
 
         const defaultEff = this.techDetailsForm.get('DefaultEfficiency').value;
-        if ((defaultEff === '' || defaultEff === null) || !this.CheckEfficiencyFormat(defaultEff)) {
+        if (this.vendorTechDefault.TechLineNo !== '-' &&
+          ((defaultEff === '' || defaultEff === null) || !this.CheckEfficiencyFormat(defaultEff))) {
           this.LogEfficiencyValidation('DefaultEfficiency');
           return;
         }

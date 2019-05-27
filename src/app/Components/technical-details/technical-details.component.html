@@ -57,7 +57,7 @@
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               {{'Line ' + vendor.TechLineNo}}
               <br>
-              {{'Default Efficiency: ' + vendor.DefaultEfficiency}}
+              {{'Default Efficiency: ' + (vendor.TechLineNo === '-' ? 'NA' : vendor.DefaultEfficiency)}}
             </td>
             <td>{{item.MachineType}}</td>
             <td>{{item.MachineName}}</td>
