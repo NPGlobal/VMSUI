@@ -312,7 +312,7 @@
                     <td>{{m.Status}}</td>
                     <td>{{m.Remarks}}</td>
                     <td>
-                      <div *ngIf="m.ActionPerformed !== 'Deleted'">
+                      <div *ngIf="m.ActionPerformed !== 'Deleted' && !(IsUserAdmin && m.IsApprovable)">
                         <a title="Edit Machine" href="javascript:void(0)" (click)="EditMachine(m)">
                           <i class="fa fa-edit"></i>
                         </a>
