@@ -155,7 +155,7 @@ export class TechnicalDetailsComponent implements OnInit {
   //#region  Initialization
   InitializeFormControls() {
     const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === '-');
-    const defaultEfficiency = isDefaultEfficiencyDisabled ? null : this.vendorTechDefault.DefaultEfficiency;
+    const defaultEfficiency = isDefaultEfficiencyDisabled ? 'NA' : this.vendorTechDefault.DefaultEfficiency;
     this.techDetailsForm = this._fb.group({
       Department: [null, [Validators.required]],
       VendorTechConfigID: [null, [Validators.required]],
@@ -296,9 +296,10 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   SetEfficiencyAsDefault() {
-    this.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
+    this.DefaultEfficiency = this.vendorTechDefault.TechLineNo !== '-' ?
+      this.techDetailsForm.get('DefaultEfficiency').value : this.DefaultEfficiency;
     this.vendorTechDefault.DefaultEfficiency = this.DefaultEfficiency;
-    this.techDetailsForm.get('Efficiency').patchValue(this.techDetailsForm.get('DefaultEfficiency').value);
+    this.techDetailsForm.get('Efficiency').patchValue(this.vendorTechDefault.DefaultEfficiency);
   }
   //#endregion
 
@@ -409,14 +410,16 @@ export class TechnicalDetailsComponent implements OnInit {
     this.DeleteModalHeader = 'Ready to ' + (this.vendorTechDefault !== undefined &&
       (this.vendorTechDefault.Status === 'D' ? 'Delete' :
         (this.vendorTechDefault.Status === 'B' ? 'Deactivate' :
-          (this.vendorTechDefault.Status === 'O' ? 'Activate' : ''))
+          (this.vendorTechDefault.Status === 'O' ? 'Activate' :
+            (this.vendorTechDefault.Status === 'E' ? 'Enable' : '')))
       )) + '?';
 
     this.DeleteModalBody = (this.vendorTechDefault !== undefined &&
       (this.vendorTechDefault.Status === 'D' ? 'This record no longer will be available' :
         (this.vendorTechDefault.Status === 'B' ? 'This record no longer will be available for allocation' :
           (this.vendorTechDefault.Status === 'O' ? 'This record will be available for allocation' :
-            '')))) + ' in the system.<br>Are you sure ?';
+            (this.vendorTechDefault.Status === 'E' ? 'This record will be available for allocation' :
+              ''))))) + ' in the system.<br>Are you sure ?';
 
     this.InitializeFormControls();
   }
@@ -443,8 +446,8 @@ export class TechnicalDetailsComponent implements OnInit {
         'UserId="' + sessionStorage.getItem('userid') + '" ' +
         'VendorShortCode="' + this.vendorcode + '" ' +
         'LineNumber="' + vendortech.TechLineNo + '" ' +
-        'MachineId ="" ' +
-        'IsApprove ="' + (status === 'ApproveLine' ? 1 : 0) + '">' +
+        'MachineId="" ' +
+        'IsApprove="' + (status === 'ApproveLine' ? 1 : 0) + '">' +
         '</ApproveMachine>' +
         '</Data>';
     } else {
@@ -525,6 +528,7 @@ export class TechnicalDetailsComponent implements OnInit {
         this.vendorTech.MachineName = this.techSpecList.filter((el) =>
           el.VendorConfigID === Number(this.vendorTech.VendorTechConfigID))[0].TechSpec;
         this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
+        this.vendorTech.StatusName = this.IsUserAdmin ? 'Active' : 'Pending';
         this.vendorTech.Remarks = this.techDetailsForm.get('Remarks').value;
       }
 
@@ -559,6 +563,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
             if (this.isTechDetailEditing > 0) {
               this.vendorTech.Status = 'P';
+              this.vendorTech.StatusName = 'Pending';
 
             } else {
 
@@ -604,6 +609,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
             if (this.isTechDetailEditing > 0) {
               this.vendorTech.Status = 'A';
+              this.vendorTech.StatusName = 'Active';
 
             } else {
 
@@ -726,8 +732,10 @@ export class TechnicalDetailsComponent implements OnInit {
 
         if (this.IsUserAdmin || (!this.IsUserAdmin && this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID === null)) {
           this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
+          this.vendorTechDefault.VendorTechDetails[index].StatusName = 'Deleted';
         } else {
           this.vendorTechDefault.VendorTechDetails[index].Status = 'P';
+          this.vendorTechDefault.VendorTechDetails[index].StatusName = 'Pending';
         }
 
       } else {

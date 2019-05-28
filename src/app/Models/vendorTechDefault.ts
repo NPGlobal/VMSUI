@@ -13,5 +13,6 @@ export class VendorTechDefault {
     IsLineDeleted: boolean;
     IsLineActivated: boolean;
     IsLineBlockable: boolean;
+    IsLineEnabled: boolean;
     VendorTechDetails: VendorTech[];
 }
