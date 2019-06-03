@@ -39,3 +39,7 @@ input[type="text"], select {
 .deleted-line td {
     background-color: beige;
 }
+
+.rejected-line td {
+    background-color: bisque;
+}

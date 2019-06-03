@@ -53,7 +53,8 @@
       </tr>
       <ng-container *ngFor="let vendor of pagedItems;index as i;">
         <ng-container *ngFor="let item of vendor.VendorTechDetails;index as j;">
-          <tr [attr.class]="vendor.IsLineDeleted ? 'deleted-line' : ''">
+          <tr [ngClass]="{'deleted-line' : vendor.IsLineDeleted,
+                          'rejected-line' : vendor.IsLineRejected}">
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               {{'Line ' + vendor.TechLineNo}}
               <br>
