@@ -53,7 +53,7 @@
       </tr>
       <ng-container *ngFor="let vendor of pagedItems;index as i;">
         <ng-container *ngFor="let item of vendor.VendorTechDetails;index as j;">
-          <tr>
+          <tr [attr.class]="vendor.IsLineDeleted ? 'deleted-line' : ''">
             <td *ngIf="j === 0" [attr.rowspan]="(j === 0 ? vendor.VendorTechDetails.length : 0)">
               {{'Line ' + vendor.TechLineNo}}
               <br>
@@ -66,8 +66,8 @@
             <td>{{item.ProposedEfficiency}}</td>
             <td>{{item.ProposedUnitCount}}</td>
             <td>
-              <span>{{item.ActionPerformed}}</span>
-              <div *ngIf="!isDeactVendor">
+              <span *ngIf="!vendor.IsLineRejected">{{item.ActionPerformed}}</span>
+              <div *ngIf="!isDeactVendor && !vendor.IsLineRejected">
                 <div *ngIf="IsUserAdmin">
                   <a *ngIf="item.IsApprovable" title="Approve Machine" href="javascript:void(0)" class="ml-2"
                     data-toggle="modal" (click)="ApproveRejectMachine(item, 'Approve')" data-target="#deleteModal">
@@ -99,53 +99,59 @@
                   <span *ngIf="vendor.IsLineActivated">Activated</span>
                   <span *ngIf="vendor.IsLineEnabled">Enable</span>
                 </div>
-                <a *ngIf="!vendor.IsLineApprovable && (!vendor.IsLineBlocked && !vendor.IsLineDeleted)"
-                  title="Edit Line" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
-                  data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
-                </a>
+                <div *ngIf="vendor.IsLineRejected">
+                  <span>Rejected</span>
+                </div>
 
-                <a *ngIf="!IsUserAdmin && vendor.IsLineApprovable" title="Undo Request" href="javascript:void(0)"
-                  data-toggle="modal" (click)="UndoLineRequest(vendor, 'U')" data-target="#deleteModal"
-                  data-backdrop="static" data-keyboard="false">
-                  <i class="fa fa-undo"></i>
-                </a>
+                <div *ngIf="!vendor.IsLineRejected">
+                  <a *ngIf="!vendor.IsLineApprovable && (!vendor.IsLineBlocked && !vendor.IsLineDeleted)"
+                    title="Edit Line" href="javascript:void(0)" data-toggle="modal" (click)="EditTechDetails(vendor)"
+                    data-target="#myModal" data-backdrop="static" data-keyboard="false"><i class="fa fa-edit"></i>
+                  </a>
 
-                <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)"
-                  class="ml-2" data-toggle="modal" (click)="ApproveRejectLine(vendor, 'ApproveLine')"
-                  data-target="#deleteModal">
-                  <i class="fa fa-thumbs-up"></i>
-                </a>
+                  <a *ngIf="!IsUserAdmin && vendor.IsLineApprovable" title="Undo Request" href="javascript:void(0)"
+                    data-toggle="modal" (click)="UndoLineRequest(vendor, 'U')" data-target="#deleteModal"
+                    data-backdrop="static" data-keyboard="false">
+                    <i class="fa fa-undo"></i>
+                  </a>
 
-                <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Reject Line" href="javascript:void(0)"
-                  class="ml-2" data-toggle="modal" (click)="ApproveRejectLine(vendor, 'RejectLine')"
-                  data-target="#deleteModal">
-                  <i class="fa fa-thumbs-down"></i>
-                </a>
+                  <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Approve Line" href="javascript:void(0)"
+                    class="ml-2" data-toggle="modal" (click)="ApproveRejectLine(vendor, 'ApproveLine')"
+                    data-target="#deleteModal">
+                    <i class="fa fa-thumbs-up"></i>
+                  </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlockable && !vendor.IsLineDeleted)"
-                  title="Delete Line" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal">
-                  <i class="fa fa-trash"></i>
-                </a>
+                  <a *ngIf="IsUserAdmin && vendor.IsLineApprovable" title="Reject Line" href="javascript:void(0)"
+                    class="ml-2" data-toggle="modal" (click)="ApproveRejectLine(vendor, 'RejectLine')"
+                    data-target="#deleteModal">
+                    <i class="fa fa-thumbs-down"></i>
+                  </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlockable 
+                  <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineBlockable && !vendor.IsLineDeleted)"
+                    title="Delete Line" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                    (click)="DeleteTechDetailsPopup(vendor, 'D')" data-target="#deleteModal">
+                    <i class="fa fa-trash"></i>
+                  </a>
+
+                  <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlockable 
                 && !vendor.IsLineBlocked)" title="Deactivate Line" href="javascript:void(0)" class="ml-2"
-                  data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i
-                    class="fa fa-remove"></i>
-                </a>
+                    data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'B')" data-target="#deleteModal"><i
+                      class="fa fa-remove"></i>
+                  </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlocked &&
+                  <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && !vendor.IsLineDeleted && vendor.IsLineBlocked &&
                 vendor.IsLineBlockable && !vendor.IsLineActivated)" title="Activate Line" href="javascript:void(0)"
-                  class="ml-2" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'O')"
-                  data-target="#deleteModal">
-                  <i class="fa fa-check"></i>
-                </a>
+                    class="ml-2" data-toggle="modal" (click)="DeleteTechDetailsPopup(vendor, 'O')"
+                    data-target="#deleteModal">
+                    <i class="fa fa-check"></i>
+                  </a>
 
-                <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineDeleted)"
-                  title="Enable Line" href="javascript:void(0)" class="ml-2" data-toggle="modal"
-                  (click)="DeleteTechDetailsPopup(vendor, 'E')" data-target="#deleteModal">
-                  <i class="fa fa-check"></i>
-                </a>
+                  <a *ngIf="vendor.TechLineNo.trim()!=='-' && (!vendor.IsLineApprovable && vendor.IsLineDeleted)"
+                    title="Enable Line" href="javascript:void(0)" class="ml-2" data-toggle="modal"
+                    (click)="DeleteTechDetailsPopup(vendor, 'E')" data-target="#deleteModal">
+                    <i class="fa fa-check"></i>
+                  </a>
+                </div>
               </td>
             </ng-container>
           </tr>

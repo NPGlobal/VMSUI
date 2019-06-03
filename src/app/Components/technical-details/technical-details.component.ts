@@ -32,6 +32,7 @@ export class TechnicalDetailsComponent implements OnInit {
   //#region Form Variables
   techDetailsForm: FormGroup;
   vendorTechDefault: VendorTechDefault;
+  existingDefaultTech: VendorTechDefault;
   vendorTech: VendorTech;
   deptList: any[];
   techSpecList: any[];
@@ -190,7 +191,18 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   EditTechDetails(techDefault: VendorTechDefault) {
-    this.SetEfficiencyAndMaxLine(techDefault);
+    if (techDefault !== null) {
+      this._vendorService.GetVendorTechLine(this.vendorcode, techDefault.TechLineNo).subscribe((result) => {
+        if (result.Error === '') {
+          this.SetEfficiencyAndMaxLine(result.data);
+        } else {
+          this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+          this.alertButton.click();
+        }
+      });
+    } else {
+      this.SetEfficiencyAndMaxLine(techDefault);
+    }
   }
 
   BindAndInitializeForm(techDefault: VendorTechDefault) {
@@ -225,6 +237,8 @@ export class TechnicalDetailsComponent implements OnInit {
     } else {
       this.vendorTechDefault.VendorTechDetails = [];
     }
+
+    this.existingDefaultTech = JSON.parse(JSON.stringify(this.vendorTechDefault));
     this.DisableSaveFormButton();
     this.InitializeFormControls();
   }
@@ -713,7 +727,7 @@ export class TechnicalDetailsComponent implements OnInit {
     if (strArray !== undefined) {
       const index = this.vendorTechDefault.VendorTechDetails.indexOf(strArray);
 
-      const existingDefaultTech = this.TechDefaultLst.find(x => x.TechLineNo === this.vendorTechDefault.TechLineNo);
+      const existingDefaultTech = this.existingDefaultTech;
 
       let existingIndex = -1;
 

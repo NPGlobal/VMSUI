@@ -184,4 +184,9 @@ export class VendorService {
     const apiUrl = this._origin.origin + 'api/Vendor/GetVendorsWithDepartments/' + shortName;
     return this._http.get<any>(apiUrl);
   }
+
+  GetVendorTechLine(vendorCode: string, techLineNo: string): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorTech/GetVendorTechLine/' + vendorCode + '/' + techLineNo;
+    return this._http.get<any>(apiUrl);
+  }
 }

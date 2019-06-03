@@ -35,3 +35,7 @@ input[type="text"], select {
     overflow-y: auto;
     max-height: 250px;
 }
+
+.deleted-line td {
+    background-color: beige;
+}
