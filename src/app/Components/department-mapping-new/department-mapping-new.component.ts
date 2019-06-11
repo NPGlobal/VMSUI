@@ -5,6 +5,7 @@ import { VendorService } from 'src/app/Services/vendor.service';
 import { Vendor } from 'src/app/Models/vendor';
 import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
+import { throwIfEmpty } from 'rxjs/operators';
 
 @Component({
   selector: 'app-department-mapping-new',
@@ -234,13 +235,19 @@ export class DepartmentMappingNewComponent implements OnInit {
 
   DeleteExistingDepartment() {
     const stringArr = this.DepartmentMappingForm.get('DivList').value as Array<string>;
+    const deptArr = new Array<MasterDataDetails>();
     for (let i = 0; i < stringArr.length; ++i) {
       this.SelectedDD = this.SelectedDD.filter(function (value) {
         if (value.ParentMDDCode !== stringArr[i]) {
           return value;
+        } else {
+          deptArr.push(value);
         }
       });
     }
+
+    this.AllList = this.AllList.concat(deptArr);
+
     for (let i = 0; i < this.DivisionList.length; i++) {
       if (stringArr.includes(this.DivisionList[i].MDDCode)) {
         this.DivisionList[i].color = 'lightyellow';
