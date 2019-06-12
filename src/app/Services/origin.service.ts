@@ -21,5 +21,5 @@ export class OriginService {
       path = window.location.origin + '/';
     }
     return path;
-  }
+  } 
 }
