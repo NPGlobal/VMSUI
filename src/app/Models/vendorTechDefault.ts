@@ -10,6 +10,10 @@ export class VendorTechDefault {
     Remarks: string;
     IsLineApprovable: boolean;
     IsLineBlocked: boolean;
+    IsLineDeleted: boolean;
+    IsLineActivated: boolean;
     IsLineBlockable: boolean;
+    IsLineEnabled: boolean;
+    IsLineRejected: boolean;
     VendorTechDetails: VendorTech[];
 }

@@ -32,6 +32,7 @@ export class TechnicalDetailsComponent implements OnInit {
   //#region Form Variables
   techDetailsForm: FormGroup;
   vendorTechDefault: VendorTechDefault;
+  existingDefaultTech: VendorTechDefault;
   vendorTech: VendorTech;
   deptList: any[];
   techSpecList: any[];
@@ -57,6 +58,8 @@ export class TechnicalDetailsComponent implements OnInit {
   searchByMachineName = '';
   searchByEfficiency = '';
   searchByUnitCount = '';
+  searchByProposedEfficiency = '';
+  searchByProposedUnitCount = '';
   //#endregion
 
   //#region Error Message
@@ -116,7 +119,8 @@ export class TechnicalDetailsComponent implements OnInit {
 
   DeleteModalHeader: string;
   DeleteModalBody: string;
-  IsGoingToApprove: boolean;
+  IsGoingToApprove = false;
+  IsGoingToUndo = false;
   //#endregion
 
   unitCountList(n: number): any[] {
@@ -151,12 +155,13 @@ export class TechnicalDetailsComponent implements OnInit {
 
   //#region  Initialization
   InitializeFormControls() {
-    // const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === null || this.vendorTechDefault.TechLineNo === '');
+    const isDefaultEfficiencyDisabled = (this.vendorTechDefault.TechLineNo === '-');
+    const defaultEfficiency = isDefaultEfficiencyDisabled ? 'NA' : this.vendorTechDefault.DefaultEfficiency;
     this.techDetailsForm = this._fb.group({
       Department: [null, [Validators.required]],
       VendorTechConfigID: [null, [Validators.required]],
       TechLineNo: [{ value: this.vendorTechDefault.TechLineNo, disabled: true }],
-      DefaultEfficiency: [this.vendorTechDefault.DefaultEfficiency],
+      DefaultEfficiency: [{ value: defaultEfficiency, disabled: isDefaultEfficiencyDisabled }],
       UnitCount: [null, [Validators.required]],
       Status: [this.vendorTechDefault.Status],
       Remarks: [this.vendorTechDefault.Remarks, Validators.pattern(this.AddressAndRemarksPattern)],
@@ -186,7 +191,18 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   EditTechDetails(techDefault: VendorTechDefault) {
-    this.SetEfficiencyAndMaxLine(techDefault);
+    if (techDefault !== null) {
+      this._vendorService.GetVendorTechLine(this.vendorcode, techDefault.TechLineNo).subscribe((result) => {
+        if (result.Error === '') {
+          this.SetEfficiencyAndMaxLine(result.data);
+        } else {
+          this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+          this.alertButton.click();
+        }
+      });
+    } else {
+      this.SetEfficiencyAndMaxLine(techDefault);
+    }
   }
 
   BindAndInitializeForm(techDefault: VendorTechDefault) {
@@ -213,7 +229,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
     if (this.vendorTechDefault.VendorTechDetails) {
       this.vendorTechDefault.VendorTechDetails.filter(x => {
-        if (x.Status === 'P') {
+        if (x.Status === 'P' && x.ActionPerformed !== 'Deleted') {
           x.UnitCount = x.ProposedUnitCount;
           x.Efficiency = x.ProposedEfficiency;
         }
@@ -221,6 +237,8 @@ export class TechnicalDetailsComponent implements OnInit {
     } else {
       this.vendorTechDefault.VendorTechDetails = [];
     }
+
+    this.existingDefaultTech = JSON.parse(JSON.stringify(this.vendorTechDefault));
     this.DisableSaveFormButton();
     this.InitializeFormControls();
   }
@@ -234,7 +252,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
   SearchTechDetailsList() {
     this.searchText = this.searchByTechLine + '~' + this.searchByMachineType + '~' + this.searchByMachineName + '~' +
-      this.searchByEfficiency + '~' + this.searchByUnitCount;
+      this.searchByEfficiency + '~' + this.searchByUnitCount + '~' + this.searchByProposedEfficiency + '~' + this.searchByProposedUnitCount;
     this.SearchTechDetails(this.searchText);
   }
 
@@ -274,7 +292,12 @@ export class TechnicalDetailsComponent implements OnInit {
     } else {
       this._vendorService.GetVendorTechSpec('10', this.techDetailsForm.get('Department').value, this.vendorcode, 'TechSpec')
         .subscribe((result) => {
-          this.techSpecList = result;
+          if (this.vendorTechDefault.TechLineNo === '-') {
+            this.techSpecList = result.filter(x => x.VendorConfigID !== 88);
+          } else {
+            this.techSpecList = result;
+          }
+
           if (this.techDetailsForm.get('VendorTechConfigID').value !== null) {
             const strArray = this.techSpecList.find((obj) => obj.VendorConfigID ===
               Number(this.techDetailsForm.get('VendorTechConfigID').value));
@@ -287,9 +310,10 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   SetEfficiencyAsDefault() {
-    this.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
+    this.DefaultEfficiency = this.vendorTechDefault.TechLineNo !== '-' ?
+      this.techDetailsForm.get('DefaultEfficiency').value : this.DefaultEfficiency;
     this.vendorTechDefault.DefaultEfficiency = this.DefaultEfficiency;
-    this.techDetailsForm.get('Efficiency').patchValue(this.techDetailsForm.get('DefaultEfficiency').value);
+    this.techDetailsForm.get('Efficiency').patchValue(this.vendorTechDefault.DefaultEfficiency);
   }
   //#endregion
 
@@ -305,14 +329,16 @@ export class TechnicalDetailsComponent implements OnInit {
       if (this.vendorTechDefault.VendorTechDetails !== undefined && this.vendorTechDefault.VendorTechDetails !== null
         && this.vendorTechDefault.VendorTechDetails.length > 0) {
 
-        this.vendorTechDefault.DefaultEfficiency = this.techDetailsForm.get('DefaultEfficiency').value;
+        this.vendorTechDefault.DefaultEfficiency = this.vendorTechDefault.TechLineNo === '-' ?
+          this.DefaultEfficiency : this.techDetailsForm.get('DefaultEfficiency').value;
         this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
         this.vendorTechDefault.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
         this.vendorTechDefault.Status = st;
         this.vendorTechDefault.VendorShortCode = this.vendorcode;
 
         const defaultEff = this.techDetailsForm.get('DefaultEfficiency').value;
-        if ((defaultEff === '' || defaultEff === null) || !this.CheckEfficiencyFormat(defaultEff)) {
+        if (this.vendorTechDefault.TechLineNo !== '-' &&
+          ((defaultEff === '' || defaultEff === null) || !this.CheckEfficiencyFormat(defaultEff))) {
           this.LogEfficiencyValidation('DefaultEfficiency');
           return;
         }
@@ -376,43 +402,50 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   DeleteTechDetails() {
-    if (!this.IsGoingToApprove) {
+    if (this.IsGoingToUndo) {
+      this.UndoTechRequest();
+    } else if (!this.IsGoingToApprove) {
       this.sendFormData();
-    } else {
+    } else if (this.IsGoingToApprove) {
+      this.ApproveRejectTechLine();
     }
-    this.ApproveRejectTechLine();
   }
 
   DeleteTechDetailsPopup(vobj: VendorTechDefault, status: string) {
     this.vendorTechDefault = JSON.parse(JSON.stringify(vobj));
     this.vendorTechDefault.Status = status;
 
-    if (this.vendorTechDefault.VendorTechDetails) {
-      this.vendorTechDefault.VendorTechDetails.filter(x => {
-        if (x.Status === 'P' || x.Status === 'B' || x.Status === 'D') {
-          x.UnitCount = x.ProposedUnitCount;
-          x.Efficiency = x.ProposedEfficiency;
-        }
-      });
-    } else {
-      this.vendorTechDefault.VendorTechDetails = [];
-    }
+    status = this.IsUserAdmin ? 'A' : 'P';
 
     this.vendorTechDefault.VendorTechDetails.filter(x => x.Status = status);
 
+    // Added by Shubhi on 17-05-2019 for undo
+    //#region Undo Changes
     this.DeleteModalHeader = 'Ready to ' + (this.vendorTechDefault !== undefined &&
       (this.vendorTechDefault.Status === 'D' ? 'Delete' :
-        (this.vendorTechDefault.Status === 'B' ? 'Deactivate' : 'Activate'))) + '?';
+        (this.vendorTechDefault.Status === 'B' ? 'Deactivate' :
+          (this.vendorTechDefault.Status === 'O' ? 'Activate' :
+            (this.vendorTechDefault.Status === 'E' ? 'Enable' : '')))
+      )) + '?';
 
     this.DeleteModalBody = (this.vendorTechDefault !== undefined &&
       (this.vendorTechDefault.Status === 'D' ? 'This record no longer will be available' :
         (this.vendorTechDefault.Status === 'B' ? 'This record no longer will be available for allocation' :
-          'This record will be available for allocation'))) + ' in the system.<br>Are you sure ?';
+          (this.vendorTechDefault.Status === 'O' ? 'This record will be available for allocation' :
+            (this.vendorTechDefault.Status === 'E' ? 'This record will be available for allocation' :
+              ''))))) + ' in the system.<br>Are you sure ?';
 
     this.InitializeFormControls();
   }
 
   //#region Approve/Reject Machines
+  ApproveRejectLine(vendortech: VendorTech, status: string) {
+    const currentStatus = status.substring(0, 1);
+    this.IsGoingToApprove = true;
+    this.SetApproveRejectInputString(vendortech, status);
+    this.DeleteModalHeader = 'Ready to' + (currentStatus === 'R' ? ' reject?' : ' approve?');
+    this.DeleteModalBody = 'Are you sure you want to' + (currentStatus === 'R' ? ' reject?' : ' approve?');
+  }
   ApproveRejectMachine(vendortech: VendorTech, status: string) {
     status = status.substring(0, 1);
     this.IsGoingToApprove = true;
@@ -421,19 +454,30 @@ export class TechnicalDetailsComponent implements OnInit {
     this.DeleteModalBody = 'Are you sure you want to' + (status === 'R' ? ' reject?' : ' approve?');
   }
   SetApproveRejectInputString(vendortech: VendorTech, status: string) {
-    this.inputXml = '<Data>' +
-      '<ApproveMachine ' +
-      'UserId="' + sessionStorage.getItem('userid') + '" ' +
-      'VendorShortCode="' + this.vendorcode + '" ' +
-      'LineNumber="' + vendortech.TechLineNo + '" ' +
-      'MachineId ="' + vendortech.VendorTechConfigID + '" ' +
-      'IsApprove ="' + (status === 'A' ? 1 : 0) + '">' +
-      '</ApproveMachine>' +
-      '</Data>';
+    if (status === 'ApproveLine' || status === 'RejectLine') {
+      this.inputXml = '<Data>' +
+        '<ApproveMachine ' +
+        'UserId="' + sessionStorage.getItem('userid') + '" ' +
+        'VendorShortCode="' + this.vendorcode + '" ' +
+        'LineNumber="' + vendortech.TechLineNo + '" ' +
+        'MachineId="" ' +
+        'IsApprove="' + (status === 'ApproveLine' ? 1 : 0) + '">' +
+        '</ApproveMachine>' +
+        '</Data>';
+    } else {
+      this.inputXml = '<Data>' +
+        '<ApproveMachine ' +
+        'UserId="' + sessionStorage.getItem('userid') + '" ' +
+        'VendorShortCode="' + this.vendorcode + '" ' +
+        'LineNumber="' + vendortech.TechLineNo + '" ' +
+        'MachineId ="' + vendortech.VendorTechConfigID + '" ' +
+        'IsApprove ="' + (status === 'A' ? 1 : 0) + '">' +
+        '</ApproveMachine>' +
+        '</Data>';
+    }
   }
   ApproveRejectTechLine() {
     const xmldata = this.inputXml;
-    this.DismissDeleteModal();
     this._vendorService.ApproveRejectTechLine({ content: xmldata }).subscribe((result) => {
       if (result.Error === '') {
         if (result.data.Table[0].Result === 0) {
@@ -447,10 +491,14 @@ export class TechnicalDetailsComponent implements OnInit {
       }
       this.alertButton.click();
     });
+
+    this.DismissDeleteModal();
   }
   DismissDeleteModal() {
     this.inputXml = '';
     this.IsGoingToApprove = false;
+    this.IsGoingToUndo = false;
+    this.vendorTechDefault = new VendorTechDefault();
     this.dltModalCloseButton.click();
   }
   //#endregion
@@ -482,17 +530,26 @@ export class TechnicalDetailsComponent implements OnInit {
       this.techDetailsForm.get('UnitCount').value !== null) {
 
       if (this.vendorTech !== undefined) {
+        this.vendorTech.Remarks = this.techDetailsForm.get('Remarks').value;
       } else {
         this.vendorTech = new VendorTech();
         this.vendorTech.VendorTechDetailsID = 0;
         this.vendorTech.TechLineNo = this.techDetailsForm.get('TechLineNo').value;
         this.vendorTech.DeptCode = this.techDetailsForm.get('Department').value;
-        this.vendorTech.VendorTechConfigID = this.techDetailsForm.get('VendorTechConfigID').value;
+        this.vendorTech.VendorTechConfigID = Number(this.techDetailsForm.get('VendorTechConfigID').value);
         this.vendorTech.MachineType = this.deptList.filter((el) =>
           el.DeptCode === this.vendorTech.DeptCode)[0].DeptName;
         this.vendorTech.MachineName = this.techSpecList.filter((el) =>
           el.VendorConfigID === Number(this.vendorTech.VendorTechConfigID))[0].TechSpec;
         this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
+        this.vendorTech.StatusName = this.IsUserAdmin ? 'Active' : 'Pending';
+        this.vendorTech.Remarks = this.techDetailsForm.get('Remarks').value;
+      }
+
+      if (this.vendorTech.VendorTechDetailsID) {
+        this.vendorTech.ActionPerformed = 'Edited';
+      } else {
+        this.vendorTech.ActionPerformed = 'New';
       }
 
       this.vendorTech.VendorShortCode = this.vendorcode;
@@ -506,45 +563,102 @@ export class TechnicalDetailsComponent implements OnInit {
 
       // check if data already exists
       let add = 0;
-      if (this.vendorTechDefault.VendorTechDetails.length > 0) {
 
-        const existingIndex = this.vendorTechDefault.VendorTechDetails.findIndex((x) =>
-          x.VendorTechDetailsID === this.vendorTech.VendorTechDetailsID &&
-          x.VendorTechConfigID === this.vendorTech.VendorTechConfigID &&
-          x.DeptCode === this.vendorTech.DeptCode);
+      const defaultTech = this.TechDefaultLst.find(x => x.TechLineNo === this.vendorTech.TechLineNo);
 
-        if (existingIndex > -1 && this.isTechDetailEditing > 0) {
-          this.vendorTech.Status = this.IsUserAdmin ? 'A' : 'P';
+      if (!this.IsUserAdmin) {
 
-          const defaultTech = this.TechDefaultLst.find(x => x.TechLineNo === this.vendorTech.TechLineNo);
-          if (defaultTech.VendorTechDetails.findIndex(x => x.VendorTechConfigID === this.vendorTech.VendorTechConfigID
-            && x.Status === 'A') > -1) {
-            this.vendorTech.VendorTechDetailsID = 0;
-          }
+        if (this.vendorTechDefault.VendorTechDetails.length > 0) {
 
-          this.vendorTechDefault.VendorTechDetails[existingIndex] = this.vendorTech;
-          this.isTechDetailEditing = 0;
-        } else {
+          const machineIndex = this.vendorTechDefault.VendorTechDetails.findIndex(x =>
+            Number(x.VendorTechConfigID) === Number(this.vendorTech.VendorTechConfigID));
 
-          const strArray = this.vendorTechDefault.VendorTechDetails.find((obj) =>
-            obj.VendorTechConfigID === Number(this.vendorTech.VendorTechConfigID) && obj.DeptCode === this.vendorTech.DeptCode);
+          if (machineIndex > -1) {
 
-          // push if data not exists
-          if (strArray === undefined) {
+            if (this.isTechDetailEditing > 0) {
+              this.vendorTech.Status = 'P';
+              this.vendorTech.StatusName = 'Pending';
+
+            } else {
+
+              if (defaultTech) {
+                const machineDetailIndex = defaultTech.VendorTechDetails.findIndex(x =>
+                  x.VendorTechConfigID === this.vendorTech.VendorTechConfigID);
+
+                add = machineDetailIndex > -1 ? 1 : add;
+              }
+
+              if (this.vendorTechDefault.VendorTechDetails.findIndex(x =>
+                x.VendorTechConfigID === this.vendorTech.VendorTechConfigID &&
+                x.Status !== 'D') > -1) {
+                add = 0;
+              }
+
+              if (add === 0) {
+                this.PopUpMessage = 'This data already exist.';
+                this.alertButton.click();
+                this.submitted = false;
+                this.vendorTech = undefined;
+                return;
+              }
+            }
+
+            Object.assign(this.vendorTechDefault.VendorTechDetails[machineIndex], this.vendorTech);
+
+          } else {
             this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
-            add = 1;
+          }
+        } else {
+          this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
+        }
+
+
+      } else if (this.IsUserAdmin) {
+        if (this.vendorTechDefault.VendorTechDetails.length > 0) {
+
+          const machineIndex = this.vendorTechDefault.VendorTechDetails.findIndex(x =>
+            Number(x.VendorTechConfigID) === Number(this.vendorTech.VendorTechConfigID));
+
+          if (machineIndex > -1) {
+
+            if (this.isTechDetailEditing > 0) {
+              this.vendorTech.Status = 'A';
+              this.vendorTech.StatusName = 'Active';
+
+            } else {
+
+              if (defaultTech) {
+                const machineDetailIndex = defaultTech.VendorTechDetails.findIndex(x =>
+                  x.VendorTechConfigID === this.vendorTech.VendorTechConfigID);
+
+                add = machineDetailIndex > -1 ? 1 : add;
+              }
+
+              if (this.vendorTechDefault.VendorTechDetails.findIndex(x =>
+                x.VendorTechConfigID === this.vendorTech.VendorTechConfigID &&
+                x.Status !== 'D') > -1) {
+                add = 0;
+              }
+
+              if (add === 0) {
+                this.PopUpMessage = 'This data already exist.';
+                this.alertButton.click();
+                this.submitted = false;
+                this.vendorTech = undefined;
+                return;
+              }
+            }
+
+            Object.assign(this.vendorTechDefault.VendorTechDetails[machineIndex], this.vendorTech);
+
+          } else {
+            this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
           }
 
-          if (add === 0) {
-            this.PopUpMessage = 'This data already exist.';
-            this.alertButton.click();
-            this.submitted = false;
-            this.vendorTech = undefined;
-            return;
-          }
+        } else {
+          this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
         }
-      } else {
-        this.vendorTechDefault.VendorTechDetails.push(this.vendorTech);
+
       }
     } else {
       this.submitted = true;
@@ -565,6 +679,7 @@ export class TechnicalDetailsComponent implements OnInit {
     this.isTechDetailEditing = 1;
     this.techDetailsForm.get('Department').patchValue(vTech1.DeptCode);
     this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
+    this.techDetailsForm.get('Remarks').patchValue(vTech1.Remarks);
     if (vTech1.Status === 'P') {
       this.techDetailsForm.get('UnitCount').patchValue(vTech1.ProposedUnitCount);
       this.techDetailsForm.get('Efficiency').patchValue(vTech1.ProposedEfficiency);
@@ -584,6 +699,10 @@ export class TechnicalDetailsComponent implements OnInit {
     this.vendorTech = undefined;
     this.techDetailsForm.get('Department').patchValue(null);
     this.techDetailsForm.get('UnitCount').patchValue(null);
+    this.techDetailsForm.get('Remarks').patchValue(null);
+
+    this.vendorTechDefault.Remarks = this.techDetailsForm.get('Remarks').value;
+
     this.InitializeFormControls();
     this.LogValidationErrors();
     this.GetVendorTechSpec();
@@ -608,13 +727,31 @@ export class TechnicalDetailsComponent implements OnInit {
     if (strArray !== undefined) {
       const index = this.vendorTechDefault.VendorTechDetails.indexOf(strArray);
 
-      const defaultTech = this.TechDefaultLst.find(x => x.TechLineNo === this.vendorTechDefault.TechLineNo);
+      const existingDefaultTech = this.existingDefaultTech;
 
-      const existingIndex = defaultTech.VendorTechDetails.findIndex(x =>
-        x.VendorTechConfigID === this.vendorTechDefault.VendorTechDetails[index].VendorTechConfigID);
+      let existingIndex = -1;
+
+      if (existingDefaultTech) {
+        existingIndex = existingDefaultTech.VendorTechDetails.findIndex(x =>
+          Number(x.VendorTechConfigID) === Number(this.vendorTechDefault.VendorTechDetails[index].VendorTechConfigID));
+      }
 
       if (existingIndex > -1) {
-        this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
+
+        if (this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID) {
+          this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsProposedID = null;
+        }
+
+        this.vendorTechDefault.VendorTechDetails[index].ActionPerformed = 'Deleted';
+
+        if (this.IsUserAdmin || (!this.IsUserAdmin && this.vendorTechDefault.VendorTechDetails[index].VendorTechDetailsID === null)) {
+          this.vendorTechDefault.VendorTechDetails[index].Status = 'D';
+          this.vendorTechDefault.VendorTechDetails[index].StatusName = 'Deleted';
+        } else {
+          this.vendorTechDefault.VendorTechDetails[index].Status = 'P';
+          this.vendorTechDefault.VendorTechDetails[index].StatusName = 'Pending';
+        }
+
       } else {
         this.vendorTechDefault.VendorTechDetails.splice(index, 1);
       }
@@ -650,7 +787,8 @@ export class TechnicalDetailsComponent implements OnInit {
         const efficiecny = this.techDetailsForm.get('Efficiency').value;
         if (efficiecny === '' || efficiecny === null) {
           this.formErrors.Efficiency = ' ';
-        } else if (efficiecny !== null && efficiecny !== '' && !this.CheckEfficiencyFormat(this.techDetailsForm.get('Efficiency').value)) {
+        } else if (efficiecny !== null && efficiecny !== ''
+          && !this.CheckEfficiencyFormat(this.techDetailsForm.get('Efficiency').value)) {
           this.formErrors.Efficiency = this.ValidationMessages.Efficiency.pattern;
         } else {
           this.formErrors.Efficiency = '';
@@ -719,6 +857,64 @@ export class TechnicalDetailsComponent implements OnInit {
   }
   specChange(event) {
     this.SetEfficiencyAsDefault();
+  }
+  //#endregion
+
+  //#region UndoFunctionality
+  UndoLineRequest(vendorTechDefault: VendorTechDefault) {
+    this.IsGoingToUndo = true;
+    this.SetUndoInputString('Line', null, vendorTechDefault);
+    this.DeleteModalHeader = 'Ready to Undo?';
+    this.DeleteModalBody = 'Are you sure you want to undo?';
+  }
+
+  UndoMachineRequest(vendorTech: VendorTech) {
+    this.IsGoingToUndo = true;
+    this.SetUndoInputString('Machine', vendorTech);
+    this.DeleteModalHeader = 'Ready to Undo?';
+    this.DeleteModalBody = 'Are you sure you want to undo?';
+  }
+
+  SetUndoInputString(type: string, vendortech?: VendorTech, vendorTechDefault?: VendorTechDefault) {
+    this.inputXml = '';
+    if (type === 'Line') {
+      this.inputXml = '<Data>' +
+        '<UndoRequest ' +
+        'UserId="' + sessionStorage.getItem('userid') + '" ' +
+        'VendorShortCode="' + this.vendorcode + '" ' +
+        'LineNumber="' + vendorTechDefault.TechLineNo + '" ' +
+        'MachineId =""' +
+        '></UndoRequest>' +
+        '</Data>';
+    } else {
+      this.inputXml = '<Data>' +
+        '<UndoRequest ' +
+        'UserId="' + sessionStorage.getItem('userid') + '" ' +
+        'VendorShortCode="' + this.vendorcode + '" ' +
+        'LineNumber="' + vendortech.TechLineNo + '" ' +
+        'MachineId ="' + vendortech.VendorTechConfigID + '"' +
+        '></UndoRequest>' +
+        '</Data>';
+    }
+  }
+
+  UndoTechRequest() {
+    const xmldata = this.inputXml;
+    this._vendorService.UndoTechRequest({ content: xmldata }).subscribe((result) => {
+      if (result.Error === '') {
+        if (result.data.Table[0].Result === 0) {
+          this.PopUpMessage = result.data.Table[0].Message;
+          this.GetVendorTech(1);
+        } else {
+          this.PopUpMessage = result.data.Table[0].Message;
+        }
+      } else {
+        this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+      }
+      this.alertButton.click();
+    });
+
+    this.DismissDeleteModal();
   }
   //#endregion
 }

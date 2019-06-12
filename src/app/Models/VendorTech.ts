@@ -4,12 +4,14 @@ export class VendorTech {
     VendorShortCode: string;
     VendorTechConfigID?: number;
     VendorTechDetailsID?: number;
+    VendorTechDetailsProposedID?: number;
     TechLineNo: string;
     Efficiency: number;
     ProposedEfficiency: number;
     UnitCount: number;
     ProposedUnitCount: number;
     Status: string;
+    StatusName: string;
     Remarks: string;
     CreatedBy: number;
     isDisable: boolean;

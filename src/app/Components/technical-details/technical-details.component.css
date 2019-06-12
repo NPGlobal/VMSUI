@@ -30,3 +30,16 @@ input[type="text"], select {
     background-color: lightsalmon;
     border-color: lightsalmon;
 }
+
+.scrollableTable {
+    overflow-y: auto;
+    max-height: 250px;
+}
+
+.deleted-line td {
+    background-color: beige;
+}
+
+.rejected-line td {
+    background-color: bisque;
+}
