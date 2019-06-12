@@ -285,9 +285,18 @@
                     {{gradedetail2a.SerialText}}</td>
                   <td class="text-justify" [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
                     {{gradedetail2a.Parameter}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Number}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Weightage}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.MarksObtained}}</td>
+                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                    [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                    {{gradedetail2a.Number}}
+                  </td>
+                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                    [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                    {{gradedetail2a.Weightage}}
+                  </td>
+                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                    [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                    {{gradedetail2a.MarksObtained}}
+                  </td>
                   <td [ngClass]="'Grade' + gradedetail2a.Grade" *ngIf="i === 0"
                     [attr.rowspan]="(GradeDetails2a.length + GradeDetails2b.length)"
                     [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Grade}}</td>
