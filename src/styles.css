@@ -585,3 +585,7 @@ p.header {
 .invalid-dept .multiselect-dropdown .dropdown-btn {
   border: 1px solid #dc3545 !important;
 }
+
+.is-invalid .ngx-dropdown-button {
+  border: 1px solid red !important;
+}
