@@ -49,3 +49,7 @@ table.table-striped a {
     flex: 0 0 19%;
     max-width: 19%;
 }
+
+.ngx-dropdown-container {
+    border: 1px solid red !important;
+}

@@ -104,6 +104,9 @@ export class VendorAssessmentNewComponent implements OnInit {
     'ShortName': ''
   };
 
+  options = [];
+  config = {};
+
   invalidDept = false;
   invalidQuarter = false;
   //#endregion
@@ -162,6 +165,32 @@ export class VendorAssessmentNewComponent implements OnInit {
   GetVendors() {
     this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
       this.vendorList = result.data.Vendors;
+      this.options = this.vendorList.map(function (element) {
+        return { VendorCode: element.VendorCode, VendorName: element.VendorName };
+      });
+
+      this.config = {
+        displayKey: 'VendorName', // if objects array passed which key to be displayed defaults to description
+        search: true, // true/false for the search functionlity defaults to false,
+        height: '200px',
+        placeholder: 'Select', // text to be displayed when no item is selected defaults to Select,
+        customComparator: (ob1, ob2) => {
+          if (ob1.VendorCode < ob2.VendorCode) {
+            return -1;
+          }
+          if (ob1.VendorCode > ob2.VendorCode) {
+            return 1;
+          }
+          return 0;
+        },
+        // a custom function using which user wants to sort the items. default is undefined and Array.sort() will be used in that case,
+        limitTo: this.options.length, // a number thats limits the no of options displayed in the UI similar to angular's limitTo pipe
+        moreText: 'more', // text to be displayed whenmore than one items are selected like Option 1 + 5 more
+        noResultsFound: 'No results found!', // text to be displayed when no items are found while searching
+        searchPlaceholder: 'Search', // label thats displayed in search input,
+        searchOnKey: 'VendorName'
+        // key on which search should be performed this will be selective search. if undefined this will be extensive search on all keys
+      };
     });
   }
 
@@ -171,8 +200,8 @@ export class VendorAssessmentNewComponent implements OnInit {
 
     const shortName = this.AssessmentForm.get('ShortName').value;
 
-    if (shortName !== null) {
-      this._vendorService.GetVendorsWithDepartments(shortName).subscribe((result) => {
+    if (shortName !== null && shortName !== undefined) {
+      this._vendorService.GetVendorsWithDepartments(shortName.VendorCode).subscribe((result) => {
         this.DeptList = result.data.Table;
       });
     }
@@ -350,7 +379,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     let edaFrom: any;
     let edaTo: any;
 
-    const shortName = this.AssessmentForm.get('ShortName').value;
+    const shortName = this.AssessmentForm.get('ShortName').value.VendorCode;
     const deptCode = this.SelectedDeptList.map(function (el) {
       return el.MDDCode;
     }).join();

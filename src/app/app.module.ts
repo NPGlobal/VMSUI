@@ -33,6 +33,7 @@ import { VendorAssessmentComponent } from './Components/vendor-assessment/vendor
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
 import { TechLineReportComponent } from './Components/tech-line-report/tech-line-report.component';
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { TechLineReportComponent } from './Components/tech-line-report/tech-line
     LoginModule,
     NgMultiSelectDropDownModule.forRoot(),
     CommonModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    SelectDropDownModule
   ],
   providers: [
     {

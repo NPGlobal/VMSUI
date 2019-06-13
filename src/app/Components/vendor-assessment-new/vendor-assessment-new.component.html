@@ -5,11 +5,15 @@
   <div class="row">
     <div class="col-md-3">
       <label for="VendorName">Producer<i class="mandatory">*</i></label>
-      <select [ngClass]="{'is-invalid': formErrors.ShortName}" formControlName="ShortName"
+      <!-- <select [ngClass]="{'is-invalid': formErrors.ShortName}" formControlName="ShortName"
         (change)="GetVendorsWithDepartments()" (blur)="LogValidationErrors()" class="form-control input-sm">
         <option [ngValue]="null">Select</option>
         <option value="{{vendor.VendorCode}}" *ngFor="let vendor of vendorList">{{vendor.VendorName}}</option>
-      </select>
+      </select> -->
+      <ngx-select-dropdown [ngClass]="{'is-invalid': formErrors.ShortName}"
+        (change)="GetVendorsWithDepartments($event);LogValidationErrors();" formControlName="ShortName"
+        [multiple]="false" [config]="config" [options]="options" class="input-sm">
+      </ngx-select-dropdown>
     </div>
 
     <div class="col-md-2 col-md-13">
