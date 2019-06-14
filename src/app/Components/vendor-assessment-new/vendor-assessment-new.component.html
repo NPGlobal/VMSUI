@@ -122,7 +122,11 @@
           <div class="text-justify silver">C. Silver: 80 - 84%</div>
           <div class="text-justify bronze">D. Bronze: = &lt; 79 %</div>
         </td>
-        <td *ngFor="let td of AssessmentScoreTable;">
+        <td [ngClass]="{'platinum': (td.Grade === 'A'),
+                        'gold':  (td.Grade === 'B'),
+                        'silver': (td.Grade === 'C'),
+                        'bronze': (td.Grade === 'D')
+                      }" *ngFor="let td of AssessmentScoreTable;">
           {{td.BodyText}}
         </td>
       </tr>
