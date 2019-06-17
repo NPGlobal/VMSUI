@@ -39,6 +39,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   SelectedDeptList: any;
   submitted = false;
   isDataRecieved = false;
+  SelectedPHList = [];
 
   Month: any;
   Year: any;
@@ -204,6 +205,20 @@ export class VendorAssessmentNewComponent implements OnInit {
       this._vendorService.GetVendorsWithDepartments(shortName.VendorCode).subscribe((result) => {
         this.DeptList = result.data.Table;
       });
+      this.SelectedPHList = [];
+      this._vendorService.GetVendorByCode(shortName.VendorCode).subscribe((resultForAssignment) => {
+        const selectedphValues = resultForAssignment.data.Vendor[0].SelectedPHListCSV;
+        this.AllPHList.forEach(childObj => {
+
+          if (selectedphValues.indexOf(childObj.OrgUnitCode.toString()) === 0 ||
+            selectedphValues.indexOf(childObj.OrgUnitCode.toString()) > 0) {
+            this.SelectedPHList.push(childObj);
+          }
+        });
+        // this.SelectedPHList
+
+      });
+
     }
   }
 
