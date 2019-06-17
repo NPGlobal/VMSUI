@@ -62,7 +62,7 @@
         </select> -->
       </div>
     </div>
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2  col-md-13">
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2  col-md-19">
       <div class="form-group">
         <label>Month<i class="mandatory">*</i></label>
         <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Months"
