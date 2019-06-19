@@ -44,6 +44,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   Month: any;
   Year: any;
   AssessingPeriods: any;
+  AssessingPH: string;
   //#endregion
 
   //#region  Form Variables
@@ -132,7 +133,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.InitializeFormControls();
     this.PopulateMonths();
     this.GetVendors();
-    this.GetPHList();
+    // this.GetPHList();
   }
 
   //#region GetData
@@ -201,24 +202,13 @@ export class VendorAssessmentNewComponent implements OnInit {
 
     const shortName = this.AssessmentForm.get('ShortName').value;
 
+    this.SelectedPHList = [];
     if (shortName !== null && shortName !== undefined) {
       this._vendorService.GetVendorsWithDepartments(shortName.VendorCode).subscribe((result) => {
+        this.AssessmentForm.get('AssessingPHCode').patchValue(null);
         this.DeptList = result.data.Table;
+        this.SelectedPHList = result.data.Table1;
       });
-      this.SelectedPHList = [];
-      this._vendorService.GetVendorByCode(shortName.VendorCode).subscribe((resultForAssignment) => {
-        const selectedphValues = resultForAssignment.data.Vendor[0].SelectedPHListCSV;
-        this.AllPHList.forEach(childObj => {
-
-          if (selectedphValues.indexOf(childObj.OrgUnitCode.toString()) === 0 ||
-            selectedphValues.indexOf(childObj.OrgUnitCode.toString()) > 0) {
-            this.SelectedPHList.push(childObj);
-          }
-        });
-        // this.SelectedPHList
-
-      });
-
     }
   }
 
@@ -461,6 +451,12 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.Year = year;
 
     this.ProductSpecialities = deptCode;
+
+    if (this.AssessmentForm.get('AssessingPHCode').value === '-1') {
+      this.AssessingPH = this.SelectedPHList.filter(x => x.OrgUnitCode !== '-1').map(x => x.OrgUnitName).join(',');
+    } else {
+      this.AssessingPH = this.SelectedPHList.filter(x => x.OrgUnitCode === assessingPHCode).map(x => x.OrgUnitName).join(',');
+    }
 
     this.GetVendorAssessmentReport();
   }

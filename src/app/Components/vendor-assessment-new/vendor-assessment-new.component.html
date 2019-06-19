@@ -78,7 +78,7 @@
       <select [ngClass]="{'is-invalid': formErrors.AssessingPHCode}" formControlName="AssessingPHCode"
         (blur)="LogValidationErrors()" class="form-control input-sm">
         <option [ngValue]="null">Select</option>
-        <option [ngValue]="-1">ALL</option>
+        <!-- <option [ngValue]="-1">ALL</option> -->
         <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of SelectedPHList">{{ph.OrgUnitName}}</option>
       </select>
     </div>
@@ -153,7 +153,7 @@
                 </tr>
                 <tr>
                   <td class="text-justify">Assessing PH :</td>
-                  <td class="text-justify">{{AssessmentForm.get('AssessingPHCode').value}}</td>
+                  <td class="text-justify">{{AssessingPH}}</td>
                 </tr>
                 <tr>
                   <td class="text-justify">Assessment Period :</td>
