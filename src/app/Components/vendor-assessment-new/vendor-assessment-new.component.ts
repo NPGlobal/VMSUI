@@ -205,10 +205,18 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.SelectedPHList = [];
     if (shortName !== null && shortName !== undefined) {
       this._vendorService.GetVendorsWithDepartments(shortName.VendorCode).subscribe((result) => {
-        this.AssessmentForm.get('AssessingPHCode').patchValue(null);
         this.DeptList = result.data.Table;
         this.SelectedPHList = result.data.Table1;
+
+        if (this.SelectedPHList.length > 2) {
+          this.AssessmentForm.get('AssessingPHCode').patchValue('-1');
+        } else {
+          this.AssessmentForm.get('AssessingPHCode').patchValue(this.SelectedPHList[0].OrgUnitCode);
+        }
+
       });
+    } else {
+      this.AssessmentForm.get('AssessingPHCode').patchValue(null);
     }
   }
 

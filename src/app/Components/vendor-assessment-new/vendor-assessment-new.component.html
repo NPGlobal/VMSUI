@@ -77,7 +77,7 @@
       <label for="">Assessing PH<i class="mandatory">*</i></label>
       <select [ngClass]="{'is-invalid': formErrors.AssessingPHCode}" formControlName="AssessingPHCode"
         (blur)="LogValidationErrors()" class="form-control input-sm">
-        <option [ngValue]="null">Select</option>
+        <option *ngIf="SelectedPHList && SelectedPHList.length === 0" [ngValue]="null">Select</option>
         <!-- <option [ngValue]="-1">ALL</option> -->
         <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of SelectedPHList">{{ph.OrgUnitName}}</option>
       </select>
