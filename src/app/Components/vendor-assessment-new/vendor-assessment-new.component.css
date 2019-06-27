@@ -53,3 +53,16 @@ table.table-striped a {
 .ngx-dropdown-container {
     border: 1px solid red !important;
 }
+
+.export-icons {
+    border: 0px solid rgb(149, 149, 149);
+    color: white;
+    display: block;
+    padding: 4px 4px 4px 4px;
+}
+
+.export-icons-div {
+    background-color: #7d2d30;
+    height: 35px;
+    width: 65px;
+}

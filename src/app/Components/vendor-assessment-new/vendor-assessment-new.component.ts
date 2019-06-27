@@ -231,6 +231,8 @@ export class VendorAssessmentNewComponent implements OnInit {
 
   GetVendorAssessmentReport() {
     this.isDataRecieved = false;
+    localStorage.setItem('InputParams', this.inputParams);
+
     this._vendorAssessmentService.GetVendorAssessmentReport(this.inputParams).subscribe((result) => {
       const orderQtyDetails = result.data.Table;
       this.SetOrderDetails(result.data.Table, result.data.Table1);
@@ -471,6 +473,163 @@ export class VendorAssessmentNewComponent implements OnInit {
 
   ExpandCollpase(index: number) {
     this.OrderDetails[index].IsExpanded = !this.OrderDetails[index].IsExpanded;
+  }
+
+  ExportToExcelByVendorCode() {
+    const inputParams = localStorage.getItem('InputParams');
+    this._vendorAssessmentService.GetVendorAssessmentReportForExcel(this.inputParams).subscribe((result) => {
+
+      const newBlob = new Blob([result], { type: result.type });
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob);
+        return;
+      }
+
+      const url = window.URL.createObjectURL(newBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'UserExcel.xlsx';
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  Print() {
+    const divToPrint = document.getElementById('Print');
+    const newWin = window.open('');
+    newWin.document.write('<html><head>');
+
+    const css = '<style>' +
+      '.appreal-head {                                                         ' +
+      '    background: #dddddd;                                                ' +
+      '    color: #882933;                                                     ' +
+      '    vertical-align: middle;                                             ' +
+      '    font-weight: normal;                                                ' +
+      '    text-align: center;                                                 ' +
+      '    padding: 5px;                                                       ' +
+      '    flex: 0 0 98%;                                                      ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.platinum, .gold, .silver, .bronze, .GradeA, .GradeB, .GradeC, .GradeD {' +
+      '    vertical-align: middle;                                             ' +
+      '    font-weight: normal;                                                ' +
+      '    padding: 5px;                                                       ' +
+      '    border: 1px solid #bdbcbc;                                          ' +
+      '    font-weight: 700;                                                   ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.platinum, .GradeA {                                                    ' +
+      '    background-color: rgb(102, 255, 51) !important;                     ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.gold, .GradeB {                                                        ' +
+      '    background-color: rgb(255, 192, 0) !important;                      ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.silver, .GradeC {                                                      ' +
+      '    background-color: rgb(255, 255, 0) !important;                      ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.bronze, .GradeD {                                                      ' +
+      '    background-color: rgb(255, 0, 0) !important;                        ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.bold-text {                                                            ' +
+      '    font-weight: 700;                                                   ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      'table.table-striped a {                                                 ' +
+      '    color: #fff !important;                                             ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.col-md-13 {                                                            ' +
+      '    flex: 0 0 13%;                                                      ' +
+      '    max-width: 13%;                                                     ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.col-md-19 {                                                            ' +
+      '    flex: 0 0 19%;                                                      ' +
+      '    max-width: 19%;                                                     ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.ngx-dropdown-container {                                               ' +
+      '    border: 1px solid red !important;                                   ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.export-icons {                                                         ' +
+      '    border: 0px solid rgb(149, 149, 149);                               ' +
+      '    color: white;                                                       ' +
+      '    display: block;                                                     ' +
+      '    padding: 4px 4px 4px 4px;                                           ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.export-icons-div {                                                     ' +
+      '    background-color: #7d2d30;                                          ' +
+      '    height: 35px;                                                       ' +
+      '    width: 73px;                                                        ' +
+      '}                                                                       ' +
+      'a.glyphicon-expand {' +
+      '  font-size: 18px;' +
+      '  font-weight: bold;' +
+      '  width: 1em;' +
+      '  text-decoration: none;' +
+      '  line-height: 1;' +
+      '  background-color: #7d2d30;' +
+      '  color: #fff;' +
+      '  display: inline-block;' +
+      '  text-decoration: none;' +
+      '  text-align: center;' +
+      '  margin-right: 5px;' +
+      '  position: relative;' +
+      '  top: 1px;' +
+      '  border: solid 1px;' +
+      '  border-radius: 48%;' +
+      '}' +
+
+      'a.glyphicon-expand span {' +
+      ' position: relative;' +
+      ' top: -2px;' +
+      '} ' +
+
+      'a.glyphicon-expand {' +
+      'a.glyphicon - expand { ' +
+      'font-size: 15px; ' +
+      '} ' +
+      '  font-size: 15px;' +
+      '}' +
+      '.table-bordered {                  ' +
+      '    border: 1px solid black;     ' +
+      '}                                  ' +
+      '.table {                           ' +
+      '    width: 100%;                   ' +
+      '    margin-bottom: 1rem;           ' +
+      '    background-color: transparent; ' +
+      '}                                  ' +
+      'table {                            ' +
+      '    border-collapse: collapse;     ' +
+      '}                                  ' +
+      'table.table-striped thead {        ' +
+      '    background: #dddddd;           ' +
+      '    color: #882933;                ' +
+      '}                                  ' +
+      '.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {' +
+      '    vertical-align: middle;                                                                                             ' +
+      '    font-weight: normal;                                                                                                ' +
+      '    text-align: center;                                                                                                 ' +
+      '    padding: 5px;                                                                                                       ' +
+      '    border: 1px solid #bdbcbc;                                                                                          ' +
+      '}                                                                                                                       ' +
+      '</style>';
+
+    newWin.document.write(css);
+    newWin.document.write('</head><body>');
+    newWin.document.write(divToPrint.innerHTML);
+    newWin.document.write('</body></html>');
+    newWin.document.close();
+    newWin.print();
+    newWin.close();
   }
   //#endregion
 }
