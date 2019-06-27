@@ -40,6 +40,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   submitted = false;
   isDataRecieved = false;
   SelectedPHList = [];
+  SelectedParameters: any[] = [];
 
   Month: any;
   Year: any;
@@ -232,17 +233,19 @@ export class VendorAssessmentNewComponent implements OnInit {
     this.isDataRecieved = false;
     this._vendorAssessmentService.GetVendorAssessmentReport(this.inputParams).subscribe((result) => {
       const orderQtyDetails = result.data.Table;
-      this.SetOrderDetails(orderQtyDetails);
+      this.SetOrderDetails(result.data.Table, result.data.Table1);
 
-      this.QuantityDetails = result.data.Table1;
+      this.QuantityDetails = result.data.Table2;
 
-      this.GradeDetails1a = result.data.Table2;
-      this.GradeDetails1b = result.data.Table3;
-      this.GradeDetails2a = result.data.Table4;
-      this.GradeDetails2b = result.data.Table5;
-      this.AverageGradeDetails = result.data.Table6;
+      this.GradeDetails1a = result.data.Table3;
+      this.GradeDetails1b = result.data.Table4;
+      this.GradeDetails2a = result.data.Table5;
+      this.GradeDetails2b = result.data.Table6;
+      this.AverageGradeDetails = result.data.Table7;
 
-      this.AssessmentScoreTable = result.data.Table7;
+      this.AssessmentScoreTable = result.data.Table8;
+
+      this.SelectedParameters = result.data.Table9;
 
       this.AssessingPeriods = result.data.Table8.map(function (element) {
         return element.AssessmentPeriod;
@@ -252,14 +255,14 @@ export class VendorAssessmentNewComponent implements OnInit {
     });
   }
 
-  SetOrderDetails(details: any[]) {
+  SetOrderDetails(styleDetails: any[], details: any[]) {
     this.OrderDetails = [];
-    for (let counterVar = 0; counterVar < details.length; ++counterVar) {
-      const styleMDD = details[counterVar].StyleMDDCode;
-      const deptCode = details[counterVar].DeptCode;
-      const buyPlanQty = details[counterVar].BuyPlanQty;
-      const batchQty = details[counterVar].BatchQty;
-      const purchaseOrderQty = details[counterVar].PurchaseOrderQty;
+    for (let counterVar = 0; counterVar < styleDetails.length; ++counterVar) {
+      const styleMDD = styleDetails[counterVar].StyleMDDCode;
+      const deptCode = styleDetails[counterVar].DeptCode;
+      const buyPlanQty = styleDetails[counterVar].BuyPlanQty;
+      const batchQty = styleDetails[counterVar].BatchQty;
+      const purchaseOrderQty = styleDetails[counterVar].PurchaseOrderQty;
 
       const existingIndex = this.OrderDetails.findIndex(x => x.StyleMDDCode === styleMDD &&
         x.DeptCode === deptCode &&
@@ -277,10 +280,7 @@ export class VendorAssessmentNewComponent implements OnInit {
           PurchaseOrderQty: purchaseOrderQty,
           QtyDetails: details.filter(function (x) {
             return x.StyleMDDCode === styleMDD &&
-              x.DeptCode === deptCode &&
-              x.BuyPlanQty === buyPlanQty &&
-              x.BatchQty === batchQty &&
-              x.PurchaseOrderQty === purchaseOrderQty;
+              x.DeptCode === deptCode;
           }).map(function (element) {
             return {
               OrderNo: element.OrderNo,
