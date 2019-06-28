@@ -57,7 +57,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   alertModalButton: ElementRef;
   PopUpMessage: string;
   alertButton: any;
-  monthsToShow: number;
+  monthsToShow = 0;
   //#endregion
 
   //#region MultiSelect Dropdown Settings
@@ -119,7 +119,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     private _fb: FormBuilder,
     private _validationMess: ValidationMessagesService) {
     this.PopUpMessage = '';
-    this.MonthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    this.MonthList = [];
     this.SelectedDeptList = [];
     this.QuarterList = [{ QuarterText: 'Quarter 1(Jan-Feb-Mar)', QuarterValue: 1 },
     { QuarterText: 'Quarter 2(Apr-May-Jun)', QuarterValue: 2 },
@@ -132,7 +132,6 @@ export class VendorAssessmentNewComponent implements OnInit {
 
     this.PopulateYears();
     this.InitializeFormControls();
-    this.PopulateMonths();
     this.GetVendors();
     // this.GetPHList();
   }
@@ -152,14 +151,17 @@ export class VendorAssessmentNewComponent implements OnInit {
   PopulateMonths() {
     const monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    this.AssessmentForm.get('Months').patchValue(null);
-
     const year = this.AssessmentForm.get('Year').value;
     const currentYear = new Date().getFullYear();
+
     if (year !== null && currentYear === Number(year)) {
       this.monthsToShow = new Date().getMonth() + 1;
     } else {
       this.monthsToShow = 12;
+    }
+
+    if (Number(this.AssessmentForm.get('Months').value) > this.monthsToShow) {
+      this.AssessmentForm.get('Months').patchValue(null);
     }
 
     this.MonthList = monthList.splice(0, this.monthsToShow);
@@ -489,7 +491,7 @@ export class VendorAssessmentNewComponent implements OnInit {
 
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'UserExcel.xlsx';
+      link.download = 'AssessmentReport_' + this.VendorCode + '.xlsx';
       link.click();
 
       window.URL.revokeObjectURL(url);
