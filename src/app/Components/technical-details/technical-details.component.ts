@@ -342,7 +342,11 @@ export class TechnicalDetailsComponent implements OnInit {
           return;
         }
 
-        this._vendorService.SaveTechInfo(this.vendorTechDefault, this.currentPage, this.pageSize, this.searchText).subscribe((result) => {
+        this.vendorTechDefault.PageIndex = this.currentPage;
+        this.vendorTechDefault.Limit = this.pageSize;
+        this.vendorTechDefault.SearchText = this.searchText;
+
+        this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
           if (result.Msg !== '') {
             if (result.Status === 0) {
               this.submitted = false;
