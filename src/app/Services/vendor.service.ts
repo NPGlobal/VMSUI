@@ -43,9 +43,9 @@ export class VendorService {
     return this._http.post<any>(apiUrl, VendorStaff);
   }
   // Used for save and update Vendor Technical Info
-  SaveTechInfo(VendorTech: any): Observable<any> {
+  SaveTechInfo(VendorTech: any, pageIndex: Number, limit: Number, searchText: string): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorTech/SaveVendorTechInfo';
-    return this._http.post<any>(apiUrl, VendorTech);
+    return this._http.post<any>(apiUrl, { VendorTech, pageIndex, limit, searchText });
   }
 
   // ApproveTechLine

@@ -342,7 +342,7 @@ export class TechnicalDetailsComponent implements OnInit {
           return;
         }
 
-        this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
+        this._vendorService.SaveTechInfo(this.vendorTechDefault, this.currentPage, this.pageSize, this.searchText).subscribe((result) => {
           if (result.Msg !== '') {
             if (result.Status === 0) {
               this.submitted = false;
@@ -355,7 +355,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
               this.GetVendorsTechList();
               this.dismiss();
-              this.GetVendorTech(this.currentPage);
+              // this.GetVendorTech(this.currentPage);
             } else {
               this.PopUpMessage = result.Msg;
             }
