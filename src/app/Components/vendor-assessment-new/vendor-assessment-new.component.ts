@@ -154,11 +154,12 @@ export class VendorAssessmentNewComponent implements OnInit {
     const year = this.AssessmentForm.get('Year').value;
     const currentYear = new Date().getFullYear();
 
-    if (year !== null && currentYear === Number(year)) {
-      this.monthsToShow = new Date().getMonth() + 1;
-    } else {
-      this.monthsToShow = 12;
-    }
+    // if (year !== null && currentYear === Number(year)) {
+    //   this.monthsToShow = new Date().getMonth() + 1;
+    // } else {
+    //   this.monthsToShow = 12;
+    // }
+    this.monthsToShow = 12;
 
     if (Number(this.AssessmentForm.get('Months').value) > this.monthsToShow) {
       this.AssessmentForm.get('Months').patchValue(null);

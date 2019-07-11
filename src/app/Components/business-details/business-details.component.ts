@@ -7,6 +7,9 @@ import { VendorBusinessService } from 'src/app/Services/vendor-business.service'
 import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
 import { BusinessProduction } from 'src/app/Models/business-production';
 import { forEach } from '@angular/router/src/utils/collection';
+import { VendorService } from 'src/app/Services/vendor.service';
+import { Vendor } from 'src/app/Models/vendor';
+import { flattenStyles } from '@angular/platform-browser/src/dom/dom_renderer';
 // import { VendorService } from 'src/app/Services/vendor.service';
 // import { VendorProduction } from 'src/app/Models/VendorProduction';
 // import { MasterDataDetails } from 'src/app/Models/master-data-details';
@@ -44,6 +47,7 @@ export class BusinessDetailsComponent implements OnInit {
   //#endregion
 
   //#region Form Variables
+  vendor: Vendor;
   vendorcode: string;
   submitted = false;
   businessList: VendorBusinessDetails[]; // For added Business List
@@ -53,13 +57,16 @@ export class BusinessDetailsComponent implements OnInit {
   NextFinancialYear: string;
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   isDeactVendor = false;
+  isDPVendor = false;
+  isJWVendor = false;
   //#endregion
 
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
-    private _vendorBusiService: VendorBusinessService) {
+    private _vendorBusiService: VendorBusinessService,
+    private _vendorService: VendorService) {
     this.CurrentFinancialYear = '';
     this.NextFinancialYear = '';
   }
@@ -70,6 +77,7 @@ export class BusinessDetailsComponent implements OnInit {
 
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
+      this.GetVendorByCode();
       this.GetVendorBusiness(this.currentPage);
     });
     // this.GetDivisions();
@@ -79,6 +87,14 @@ export class BusinessDetailsComponent implements OnInit {
   }
 
   //#region Data Binding
+  GetVendorByCode() {
+    this._vendorService.GetVendorByCode(this.vendorcode).subscribe((result) => {
+      this.vendor = result.data.Vendor[0];
+      this.isDPVendor = this.vendor.IsDirectVendor;
+      this.isJWVendor  = this.vendor.IsJWVendor;
+    });
+  }
+
   GetVendorBusiness(index: number) {
     this.currentPage = index;
     this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
