@@ -7,6 +7,15 @@ import { MasterDataDetails } from 'src/app/Models/master-data-details';
 import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { throwIfEmpty } from 'rxjs/operators';
 
+enum ActionType {
+  OnPageInit,
+  OnDivisionMove,
+  OnDepartmentMove,
+  OnRemoveItemFromSelected,
+  OnReplaceDepartmentsByDivision,
+  None
+}
+
 @Component({
   selector: 'app-department-mapping-new',
   templateUrl: './department-mapping-new.component.html',
@@ -56,7 +65,7 @@ export class DepartmentMappingNewComponent implements OnInit {
           this.AllList = result.data.Table;
           this.SelectedDD = result.data.Table1;
           this.CheckData = JSON.parse(JSON.stringify(this.SelectedDD));
-          this.BindData();
+          this.BindData(ActionType.OnPageInit);
         });
     });
     this.InitializeFormControls();
@@ -78,22 +87,27 @@ export class DepartmentMappingNewComponent implements OnInit {
   //#endregion
 
   //#region Data Binding
-  BindData() {
+  BindData(actionType: ActionType = ActionType.None) {
     // this.DivisionList = this.AllList.filter(x => x.MDHCode === 'DIVISION');
     // this.DepartmentList = this.AllList.filter(x => x.MDHCode === 'DEPT');
-
-    let divisionCode = this.DepartmentMappingForm.get('Division').value;
-    if (divisionCode === '-1') {
-      // 1 is Used for Message (Select Division), and -1 is Used for Message (All Division) in division dropdown.
-      divisionCode = this.SelectedDD.length > 0 ? '1' : '-1';
-    }
-    this.DepartmentMappingForm.get('Division').patchValue(divisionCode);
-
+    /* Commented by Praveen
+        let divisionCode = this.DepartmentMappingForm.get('Division').value;
+        if (divisionCode === '-1') {
+          // 1 is Used for Message (Select Division), and -1 is Used for Message (All Division) in division dropdown.
+          divisionCode = this.SelectedDD.length > 0 ? '1' : '-1';
+        }
+        this.DepartmentMappingForm.get('Division').patchValue(divisionCode);
+    */
     // if (this.SelectedDD.length === 0) {
     //   // If there are no record saved in database
     //   this.GetDivisionsAndDepartment();
     // } else {
     this.GetDivision();
+
+    if (actionType !== ActionType.None) {
+      this.SetDefaultDivisionSelected(actionType);
+    }
+
     this.GetDepartment();
     // }
 
@@ -134,7 +148,7 @@ export class DepartmentMappingNewComponent implements OnInit {
   GetDepartment() {
     // this.DepartmentMappingForm.get('DivList').patchValue(0);
     const divisionCode = this.DepartmentMappingForm.get('Division').value;
-    if (divisionCode !== '1') {
+    if (divisionCode !== '1' && divisionCode !== '0') {
       // Here we filtered those department which belongs to selected division from selected list.
       const selectedDepartmentList = this.SelectedDD.filter(x => x.MDHCode === 'DEPT' &&
         x.ParentMDDCode === (divisionCode === '-1' ? x.ParentMDDCode : divisionCode));
@@ -155,10 +169,10 @@ export class DepartmentMappingNewComponent implements OnInit {
 
   // added by shubhi
   UnselectDept() {
-    this.DepartmentMappingForm.get('Department').patchValue(0);
+    this.DepartmentMappingForm.get('Department').patchValue('');
   }
   UnselectDiv() {
-    this.DepartmentMappingForm.get('DivList').patchValue(0);
+    this.DepartmentMappingForm.get('DivList').patchValue('');
   }
 
 
@@ -174,8 +188,10 @@ export class DepartmentMappingNewComponent implements OnInit {
   MoveToSelectedList() {
     const div = this.DepartmentMappingForm.get('DivList').value as Array<string>;
     const dept = this.DepartmentMappingForm.get('Department').value as Array<string>;
+    if (div.length === 0 && dept.length === 0) {
+      return; // Do nothing if no item is selected
+    }
     if (div.length > 0) {
-      //  this.DepartmentMappingForm.get('Department').value = '';
       if (this.checkAddedDivisionDepartment(div)) {
         this.PopUpMessage = 'Department(s) of selected division already exist. Do you want to replace it?';
         this.isDataExist = false;
@@ -189,8 +205,7 @@ export class DepartmentMappingNewComponent implements OnInit {
             this.SelectedDD.push(this.DivisionList[i]);
           }
         }
-        this.DepartmentMappingForm.get('Division').patchValue('-1');
-        this.BindData();
+        this.BindData(ActionType.OnDivisionMove);
       }
     }
     if (dept.length > 0) {
@@ -202,13 +217,17 @@ export class DepartmentMappingNewComponent implements OnInit {
           this.SelectedDD.push(this.DepartmentList[i]);
         }
       }
-      this.BindData();
+      this.BindData(ActionType.OnDepartmentMove);
     }
+    this.DepartmentMappingForm.get('SelectedList').patchValue('');
   }
 
   RemoveFromSelectedList() {
     const stringArr = this.DepartmentMappingForm.get('SelectedList').value as Array<string>;
     let count = 0;
+    if (stringArr.length === 0) {
+      return; // Do nothing if no item is selected
+    }
 
     for (let i = 0; i < stringArr.length; i++) {
       for (let j = 0; j < this.SelectedDD.length; j++) {
@@ -216,9 +235,14 @@ export class DepartmentMappingNewComponent implements OnInit {
           this.SelectedDD = this.SelectedDD.filter(function (value) {
             if (value.MDDCode !== stringArr[i]) {
               return value;
+            } else {
+              // To Reset properties which are set while moving to 'Selected Div/Dept List'
+              delete value.isDeletable;
+              delete value.type;
+              delete value.color;
             }
           });
-          this.BindData();
+          this.BindData(ActionType.OnRemoveItemFromSelected);
         } else if (this.SelectedDD[j].isDeletable === 'N' && this.SelectedDD[j].MDDCode === stringArr[i]) {
           count++;
         }
@@ -241,12 +265,24 @@ export class DepartmentMappingNewComponent implements OnInit {
         if (value.ParentMDDCode !== stringArr[i]) {
           return value;
         } else {
-          deptArr.push(value);
+          // To Reset properties which are set while move to 'Selected Div/Dept List'
+          if (value.isDeletable === 'N') {
+            delete value.color;
+            delete value.isDeletable;
+            delete value.type;
+            deptArr.push(value);
+          } else {
+            delete value.color;
+            delete value.isDeletable;
+            delete value.type;
+          }
         }
       });
     }
 
-    this.AllList = this.AllList.concat(deptArr);
+    if (deptArr.length > 0) {
+      this.AllList = this.AllList.concat(deptArr);
+    }
 
     for (let i = 0; i < this.DivisionList.length; i++) {
       if (stringArr.includes(this.DivisionList[i].MDDCode)) {
@@ -256,8 +292,7 @@ export class DepartmentMappingNewComponent implements OnInit {
         this.SelectedDD.push(this.DivisionList[i]);
       }
     }
-    this.DepartmentMappingForm.get('Division').patchValue('-1');
-    this.BindData();
+    this.BindData(ActionType.OnReplaceDepartmentsByDivision);
   }
 
   // DeleteExistingDepartment() {
@@ -330,4 +365,39 @@ export class DepartmentMappingNewComponent implements OnInit {
     }
   }
   //#endregion
+
+  SetDefaultDivisionSelected(type: ActionType): void {
+    let isBindingNeed = true;
+    switch (type) {
+      case ActionType.OnPageInit:
+      case ActionType.OnDepartmentMove:
+        const totalDepartments = this.AllList.filter(x => x.MDHCode.toLowerCase() === 'dept').length;
+        const totalSelectedDepartments = this.SelectedDD.length;
+        let defaultDivisions = ['-1', '0', '1'];
+        let selectedDivisionCode = this.DepartmentMappingForm.get('Division').value;
+        isBindingNeed = (((totalDepartments === totalSelectedDepartments) && (defaultDivisions.indexOf(selectedDivisionCode) !== -1))
+          || this.SelectedDD.length > 0 && selectedDivisionCode === '-1');
+        break;
+      case ActionType.OnRemoveItemFromSelected:
+        defaultDivisions = ['-1', '0', '1'];
+        selectedDivisionCode = this.DepartmentMappingForm.get('Division').value;
+        if (defaultDivisions.indexOf(selectedDivisionCode) !== -1) {
+          isBindingNeed = (this.SelectedDD.length === 0 || this.DivisionList.length !== 0);
+        } else {
+          isBindingNeed = (this.SelectedDD.length === 0);
+        }
+        break;
+    }
+
+    if (isBindingNeed) {
+      const active_division_value = ((this.DivisionList.length === 0) ? '0' : (this.SelectedDD.length > 0) ? '1' : '-1');
+      this.DepartmentMappingForm.get('Division').patchValue(active_division_value);
+    }
+
+    // To make items unselected
+    this.UnselectDiv();
+    this.UnselectDept();
+    this.DepartmentMappingForm.get('SelectedList').patchValue('');
+  }
+
 }
