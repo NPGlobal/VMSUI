@@ -210,15 +210,15 @@ export class DocumentComponent implements OnInit {
       this.vendorDocument.VendAction_MDDCode = this.docDetailsForm.get('VendAction_MDDCode').value;
       this.vendorDocument.VendDoc_MDDCode = this.docDetailsForm.get('VendDoc_MDDCode').value;
 
-      if (this.vendDocList.findIndex(x => x.VendAction_MDDCode === this.vendorDocument.VendAction_MDDCode) > -1 &&
-        this.vendDocList.findIndex(x => x.VendDoc_MDDCode === this.vendorDocument.VendDoc_MDDCode) > -1) {
+      if (this.vendDocList.findIndex(x => x.VendAction_MDDCode === this.vendorDocument.VendAction_MDDCode &&
+        x.VendDoc_MDDCode === this.vendorDocument.VendDoc_MDDCode) > -1) {
         this.PopUpMessage = 'This data already exists.';
         this.alertModalButton.click();
         return;
       }
 
     }
-
+    
     this.vendorDocument.Remarks = this.docDetailsForm.get('Remarks').value;
     this.vendorDocument.CompanyCode = '10';
 
