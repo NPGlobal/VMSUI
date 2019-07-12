@@ -218,7 +218,7 @@ export class DocumentComponent implements OnInit {
       }
 
     }
-    
+
     this.vendorDocument.Remarks = this.docDetailsForm.get('Remarks').value;
     this.vendorDocument.CompanyCode = '10';
 
