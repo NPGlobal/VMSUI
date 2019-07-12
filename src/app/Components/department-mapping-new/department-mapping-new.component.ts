@@ -36,6 +36,9 @@ export class DepartmentMappingNewComponent implements OnInit {
   CheckData: any;
   Temp: MasterDataDetails[] = [];
   isDeactVendor = false;
+
+  isMoveToRightDisabled = true;
+  isMoveToLeftDisabled = true;
   //#endregion
 
   //#region Modal Popup and Alert
@@ -168,11 +171,19 @@ export class DepartmentMappingNewComponent implements OnInit {
   //#endregion
 
   // added by shubhi
-  UnselectDept() {
-    this.DepartmentMappingForm.get('Department').patchValue('');
+  UnselectDept(event) {
+    this.DepartmentMappingForm.get('Department').patchValue(null);
+    this.buttonsEnableDisable(event);
   }
-  UnselectDiv() {
-    this.DepartmentMappingForm.get('DivList').patchValue('');
+  UnselectDiv(event) {
+    this.DepartmentMappingForm.get('DivList').patchValue(null);
+    this.buttonsEnableDisable(event);
+  }
+
+  UnselectDivDept(event) {
+    this.DepartmentMappingForm.get('DivList').patchValue(null);
+    this.DepartmentMappingForm.get('Department').patchValue(null);
+    this.buttonsEnableDisable(event);
   }
 
 
@@ -185,13 +196,14 @@ export class DepartmentMappingNewComponent implements OnInit {
     }
     return this.isDataExist;
   }
+
   MoveToSelectedList() {
     const div = this.DepartmentMappingForm.get('DivList').value as Array<string>;
     const dept = this.DepartmentMappingForm.get('Department').value as Array<string>;
-    if (div.length === 0 && dept.length === 0) {
+    if ((div === null && dept === null)) {
       return; // Do nothing if no item is selected
     }
-    if (div.length > 0) {
+    if (div !== null && div.length > 0) {
       if (this.checkAddedDivisionDepartment(div)) {
         this.PopUpMessage = 'Department(s) of selected division already exist. Do you want to replace it?';
         this.isDataExist = false;
@@ -208,7 +220,7 @@ export class DepartmentMappingNewComponent implements OnInit {
         this.BindData(ActionType.OnDivisionMove);
       }
     }
-    if (dept.length > 0) {
+    if (dept !== null && dept.length > 0) {
       for (let i = 0; i < this.DepartmentList.length; i++) {
         if (dept.includes(this.DepartmentList[i].MDDCode)) {
           this.DepartmentList[i].color = 'rgb(194, 248, 194)';
@@ -219,13 +231,13 @@ export class DepartmentMappingNewComponent implements OnInit {
       }
       this.BindData(ActionType.OnDepartmentMove);
     }
-    this.DepartmentMappingForm.get('SelectedList').patchValue('');
+    this.DepartmentMappingForm.get('SelectedList').patchValue(null);
   }
 
   RemoveFromSelectedList() {
     const stringArr = this.DepartmentMappingForm.get('SelectedList').value as Array<string>;
     let count = 0;
-    if (stringArr.length === 0) {
+    if (stringArr === null || stringArr.length === 0) {
       return; // Do nothing if no item is selected
     }
 
@@ -395,9 +407,44 @@ export class DepartmentMappingNewComponent implements OnInit {
     }
 
     // To make items unselected
-    this.UnselectDiv();
-    this.UnselectDept();
-    this.DepartmentMappingForm.get('SelectedList').patchValue('');
+    this.DepartmentMappingForm.get('DivList').patchValue(null);
+    this.DepartmentMappingForm.get('Department').patchValue(null);
+    this.DepartmentMappingForm.get('SelectedList').patchValue(null);
+
+    // To make movable buttons disabled after action(move to left) complete
+    this.isMoveToLeftDisabled = this.isMoveToRightDisabled = true;
   }
+
+  /* Note: Make movebale button enabled only if any corresponding item is selected */
+  buttonsEnableDisable(event: any, isFoucusOut: boolean = false): void {
+    // Default make both buttons disabled
+    this.isMoveToRightDisabled = this.isMoveToLeftDisabled = true;
+
+    // On focus or change event make button enabled or disabled
+    if (event.target.attributes.formcontrolname) {
+      const formControlName = event.target.attributes.formcontrolname.value;
+      const selectedItems = this.DepartmentMappingForm.get(formControlName).value;
+      const isEnabled = (selectedItems != null && selectedItems.length > 0);
+
+      switch (formControlName) {
+        case 'DivList':
+          this.isMoveToRightDisabled = !isEnabled;
+          this.DepartmentMappingForm.get('Department').patchValue(null);
+          this.DepartmentMappingForm.get('SelectedList').patchValue(null);
+          break;
+        case 'Department':
+          this.isMoveToRightDisabled = !isEnabled;
+          this.DepartmentMappingForm.get('DivList').patchValue(null);
+          this.DepartmentMappingForm.get('SelectedList').patchValue(null);
+          break;
+        case 'SelectedList':
+          this.isMoveToLeftDisabled = !isEnabled;
+          this.DepartmentMappingForm.get('DivList').patchValue(null);
+          this.DepartmentMappingForm.get('Department').patchValue(null);
+          break;
+      }
+    }
+  }
+
 
 }
