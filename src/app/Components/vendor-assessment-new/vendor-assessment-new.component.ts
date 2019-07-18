@@ -219,6 +219,8 @@ export class VendorAssessmentNewComponent implements OnInit {
   GetVendorsWithDepartments() {
     this.DeptList = [];
     this.SelectedDeptList = [];
+    this.selectedItems = [];
+    this.itemList = [];
 
     const shortName = this.AssessmentForm.get('ShortName').value;
 
