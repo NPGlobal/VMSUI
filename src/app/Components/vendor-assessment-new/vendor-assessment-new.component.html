@@ -16,7 +16,7 @@
       </ngx-select-dropdown>
     </div>
 
-    <div class="col-md-2 col-md-13">
+    <div class="col-md-2">
       <label class="text">Period Type</label>
       <div class="col-md-12">
         <label class="text form-check-label">
@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'B'" class="col-md-2 col-md-19">
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'B'" class="col-md-2">
       <div class="">
         <label>Blocks<i class="mandatory">*</i></label>
 
@@ -62,7 +62,7 @@
         </select> -->
       </div>
     </div>
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2  col-md-19">
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2">
       <div class="form-group">
         <label>Month<i class="mandatory">*</i></label>
         <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Months"
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="col-md-2 col-md-13">
+    <div class="col-md-13 pl-0">
       <label for="">Assessing PH<i class="mandatory">*</i></label>
       <select [ngClass]="{'is-invalid': formErrors.AssessingPHCode}" formControlName="AssessingPHCode"
         (blur)="LogValidationErrors()" class="form-control input-sm">
@@ -83,14 +83,18 @@
       </select>
     </div>
 
-    <div class="col-md-2">
+    <div *ngIf="itemList" class="col-md-19 pl-0 pr-0">
       <!-- <label for="">Product Specialities (Departments)<i class="mandatory">*</i></label> -->
       <label for="">Departments<i class="mandatory">*</i></label>
-      <ng-multiselect-dropdown required class="input-sm dropdown" [placeholder]="'Select'"
-        [ngClass]="{ 'invalid-dept': invalidDept }" [ngModelOptions]="{standalone: true}" [data]="DeptList"
+      <!-- <ng-multiselect-dropdown required class="input-sm dropdown" [placeholder]="'Select'"
+        [ngClass]="{ 'invalid-dept': invalidDept }" [ngModelOptions]="{standalone: true}" [data]="itemList"
         [(ngModel)]="SelectedDeptList" [settings]="deptDropdownSettings">
         <option [ngValue]="null">Select</option>
-      </ng-multiselect-dropdown>
+      </ng-multiselect-dropdown> -->
+
+      <angular2-multiselect [ngModelOptions]="{standalone: true}" [data]="itemList"
+        [ngClass]="{ 'invalid-dept': invalidDept }" [(ngModel)]="selectedItems" [settings]="deptDropdownSettings">
+      </angular2-multiselect>
     </div>
   </div>
 

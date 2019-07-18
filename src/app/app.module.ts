@@ -34,6 +34,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
 import { TechLineReportComponent } from './Components/tech-line-report/tech-line-report.component';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { SelectDropDownModule } from 'ngx-select-dropdown';
     NgMultiSelectDropDownModule.forRoot(),
     CommonModule,
     NgxSpinnerModule,
-    SelectDropDownModule
+    SelectDropDownModule,
+    AngularMultiSelectModule
   ],
   providers: [
     {

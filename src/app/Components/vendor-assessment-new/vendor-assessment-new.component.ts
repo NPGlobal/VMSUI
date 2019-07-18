@@ -61,16 +61,32 @@ export class VendorAssessmentNewComponent implements OnInit {
   //#endregion
 
   //#region MultiSelect Dropdown Settings
+
+  itemList = [];
+  selectedItems = [];
   deptDropdownSettings = {
     singleSelection: false,
-    idField: 'MDDCode',
-    textField: 'MDDName',
+    text: 'Select',
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
-    itemsShowLimit: 1,
-    allowSearchFilter: true,
-    noDataAvailablePlaceholderText: 'No records'
+    searchPlaceholderText: 'Search',
+    // enableSearchFilter: true,
+    badgeShowLimit: 1,
+    groupBy: 'ParentMDDName',
+    // searchBy: ['id', 'itemName'],
+    lazyLoading: false
   };
+
+  // deptDropdownSettings = {
+  //   singleSelection: false,
+  //   idField: 'MDDCode',
+  //   textField: 'MDDName',
+  //   selectAllText: 'Select All',
+  //   unSelectAllText: 'UnSelect All',
+  //   itemsShowLimit: 1,
+  //   allowSearchFilter: true,
+  //   noDataAvailablePlaceholderText: 'No records'
+  // };
 
   quarterDropdownSettings = {
     singleSelection: false,
@@ -79,7 +95,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
     itemsShowLimit: 1,
-    allowSearchFilter: true,
+    // allowSearchFilter: true,
     noDataAvailablePlaceholderText: 'No records'
   };
   //#endregion
@@ -210,6 +226,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     if (shortName !== null && shortName !== undefined) {
       this._vendorService.GetVendorsWithDepartments(shortName.VendorCode).subscribe((result) => {
         this.DeptList = result.data.Table;
+        this.itemList = result.data.Table;
         this.SelectedPHList = result.data.Table1;
 
         if (this.SelectedPHList.length > 2) {
@@ -341,7 +358,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   }
 
   ValidateDepartment() {
-    if (this.SelectedDeptList.length === 0) {
+    if (this.selectedItems.length === 0) {
       this.invalidDept = true;
     } else { this.invalidDept = false; }
   }
@@ -398,8 +415,8 @@ export class VendorAssessmentNewComponent implements OnInit {
     let edaTo: any;
 
     const shortName = this.AssessmentForm.get('ShortName').value.VendorCode;
-    const deptCode = this.SelectedDeptList.map(function (el) {
-      return el.MDDCode;
+    const deptCode = this.selectedItems.map(function (el) {
+      return el.id;
     }).join();
     const year = this.AssessmentForm.get('Year').value;
     const periodType = this.AssessmentForm.get('PeriodType').value;
