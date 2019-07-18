@@ -12,7 +12,6 @@ import { Action } from 'rxjs/internal/scheduler/Action';
 import { and } from '@angular/router/src/utils/collection';
 import { VendorTechDefault } from 'src/app/Models/vendorTechDefault';
 import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
-declare var $: any;
 
 @Component({
   selector: 'app-technical-details',
@@ -343,6 +342,10 @@ export class TechnicalDetailsComponent implements OnInit {
           return;
         }
 
+        this.vendorTechDefault.PageIndex = this.currentPage;
+        this.vendorTechDefault.Limit = this.pageSize;
+        this.vendorTechDefault.SearchText = this.searchText;
+
         this._vendorService.SaveTechInfo(this.vendorTechDefault).subscribe((result) => {
           if (result.Msg !== '') {
             if (result.Status === 0) {
@@ -356,7 +359,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
               this.GetVendorsTechList();
               this.dismiss();
-              this.GetVendorTech(this.currentPage);
+              // this.GetVendorTech(this.currentPage);
             } else {
               this.PopUpMessage = result.Msg;
             }
@@ -461,7 +464,10 @@ export class TechnicalDetailsComponent implements OnInit {
         'VendorShortCode="' + this.vendorcode + '" ' +
         'LineNumber="' + vendortech.TechLineNo + '" ' +
         'MachineId="" ' +
-        'IsApprove="' + (status === 'ApproveLine' ? 1 : 0) + '">' +
+        'IsApprove="' + (status === 'ApproveLine' ? 1 : 0) + '" ' +
+        'PageIndex="' + this.currentPage + '" ' +
+        'Limit="' + this.pageSize + '" ' +
+        'SearchText="' + this.searchText + '"' + '>' +
         '</ApproveMachine>' +
         '</Data>';
     } else {
@@ -471,7 +477,10 @@ export class TechnicalDetailsComponent implements OnInit {
         'VendorShortCode="' + this.vendorcode + '" ' +
         'LineNumber="' + vendortech.TechLineNo + '" ' +
         'MachineId ="' + vendortech.VendorTechConfigID + '" ' +
-        'IsApprove ="' + (status === 'A' ? 1 : 0) + '">' +
+        'IsApprove ="' + (status === 'A' ? 1 : 0) + '" ' +
+        'PageIndex="' + this.currentPage + '" ' +
+        'Limit="' + this.pageSize + '" ' +
+        'SearchText="' + this.searchText + '"' + '>' +
         '</ApproveMachine>' +
         '</Data>';
     }
@@ -480,11 +489,21 @@ export class TechnicalDetailsComponent implements OnInit {
     const xmldata = this.inputXml;
     this._vendorService.ApproveRejectTechLine({ content: xmldata }).subscribe((result) => {
       if (result.Error === '') {
-        if (result.data.Table[0].Result === 0) {
-          this.PopUpMessage = result.data.Table[0].Message;
-          this.GetVendorTech(1);
+        if (result.ResultCode === 0) {
+          if (result.data.length > 0) {
+
+            this.PopUpMessage = result.Message;
+            this.totalItems = result.TotalCount;
+            this.TechDefaultLst = result.data;
+            this.EditTechDetails(null);
+            this.GetVendorsTechList();
+
+          } else {
+            this.pagedItems = undefined;
+          }
+
         } else {
-          this.PopUpMessage = result.data.Table[0].Message;
+          this.PopUpMessage = result.Message;
         }
       } else {
         this.PopUpMessage = 'There is some technical error. Please contact administrator.';
@@ -883,7 +902,11 @@ export class TechnicalDetailsComponent implements OnInit {
         'UserId="' + sessionStorage.getItem('userid') + '" ' +
         'VendorShortCode="' + this.vendorcode + '" ' +
         'LineNumber="' + vendorTechDefault.TechLineNo + '" ' +
-        'MachineId =""' +
+        'VendorTechDetailsProposedId="" ' +
+        'MachineId ="" ' +
+        'PageIndex="' + this.currentPage + '" ' +
+        'Limit="' + this.pageSize + '" ' +
+        'SearchText="' + this.searchText + '"' +
         '></UndoRequest>' +
         '</Data>';
     } else {
@@ -892,7 +915,11 @@ export class TechnicalDetailsComponent implements OnInit {
         'UserId="' + sessionStorage.getItem('userid') + '" ' +
         'VendorShortCode="' + this.vendorcode + '" ' +
         'LineNumber="' + vendortech.TechLineNo + '" ' +
-        'MachineId ="' + vendortech.VendorTechConfigID + '"' +
+        'VendorTechDetailsProposedId="' + (vendortech.VendorTechDetailsProposedID ? vendortech.VendorTechDetailsProposedID : '') + '" ' +
+        'MachineId ="' + vendortech.VendorTechConfigID + '" ' +
+        'PageIndex="' + this.currentPage + '" ' +
+        'Limit="' + this.pageSize + '" ' +
+        'SearchText="' + this.searchText + '"' +
         '></UndoRequest>' +
         '</Data>';
     }
@@ -901,12 +928,22 @@ export class TechnicalDetailsComponent implements OnInit {
   UndoTechRequest() {
     const xmldata = this.inputXml;
     this._vendorService.UndoTechRequest({ content: xmldata }).subscribe((result) => {
+      this.IsGoingToUndo = false;
       if (result.Error === '') {
-        if (result.data.Table[0].Result === 0) {
-          this.PopUpMessage = result.data.Table[0].Message;
-          this.GetVendorTech(1);
+        if (result.ResultCode === 0) {
+          this.PopUpMessage = result.Message;
+
+          if (result.data.length > 0) {
+            this.totalItems = result.TotalCount;
+            this.TechDefaultLst = result.data;
+            this.EditTechDetails(null);
+            this.GetVendorsTechList();
+          } else {
+            this.pagedItems = undefined;
+          }
+
         } else {
-          this.PopUpMessage = result.data.Table[0].Message;
+          this.PopUpMessage = result.Message;
         }
       } else {
         this.PopUpMessage = 'There is some technical error. Please contact administrator.';

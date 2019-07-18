@@ -39,10 +39,13 @@ export class VendorAssessmentNewComponent implements OnInit {
   SelectedDeptList: any;
   submitted = false;
   isDataRecieved = false;
+  SelectedPHList = [];
+  SelectedParameters: any[] = [];
 
   Month: any;
   Year: any;
   AssessingPeriods: any;
+  AssessingPH: string;
   //#endregion
 
   //#region  Form Variables
@@ -54,20 +57,36 @@ export class VendorAssessmentNewComponent implements OnInit {
   alertModalButton: ElementRef;
   PopUpMessage: string;
   alertButton: any;
-  monthsToShow: number;
+  monthsToShow = 0;
   //#endregion
 
   //#region MultiSelect Dropdown Settings
+
+  itemList = [];
+  selectedItems = [];
   deptDropdownSettings = {
     singleSelection: false,
-    idField: 'MDDCode',
-    textField: 'MDDName',
+    text: 'Select',
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
-    itemsShowLimit: 1,
-    allowSearchFilter: true,
-    noDataAvailablePlaceholderText: 'No records'
+    searchPlaceholderText: 'Search',
+    // enableSearchFilter: true,
+    badgeShowLimit: 1,
+    groupBy: 'ParentMDDName',
+    // searchBy: ['id', 'itemName'],
+    lazyLoading: false
   };
+
+  // deptDropdownSettings = {
+  //   singleSelection: false,
+  //   idField: 'MDDCode',
+  //   textField: 'MDDName',
+  //   selectAllText: 'Select All',
+  //   unSelectAllText: 'UnSelect All',
+  //   itemsShowLimit: 1,
+  //   allowSearchFilter: true,
+  //   noDataAvailablePlaceholderText: 'No records'
+  // };
 
   quarterDropdownSettings = {
     singleSelection: false,
@@ -76,7 +95,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
     itemsShowLimit: 1,
-    allowSearchFilter: true,
+    // allowSearchFilter: true,
     noDataAvailablePlaceholderText: 'No records'
   };
   //#endregion
@@ -104,6 +123,9 @@ export class VendorAssessmentNewComponent implements OnInit {
     'ShortName': ''
   };
 
+  options = [];
+  config = {};
+
   invalidDept = false;
   invalidQuarter = false;
   //#endregion
@@ -113,7 +135,7 @@ export class VendorAssessmentNewComponent implements OnInit {
     private _fb: FormBuilder,
     private _validationMess: ValidationMessagesService) {
     this.PopUpMessage = '';
-    this.MonthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    this.MonthList = [];
     this.SelectedDeptList = [];
     this.QuarterList = [{ QuarterText: 'Quarter 1(Jan-Feb-Mar)', QuarterValue: 1 },
     { QuarterText: 'Quarter 2(Apr-May-Jun)', QuarterValue: 2 },
@@ -126,9 +148,8 @@ export class VendorAssessmentNewComponent implements OnInit {
 
     this.PopulateYears();
     this.InitializeFormControls();
-    this.PopulateMonths();
     this.GetVendors();
-    this.GetPHList();
+    // this.GetPHList();
   }
 
   //#region GetData
@@ -146,14 +167,18 @@ export class VendorAssessmentNewComponent implements OnInit {
   PopulateMonths() {
     const monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    this.AssessmentForm.get('Months').patchValue(null);
-
     const year = this.AssessmentForm.get('Year').value;
     const currentYear = new Date().getFullYear();
-    if (year !== null && currentYear === Number(year)) {
-      this.monthsToShow = new Date().getMonth() + 1;
-    } else {
-      this.monthsToShow = 12;
+
+    // if (year !== null && currentYear === Number(year)) {
+    //   this.monthsToShow = new Date().getMonth() + 1;
+    // } else {
+    //   this.monthsToShow = 12;
+    // }
+    this.monthsToShow = 12;
+
+    if (Number(this.AssessmentForm.get('Months').value) > this.monthsToShow) {
+      this.AssessmentForm.get('Months').patchValue(null);
     }
 
     this.MonthList = monthList.splice(0, this.monthsToShow);
@@ -162,19 +187,59 @@ export class VendorAssessmentNewComponent implements OnInit {
   GetVendors() {
     this._vendorService.GetVendors(-1, -1, '').subscribe((result) => {
       this.vendorList = result.data.Vendors;
+      this.options = this.vendorList.map(function (element) {
+        return { VendorCode: element.VendorCode, VendorName: element.VendorName };
+      });
+
+      this.config = {
+        displayKey: 'VendorName', // if objects array passed which key to be displayed defaults to description
+        search: true, // true/false for the search functionlity defaults to false,
+        height: '200px',
+        placeholder: 'Select', // text to be displayed when no item is selected defaults to Select,
+        customComparator: (ob1, ob2) => {
+          if (ob1.VendorCode < ob2.VendorCode) {
+            return -1;
+          }
+          if (ob1.VendorCode > ob2.VendorCode) {
+            return 1;
+          }
+          return 0;
+        },
+        // a custom function using which user wants to sort the items. default is undefined and Array.sort() will be used in that case,
+        limitTo: this.options.length, // a number thats limits the no of options displayed in the UI similar to angular's limitTo pipe
+        moreText: 'more', // text to be displayed whenmore than one items are selected like Option 1 + 5 more
+        noResultsFound: 'No results found!', // text to be displayed when no items are found while searching
+        searchPlaceholder: 'Search', // label thats displayed in search input,
+        searchOnKey: 'VendorName'
+        // key on which search should be performed this will be selective search. if undefined this will be extensive search on all keys
+      };
     });
   }
 
   GetVendorsWithDepartments() {
     this.DeptList = [];
     this.SelectedDeptList = [];
+    this.selectedItems = [];
+    this.itemList = [];
 
     const shortName = this.AssessmentForm.get('ShortName').value;
 
-    if (shortName !== null) {
-      this._vendorService.GetVendorsWithDepartments(shortName).subscribe((result) => {
+    this.SelectedPHList = [];
+    if (shortName !== null && shortName !== undefined) {
+      this._vendorService.GetVendorsWithDepartments(shortName.VendorCode).subscribe((result) => {
         this.DeptList = result.data.Table;
+        this.itemList = result.data.Table;
+        this.SelectedPHList = result.data.Table1;
+
+        if (this.SelectedPHList.length > 2) {
+          this.AssessmentForm.get('AssessingPHCode').patchValue('-1');
+        } else {
+          this.AssessmentForm.get('AssessingPHCode').patchValue(this.SelectedPHList[0].OrgUnitCode);
+        }
+
       });
+    } else {
+      this.AssessmentForm.get('AssessingPHCode').patchValue(null);
     }
   }
 
@@ -188,19 +253,23 @@ export class VendorAssessmentNewComponent implements OnInit {
 
   GetVendorAssessmentReport() {
     this.isDataRecieved = false;
+    localStorage.setItem('InputParams', this.inputParams);
+
     this._vendorAssessmentService.GetVendorAssessmentReport(this.inputParams).subscribe((result) => {
       const orderQtyDetails = result.data.Table;
-      this.SetOrderDetails(orderQtyDetails);
+      this.SetOrderDetails(result.data.Table, result.data.Table1);
 
-      this.QuantityDetails = result.data.Table1;
+      this.QuantityDetails = result.data.Table2;
 
-      this.GradeDetails1a = result.data.Table2;
-      this.GradeDetails1b = result.data.Table3;
-      this.GradeDetails2a = result.data.Table4;
-      this.GradeDetails2b = result.data.Table5;
-      this.AverageGradeDetails = result.data.Table6;
+      this.GradeDetails1a = result.data.Table3;
+      this.GradeDetails1b = result.data.Table4;
+      this.GradeDetails2a = result.data.Table5;
+      this.GradeDetails2b = result.data.Table6;
+      this.AverageGradeDetails = result.data.Table7;
 
-      this.AssessmentScoreTable = result.data.Table7;
+      this.AssessmentScoreTable = result.data.Table8;
+
+      this.SelectedParameters = result.data.Table9;
 
       this.AssessingPeriods = result.data.Table8.map(function (element) {
         return element.AssessmentPeriod;
@@ -210,14 +279,14 @@ export class VendorAssessmentNewComponent implements OnInit {
     });
   }
 
-  SetOrderDetails(details: any[]) {
+  SetOrderDetails(styleDetails: any[], details: any[]) {
     this.OrderDetails = [];
-    for (let counterVar = 0; counterVar < details.length; ++counterVar) {
-      const styleMDD = details[counterVar].StyleMDDCode;
-      const deptCode = details[counterVar].DeptCode;
-      const buyPlanQty = details[counterVar].BuyPlanQty;
-      const batchQty = details[counterVar].BatchQty;
-      const purchaseOrderQty = details[counterVar].PurchaseOrderQty;
+    for (let counterVar = 0; counterVar < styleDetails.length; ++counterVar) {
+      const styleMDD = styleDetails[counterVar].StyleMDDCode;
+      const deptCode = styleDetails[counterVar].DeptCode;
+      const buyPlanQty = styleDetails[counterVar].BuyPlanQty;
+      const batchQty = styleDetails[counterVar].BatchQty;
+      const purchaseOrderQty = styleDetails[counterVar].PurchaseOrderQty;
 
       const existingIndex = this.OrderDetails.findIndex(x => x.StyleMDDCode === styleMDD &&
         x.DeptCode === deptCode &&
@@ -235,10 +304,7 @@ export class VendorAssessmentNewComponent implements OnInit {
           PurchaseOrderQty: purchaseOrderQty,
           QtyDetails: details.filter(function (x) {
             return x.StyleMDDCode === styleMDD &&
-              x.DeptCode === deptCode &&
-              x.BuyPlanQty === buyPlanQty &&
-              x.BatchQty === batchQty &&
-              x.PurchaseOrderQty === purchaseOrderQty;
+              x.DeptCode === deptCode;
           }).map(function (element) {
             return {
               OrderNo: element.OrderNo,
@@ -294,7 +360,7 @@ export class VendorAssessmentNewComponent implements OnInit {
   }
 
   ValidateDepartment() {
-    if (this.SelectedDeptList.length === 0) {
+    if (this.selectedItems.length === 0) {
       this.invalidDept = true;
     } else { this.invalidDept = false; }
   }
@@ -350,9 +416,9 @@ export class VendorAssessmentNewComponent implements OnInit {
     let edaFrom: any;
     let edaTo: any;
 
-    const shortName = this.AssessmentForm.get('ShortName').value;
-    const deptCode = this.SelectedDeptList.map(function (el) {
-      return el.MDDCode;
+    const shortName = this.AssessmentForm.get('ShortName').value.VendorCode;
+    const deptCode = this.selectedItems.map(function (el) {
+      return el.id;
     }).join();
     const year = this.AssessmentForm.get('Year').value;
     const periodType = this.AssessmentForm.get('PeriodType').value;
@@ -418,11 +484,174 @@ export class VendorAssessmentNewComponent implements OnInit {
 
     this.ProductSpecialities = deptCode;
 
+    if (this.AssessmentForm.get('AssessingPHCode').value === '-1') {
+      this.AssessingPH = this.SelectedPHList.filter(x => x.OrgUnitCode !== '-1').map(x => x.OrgUnitName).join(',');
+    } else {
+      this.AssessingPH = this.SelectedPHList.filter(x => x.OrgUnitCode === assessingPHCode).map(x => x.OrgUnitName).join(',');
+    }
+
     this.GetVendorAssessmentReport();
   }
 
   ExpandCollpase(index: number) {
     this.OrderDetails[index].IsExpanded = !this.OrderDetails[index].IsExpanded;
+  }
+
+  ExportToExcelByVendorCode() {
+    const inputParams = localStorage.getItem('InputParams');
+    this._vendorAssessmentService.GetVendorAssessmentReportForExcel(this.inputParams).subscribe((result) => {
+
+      const newBlob = new Blob([result], { type: result.type });
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob);
+        return;
+      }
+
+      const url = window.URL.createObjectURL(newBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'AssessmentReport_' + this.VendorCode + '.xlsx';
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  Print() {
+    const divToPrint = document.getElementById('Print');
+    const newWin = window.open('');
+    newWin.document.write('<html><head>');
+
+    const css = '<style>' +
+      '.appreal-head {                                                         ' +
+      '    background: #dddddd;                                                ' +
+      '    color: #882933;                                                     ' +
+      '    vertical-align: middle;                                             ' +
+      '    font-weight: normal;                                                ' +
+      '    text-align: center;                                                 ' +
+      '    padding: 5px;                                                       ' +
+      '    flex: 0 0 98%;                                                      ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.platinum, .gold, .silver, .bronze, .GradeA, .GradeB, .GradeC, .GradeD {' +
+      '    vertical-align: middle;                                             ' +
+      '    font-weight: normal;                                                ' +
+      '    padding: 5px;                                                       ' +
+      '    border: 1px solid #bdbcbc;                                          ' +
+      '    font-weight: 700;                                                   ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.platinum, .GradeA {                                                    ' +
+      '    background-color: rgb(102, 255, 51) !important;                     ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.gold, .GradeB {                                                        ' +
+      '    background-color: rgb(255, 192, 0) !important;                      ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.silver, .GradeC {                                                      ' +
+      '    background-color: rgb(255, 255, 0) !important;                      ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.bronze, .GradeD {                                                      ' +
+      '    background-color: rgb(255, 0, 0) !important;                        ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.bold-text {                                                            ' +
+      '    font-weight: 700;                                                   ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      'table.table-striped a {                                                 ' +
+      '    color: #fff !important;                                             ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.col-md-13 {                                                            ' +
+      '    flex: 0 0 13%;                                                      ' +
+      '    max-width: 13%;                                                     ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.col-md-19 {                                                            ' +
+      '    flex: 0 0 19%;                                                      ' +
+      '    max-width: 19%;                                                     ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.ngx-dropdown-container {                                               ' +
+      '    border: 1px solid red !important;                                   ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.export-icons {                                                         ' +
+      '    border: 0px solid rgb(149, 149, 149);                               ' +
+      '    color: white;                                                       ' +
+      '    display: block;                                                     ' +
+      '    padding: 4px 4px 4px 4px;                                           ' +
+      '}                                                                       ' +
+      '                                                                        ' +
+      '.export-icons-div {                                                     ' +
+      '    background-color: #7d2d30;                                          ' +
+      '    height: 35px;                                                       ' +
+      '    width: 73px;                                                        ' +
+      '}                                                                       ' +
+      'a.glyphicon-expand {' +
+      '  font-size: 18px;' +
+      '  font-weight: bold;' +
+      '  width: 1em;' +
+      '  text-decoration: none;' +
+      '  line-height: 1;' +
+      '  background-color: #7d2d30;' +
+      '  color: #fff;' +
+      '  display: inline-block;' +
+      '  text-decoration: none;' +
+      '  text-align: center;' +
+      '  margin-right: 5px;' +
+      '  position: relative;' +
+      '  top: 1px;' +
+      '  border: solid 1px;' +
+      '  border-radius: 48%;' +
+      '}' +
+
+      'a.glyphicon-expand span {' +
+      ' position: relative;' +
+      ' top: -2px;' +
+      '} ' +
+
+      'a.glyphicon-expand {' +
+      'a.glyphicon - expand { ' +
+      'font-size: 15px; ' +
+      '} ' +
+      '  font-size: 15px;' +
+      '}' +
+      '.table-bordered {                  ' +
+      '    border: 1px solid black;     ' +
+      '}                                  ' +
+      '.table {                           ' +
+      '    width: 100%;                   ' +
+      '    margin-bottom: 1rem;           ' +
+      '    background-color: transparent; ' +
+      '}                                  ' +
+      'table {                            ' +
+      '    border-collapse: collapse;     ' +
+      '}                                  ' +
+      'table.table-striped thead {        ' +
+      '    background: #dddddd;           ' +
+      '    color: #882933;                ' +
+      '}                                  ' +
+      '.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {' +
+      '    vertical-align: middle;                                                                                             ' +
+      '    font-weight: normal;                                                                                                ' +
+      '    text-align: center;                                                                                                 ' +
+      '    padding: 5px;                                                                                                       ' +
+      '    border: 1px solid #bdbcbc;                                                                                          ' +
+      '}                                                                                                                       ' +
+      '</style>';
+
+    newWin.document.write(css);
+    newWin.document.write('</head><body>');
+    newWin.document.write(divToPrint.innerHTML);
+    newWin.document.write('</body></html>');
+    newWin.document.close();
+    newWin.print();
+    newWin.close();
   }
   //#endregion
 }

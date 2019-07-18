@@ -15,5 +15,8 @@ export class VendorTechDefault {
     IsLineBlockable: boolean;
     IsLineEnabled: boolean;
     IsLineRejected: boolean;
+    PageIndex: number;
+    Limit: number;
+    SearchText: string;
     VendorTechDetails: VendorTech[];
 }

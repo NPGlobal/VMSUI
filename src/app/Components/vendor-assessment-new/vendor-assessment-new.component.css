@@ -49,3 +49,20 @@ table.table-striped a {
     flex: 0 0 19%;
     max-width: 19%;
 }
+
+.ngx-dropdown-container {
+    border: 1px solid red !important;
+}
+
+.export-icons {
+    border: 0px solid rgb(149, 149, 149);
+    color: white;
+    display: block;
+    padding: 4px 4px 4px 4px;
+}
+
+.export-icons-div {
+    height: 35px;
+    width: 65px;
+    margin-top: 20px;
+}
