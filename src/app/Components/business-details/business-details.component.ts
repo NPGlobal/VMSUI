@@ -1,17 +1,12 @@
-import { Component, OnInit, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { PagerService } from 'src/app/Services/pager.service';
-import { MasterDataDetailsService } from 'src/app/Services/master-data-details.service';
 import { VendorBusinessService } from 'src/app/Services/vendor-business.service';
 import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
 import { BusinessProduction } from 'src/app/Models/business-production';
-import { forEach } from '@angular/router/src/utils/collection';
-// import { VendorService } from 'src/app/Services/vendor.service';
-// import { VendorProduction } from 'src/app/Models/VendorProduction';
-// import { MasterDataDetails } from 'src/app/Models/master-data-details';
-// import { BusinessProduction } from 'src/app/Models/business-production';
-// import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
+import { VendorService } from 'src/app/Services/vendor.service';
+import { Vendor } from 'src/app/Models/vendor';
 declare var $: any;
 
 @Component({
@@ -44,6 +39,7 @@ export class BusinessDetailsComponent implements OnInit {
   //#endregion
 
   //#region Form Variables
+  vendor: Vendor;
   vendorcode: string;
   submitted = false;
   businessList: VendorBusinessDetails[]; // For added Business List
@@ -53,13 +49,16 @@ export class BusinessDetailsComponent implements OnInit {
   NextFinancialYear: string;
   DecimalPattern = '^[0-9]*[\.\]?[0-9][0-9]*$';
   isDeactVendor = false;
+  isDPVendor = false;
+  isJWVendor = false;
   //#endregion
 
   constructor(
     private _route: ActivatedRoute,
     private _fb: FormBuilder,
     private _pager: PagerService,
-    private _vendorBusiService: VendorBusinessService) {
+    private _vendorBusiService: VendorBusinessService,
+    private _vendorService: VendorService) {
     this.CurrentFinancialYear = '';
     this.NextFinancialYear = '';
   }
@@ -70,6 +69,7 @@ export class BusinessDetailsComponent implements OnInit {
 
     this._route.parent.paramMap.subscribe((data) => {
       this.vendorcode = (data.get('code'));
+      this.GetVendorByCode();
       this.GetVendorBusiness(this.currentPage);
     });
     // this.GetDivisions();
@@ -79,6 +79,14 @@ export class BusinessDetailsComponent implements OnInit {
   }
 
   //#region Data Binding
+  GetVendorByCode() {
+    this._vendorService.GetVendorByCode(this.vendorcode).subscribe((result) => {
+      this.vendor = result.data.Vendor[0];
+      this.isDPVendor = this.vendor.IsDirectVendor;
+      this.isJWVendor = this.vendor.IsJWVendor;
+    });
+  }
+
   GetVendorBusiness(index: number) {
     this.currentPage = index;
     this._vendorBusiService.GetVendorBusinessByVendorCode(this.vendorcode, this.currentPage, this.pageSize, this.searchText)
@@ -98,6 +106,8 @@ export class BusinessDetailsComponent implements OnInit {
     this.pager = this._pager.getPager(this.totalItems, this.currentPage, this.pageSize);
     this.businessList.filter(x => {
       x.ErrorList = [];
+      x.ValueErrorList = [];
+      x.QtyErrorList = [];
     });
     this.pagedItems = this.businessList;
   }
@@ -112,6 +122,25 @@ export class BusinessDetailsComponent implements OnInit {
     } else {
       business.ErrorList[index] = undefined;
     }
+    if ((val !== null && val !== '' && val !== undefined) && success) {
+      if (!Number(val)) {
+        business.ErrorList[index] = 'value can not be zero';
+      }
+    }
+  }
+  ValidateValues(business: VendorBusinessDetails, val: number, qty: number, index: number) {
+    if (Number(val) === 0 && Number(qty) > 0) {
+      business.ValueErrorList[index] = 'value can not be empty';
+    } else {
+      business.ValueErrorList[index] = undefined;
+    }
+  }
+  ValidateQty(business: VendorBusinessDetails, val: number, qty: number, index: number) {
+    if (Number(qty) === 0 && Number(val) > 0) {
+      business.QtyErrorList[index] = 'Qty can not be empty';
+    } else {
+      business.QtyErrorList[index] = undefined;
+    }
   }
   //#endregion
 
@@ -124,6 +153,8 @@ export class BusinessDetailsComponent implements OnInit {
       busProd.BusinessDetails = this.businessList;
 
       let hasError = false;
+      let valError = false;
+      let QtyError = false;
       for (let count = 0; count < busProd.BusinessDetails.length; ++count) {
         const data = busProd.BusinessDetails[count];
         if (data.CurrentYearProposedDPGrnValue !== null) {
@@ -151,12 +182,31 @@ export class BusinessDetailsComponent implements OnInit {
           this.ValidateField(data, data.NextYearProposedJWGrnQty.toString(), 7);
         }
 
-        hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+        this.ValidateValues(data, data.CurrentYearProposedDPGrnValue, data.CurrentYearProposedDPGrnQty, 0);
+        this.ValidateQty(data, data.CurrentYearProposedDPGrnValue, data.CurrentYearProposedDPGrnQty, 1);
 
+        this.ValidateValues(data, data.CurrentYearProposedJWGrnValue, data.CurrentYearProposedJWGrnQty, 2);
+        this.ValidateQty(data, data.CurrentYearProposedJWGrnValue, data.CurrentYearProposedJWGrnQty, 3);
+
+        this.ValidateValues(data, data.NextYearProposedDPGrnValue, data.NextYearProposedDPGrnQty, 4);
+        this.ValidateQty(data, data.NextYearProposedDPGrnValue, data.NextYearProposedDPGrnQty, 5);
+
+        this.ValidateValues(data, data.NextYearProposedJWGrnValue, data.NextYearProposedJWGrnQty, 6);
+        this.ValidateQty(data, data.NextYearProposedJWGrnValue, data.NextYearProposedJWGrnQty, 7);
+
+        valError = (data.ValueErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+        QtyError = (data.QtyErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+
+        hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+        if (valError) { break; }
+        if (QtyError) { break; }
         if (hasError) { break; }
       }
 
+      if (valError) { return; }
+      if (QtyError) { return; }
       if (hasError) { return; }
+
 
       this._vendorBusiService.SaveVendorBusinessInfo(busProd).subscribe((result) => {
         if (result.data.Msg[0].ResultCode === 0) {

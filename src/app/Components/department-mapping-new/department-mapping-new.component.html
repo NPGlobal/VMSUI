@@ -7,8 +7,8 @@
           <fieldset class="fieldsetdivision">
             <legend>Division Wise</legend>
             <span>
-              <select formControlName="DivList" class="form-control input-sm DivisionClass" size="5"
-                multiple="multiple"  (change)="UnselectDept($event)">
+              <select formControlName="DivList" class="form-control input-sm DivisionClass" size="5" multiple="multiple"
+                (change)="UnselectDept($event)" (focus)="buttonsEnableDisable($event)">
                 <option *ngFor="let Div of DivisionList" class="DivisionClass" [value]="Div.MDDCode">
                   {{ Div.MDDName }}</option>
               </select>
@@ -29,7 +29,7 @@
               </select>
 
               <select formControlName="Department" class="form-control input-sm DepartmentClass" size="5"
-                multiple="multiple" (change)="UnselectDiv($event)">
+                multiple="multiple" (change)="UnselectDiv($event)" (focus)="buttonsEnableDisable($event)">
                 <option *ngFor="let Dept of DepartmentList" class="DepartmentClass" [value]="Dept.MDDCode">
                   {{ Dept.MDDName }}</option>
               </select>
@@ -38,9 +38,11 @@
         </div>
         <div class="col-lg-1 col-md-1" style="max-width:5%;">
           <span>
-            <input type="button" (click)="MoveToSelectedList()" class="form-control input-sm" value=">">
+            <input type="button" (click)="MoveToSelectedList()" [disabled]="isMoveToRightDisabled ? 'disabled' : null"
+              class="form-control input-sm" value=">">
             <br />
-            <input type="button" (click)="RemoveFromSelectedList()" class="form-control input-sm"
+            <input type="button" (click)="RemoveFromSelectedList()"
+              [disabled]="isMoveToLeftDisabled ? 'disabled' : null" class="form-control input-sm"
               style="margin-top: 10px;" value="<">
           </span>
         </div>
@@ -48,8 +50,8 @@
           <fieldset class="selected">
             <legend>Selected Division/Department</legend>
             <span>
-              <select onfocusout="event.target.value = ''" formControlName="SelectedList" class="form-control input-sm"
-                size="17" multiple="multiple" style="padding:0px;">
+              <select formControlName="SelectedList" class="form-control input-sm" size="17" multiple="multiple"
+                style="padding:0px;" (change)="UnselectDivDept($event)" (focus)="buttonsEnableDisable($event)">
                 <option *ngFor="let DD of SelectedDD" [value]="DD.MDDCode" [ngStyle]="{background: DD.color}">
                   &nbsp;&nbsp;&nbsp;&nbsp;{{ DD.MDHCode === 'DEPT' ? DD.MDDName + ' (Department)' : DD.MDDName + ' (Division)' }}
                 </option>

@@ -5,14 +5,18 @@
   <div class="row">
     <div class="col-md-3">
       <label for="VendorName">Producer<i class="mandatory">*</i></label>
-      <select [ngClass]="{'is-invalid': formErrors.ShortName}" formControlName="ShortName"
+      <!-- <select [ngClass]="{'is-invalid': formErrors.ShortName}" formControlName="ShortName"
         (change)="GetVendorsWithDepartments()" (blur)="LogValidationErrors()" class="form-control input-sm">
         <option [ngValue]="null">Select</option>
         <option value="{{vendor.VendorCode}}" *ngFor="let vendor of vendorList">{{vendor.VendorName}}</option>
-      </select>
+      </select> -->
+      <ngx-select-dropdown [ngClass]="{'is-invalid': formErrors.ShortName}"
+        (change)="GetVendorsWithDepartments($event);LogValidationErrors();" formControlName="ShortName"
+        [multiple]="false" [config]="config" [options]="options" class="input-sm">
+      </ngx-select-dropdown>
     </div>
 
-    <div class="col-md-2 col-md-13">
+    <div class="col-md-2">
       <label class="text">Period Type</label>
       <div class="col-md-12">
         <label class="text form-check-label">
@@ -38,7 +42,7 @@
       </div>
     </div>
 
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'B'" class="col-md-2 col-md-19">
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'B'" class="col-md-2">
       <div class="">
         <label>Blocks<i class="mandatory">*</i></label>
 
@@ -58,7 +62,7 @@
         </select> -->
       </div>
     </div>
-    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2  col-md-13">
+    <div *ngIf="AssessmentForm.get('PeriodType').value === 'M'" class="col-md-2">
       <div class="form-group">
         <label>Month<i class="mandatory">*</i></label>
         <select (blur)="LogValidationErrors()" class="form-control input-sm" formControlName="Months"
@@ -69,23 +73,28 @@
       </div>
     </div>
 
-    <div class="col-md-2 col-md-13">
+    <div class="col-md-13 pl-0">
       <label for="">Assessing PH<i class="mandatory">*</i></label>
       <select [ngClass]="{'is-invalid': formErrors.AssessingPHCode}" formControlName="AssessingPHCode"
         (blur)="LogValidationErrors()" class="form-control input-sm">
-        <option [ngValue]="null">Select</option>
-        <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of AllPHList">{{ph.OrgUnitName}}</option>
+        <option *ngIf="SelectedPHList && SelectedPHList.length === 0" [ngValue]="null">Select</option>
+        <!-- <option [ngValue]="-1">ALL</option> -->
+        <option value="{{ph.OrgUnitCode}}" *ngFor="let ph of SelectedPHList">{{ph.OrgUnitName}}</option>
       </select>
     </div>
 
-    <div class="col-md-2">
+    <div *ngIf="itemList" class="col-md-19 pl-0 pr-0">
       <!-- <label for="">Product Specialities (Departments)<i class="mandatory">*</i></label> -->
       <label for="">Departments<i class="mandatory">*</i></label>
-      <ng-multiselect-dropdown required class="input-sm dropdown" [placeholder]="'Select'"
-        [ngClass]="{ 'invalid-dept': invalidDept }" [ngModelOptions]="{standalone: true}" [data]="DeptList"
+      <!-- <ng-multiselect-dropdown required class="input-sm dropdown" [placeholder]="'Select'"
+        [ngClass]="{ 'invalid-dept': invalidDept }" [ngModelOptions]="{standalone: true}" [data]="itemList"
         [(ngModel)]="SelectedDeptList" [settings]="deptDropdownSettings">
         <option [ngValue]="null">Select</option>
-      </ng-multiselect-dropdown>
+      </ng-multiselect-dropdown> -->
+
+      <angular2-multiselect [ngModelOptions]="{standalone: true}" [data]="itemList"
+        [ngClass]="{ 'invalid-dept': invalidDept }" [(ngModel)]="selectedItems" [settings]="deptDropdownSettings">
+      </angular2-multiselect>
     </div>
   </div>
 
@@ -96,249 +105,254 @@
   </div>
 </form>
 
+<div *ngIf="isDataRecieved && OrderDetails && OrderDetails.length > 0" class="pull-right export-icons-div">
+  <a href="javascript:void(0);" class="export-icons pull-left btnhover">
+    <img title="Export to excel" (click)="ExportToExcelByVendorCode()" class="exportToExcel mr-1"
+      src="assets/images/excel.png">
+    <img title="Export to pdf" class="exportToPDF" (click)="Print()" src="assets/images/pdf-icon.png">
+  </a>
+</div>
 <hr>
-<div *ngIf="isDataRecieved && OrderDetails && OrderDetails.length > 0">
+<div id="Print">
+  <div *ngIf="isDataRecieved && OrderDetails && OrderDetails.length > 0">
 
-  <table *ngIf="AssessmentScoreTable" class="table table-sm table-bordered table-striped table-hover"
-    style="font-size:13px;">
-    <thead>
-      <tr>
-        <th rowspan="2">Legend</th>
-        <th [attr.colspan]="AssessmentScoreTable.length">Apparel - Vendor Assessment Scores - {{Year}}</th>
-      </tr>
-      <tr>
-        <th *ngFor="let tr of AssessmentScoreTable;">{{tr.HeaderText}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 0px;">
-          <div class="text-justify platinum">A. Platnium: = > 90%</div>
-          <div class="text-justify gold">B. Gold: 85 - 89%</div>
-          <div class="text-justify silver">C. Silver: 80 - 84%</div>
-          <div class="text-justify bronze">D. Bronze: = &lt; 79 %</div>
-        </td>
-        <td *ngFor="let td of AssessmentScoreTable;">
-          {{td.BodyText}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <table *ngIf="AssessmentScoreTable" class="table table-sm table-bordered table-striped table-hover"
+      style="font-size:13px;">
+      <thead>
+        <tr>
+          <th rowspan="2">Legend</th>
+          <th [attr.colspan]="AssessmentScoreTable.length">Apparel - Producer Assessment Scores - {{Year}}</th>
+        </tr>
+        <tr>
+          <th *ngFor="let tr of AssessmentScoreTable;">{{tr.HeaderText}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 0px;">
+            <div class="text-justify platinum">A. Platnium: = > 90%</div>
+            <div class="text-justify gold">B. Gold: 85 - 89%</div>
+            <div class="text-justify silver">C. Silver: 80 - 84%</div>
+            <div class="text-justify bronze">D. Bronze: = &lt; 79 %</div>
+          </td>
+          <td [ngClass]="{'platinum': (td.Grade === 'A'),
+                        'gold':  (td.Grade === 'B'),
+                        'silver': (td.Grade === 'C'),
+                        'bronze': (td.Grade === 'D')
+                      }" *ngFor="let td of AssessmentScoreTable;">
+            {{td.BodyText}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <div class="row">
-    <div class="col-lg-12 appreal-head" style="margin-left: 15px;">Apparel - Vendor Assessment Report Card -
-      {{VendorName + ' (' + VendorCode + ')'}}</div>
-    <div class="col-lg-12">
-      <div class="row">
-        <div class="row form-group col-md-6">
-          <div class="col-lg-12" style="padding-right:0px;">
-            <table class="table table-sm table-bordered table-striped table-hover" style="font-size:13px;">
+    <div class="row">
+      <div class="col-lg-12 appreal-head" style="margin-left: 15px;">Apparel - Producer Assessment Report Card -
+        {{VendorName + ' (' + VendorCode + ')'}}</div>
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="row form-group col-md-6">
+            <div class="col-lg-12" style="padding-right:0px;">
+              <table class="table table-sm table-bordered table-striped table-hover" style="font-size:13px;">
+                <tbody>
+                  <tr *ngFor="let tr of SelectedParameters">
+                    <td class="text-justify" style="width:40%">{{tr.Head}}</td>
+                    <td class="text-justify">{{tr.Value}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div *ngIf="OrderDetails && OrderDetails.length > 0" class="col-lg-12" style="padding-right:0px;">
+              <div class="form-group">
+                <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Number</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let qty of QuantityDetails;">
+                      <td class="text-justify">{{qty.LabelText}}</td>
+                      <td>{{qty.Number}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group col-md-6">
+            <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
+              <thead>
+                <tr>
+                  <th>Style No.</th>
+                  <th>Department</th>
+                  <th>Order Qty.(Buy Plan)</th>
+                  <th>No. of Batches</th>
+                  <th>Purhcase Order Qty.</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr>
-                  <td class="text-justify" style="width:40%">Vendor Name and Code :</td>
-                  <td class="text-justify">{{VendorName + ' (' + VendorCode + ')'}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Product Specialities :</td>
-                  <td class="text-justify">{{ProductSpecialities}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Assessing PH :</td>
-                  <td class="text-justify">{{AssessmentForm.get('AssessingPHCode').value}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Assessment Period :</td>
-                  <td class="text-justify">{{AssessingPeriods}}</td>
-                </tr>
-                <tr>
-                  <td class="text-justify">Date of Assessment :</td>
-                  <td class="text-justify">{{AssessmentDate}}</td>
-                </tr>
+                <ng-container *ngFor="let order of OrderDetails;index as i;">
+                  <tr>
+                    <td>
+                      <a class="glyphicon-expand" (click)="ExpandCollpase(i)" title="View Orders"
+                        href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1).toString()"
+                        data-toggle="collapse">
+                        <span>{{order.IsExpanded ? '-' : '+'}}</span>
+                      </a>
+                      <span>{{order.StyleMDDCode}}</span>
+                    </td>
+                    <td>{{order.DeptCode}}</td>
+                    <td>{{order.BuyPlanQty}}</td>
+                    <td>{{order.BatchQty}}</td>
+                    <td>{{order.PurchaseOrderQty}}</td>
+                  </tr>
+                  <tr class="collapse" id="{{'Collapse' + (i + 1).toString()}}">
+                    <td colspan="9">
+                      <table class="table table-warning table-sm">
+                        <thead>
+                          <tr>
+                            <th>Order No.</th>
+                            <th>Order Qty.</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let qty of order.QtyDetails;">
+                            <td>{{qty.OrderNo}}</td>
+                            <td>{{qty.OrderQty}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
           </div>
-          <div *ngIf="OrderDetails && OrderDetails.length > 0" class="col-lg-12" style="padding-right:0px;">
-            <div class="form-group">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="isDataRecieved && OrderDetails && OrderDetails.length > 0">
+
+    <hr>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="row form-group col-md-8">
+            <div class="col-lg-12">
               <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
                 <thead>
                   <tr>
-                    <th></th>
+                    <th colspan="2"></th>
                     <th>Number</th>
+                    <th>Weightage</th>
+                    <th>Marks Obtained</th>
+                    <th>Grade</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let qty of QuantityDetails;">
-                    <td class="text-justify">{{qty.LabelText}}</td>
-                    <td>{{qty.Number}}</td>
+                  <!-- 1a Details -->
+                  <tr *ngFor="let gradedetail1a of GradeDetails1a;index as i;">
+                    <td *ngIf="i===1 || i === 0" [attr.rowspan]="i===1 ? (GradeDetails1a.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">
+                      {{gradedetail1a.SerialText}}</td>
+                    <td class="text-justify" [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">
+                      {{gradedetail1a.Parameter}}</td>
+                    <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Number}}</td>
+                    <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Weightage}}</td>
+                    <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.MarksObtained}}</td>
+                    <td [ngClass]="'Grade' + gradedetail1a.Grade" *ngIf="i === 0"
+                      [attr.rowspan]="(GradeDetails1a.length + GradeDetails1b.length)"
+                      [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Grade}}</td>
+                  </tr>
+
+                  <!-- 1b Details -->
+                  <tr *ngFor="let gradedetail1b of GradeDetails1b;index as i;">
+                    <td *ngIf="i===1 || i === 0" [attr.rowspan]="i===1 ? (GradeDetails1b.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">
+                      {{gradedetail1b.SerialText}}</td>
+                    <td class="text-justify" [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">
+                      {{gradedetail1b.Parameter}}</td>
+                    <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Number}}</td>
+                    <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Weightage}}</td>
+                    <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.MarksObtained}}</td>
+                  </tr>
+
+                  <!-- 2a Details -->
+                  <tr *ngFor="let gradedetail2a of GradeDetails2a;index as i;">
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                      {{gradedetail2a.SerialText}}</td>
+                    <td class="text-justify" [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                      {{gradedetail2a.Parameter}}</td>
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                      {{gradedetail2a.Number}}
+                    </td>
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                      {{gradedetail2a.Weightage}}
+                    </td>
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
+                      {{gradedetail2a.MarksObtained}}
+                    </td>
+                    <td [ngClass]="'Grade' + gradedetail2a.Grade" *ngIf="i === 0"
+                      [attr.rowspan]="(GradeDetails2a.length + GradeDetails2b.length)"
+                      [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Grade}}</td>
+                  </tr>
+
+                  <!-- 2b Details -->
+                  <tr *ngFor="let gradedetail2b of GradeDetails2b;index as i;">
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+                      {{gradedetail2b.SerialText}}
+                    </td>
+                    <td class="text-justify" [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+                      {{gradedetail2b.Parameter}}
+                    </td>
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+                      {{gradedetail2b.Number}}
+                    </td>
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+                      {{gradedetail2b.Weightage}}
+                    </td>
+                    <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
+                      [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
+                      {{gradedetail2b.MarksObtained}}
+                    </td>
+                  </tr>
+
+                  <!-- Average Details -->
+                  <tr *ngFor="let averagGrade of AverageGradeDetails;index as i;">
+                    <td colspan="2" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Parameter}}</td>
+                    <td class="text-justify" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Number}}
+                    </td>
+                    <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Weightage}}</td>
+                    <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.MarksObtained}}</td>
+                    <td [ngClass]="'Grade' + averagGrade.Grade" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">
+                      {{averagGrade.Grade}}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
-        <div class="row form-group col-md-6">
-          <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
-            <thead>
-              <tr>
-                <th>Style No.</th>
-                <th>Department</th>
-                <th>Order Qty.(Buy Plan)</th>
-                <th>No. of Batches</th>
-                <th>Purhcase Order Qty.</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngFor="let order of OrderDetails;index as i;">
-                <tr>
-                  <td>
-                    <a class="glyphicon-expand" (click)="ExpandCollpase(i)" title="View Orders"
-                      href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1).toString()"
-                      data-toggle="collapse">
-                      <span>{{order.IsExpanded ? '-' : '+'}}</span>
-                    </a>
-                    <span>{{order.StyleMDDCode}}</span>
-                  </td>
-                  <td>{{order.DeptCode}}</td>
-                  <td>{{order.BuyPlanQty}}</td>
-                  <td>{{order.BatchQty}}</td>
-                  <td>{{order.PurchaseOrderQty}}</td>
-                </tr>
-                <tr class="collapse" id="{{'Collapse' + (i + 1).toString()}}">
-                  <td colspan="9">
-                    <table class="table table-warning table-sm">
-                      <thead>
-                        <tr>
-                          <th>Order No.</th>
-                          <th>Order Qty.</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let qty of order.QtyDetails;">
-                          <td>{{qty.OrderNo}}</td>
-                          <td>{{qty.OrderQty}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<div *ngIf="isDataRecieved && OrderDetails && OrderDetails.length > 0">
-
-  <hr>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="row">
-        <div class="row form-group col-md-8">
-          <div class="col-lg-12">
-            <table class="table table-bordered table-striped table-hover" style="font-size:13px;">
-              <thead>
-                <tr>
-                  <th colspan="2"></th>
-                  <th>Number</th>
-                  <th>Weightage</th>
-                  <th>Marks Obtained</th>
-                  <th>Grade</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- 1a Details -->
-                <tr *ngFor="let gradedetail1a of GradeDetails1a;index as i;">
-                  <td *ngIf="i===1 || i === 0" [attr.rowspan]="i===1 ? (GradeDetails1a.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">
-                    {{gradedetail1a.SerialText}}</td>
-                  <td class="text-justify" [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">
-                    {{gradedetail1a.Parameter}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Number}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Weightage}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.MarksObtained}}</td>
-                  <td [ngClass]="'Grade' + gradedetail1a.Grade" *ngIf="i === 0"
-                    [attr.rowspan]="(GradeDetails1a.length + GradeDetails1b.length)"
-                    [ngClass]="{'bold-text' : gradedetail1a.IsHeaderBold}">{{gradedetail1a.Grade}}</td>
-                </tr>
-
-                <!-- 1b Details -->
-                <tr *ngFor="let gradedetail1b of GradeDetails1b;index as i;">
-                  <td *ngIf="i===1 || i === 0" [attr.rowspan]="i===1 ? (GradeDetails1b.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">
-                    {{gradedetail1b.SerialText}}</td>
-                  <td class="text-justify" [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">
-                    {{gradedetail1b.Parameter}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Number}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.Weightage}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail1b.IsHeaderBold}">{{gradedetail1b.MarksObtained}}</td>
-                </tr>
-
-                <!-- 2a Details -->
-                <tr *ngFor="let gradedetail2a of GradeDetails2a;index as i;">
-                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2a.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
-                    {{gradedetail2a.SerialText}}</td>
-                  <td class="text-justify" [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">
-                    {{gradedetail2a.Parameter}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Number}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Weightage}}</td>
-                  <td [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.MarksObtained}}</td>
-                  <td [ngClass]="'Grade' + gradedetail2a.Grade" *ngIf="i === 0"
-                    [attr.rowspan]="(GradeDetails2a.length + GradeDetails2b.length)"
-                    [ngClass]="{'bold-text' : gradedetail2a.IsHeaderBold}">{{gradedetail2a.Grade}}</td>
-                </tr>
-
-                <!-- 2b Details -->
-                <tr *ngFor="let gradedetail2b of GradeDetails2b;index as i;">
-                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
-                    {{gradedetail2b.SerialText}}
-                  </td>
-                  <td class="text-justify" [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
-                    {{gradedetail2b.Parameter}}
-                  </td>
-                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
-                    {{gradedetail2b.Number}}
-                  </td>
-                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
-                    {{gradedetail2b.Weightage}}
-                  </td>
-                  <td *ngIf="i===0 || i===1" [attr.rowspan]="i===1 ? (GradeDetails2b.length - 1) : null"
-                    [ngClass]="{'bold-text' : gradedetail2b.IsHeaderBold}">
-                    {{gradedetail2b.MarksObtained}}
-                  </td>
-                </tr>
-
-                <!-- Average Details -->
-                <tr *ngFor="let averagGrade of AverageGradeDetails;index as i;">
-                  <td colspan="2" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Parameter}}</td>
-                  <td class="text-justify" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Number}}
-                  </td>
-                  <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.Weightage}}</td>
-                  <td [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">{{averagGrade.MarksObtained}}</td>
-                  <td [ngClass]="'Grade' + averagGrade.Grade" [ngClass]="{'bold-text' : averagGrade.IsHeaderBold}">
-                    {{averagGrade.Grade}}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="row form-group col-md-4" style="font-size:13px;">
+            <div class="col-lg-12 appreal-head">Mentoring Form/ Documents Hyperlink</div>
           </div>
         </div>
-        <div class="row form-group col-md-4" style="font-size:13px;">
-          <div class="col-lg-12 appreal-head">Mentoring Form/ Documents Hyperlink</div>
-        </div>
       </div>
     </div>
+
   </div>
-
 </div>
-
 
 <div *ngIf="isDataRecieved && OrderDetails !== null && OrderDetails !== undefined && OrderDetails.length === 0"
   class="form-group ml-auto mr-auto">

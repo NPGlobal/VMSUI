@@ -17,4 +17,9 @@ export class VendorAssessmentService {
     const url = this.origin + 'api/VendorAssessment/GetVendorAssessmentReport/' + inputParams;
     return this._http.get<any>(url);
   }
+
+  GetVendorAssessmentReportForExcel(inputParams: string): Observable<Blob> {
+    const url = this.origin + 'api/VendorAssessmentExcel/GetVendorAssessmentExcelReport/' + inputParams;
+    return this._http.get<Blob>(url, { params: { inputParams: inputParams }, responseType: 'blob' as 'json' });
+  }
 }

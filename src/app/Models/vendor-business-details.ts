@@ -38,4 +38,6 @@ export class VendorBusinessDetails {
     NextYearProposedJWGrnQty: number | null;
 
     ErrorList: string[];
+    ValueErrorList: string[];
+    QtyErrorList: string[];
 }

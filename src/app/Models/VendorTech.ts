@@ -11,6 +11,7 @@ export class VendorTech {
     UnitCount: number;
     ProposedUnitCount: number;
     Status: string;
+    StatusName: string;
     Remarks: string;
     CreatedBy: number;
     isDisable: boolean;
