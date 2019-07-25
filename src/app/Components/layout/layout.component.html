@@ -1,58 +1,75 @@
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap shadow">
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0 img" href="javascript:void(0)" (click)="MoveToVendorList()">
-    <img src="assets\images\logo.png">
-  </a>
-  <p class="header">Producer Management System</p>
-  <ul class="pull-right menuicon">
-    <li>
-      <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-        Producer</a>
-      <ul class="dropdown-menu">
-        <li><a href="javascript:void(0)" (click)="MoveToVendorList()">Producer List</a></li>
-        <li><a href="javascript:void(0)" routerLink="/vendor/assessment">Producer Assessment</a></li>
-        <!-- <li><a href="javascript:void(0)">Change Password</a></li> -->
-      </ul>
-    </li>
-  </ul>
-  <ul class="pull-right usericon">
-    <li>
-      <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-        <img src="assets\images\profile-image.png">User</a>
-      <ul class="dropdown-menu">
-        <li><a href="javascript:void(0)" (click)="LogoutUser()">Logout</a></li>
-        <!-- <li><a href="javascript:void(0)">Change Password</a></li> -->
-      </ul>
-    </li>
-    <!-- <li class="toggle-menu"><img src="assets\images\toggle-icon.png"></li> -->
-  </ul>
-  <!-- <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="javascript:void(0)">Sign out</a>
-    </li>
-  </ul> -->
-</nav>
+<!--START SCROLL TOP BUTTON -->
+<a class="scrollToTop" href="#">
+  <i class="fa fa-angle-up"></i>
+</a>
+<!-- END SCROLL TOP BUTTON -->
 
-<div class="container-fluid">
-  <div class="row" style="margin-bottom:20px;">
-    <!-- <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" routerLinkActive="active" routerLink="vendor">
-              Vendor <span class="sr-only">(current)</span>
-            </a>
+
+<!-- Start header section -->
+<header id="mu-header" class="bg-dark flex-md-nowrap shadow">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-logo">
+          <a class="navbar-brand-kk" href="javascript:void(0)" (click)="MoveToVendorList()">
+              <img src="assets/images/logo.png" alt="FabIndia"></a>
+      </div>
+
+      <div class="tog navbar-default">
+        <!-- FOR MOBILE VIEW COLLAPSED BUTTON -->
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" 
+        aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <p class="header pull-center">Producer Management System</p>
+      </div>
+
+      <div id="navbar" class="collapse">
+        <ul class="pull-right usericon">
+          <li><a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
+            <img src="assets\images\profile-image.png">User</a>
+            <ul class="dropdown-menu">
+              <li><a href="javascript:void(0)">Logout</a></li>
+            </ul>
           </li>
         </ul>
-      </div>
-    </nav> -->
 
-    <div role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
-      <router-outlet></router-outlet>
+        <ul id="top-menu" class="pull-right">
+            <li><a href="javascript:void(0)" (click)="MoveToVendorList()">Master</a></li>
+            <li><a href="javascript:void(0)" routerLink="/vendor/assessment">Assessment</a></li>
+            <li class="logout"><a href="javascript:void(0)">Logout</a></li>
+        </ul>
+      </div>
+  </div>
+  </div> 
+</header>
+
+
+
+
+<!-- Start Body -->
+<div class="cont-body">
+  <!-- <div class="cont-body-head bg-dark">
+    <p class="header">Producer Management System</p>
+  </div> -->
+
+  <div class="container-fluid">
+    <div class="row" style="margin-bottom:20px;">
+      <div role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
 </div>
+<!-- End Body section -->
 
-<footer style="text-align: center; height: 20px; font-size: 12px; color: white;"
-  class="footer fixed-bottom bg-dark flex-md-nowrap shadow">
+
+<!-- Start Footer -->
+<footer class="footer fixed-bottom bg-dark flex-md-nowrap shadow">
   <p>Copyright © 2019 Fabindia Overseas Pvt. Limited. All rights reserved.</p>
 </footer>
+
+
+<!-- End Footer -->

@@ -2,7 +2,7 @@
 
   <div class="form-inline">
     <div class="content-heading" align="left">Bank Details</div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="NameAsPerBankAccount">A/C Holder Name</label>
         <input type="text" maxlength="199" class="form-control col-md-12  input-sm" formControlName="NameAsPerBankAccount" 
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.NameAsPerBankAccount}">
@@ -11,9 +11,7 @@
         {{formErrors.NameAsPerBankAccount}}
       </span>
     </div>
-
-
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="BankName">Bank Name</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BankName"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.BankName}">
@@ -22,7 +20,7 @@
         {{formErrors.BankName}}
       </span>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="BranchName">Branch Name</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="BranchName"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.BranchName}">
@@ -31,7 +29,7 @@
         {{formErrors.BranchName}}
       </span>
     </div>
-    <div style="margin-top: 10px;" class="form-group col-md-3">
+    <div style="margin-top: 10px;" class="form-group col-md-3 col-sm-6">
       <div>
         <label class="text radio-inline">
           <input type="checkbox" formControlName="isECSenabled">
@@ -40,27 +38,27 @@
       </div>
     </div>
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="AccountNo">Account No</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="AccountNo"
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.AccountNo}">
       <span class="error-label-lg" *ngIf="formErrors.AccountNo">{{formErrors.AccountNo}}</span>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="AccountType">Account Type</label>
       <select type="text" class="form-control col-md-12  input-sm" formControlName="AccountType">
         <option value="-1" selected="selected">Select</option>
         <option *ngFor="let type of AccountType" value="{{type.accountType}}">{{type.accountType}}</option>
       </select>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="CurrencyCode">Currency</label>
       <select type="text" class="form-control col-md-12  input-sm" (blur)="logValidationErrors()"
         [ngClass]="{'is-invalid': formErrors.CurrencyCode}" formControlName="CurrencyCode">
         <option *ngFor="let currency of CurrencyList" value="{{currency.CurrencyCode}}">{{currency.Currency}}</option>
       </select>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="PaymentTerms">Payment Terms</label>
       <input type="text" maxlength="1999" formControlName="PaymentTerms" class="form-control col-md-12   input-sm"
         (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.PaymentTerms}">
@@ -70,7 +68,7 @@
       </span>
     </div>
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="IFSCCode">IFSC Code</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="IFSCCode"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.IFSCCode}">
@@ -79,7 +77,7 @@
         {{formErrors.IFSCCode}}
       </span>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="MICRNo">MICR No</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="MICRNo"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.MICRNo}">
@@ -88,7 +86,7 @@
         {{formErrors.MICRNo}}
       </span>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="SWIFTCode">SWIFT Code</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="SWIFTCode"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.SWIFTCode}">
@@ -97,7 +95,7 @@
         {{formErrors.SWIFTCode}}
       </span>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-3 col-sm-6">
       <label class="text" for="RemittanceInfavourof">Remittance Infavourof</label>
       <input type="text" maxlength="49" class="form-control col-md-12  input-sm" formControlName="RemittanceInfavourof"
       (blur)="logValidationErrors()" [ngClass]="{'is-invalid': formErrors.RemittanceInfavourof}">

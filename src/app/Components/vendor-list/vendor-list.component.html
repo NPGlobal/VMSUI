@@ -1,97 +1,104 @@
-<div class="top-margin container" style="margin-left: 0px;">
-  <div class="float-left col-md-6">
-    <h2>Producers</h2>
-  </div>
-  <div class="float-right">
-    <!-- <input type="text" class="SearchBox" placeholder="Search" (keyup)="SearchVendor($event.target.value)" name="search"> -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static"
-      data-keyboard="false" (click)="OnRegistrationClick()">
-      <i class="fa fa-plus"></i>
-      <span title="Add new" class="py-4">Add</span>
-    </button>
-  </div>
-  
-  <div class="clearfix"></div>
-  <table class="table table-striped table-bordered table-hover">
-      <thead>
-      <tr class="search">
-        <td style="width:20%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByName" (keyup)="SearchVendorList()" placeholder="Search By Name" /></td>
-        <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByShortName" (keyup)="SearchVendorList()" placeholder="Search By S. Name" /></td>
-        <td style="width:20%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByRefVendor" (keyup)="SearchVendorList()" placeholder="Search By Ref Producer" /></td>
-        <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByGST" (keyup)="SearchVendorList()" placeholder="Search By GST" /></td>
-        <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByPAN" (keyup)="SearchVendorList()" placeholder="Search By PAN" /></td>
-        <td></td>
-        <td style="width:6%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByStatus" (keyup)="SearchVendorList()" placeholder="Search By St..." /></td>
-        <!-- <td style="width:17%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByCreatedOn" (keyup)="SearchVendorList()" /></td> -->
-        <td></td>
-      </tr>
-        <tr>
-        <!-- <th scope="col">Serial</th> -->
-        <th scope="col" (click)="SortVendorList('ProducerName')">Producer Name <i class="fa fa-sort"></i></th>
-        <th scope="col" (click)="SortVendorList('ShortName')">Short Name <i class="fa fa-sort"></i></th>
-        <th scope="col" (click)="SortVendorList('RefVendor')">Ref Producer <i class="fa fa-sort"></i></th>
-        <th scope="col">GST No</th>
-        <th scope="col">PAN No</th>
-        <th scope="col" (click)="SortVendorList('CreatedOn')">Created On <i class="fa fa-sort"></i></th>
-        <th scope="col">Status</th>
-        <th scope="col">Actions</th>
-      </tr>
-      </thead>
-    
-    <tbody>
-      <!-- <tr *ngIf="loading">
-        <td colspan="7">
-          <img src="assets/images/giphy.gif"/></td>
-      </tr> -->
-       <tr *ngFor="let vendor of pagedItems;index as i;">
-        <!-- <td>{{vendor.RowNumber}}</td> -->
-        <td>{{vendor.VendorName}}</td>
-        <td>{{vendor.VendorShortName}}</td>
-        <td>{{vendor.MasterVendorName}}</td>
-        <td>{{vendor.GSTNo}}</td>
-        <td>{{vendor.PANNo}}</td>
-        <td>{{vendor.CreatedOn | date:'medium'}}</td>
-        <td>{{vendor.Status}}</td>
-        <td>
-          <a [attr.title]= "vendor.Status.toUpperCase()==='A' ? 'Edit' : 'View'"
-           [routerLink]="['/vendor', vendor.VendorCode, 'personal']">
-           <i [ngClass]= "vendor.Status.toUpperCase()==='A' ? 'fa fa-edit' : 'fa fa-user'" (click)="GetVendorStatus(vendor)"></i>
-           <!-- <i *ngIf="vendor.Status==='A' || vendor.Status==='a'" class="fa fa-edit" (click)="GetVendorStatus(vendor.Status)"></i>
-           <i *ngIf="vendor.Status==='D' || vendor.Status==='d'" class="fa fa-user" (click)="GetVendorStatus(vendor.Status)"></i> -->
-          </a>
-        </td>
-      </tr>
-     <tr *ngIf="pagedItems && pagedItems.length === 0">
-        <td colspan="8">
-          <h6>No Record Found</h6>
-         </td>
-      </tr>
-    </tbody>
-  </table>
-  <!-- <div class="align-items-center justify-content-center">
-      <img *ngIf="loading" src="assets/images/giphy.gif"/>
-  </div> -->
-  <nav aria-label="..." class="">
-    <ul class="pagination justify-content-end">
-      <li class="page-item" *ngIf="pager.currentPage !== 1">
-        <button class="page-link" (click)="GetVendors(1)">First</button>
-      </li>
-      <li class="page-item" *ngIf="pager.currentPage !== 1">
-        <a class="page-link" (click)="GetVendors(pager.currentPage - 1)">Prev</a>
-      </li>
-
-      <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
-        <button class="page-link" (click)="GetVendors(i)" href="javascript:void(0)">{{i}}</button>
-      </li>
-
-      <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <a class="page-link" (click)="GetVendors(pager.currentPage + 1)">Next</a>
-      </li>
-      <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
-        <a class="page-link" (click)="GetVendors(pager.totalPages)">Last</a>
-      </li>
-    </ul>
-  </nav>
+<div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-md-6 col-as-6">
+          <h2 class="pro-head">Producers</h2>
+      </div>
+      <div class="col-sm-6 col-md-6 col-as-6">
+          <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#myModal" data-backdrop="static"
+          data-keyboard="false" (click)="OnRegistrationClick()">
+          <i class="fa fa-plus"></i>
+          <span title="Add new" class="py-4">Add</span>
+        </button>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-as-12 ovx">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="search">
+                  <td style="width:20%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByName" (keyup)="SearchVendorList()" placeholder="Search By Name" /></td>
+                  <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByShortName" (keyup)="SearchVendorList()" placeholder="Search By S. Name" /></td>
+                  <td style="width:20%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByRefVendor" (keyup)="SearchVendorList()" placeholder="Search By Ref Producer" /></td>
+                  <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByGST" (keyup)="SearchVendorList()" placeholder="Search By GST" /></td>
+                  <td style="width:10%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByPAN" (keyup)="SearchVendorList()" placeholder="Search By PAN" /></td>
+                  <td></td>
+                  <td style="width:6%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByStatus" (keyup)="SearchVendorList()" placeholder="Search By St..." /></td>
+                  <!-- <td style="width:17%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByCreatedOn" (keyup)="SearchVendorList()" /></td> -->
+                  <td></td>
+                </tr>
+                  <tr>
+                  <!-- <th scope="col">Serial</th> -->
+                  <th scope="col" (click)="SortVendorList('ProducerName')">Producer Name <i class="fa fa-sort"></i></th>
+                  <th scope="col" (click)="SortVendorList('ShortName')">Short Name <i class="fa fa-sort"></i></th>
+                  <th scope="col" (click)="SortVendorList('RefVendor')">Ref Producer <i class="fa fa-sort"></i></th>
+                  <th scope="col">GST No</th>
+                  <th scope="col">PAN No</th>
+                  <th scope="col" (click)="SortVendorList('CreatedOn')">Created On <i class="fa fa-sort"></i></th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+              
+              <tbody>
+                <!-- <tr *ngIf="loading">
+                  <td colspan="7">
+                    <img src="assets/images/giphy.gif"/></td>
+                </tr> -->
+                 <tr *ngFor="let vendor of pagedItems;index as i;">
+                  <!-- <td>{{vendor.RowNumber}}</td> -->
+                  <td>{{vendor.VendorName}}</td>
+                  <td>{{vendor.VendorShortName}}</td>
+                  <td>{{vendor.MasterVendorName}}</td>
+                  <td>{{vendor.GSTNo}}</td>
+                  <td>{{vendor.PANNo}}</td>
+                  <td>{{vendor.CreatedOn | date:'medium'}}</td>
+                  <td>{{vendor.Status}}</td>
+                  <td>
+                    <a [attr.title]= "vendor.Status.toUpperCase()==='A' ? 'Edit' : 'View'"
+                     [routerLink]="['/vendor', vendor.VendorCode, 'personal']">
+                     <i [ngClass]= "vendor.Status.toUpperCase()==='A' ? 'fa fa-edit' : 'fa fa-user'" (click)="GetVendorStatus(vendor)"></i>
+                     <!-- <i *ngIf="vendor.Status==='A' || vendor.Status==='a'" class="fa fa-edit" (click)="GetVendorStatus(vendor.Status)"></i>
+                     <i *ngIf="vendor.Status==='D' || vendor.Status==='d'" class="fa fa-user" (click)="GetVendorStatus(vendor.Status)"></i> -->
+                    </a>
+                  </td>
+                </tr>
+               <tr *ngIf="pagedItems && pagedItems.length === 0">
+                  <td colspan="8">
+                    <h6>No Record Found</h6>
+                   </td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-as-12">
+            <nav aria-label="..." class="pull-right">
+                <ul class="pagination justify-content-end">
+                  <li class="page-item" *ngIf="pager.currentPage !== 1">
+                    <button class="page-link" (click)="GetVendors(1)">First</button>
+                  </li>
+                  <li class="page-item" *ngIf="pager.currentPage !== 1">
+                    <a class="page-link" (click)="GetVendors(pager.currentPage - 1)">Prev</a>
+                  </li>
+            
+                  <li class="page-item" [class.active]="i === pager.currentPage" *ngFor="let i of pager.pages">
+                    <button class="page-link" (click)="GetVendors(i)" href="javascript:void(0)">{{i}}</button>
+                  </li>
+            
+                  <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
+                    <a class="page-link" (click)="GetVendors(pager.currentPage + 1)">Next</a>
+                  </li>
+                  <li class="page-item" *ngIf="pager.currentPage !== pager.totalPages">
+                    <a class="page-link" (click)="GetVendors(pager.totalPages)">Last</a>
+                  </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+    <div style="height:20px;"></div>
 </div>
 
-  <app-vendor-registration [RegistrationClicked]="RegistrationClick"></app-vendor-registration>
+<app-vendor-registration [RegistrationClicked]="RegistrationClick"></app-vendor-registration>
