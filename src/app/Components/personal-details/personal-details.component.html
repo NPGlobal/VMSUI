@@ -21,7 +21,7 @@
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
                   }">
-                    <div class="col-md-8">
+                    <div class="col-md-8 pull-left">
                         <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <label class="text">Short Name</label>
@@ -106,7 +106,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4" style="padding-left:0px;">
+                    <div class="col-md-4 pull-right">
 
                         <div class="col-md-12 form-group">
                             <label class="text">Producer Type</label>
@@ -146,57 +146,77 @@
 
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
-                                <div class="col-sm-5">
-                                    <div class="col-sm-6 mt-1 mb-1 PHandStore form-group">
-                                        <label class="text">PH/FO</label>
-                                        <select formControlName="PHList"
-                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
-                                            class="form-control input-sm" size="4" multiple="multiple">
-                                            <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
-                                                {{ PH.OrgUnitName }}</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6 PHandStore form-group">
-                                        <label class="text">Store</label>
-                                        <select formControlName="StoreList"
-                                            (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
-                                            class="form-control input-sm" size="4" multiple="multiple">
-                                            <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
-                                                {{ Store.OrgUnitName }}</option>
-                                        </select>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-12 PHandStore">
+                                            <label class="text">PH/FO</label>
+                                            <span>
+                                                <select formControlName="PHList"
+                                                    (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
+                                                    class="form-control input-sm" size="4" multiple="multiple">
+                                                    <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
+                                                        {{ PH.OrgUnitName }}</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                        <div class="col-md-12 PHandStore">
+                                            <label class="text">Store</label>
+                                            <span>
+                                                <select formControlName="StoreList"
+                                                    (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
+                                                    class="form-control input-sm" size="4" multiple="multiple">
+                                                    <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
+                                                        {{ Store.OrgUnitName }}</option>
+                                                </select>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-2" style="padding-left:25px;">
 
-                                    <input type="button" style="margin-top: 60px;" value=">"
-                                        (click)="MoveToSelectedPHList($event)">
-                                    <br />
-                                    <input type="button" style="margin-top: 10px;" value="<"
-                                        (click)="MoveToPHList($event)">
 
-                                </div>
-                                <div class="col-sm-5" style="padding-left:8px;padding-right: 0px">
-                                    <div *ngIf="SavedPHStoreList.length > 0"
-                                        class="mt-1 mb-1 col-sm-6 PHandStore form-group">
-                                        <label class="text">Saved PH/Store</label>
-                                        <select class="form-control input-sm" size="4" multiple="multiple"
-                                            [attr.disabled]="isDeactVendor ? 'disabled': null">
-                                            <option *ngFor="let PHStore of SavedPHStoreList"
-                                                [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
-                                        </select>
+                                <div class="col-md-2">
+                                    <div class="form-group text-center mtMinus15">
+                                        <button type="button" class="moveButton" (click)="MoveToSelectedPHList($event)">
+                                            <span class="mLeft">►</span>
+                                            <span class="mDown">▼</span>
+                                        </button>
+                                        <br class="brHide" />
+                                        <button type="button" class="moveButton" style="margin-top: 10px;"
+                                            (click)="MoveToPHList($event)">
+                                            <span class="mRight">◄</span>
+                                            <span class="mUp">▲</span>
+                                        </button>
                                     </div>
-                                    <div class="col-sm-6 PHandStore form-group">
-                                        <label class="text">Selected PH/Store</label>
-                                        <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
-                                            formControlName="SelectedPHStoreList" onfocusout="event.target.value = ''"
-                                            class="form-control input-sm" [size]="(SavedPHStoreList.length > 0 ? 4: 11)"
-                                            multiple="multiple">
-                                            <option *ngFor="let PHStore of SelectedPHStoreList"
-                                                [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
-                                        </select>
-                                    </div>
-
                                 </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-12" *ngIf="SavedPHStoreList.length > 0">
+                                            <label class="text">Saved PH/Store</label>
+                                            <span>
+                                                <select class="form-control input-sm" size="4" multiple="multiple"
+                                                    [attr.disabled]="isDeactVendor ? 'disabled': null">
+                                                    <option *ngFor="let PHStore of SavedPHStoreList"
+                                                        [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="text">Selected PH/Store</label>
+                                            <span>
+                                                <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
+                                                    formControlName="SelectedPHStoreList"
+                                                    onfocusout="event.target.value = ''" class="form-control input-sm"
+                                                    [size]="(SavedPHStoreList.length > 0 ? 4: 11)" multiple="multiple">
+                                                    <option *ngFor="let PHStore of SelectedPHStoreList"
+                                                        [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

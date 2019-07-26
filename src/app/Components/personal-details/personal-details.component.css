@@ -47,3 +47,11 @@ fieldset legend {
 	float: left;
 	padding-right: 5px;
 }
+
+.col-md-2, .col-md-4, .col-md-8 {
+	float: left;
+}
+
+.moveButton {
+	margin-top: 65px;
+}
