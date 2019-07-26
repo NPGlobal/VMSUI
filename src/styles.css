@@ -449,6 +449,7 @@ a.glyphicon-expand span {
   .col-as-1 {
     width: 8.33333333%;
   }
+  
 }
 
 
@@ -461,6 +462,7 @@ a.glyphicon-expand span {
   .mtMinus15{margin-top:-15px;}
   .brHeadDiv{margin-top:-5px;margin-left:0px;}
   .modal-header .close{padding:7px;}
+  
 }
 
 @media (min-width: 768px) {
@@ -490,4 +492,5 @@ a.glyphicon-expand span {
   .mtMinus15{margin-top:-15px;}
   .brHeadDiv{margin-top:-5px;margin-left:0px;}
   .modal-header .close{padding:7px;}
+  
 }

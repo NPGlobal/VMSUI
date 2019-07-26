@@ -43,3 +43,7 @@ input[type="text"], select {
 .rejected-line td {
     background-color: bisque;
 }
+
+@media(max-width: 767px){
+    .col-kk-6 {width: 50%;padding-right: 15px;}
+  }

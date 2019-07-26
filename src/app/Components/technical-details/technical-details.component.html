@@ -192,7 +192,9 @@
     <div class="modal-content">
       <!-- modal-header -->
       <div class="modal-header">
-        <h6 class="modal-title">Technical <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are
+        <h6 class="modal-title">Technical 
+            <br _ngcontent-c6="" class="brHead">
+          <span class="req-popup-label">(<b>Note:</b> All (*) marked fields are
             mandatory)</span>
         </h6>
         <button type="button" class="close" (click)="DiscardChanges()">&times;</button>
@@ -203,14 +205,14 @@
         <form *ngIf="techDetailsForm" [formGroup]="techDetailsForm" (ngSubmit)="AddMachine()" novalidate>
           <div class="form-group col-lg-12 col-md-12">
             <div class="row">
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-3 col-md-3 col-kk-6 ">
                 <label class="text">Tech Line No.<span class="error-label">*</span></label>
                 <span>
                   <input type="text" formControlName="TechLineNo" class="form-control input-sm" maxlength="50"
                     (blur)="LogValidationErrors()" [ngClass]="{ 'is-invalid': formErrors.TechLineNo }">
                 </span>
               </div>
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-3 col-md-3 col-kk-6">
                 <label class="text">Default Line Efficiency (%)<span class="error-label">*</span></label>
                 <span>
                   <input [ngClass]="{ 'is-invalid': formErrors.DefaultEfficiency }" type="text"
@@ -239,7 +241,7 @@
           <div id="divMachine" class="form-group col-lg-12 col-md-12">
             <div class="row">
 
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-3 col-md-3 col-kk-6">
                 <label class="text">Machine Type<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="Department" class="form-control input-sm"
@@ -254,7 +256,7 @@
                 </span>
               </div>
 
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-3 col-md-3 col-kk-6">
                 <label class="text">Machine Name<span class="error-label">*</span></label>
                 <span>
                   <select formControlName="VendorTechConfigID" class="form-control input-sm"
@@ -271,7 +273,7 @@
                 </span>
               </div>
 
-              <div class="col-lg-2 col-md-2">
+              <div class="col-lg-2 col-md-2 col-kk-6">
                 <label class="text">Unit Count<span class="error-label">*</span></label>
                 <select formControlName="UnitCount" class="form-control input-sm" (blur)="LogValidationErrors()"
                   [ngClass]="{ 'is-invalid': formErrors.UnitCount }">
@@ -280,7 +282,7 @@
                 </select>
               </div>
 
-              <div class="col-lg-2 col-md-2">
+              <div class="col-lg-2 col-md-2 col-kk-6">
                 <label class="text">Efficiency (%)</label>
                 <span>
                   <input (blur)="LogEfficiencyValidation('Efficiency')" type="text" formControlName="Efficiency"
