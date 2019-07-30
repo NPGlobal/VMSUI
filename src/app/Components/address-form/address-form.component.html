@@ -143,12 +143,12 @@
                     <span class="error-label-lg" *ngIf="formErrors.Address3">{{formErrors.Address3}}</span>
                   </div>
                   <div class="col-md-3 pinTxtPL10">
-                      <legend>Address Type</legend>
-                    <div class="col-md-12 pinTxtPL10">
+                    <label class="text">Address Type</label>
+                    <div class="col-md-12 pinTxtPL11">
                       <label class="text form-check-label">
                         <input value="F" formControlName="AddressTypeCode" class="form-check-input" type="radio">Factory
                       </label>
-                      <label class="text form-check-label" style="margin-left: 30px;">
+                      <label class="text form-check-label">
                         <input class="form-check-input" formControlName="AddressTypeCode" type="radio" value="I">
                         Sister Concern</label>
                     </div>
@@ -197,21 +197,21 @@
               <fieldset>
                 <legend>Primary Info</legend>
                 <div class="form-group row">
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Contact Name<i class="mandatory">*</i></label>
                     <input (blur)="LogValidationErrors()" formControlName="PrimaryContactName" type="text"
                       class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactName}">
                     <span class="error-label-lg"
                       *ngIf="formErrors.PrimaryContactName">{{formErrors.PrimaryContactName}}</span>
                   </div>
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Phone No.<i class="mandatory">*</i></label>
                     <input type="text" (blur)="LogValidationErrors()" formControlName="PrimaryContactPhone"
                       class="form-control input-sm" [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}" maxlength="10">
                     <span class="error-label-lg"
                       *ngIf="formErrors.PrimaryContactPhone">{{formErrors.PrimaryContactPhone}}</span>
                   </div>
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Fax</label>
                     <input type="text" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.PrimaryContactFax}" formControlName="PrimaryContactFax"
@@ -219,7 +219,7 @@
                     <span class="error-label-lg"
                       *ngIf="formErrors.PrimaryContactFax">{{formErrors.PrimaryContactFax}}</span>
                   </div>
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Email</label>
                     <input type="email" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.PrimaryContactEmail}" formControlName="PrimaryContactEmail"
@@ -242,14 +242,14 @@
               <fieldset>
                 <legend>Secondary Info</legend>
                 <div class="form-group row">
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Contact Name</label>
                     <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.SecondaryContactName}"
                       formControlName="SecondaryContactName" type="text" class="form-control input-sm">
                     <span class="error-label-lg"
                       *ngIf="formErrors.SecondaryContactName">{{formErrors.SecondaryContactName}}</span>
                   </div>
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Phone No.</label>
                     <input type="text" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.SecondaryContactPhone}"
@@ -257,7 +257,7 @@
                     <span class="error-label-lg"
                       *ngIf="formErrors.SecondaryContactPhone">{{formErrors.SecondaryContactPhone}}</span>
                   </div>
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Fax</label>
                     <input type="text" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.SecondaryContactFax}" formControlName="SecondaryContactFax"
@@ -265,7 +265,7 @@
                     <span class="error-label-lg"
                       *ngIf="formErrors.SecondaryContactFax">{{formErrors.SecondaryContactFax}}</span>
                   </div>
-                  <div class="col-md-22">
+                  <div class="col-md-22 col-kk-6">
                     <label class="text">Email</label>
                     <input type="email" (blur)="LogValidationErrors()"
                       [ngClass]="{'is-invalid': formErrors.SecondaryContactEmail}"

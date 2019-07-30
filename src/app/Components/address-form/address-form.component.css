@@ -25,20 +25,39 @@ fieldset{margin-bottom: -10px;}
 fieldset legend{font-size: 15px;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0px 0px 5px 0px;font-weight: 600;}
 fieldset label.text{font-size: 14px;}
 .form-group {margin-bottom: 0.5rem !important;}
-.pinTxtPL10{
-    padding-left: 16px;
-}
+.pinTxtPL10{padding-left: 16px;}
+
 /* input[type="text"] {margin-bottom: 5px;} */
 @media (max-width: 320px){
     fieldset label.text{font-size: 12px;}
-    
+    .pinTxtPL10 label:last-child{margin-left: 0px ;}
 }
 @media(max-width: 767px){
   .modal-content{width: 100%;}
   .modal-dialog{padding: 10px;}
   .pinTxtPL10{padding-left: 16px;}
   .col-kk-6 {width: 50%;padding-right: 15px;}
+  
 }
+
+
 /*
 .col-form-label{padding-top:0px;}
 */
+/*
+.pinTxtPL10 label:last-child{
+    margin-left: 30px;
+}
+*/
+
+.pinTxtPL11 label:last-child{
+    margin-left: 30px;
+}
+/*------ iPad-----------*/
+@media only screen and (min-width: 768px)  and (max-height: 1024px)  {
+    .pinTxtPL11 label:last-child{margin-left: 0px;}
+}
+
+@media only screen and (min-width: 1024px)  and (max-height: 768px)  {
+    .pinTxtPL11 label:last-child{margin-left: 30px;}
+}

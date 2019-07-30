@@ -408,7 +408,9 @@ a.glyphicon-expand span {
   padding-right: 15px;
   padding-left: 15px;
 }
-
+.modal-dialog{
+  padding: 10px;
+}
 @media (min-width: 320px) {
   .col-as-1, .col-as-2, .col-as-3, .col-as-4, .col-as-5, .col-as-6, .col-as-7, .col-as-8, .col-as-9, .col-as-10, .col-as-11, .col-as-12 {
     float: left;
