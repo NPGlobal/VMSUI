@@ -21,7 +21,8 @@
                 <div class="slider" [ngClass]="{
                       closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
                   }">
-                    <div class="col-md-8 pull-left">
+
+                    <div class="col-md-8">
                         <div class="col-md-12 form-group row">
                             <div class="col-md-6">
                                 <label class="text">Short Name</label>
@@ -92,9 +93,10 @@
                                 </span>
                             </div>
                             <div class="col-md-6">
-                                <label class="text">Name of Insurance Company</label>
-                                <i class="mandatory"
-                                    *ngIf="personalDetailsForm.get('PersonalDetails.IsInsured').value">*</i>
+                                <label class="text">Name of Insurance Company<i class="mandatory"
+                                        *ngIf="personalDetailsForm.get('PersonalDetails.IsInsured').value">
+                                        *</i></label>
+
                                 <span>
                                     <input type="text" (blur)="LogValidationErrors()" maxlength="50"
                                         [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
@@ -106,12 +108,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 pull-right">
 
-                        <div class="col-md-12 form-group">
-                            <label class="text">Producer Type</label>
-                            &nbsp;
-                            <div class="col-md-2">
+                    <div class="col-md-4">
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-5">
+                                <label class="text">Producer Type</label>
+                            </div>
+                            <div class="col-md-2 col-as-4 col-sm-5">
                                 <label class="radio-inline">
                                     <input type="checkbox" formControlName="IsDirectVendor"
                                         [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsDirectVendor').disabled ? '' : null"
@@ -119,8 +123,7 @@
                                     <span style="margin-left:5px;" class="text">DP</span>
                                 </label>
                             </div>
-                            &nbsp;
-                            <div class="col-md-1">
+                            <div class="col-md-2 col-as-6 col-sm-7 pull-right">
                                 <label class="radio-inline">
                                     <input type="checkbox" formControlName="IsJWVendor"
                                         [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsJWVendor').disabled ? '' : null"
@@ -130,26 +133,30 @@
                             </div>
                         </div>
 
-                        <div style="margin-left: 90px;"
-                            *ngIf="personalDetailsForm.get('PersonalDetails.IsDirectVendor').value" class="row">
-                            <ul class="DPTypUL">
-                                <li *ngFor="let dptype of DPTypeList">
-                                    <input class="mr-2" type="checkbox"
-                                        [attr.checked]="dptype.Checked ? 'checked' : null"
-                                        [attr.disabled]="isDeactVendor ? 'disabled': null"
-                                        (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)"
-                                        value="{{dptype.MDDCode}}" />
-                                    <span>{{dptype.MDDName}}</span>
-                                </li>
-                            </ul>
+                        <div class="row" *ngIf="personalDetailsForm.get('PersonalDetails.IsDirectVendor').value">
+                            <div class="col-md-4 col-sm-5">
+
+                            </div>
+                            <div class="col-md-8 col-as-12 col-sm-5">
+                                <ul class="DPTypUL">
+                                    <li *ngFor="let dptype of DPTypeList">
+                                        <input class="mr-2" type="checkbox"
+                                            [attr.checked]="dptype.Checked ? 'checked' : null"
+                                            [attr.disabled]="isDeactVendor ? 'disabled': null"
+                                            (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)"
+                                            value="{{dptype.MDDCode}}" />
+                                        <span>{{dptype.MDDName}}</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
 
-                                <div class="col-md-5">
+                                <div class="col-sm-5">
                                     <div class="form-group">
-                                        <div class="col-md-12 PHandStore">
+                                        <div class="PHandStore col-md-12">
                                             <label class="text">PH/FO</label>
                                             <span>
                                                 <select formControlName="PHList"
@@ -160,7 +167,7 @@
                                                 </select>
                                             </span>
                                         </div>
-                                        <div class="col-md-12 PHandStore">
+                                        <div class="PHandStore col-md-12">
                                             <label class="text">Store</label>
                                             <span>
                                                 <select formControlName="StoreList"
@@ -175,7 +182,7 @@
                                 </div>
 
 
-                                <div class="col-md-2">
+                                <div class="col-sm-2">
                                     <div class="form-group text-center mtMinus15">
                                         <button type="button" class="moveButton" (click)="MoveToSelectedPHList($event)">
                                             <span class="mLeft">►</span>
@@ -190,9 +197,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-5">
+                                <div class="col-sm-5">
                                     <div class="form-group">
-                                        <div class="col-md-12" *ngIf="SavedPHStoreList.length > 0">
+                                        <div class="PHandStore col-md-12" *ngIf="SavedPHStoreList.length > 0">
                                             <label class="text">Saved PH/Store</label>
                                             <span>
                                                 <select class="form-control input-sm" size="4" multiple="multiple"
@@ -202,7 +209,7 @@
                                                 </select>
                                             </span>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="PHandStore col-md-12">
                                             <label class="text">Selected PH/Store</label>
                                             <span>
                                                 <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
@@ -220,6 +227,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <hr>
@@ -240,8 +248,8 @@
 
                     <div class="col-md-12 form-group">
                         <div class="col-md-6">
-                            <label class="text">GST Registered</label>
-                            <div class="col-md-2">
+                            <div class="col-md-4 col-as-4" class="text">GST Registered</div>
+                            <div class="col-md-1 col-as-4">
                                 <label class="radio-inline">
                                     <input [value]="true" type="radio" formControlName="IsGSTRegistered"
                                         [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
@@ -249,7 +257,7 @@
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1 col-as-4">
                                 <label class="radio-inline">
                                     <input [value]="false" type="radio" formControlName="IsGSTRegistered"
                                         [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
@@ -259,14 +267,14 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="text">Reverse Change Mechanism Applied</label>
-                            <div class="col-md-2">
+                            <div class="col-md-4 col-as-4 text">Reverse Change Mechanism Applied</div>
+                            <div class="col-md-1 col-as-4">
                                 <label class="radio-inline">
                                     <input [value]="true" type="radio" formControlName="IsRCM" />
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1 col-as-4">
                                 <label class="radio-inline">
                                     <input [value]="false" type="radio" formControlName="IsRCM" />
                                     <span style="margin-left:5px;">No</span>
@@ -276,6 +284,7 @@
                     </div>
 
                     <div class="form-group col-md-12">
+
                         <div class="col-md-4">
                             <label class="text">GST No
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
@@ -316,6 +325,7 @@
                                     class="form-control input-sm" />
                             </span>
                         </div>
+
                     </div>
 
                     <div class="form-group col-md-12">
@@ -571,100 +581,6 @@
                         </fieldset>
                     </div>
                     <hr style="border:none;">
-                    <!-- <div class="form-group col-md-12">
-                        <div class="col-md-6">
-                            <label class="text">Primary Contact Name
-                                <i class="mandatory">*</i>
-                            </label>
-                            <span>
-                                <input (blur)="LogValidationErrors()"
-                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactName}"
-                                    formControlName="PrimaryContactName" type="text" class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="text">Secondary Contact Name</label>
-                            <span>
-                                <input formControlName="SecondaryContactName" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <div class="col-md-6">
-                            <label class="text">Primary Phone No.
-                                <i class="mandatory">*</i>
-                            </label>
-                            <span>
-                                <input (blur)="LogValidationErrors()"
-                                    [ngClass]="{'is-invalid': formErrors.PrimaryContactPhone}"
-                                    formControlName="PrimaryContactPhone" type="text" class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="text">Secondary Phone No.</label>
-                            <span>
-                                <input formControlName="SecondaryContactPhone" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <div class="col-md-6">
-                            <label class="text">Primary Fax</label>
-                            <span>
-                                <input formControlName="PrimaryContactFax" type="text" class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="text">Secondary Fax</label>
-                            <span>
-                                <input formControlName="SecondaryContactFax" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <div class="col-md-6">
-                            <label class="text">Primary E-Mail</label>
-                            <span>
-                                <input formControlName="PrimaryContactEmail" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="text">Secondary E-Mail</label>
-                            <span>
-                                <input formControlName="SecondaryContactEmail" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <div class="col-md-6">
-                            <label class="text">Primary Website</label>
-                            <span>
-                                <input formControlName="PrimaryContactWebsite" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="text">Secondary Website</label>
-                            <span>
-                                <input formControlName="SecondaryContactWebsite" type="text"
-                                    class="form-control input-sm" />
-                            </span>
-                        </div>
-                    </div> -->
 
                 </div>
             </div>
