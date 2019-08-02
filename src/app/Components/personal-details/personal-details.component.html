@@ -22,212 +22,220 @@
                       closed: !personalDetailsForm.get('PersonalDetails').controls.IsExpanded.value
                   }">
 
-                    <div class="col-md-8">
-                        <div class="col-md-12 form-group row">
-                            <div class="col-md-6">
-                                <label class="text">Short Name</label>
-                                <span>
-                                    <input type="text" maxlength="6" formControlName="VendorCode"
-                                        class="form-control input-sm" />
-                                </span>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="text">Producer Name
-                                    <i class="mandatory">*</i>
-                                </label>
-                                <span>
-                                    <input type="text" maxlength="49" formControlName="VendorName"
-                                        class="form-control input-sm" (blur)="LogValidationErrors()"
-                                        [ngClass]="{'is-invalid': formErrors.VendorName}" />
-                                </span>
-                                <span class="error-label-lg" *ngIf="formErrors.VendorName">
-                                    {{formErrors.VendorName}}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group row">
-                            <div class="col-md-6">
-                                <label class="text">PAN No.
-                                </label>&nbsp;&nbsp;
-                                <span>
-                                    <input type="text" formControlName="PANNo" style="text-transform: uppercase"
-                                        (blur)="LogValidationErrors()" maxlength="10"
-                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
-                                        [ngClass]="{'is-invalid': formErrors.PANNo}" class="form-control input-sm" />
-                                </span>
-                                <span class="error-label-lg" *ngIf="formErrors.PANNo">
-                                    {{formErrors.PANNo}}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group row">
-                            <div class="col-md-6">
-                                <div for="Ref_VendorCode">Reference Producer Name</div>
-                                <select type="text" class="form-control col-md-12 input-sm"
-                                    [attr.disabled]="personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disabled ? '' : null"
-                                    formControlName="Ref_VendorCode">
-                                    <option value="-1" selected="selected">Select</option>
-                                    <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName
-                                        + ' (' + item.VendorCode + ')'}}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <div>Master Producer Name
-                                    <small>(Parent/sister company)</small>
-                                </div>
-                                <select type="text" class="form-control col-md-12 input-sm"
-                                    formControlName="MasterVendorId">
-                                    <option value="-1">Select</option>
-                                    <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">
-                                        {{item.MasterVendorName }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group row">
-                            <div class="col-md-6">
-                                <span>
-                                    <label class="text">Insured
-                                        <input type="checkbox" (change)="IfInsured($event.target.checked)"
-                                            formControlName="IsInsured" class="ml-2" />
-                                    </label>
-                                </span>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="text">Name of Insurance Company<i class="mandatory"
-                                        *ngIf="personalDetailsForm.get('PersonalDetails.IsInsured').value">
-                                        *</i></label>
-
-                                <span>
-                                    <input type="text" (blur)="LogValidationErrors()" maxlength="50"
-                                        [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
-                                        formControlName="NameofInsuranceCompany" class="form-control input-sm" />
-                                    <span class="error-label-lg" *ngIf="formErrors.NameofInsuranceCompany">
-                                        {{formErrors.NameofInsuranceCompany}}
+                    <div class="col-md-12 form-group">
+                        <div class="col-md-8">
+                            <div class="col-md-12 form-group row">
+                                <div class="col-md-6">
+                                    <label class="text">Short Name</label>
+                                    <span>
+                                        <input type="text" maxlength="6" formControlName="VendorCode"
+                                            class="form-control input-sm" />
                                     </span>
-                                </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text">Producer Name
+                                        <i class="mandatory">*</i>
+                                    </label>
+                                    <span>
+                                        <input type="text" maxlength="49" formControlName="VendorName"
+                                            class="form-control input-sm" (blur)="LogValidationErrors()"
+                                            [ngClass]="{'is-invalid': formErrors.VendorName}" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.VendorName">
+                                        {{formErrors.VendorName}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group row">
+                                <div class="col-md-6">
+                                    <label class="text">PAN No.
+                                    </label>&nbsp;&nbsp;
+                                    <span>
+                                        <input type="text" formControlName="PANNo" style="text-transform: uppercase"
+                                            (blur)="LogValidationErrors()" maxlength="10"
+                                            [attr.disabled]="personalDetailsForm.get('PersonalDetails.PANNo').disabled ? '' : null"
+                                            [ngClass]="{'is-invalid': formErrors.PANNo}"
+                                            class="form-control input-sm" />
+                                    </span>
+                                    <span class="error-label-lg" *ngIf="formErrors.PANNo">
+                                        {{formErrors.PANNo}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group row">
+                                <div class="col-md-6">
+                                    <div for="Ref_VendorCode">Reference Producer Name</div>
+                                    <select type="text" class="form-control col-md-12 input-sm"
+                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.Ref_VendorCode').disabled ? '' : null"
+                                        formControlName="Ref_VendorCode">
+                                        <option value="-1" selected="selected">Select</option>
+                                        <option *ngFor="let item of ReferenceVendorList" value="{{item.VendorCode}}">{{item.VendorName
+                                        + ' (' + item.VendorCode + ')'}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div>Master Producer Name
+                                        <small>(Parent/sister company)</small>
+                                    </div>
+                                    <select type="text" class="form-control col-md-12 input-sm"
+                                        formControlName="MasterVendorId">
+                                        <option value="-1">Select</option>
+                                        <option *ngFor="let item of MasterVendorList" value="{{item.MasterVendorId}}">
+                                            {{item.MasterVendorName }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group row">
+                                <div class="col-md-6">
+                                    <span>
+                                        <label class="text">Insured
+                                            <input type="checkbox" (change)="IfInsured($event.target.checked)"
+                                                formControlName="IsInsured" class="ml-2" />
+                                        </label>
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text">Name of Insurance Company<i class="mandatory"
+                                            *ngIf="personalDetailsForm.get('PersonalDetails.IsInsured').value">
+                                            *</i></label>
+
+                                    <span>
+                                        <input type="text" (blur)="LogValidationErrors()" maxlength="50"
+                                            [ngClass]="{'is-invalid': formErrors.NameofInsuranceCompany && personalDetailsForm.get('PersonalDetails.IsInsured').value}"
+                                            formControlName="NameofInsuranceCompany" class="form-control input-sm" />
+                                        <span class="error-label-lg" *ngIf="formErrors.NameofInsuranceCompany">
+                                            {{formErrors.NameofInsuranceCompany}}
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-4">
+                        <div class="col-md-4">
 
-                        <div class="row">
-                            <div class="col-md-4 col-sm-5">
-                                <label class="text">Producer Type</label>
-                            </div>
-                            <div class="col-md-2 col-as-4 col-sm-5">
-                                <label class="radio-inline">
-                                    <input type="checkbox" formControlName="IsDirectVendor"
-                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsDirectVendor').disabled ? '' : null"
-                                        (change)="SetPHListValidation()" />
-                                    <span style="margin-left:5px;" class="text">DP</span>
-                                </label>
-                            </div>
-                            <div class="col-md-2 col-as-6 col-sm-7 pull-right">
-                                <label class="radio-inline">
-                                    <input type="checkbox" formControlName="IsJWVendor"
-                                        [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsJWVendor').disabled ? '' : null"
-                                        (change)="SetPHListValidation()" />
-                                    <span style="margin-left:5px;" class="text">JW</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="row" *ngIf="personalDetailsForm.get('PersonalDetails.IsDirectVendor').value">
-                            <div class="col-md-4 col-sm-5">
-
-                            </div>
-                            <div class="col-md-8 col-as-12 col-sm-5">
-                                <ul class="DPTypUL">
-                                    <li *ngFor="let dptype of DPTypeList">
-                                        <input class="mr-2" type="checkbox"
-                                            [attr.checked]="dptype.Checked ? 'checked' : null"
-                                            [attr.disabled]="isDeactVendor ? 'disabled': null"
-                                            (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)"
-                                            value="{{dptype.MDDCode}}" />
-                                        <span>{{dptype.MDDName}}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
                             <div class="row">
+                                <div class="col-md-4 col-sm-5">
+                                    <label class="text">Producer Type</label>
+                                </div>
+                                <div class="col-md-2 col-as-4 col-sm-5">
+                                    <label class="radio-inline">
+                                        <input type="checkbox" formControlName="IsDirectVendor"
+                                            [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsDirectVendor').disabled ? '' : null"
+                                            (change)="SetPHListValidation()" />
+                                        <span style="margin-left:5px;" class="text">DP</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-2 col-as-6 col-sm-7 pull-right">
+                                    <label class="radio-inline">
+                                        <input type="checkbox" formControlName="IsJWVendor"
+                                            [attr.disabled]="personalDetailsForm.get('PersonalDetails.IsJWVendor').disabled ? '' : null"
+                                            (change)="SetPHListValidation()" />
+                                        <span style="margin-left:5px;" class="text">JW</span>
+                                    </label>
+                                </div>
+                            </div>
 
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <div class="PHandStore col-md-12">
-                                            <label class="text">PH/FO</label>
-                                            <span>
-                                                <select formControlName="PHList"
-                                                    (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
-                                                    class="form-control input-sm" size="4" multiple="multiple">
-                                                    <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
-                                                        {{ PH.OrgUnitName }}</option>
-                                                </select>
-                                            </span>
-                                        </div>
-                                        <div class="PHandStore col-md-12">
-                                            <label class="text">Store</label>
-                                            <span>
-                                                <select formControlName="StoreList"
-                                                    (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
-                                                    class="form-control input-sm" size="4" multiple="multiple">
-                                                    <option *ngFor="let Store of StoreList" [value]="Store.OrgUnitCode">
-                                                        {{ Store.OrgUnitName }}</option>
-                                                </select>
-                                            </span>
+                            <div class="row" *ngIf="personalDetailsForm.get('PersonalDetails.IsDirectVendor').value">
+                                <div class="col-md-4 col-sm-5">
+
+                                </div>
+                                <div class="col-md-8 col-as-12 col-sm-5">
+                                    <ul class="DPTypUL">
+                                        <li *ngFor="let dptype of DPTypeList">
+                                            <input class="mr-2" type="checkbox"
+                                                [attr.checked]="dptype.Checked ? 'checked' : null"
+                                                [attr.disabled]="isDeactVendor ? 'disabled': null"
+                                                (change)="onDPTypeChange(dptype.MDDCode, $event.target.checked)"
+                                                value="{{dptype.MDDCode}}" />
+                                            <span>{{dptype.MDDName}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div *ngIf="personalDetailsForm.get('PersonalDetails.IsJWVendor').value">
+                                <div class="row">
+
+                                    <div class="col-sm-5">
+                                        <div class="form-group">
+                                            <div class="PHandStore col-md-12">
+                                                <label class="text">PH/FO</label>
+                                                <span>
+                                                    <select formControlName="PHList"
+                                                        (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
+                                                        class="form-control input-sm" size="4" multiple="multiple">
+                                                        <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
+                                                            {{ PH.OrgUnitName }}</option>
+                                                    </select>
+                                                </span>
+                                            </div>
+                                            <div class="PHandStore col-md-12">
+                                                <label class="text">Store</label>
+                                                <span>
+                                                    <select formControlName="StoreList"
+                                                        (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.PHList'))"
+                                                        class="form-control input-sm" size="4" multiple="multiple">
+                                                        <option *ngFor="let Store of StoreList"
+                                                            [value]="Store.OrgUnitCode">
+                                                            {{ Store.OrgUnitName }}</option>
+                                                    </select>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
 
-                                <div class="col-sm-2">
-                                    <div class="form-group text-center mtMinus15">
-                                        <button type="button" class="moveButton" (click)="MoveToSelectedPHList($event)">
-                                            <span class="mLeft">►</span>
-                                            <span class="mDown">▼</span>
-                                        </button>
-                                        <br class="brHide" />
-                                        <button type="button" class="moveButton" style="margin-top: 10px;"
-                                            (click)="MoveToPHList($event)">
-                                            <span class="mRight">◄</span>
-                                            <span class="mUp">▲</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <div class="PHandStore col-md-12" *ngIf="SavedPHStoreList.length > 0">
-                                            <label class="text">Saved PH/Store</label>
-                                            <span>
-                                                <select class="form-control input-sm" size="4" multiple="multiple"
-                                                    [attr.disabled]="isDeactVendor ? 'disabled': null">
-                                                    <option *ngFor="let PHStore of SavedPHStoreList"
-                                                        [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
-                                                </select>
-                                            </span>
-                                        </div>
-                                        <div class="PHandStore col-md-12">
-                                            <label class="text">Selected PH/Store</label>
-                                            <span>
-                                                <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
-                                                    formControlName="SelectedPHStoreList"
-                                                    onfocusout="event.target.value = ''" class="form-control input-sm"
-                                                    [size]="(SavedPHStoreList.length > 0 ? 4: 11)" multiple="multiple">
-                                                    <option *ngFor="let PHStore of SelectedPHStoreList"
-                                                        [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}</option>
-                                                </select>
-                                            </span>
+                                    <div class="col-sm-2">
+                                        <div class="form-group text-center mtMinus15">
+                                            <button type="button" class="moveButton"
+                                                (click)="MoveToSelectedPHList($event)">
+                                                <span class="mLeft">►</span>
+                                                <span class="mDown">▼</span>
+                                            </button>
+                                            <br class="brHide" />
+                                            <button type="button" class="moveButton" style="margin-top: 10px;"
+                                                (click)="MoveToPHList($event)">
+                                                <span class="mRight">◄</span>
+                                                <span class="mUp">▲</span>
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
 
+                                    <div class="col-sm-5">
+                                        <div class="form-group">
+                                            <div class="PHandStore col-md-12" *ngIf="SavedPHStoreList.length > 0">
+                                                <label class="text">Saved PH/Store</label>
+                                                <span>
+                                                    <select class="form-control input-sm" size="4" multiple="multiple"
+                                                        [attr.disabled]="isDeactVendor ? 'disabled': null">
+                                                        <option *ngFor="let PHStore of SavedPHStoreList"
+                                                            [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}
+                                                        </option>
+                                                    </select>
+                                                </span>
+                                            </div>
+                                            <div class="PHandStore col-md-12">
+                                                <label class="text">Selected PH/Store</label>
+                                                <span>
+                                                    <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
+                                                        formControlName="SelectedPHStoreList"
+                                                        onfocusout="event.target.value = ''"
+                                                        class="form-control input-sm"
+                                                        [size]="(SavedPHStoreList.length > 0 ? 4: 11)"
+                                                        multiple="multiple">
+                                                        <option *ngFor="let PHStore of SelectedPHStoreList"
+                                                            [value]="PHStore.OrgUnitCode">{{ PHStore.OrgUnitName }}
+                                                        </option>
+                                                    </select>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <hr>
@@ -246,10 +254,10 @@
                       closed: !personalDetailsForm.get('RegisteredOfficeAddress').controls.IsExpanded.value
                   }">
 
-                    <div class="col-md-12 form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-md-6">
-                            <div class="col-md-4 col-as-4" class="text">GST Registered</div>
-                            <div class="col-md-1 col-as-4">
+                            <div class="form-check-inline text">GST Registered</div>
+                            <div class="form-check-inline">
                                 <label class="radio-inline">
                                     <input [value]="true" type="radio" formControlName="IsGSTRegistered"
                                         [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
@@ -257,7 +265,7 @@
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
                             </div>
-                            <div class="col-md-1 col-as-4">
+                            <div class="form-check-inline">
                                 <label class="radio-inline">
                                     <input [value]="false" type="radio" formControlName="IsGSTRegistered"
                                         [attr.disabled]="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').disabled ? '' : null"
@@ -267,14 +275,14 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="col-md-4 col-as-4 text">Reverse Change Mechanism Applied</div>
-                            <div class="col-md-1 col-as-4">
+                            <div class="form-check-inline text">Reverse Change Mechanism Applied</div>
+                            <div class="form-check-inline">
                                 <label class="radio-inline">
                                     <input [value]="true" type="radio" formControlName="IsRCM" />
                                     <span style="margin-left:5px;">Yes</span>
                                 </label>
                             </div>
-                            <div class="col-md-1 col-as-4">
+                            <div class="form-check-inline">
                                 <label class="radio-inline">
                                     <input [value]="false" type="radio" formControlName="IsRCM" />
                                     <span style="margin-left:5px;">No</span>
@@ -283,7 +291,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-8">
 
                         <div class="col-md-4">
                             <label class="text">GST No
@@ -312,7 +320,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4" style="margin-top: -15px;">
+                        <div class="col-md-4">
                             <label class="text">GST Date
                                 <i *ngIf="personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value"
                                     class="mandatory">*</i>
