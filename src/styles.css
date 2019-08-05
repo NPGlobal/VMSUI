@@ -23,7 +23,7 @@ img {border: none;max-width: 100%;}
 .flex-md-nowrap {flex-wrap: nowrap !important;}
 
 .btn-primary, .btn-primary:hover, .btn-primary:active {background-color: #f58220 !important;border-color: #f58220 !important;}
-.ovx{overflow-x:auto;}
+.ovx{overflow-x:auto;z-index: 1;}
 /*.cont-body {display: inline; float:left; margin-top: 70px; width: 100%; position: relative; min-height: 375px;}*/
 .cont-body {display: inline; float:left; width: 100%; position: relative; min-height: 375px;top: 65px;}
 
