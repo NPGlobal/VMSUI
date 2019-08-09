@@ -111,16 +111,16 @@
 
                 <div class="col-md-5">
                   <div class="form-group">
-                    <div class="col-md-12 PHandStore">
-                      <label>PH/FO</label>
+                    <div class="PHandStore">
+                      <label class="text">PH/FO</label>
                       <span>
                         <select (focus)="UnselectOptions(RegistrationForm.controls.StoreList)" formControlName="PHList"
-                          class="form-control input-sm" size="4" multiple="multiple">
+                          class="form-control input-sm" size="4" multiple="multiple" size="11">
                           <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">{{ PH.OrgUnitName }}</option>
                         </select>
                       </span>
                     </div>
-                    <div class="col-md-12 PHandStore">
+                    <div class="col-md-12 PHandStore" style="display: none;">
                       <label>Store</label>
                       <span>
                         <select (focus)="UnselectOptions(RegistrationForm.controls.PHList)" formControlName="StoreList"

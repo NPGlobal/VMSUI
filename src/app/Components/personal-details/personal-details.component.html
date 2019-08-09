@@ -158,18 +158,18 @@
 
                                     <div class="col-sm-5">
                                         <div class="form-group">
-                                            <div class="PHandStore col-md-12">
+                                            <div class="PHandStore">
                                                 <label class="text">PH/FO</label>
                                                 <span>
                                                     <select formControlName="PHList"
                                                         (focus)="UnselectOptions(personalDetailsForm.get('PersonalDetails.StoreList'))"
-                                                        class="form-control input-sm" size="4" multiple="multiple">
+                                                        class="form-control input-sm" size="12" multiple="multiple">
                                                         <option *ngFor="let PH of PHList" [value]="PH.OrgUnitCode">
                                                             {{ PH.OrgUnitName }}</option>
                                                     </select>
                                                 </span>
                                             </div>
-                                            <div class="PHandStore col-md-12">
+                                            <div class="PHandStore col-md-12" style="display: none;">
                                                 <label class="text">Store</label>
                                                 <span>
                                                     <select formControlName="StoreList"
@@ -183,7 +183,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="col-sm-2">
                                         <div class="form-group text-center mtMinus15">
@@ -203,7 +202,7 @@
 
                                     <div class="col-sm-5">
                                         <div class="form-group">
-                                            <div class="PHandStore col-md-12" *ngIf="SavedPHStoreList.length > 0">
+                                            <div class="PHandStore" *ngIf="SavedPHStoreList.length > 0">
                                                 <label class="text">Saved PH/Store</label>
                                                 <span>
                                                     <select class="form-control input-sm" size="4" multiple="multiple"
@@ -214,7 +213,7 @@
                                                     </select>
                                                 </span>
                                             </div>
-                                            <div class="PHandStore col-md-12">
+                                            <div class="PHandStore">
                                                 <label class="text">Selected PH/Store</label>
                                                 <span>
                                                     <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
