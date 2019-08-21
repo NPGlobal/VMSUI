@@ -20,7 +20,10 @@
    padding: 50px;
    cursor: pointer;
 }
-.wltop{margin-top:4%;}
+
+.wltop {
+   margin-top: 4%;
+}
 
 @media (max-width: 360px) {
    .span-circle {
@@ -29,6 +32,88 @@
       padding: 20px;
       font-size: 12px;
    }
-
-   .wltop{margin-top:7%;}
+   .wltop {
+      margin-top: 7%;
+   }
 }
+
+.icons_ul {
+   padding: 5px 35px 0px 35px;
+   list-style: none;
+   position: relative;
+   width: 100%;
+}
+
+.icons_ul li {
+   position: relative;
+   float: left;
+   overflow: hidden;
+   text-align: center;
+   padding: 10px;
+}
+
+.icons_ul li a, .icons_ul li a img {
+   display: block;
+   /* width: 80%; */
+   cursor: pointer;
+}
+
+.icons_ul li a img {
+   max-width: 100%;
+}
+
+.icons_ul li a h4 {
+   position: absolute;
+   left: 40px;
+   bottom: 40px;
+   color: #fff;
+   font-size: 20px;
+}
+
+/* Example for media query: change number of items per row */
+
+/* @media screen and (max-width: 1190px) {
+      .kk_PMS li {
+         width: 20%; 
+         width: -webkit-calc(100% / 5);
+         width: calc(100% / 5);
+      }
+   }
+   
+   @media screen and (max-width: 945px) {
+      .kk_PMS li {
+         width: 25%;
+         width: -webkit-calc(100% / 4);
+         width: calc(100% / 4);
+      }
+   }
+   
+   @media screen and (max-width: 660px) {
+      .kk_PMS li {
+         width: 33.3333333%; 
+         width: -webkit-calc(100% / 3);
+         width: calc(100% / 3);
+      }
+   }
+   
+   @media screen and (max-width: 660px) {
+      .kk_PMS li {
+         width: 33.3333333%; 
+         width: -webkit-calc(100% / 3);
+         width: calc(100% / 3);
+      }
+   }
+   
+   @media screen and (max-width: 400px) {
+      .kk_PMS li {
+         width: 50%; 
+         width: -webkit-calc(100% / 2);
+         width: calc(100% / 2);
+      }
+   }
+   
+   @media screen and (max-width: 300px) {
+      .kk_PMS li {
+         width: 100%;
+      }
+   } */

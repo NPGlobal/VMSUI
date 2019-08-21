@@ -203,7 +203,7 @@
                                     <div class="col-sm-5">
                                         <div class="form-group">
                                             <div class="PHandStore" *ngIf="SavedPHStoreList.length > 0">
-                                                <label class="text">Saved PH/Store</label>
+                                                <label class="text">Saved PH/FO</label>
                                                 <span>
                                                     <select class="form-control input-sm" size="4" multiple="multiple"
                                                         [attr.disabled]="isDeactVendor ? 'disabled': null">
@@ -214,7 +214,7 @@
                                                 </span>
                                             </div>
                                             <div class="PHandStore">
-                                                <label class="text">Selected PH/Store</label>
+                                                <label class="text">Selected PH/FO</label>
                                                 <span>
                                                     <select [ngClass]="{'is-invalid': !HasPHSelected && submitted}"
                                                         formControlName="SelectedPHStoreList"
