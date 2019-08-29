@@ -66,7 +66,7 @@ const routes: Routes = [
         children: [
           { path: 'personal', component: UserActivityLogTabsComponent },
           { path: 'staff', component: UserActivityLogTabsComponent },
-          { path: 'technical', component: UserActivityLogTabsComponent },
+          { path: 'technical', component: TechLineReportComponent },
           { path: 'production', component: UserActivityLogTabsComponent },
           { path: 'business', component: UserActivityLogTabsComponent },
           { path: 'document', component: UserActivityLogTabsComponent },

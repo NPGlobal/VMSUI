@@ -502,5 +502,5 @@ input, button, select, optgroup, textarea {
 
 
 .different{background-color:red !important;color:#fff;}
+.different a{color:#fff !important;}
 #logContainer a{text-decoration:underline;}
-.differnet a{color:#fff !important;}

@@ -112,7 +112,7 @@ export class UserActivityLogTabsComponent implements OnInit {
 
     let html = '';
 
-    if (this.LogsData) {
+    if (this.LogsData.length > 0) {
       for (let index = 0; index < this.LogsData.length; ++index) {
         html += '<tr>';
         const obj = this.LogsData[index];
