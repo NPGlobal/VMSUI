@@ -1,20 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { OriginService } from 'src/app/Services/origin.service';
-import { Router } from '@angular/router';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css']
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, AfterViewInit {
 
-  constructor(private _originService: OriginService,
-    private _router: Router) { }
+  IsLogVisible = false;
+  VendorCode = '';
+
+  subscription: Subscription;
+
+  constructor(private _router: Router) { }
 
   ngOnInit() {
+
   }
 
+  ngAfterViewInit() {
+
+  }
   //#region Logout and Clear Session
   LogoutUser() {
     sessionStorage.removeItem('userid');
@@ -29,6 +37,16 @@ export class LayoutComponent implements OnInit {
   MoveToVendorList() {
     // window.location.href = this._originService.GetOriginWithSubDirectoryPath() + 'vendor';
     this._router.navigate(['/vendor']);
+  }
+
+  changeOfRoutes(event) {
+    const url = this._router.url;
+    if (url && url.split('/')[2]) {
+      this.VendorCode = url.split('/')[2];
+      this.IsLogVisible = true;
+    } else {
+      this.IsLogVisible = false;
+    }
   }
   //#endregion
 }

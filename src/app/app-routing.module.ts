@@ -17,6 +17,8 @@ import { DepartmentMappingNewComponent } from './Components/department-mapping-n
 import { LayoutComponent } from './Components/layout/layout.component';
 import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new/vendor-assessment-new.component';
 import { TechLineReportComponent } from './Components/tech-line-report/tech-line-report.component';
+import { UserActivityLogComponent } from './Components/user-activity-log/user-activity-log.component';
+import { UserActivityLogTabsComponent } from './Components/user-activity-log-tabs/user-activity-log-tabs.component';
 
 const routes: Routes = [
   {
@@ -56,7 +58,21 @@ const routes: Routes = [
           { path: 'bank', component: BankDetailsComponent },
           { path: 'department', component: DepartmentMappingNewComponent },
           { path: 'address', component: AddressFormComponent },
-          { path: 'techlinereport', component: TechLineReportComponent}
+          { path: 'techlinereport', component: TechLineReportComponent }
+        ]
+      },
+      {
+        path: 'vendor/:code/Logs', component: UserActivityLogComponent,
+        children: [
+          { path: 'personal', component: UserActivityLogTabsComponent },
+          { path: 'staff', component: UserActivityLogTabsComponent },
+          { path: 'technical', component: UserActivityLogTabsComponent },
+          { path: 'production', component: UserActivityLogTabsComponent },
+          { path: 'business', component: UserActivityLogTabsComponent },
+          { path: 'document', component: UserActivityLogTabsComponent },
+          { path: 'bank', component: UserActivityLogTabsComponent },
+          { path: 'department', component: UserActivityLogTabsComponent },
+          { path: 'address', component: UserActivityLogTabsComponent }
         ]
       }
     ]

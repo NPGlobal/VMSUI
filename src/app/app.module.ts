@@ -35,6 +35,9 @@ import { VendorAssessmentNewComponent } from './Components/vendor-assessment-new
 import { TechLineReportComponent } from './Components/tech-line-report/tech-line-report.component';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { UserActivityLogComponent } from './Components/user-activity-log/user-activity-log.component';
+import { UserActivityLogTabsComponent } from './Components/user-activity-log-tabs/user-activity-log-tabs.component';
+import { BusinessDetailsLogsComponent } from './Components/business-details-logs/business-details-logs.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +61,10 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     DepartmentMappingNewComponent,
     VendorAssessmentComponent,
     VendorAssessmentNewComponent,
-    TechLineReportComponent
+    TechLineReportComponent,
+    UserActivityLogComponent,
+    UserActivityLogTabsComponent,
+    BusinessDetailsLogsComponent
   ],
   imports: [
     BrowserModule,

@@ -14,6 +14,10 @@ export class AddVendorComponent implements OnInit {
   vendorCode: string;
   vendorName: string;
 
+  get VendorCode() {
+    return this.vendorCode;
+  }
+
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
     private _router: ActivatedRoute) { }

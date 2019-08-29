@@ -10,26 +10,27 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-logo">
-          <a class="navbar-brand-kk" href="javascript:void(0)" (click)="MoveToVendorList()">
-              <img src="assets/images/logo.png" alt="FabIndia"></a>
+        <a class="navbar-brand-kk" href="javascript:void(0)" routerLink="/vendor" >
+          <img src="assets/images/logo.png" alt="FabIndia"></a>
       </div>
 
       <div class="tog navbar-default">
         <!-- FOR MOBILE VIEW COLLAPSED BUTTON -->
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" 
-        aria-expanded="false" aria-controls="navbar">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
         <p class="header pull-center">Producer Management System</p>
+
       </div>
 
       <div id="navbar" class="collapse">
         <ul class="pull-right usericon">
           <li><a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
-            <img src="assets\images\profile-image.png">User</a>
+              <img src="assets\images\profile-image.png">User</a>
             <ul class="dropdown-menu">
               <li><a href="javascript:void(0)">Logout</a></li>
             </ul>
@@ -37,13 +38,15 @@
         </ul>
 
         <ul id="top-menu" class="pull-right">
-            <li><a href="javascript:void(0)" (click)="MoveToVendorList()">Master</a></li>
-            <li><a href="javascript:void(0)" routerLink="/vendor/assessment">Assessment</a></li>
-            <li class="logout"><a href="javascript:void(0)">Logout</a></li>
+          <li *ngIf="IsLogVisible"><a [routerLink]="['/vendor', VendorCode, 'Logs', 'personal']" href="javascript:void(0)">Logs</a></li>
+          <li><a href="javascript:void(0)" (click)="MoveToVendorList()">Master</a></li>
+          <li><a href="javascript:void(0)" routerLink="/vendor/assessment">Assessment</a></li>
+          <!-- <li *ngIf="IsLogVisible"><a href="javascript:void(0)" [routerLink]="['/vendor', '/Logs', VendorCode]">Logs</a></li> -->
+          <li class="logout"><a href="javascript:void(0)">Logout</a></li>
         </ul>
       </div>
+    </div>
   </div>
-  </div> 
 </header>
 
 
@@ -58,7 +61,7 @@
   <div class="container-fluid">
     <div class="row" style="margin-bottom:20px;">
       <div role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
-        <router-outlet></router-outlet>
+        <router-outlet (activate)="changeOfRoutes($event)"></router-outlet>
       </div>
     </div>
   </div>

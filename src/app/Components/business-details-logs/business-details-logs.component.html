@@ -1,0 +1,87 @@
+<div class="ovx">
+
+  <form [formGroup]="activityFiltersForm" (ngSubmit)="GetVendorBusinessHistory()">
+
+    <div class="form-group col-lg-8 col-md-8">
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <label class="text">From Date
+            <i class="mandatory">*</i>
+          </label>
+          <span>
+            <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.FromDate}"
+              formControlName="FromDate" type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm" />
+          </span>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text">To Date
+            <i class="mandatory">*</i>
+          </label>
+          <span>
+            <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.ToDate}" formControlName="ToDate"
+              type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm" />
+          </span>
+        </div>
+
+        <div class="col-md-2">
+          <span>
+            <button style="margin-top: 30px;" class="input-sm form-control btn btn-primary">Submit</button>
+          </span>
+        </div>
+
+        <div class="col-md-2">
+          <span>
+            <button type="button" style="margin-top: 30px;" (click)="ExportToExcel()"
+              class="input-sm form-control btn btn-primary">Export To Excel</button>
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </form>
+</div>
+
+<div *ngIf="LogsData" class="col-sm-12 col-md-12 col-as-12 ovx" style="margin-top:10px;">
+  <table class="table table-striped table-bordered table-hover table-small">
+    <thead>
+      <tr>
+        <th rowspan="2" scope="col">Division</th>
+        <th rowspan="2" scope="col" style="width:13%">Department</th>
+        <th scope="col" colspan="4" style="font-weight: 700;">Current Year (Proposed) - {{CurrentFinancialYear}}</th>
+        <th scope="col" colspan="4" style="font-weight: 700;">Next Year (Proposed) - {{NextFinancialYear}}</th>
+      </tr>
+      <tr>
+        <th *ngIf="isDPVendor" scope="col">DP Business Value (In lakh(s))</th>
+        <th *ngIf="isDPVendor" scope="col">DP GRN Qty</th>
+        <th *ngIf="isJWVendor" scope="col">JW Business Value (In lakh(s))</th>
+        <th *ngIf="isJWVendor" scope="col">JW GRN Qty</th>
+        <th *ngIf="isDPVendor" scope="col">DP Business Value (In lakh(s))</th>
+        <th *ngIf="isDPVendor" scope="col">DP Qty</th>
+        <th *ngIf="isJWVendor" scope="col">JW Business (In lakh(s))</th>
+        <th *ngIf="isJWVendor" scope="col">JW Qty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <ng-container *ngFor="let business of businessList;index as i;">
+        <tr>
+          <td>{{business.DivisionName}}</td>
+          <td>{{business.DeptName}}</td>
+
+          <td *ngIf="isDPVendor">{{business.}}</td>
+          <td *ngIf="isDPVendor">{{business.}}</td>
+          <td *ngIf="isJWVendor">{{business.}}</td>
+          <td *ngIf="isJWVendor">{{business.}}</td>
+          <td *ngIf="isDPVendor">{{business.}}</td>
+          <td *ngIf="isDPVendor">{{business.}}</td>
+          <td *ngIf="isJWVendor">{{business.}}</td>
+          <td *ngIf="isJWVendor">{{business.}}</td>
+        </tr>
+      </ng-container> -->
+    </tbody>
+  </table>
+</div>

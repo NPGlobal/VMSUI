@@ -42,9 +42,9 @@ img {border: none;max-width: 100%;}
 p.header {font-weight: bold;color: #fff;font-size: 20px;text-align: center;margin-top: 15px;display:block;}
 .col-logo{position: relative;padding-right: 15px;padding-left: 15px;float: left;width: 150px;}
 
-.tog{width:calc(100% - 450px)}
+.tog{width:calc(100% - 535px)}
 .navbar-brand-kk{margin-top: 15px;float: left;}
-#navbar{width: 285px;}
+#navbar{width: 380px;}
 .navbar-brand-kk,
 #navbar,
 #navbar li a {
@@ -481,7 +481,7 @@ input, button, select, optgroup, textarea {
   .usericon{display: none;}
   li.logout{display: block;}
 
-  .tog{width: calc(100% - 170px);}
+  .tog{width: calc(100% - 535px);}
   #navbar{max-width: 100%;width: 100%}
   #top-menu{width:100%;margin-top: 0px;background-color: #fff;text-align: center;}
   #top-menu > li {display: block;}
@@ -499,3 +499,8 @@ input, button, select, optgroup, textarea {
   .modal-header .close{padding:7px;}
   
 }
+
+
+.different{background-color:red !important;color:#fff;}
+#logContainer a{text-decoration:underline;}
+.differnet a{color:#fff !important;}

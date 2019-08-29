@@ -124,23 +124,40 @@ export class BusinessDetailsComponent implements OnInit {
     }
     if ((val !== null && val !== '' && val !== undefined) && success) {
       if (!Number(val)) {
-        business.ErrorList[index] = 'value can not be zero';
+        business.ErrorList[index] = 'Value can not be zero';
       }
     }
   }
+
   ValidateValues(business: VendorBusinessDetails, val: number, qty: number, index: number) {
-    if (Number(val) === 0 && Number(qty) > 0) {
-      business.ValueErrorList[index] = 'value can not be empty';
-    } else {
+    if ((!qty) && (!val)) {
       business.ValueErrorList[index] = undefined;
+      business.ErrorList[index] = undefined;
+    } else {
+      if ((!val) && Number(qty) > 0) {
+        business.ValueErrorList[index] = 'Value can not be empty';
+        business.ErrorList[index] = 'Value can not be empty';
+      } else if (Number(val) > 0 && Number(qty) > 0) {
+        business.ValueErrorList[index] = undefined;
+        business.ErrorList[index] = undefined;
+      }
     }
   }
+
   ValidateQty(business: VendorBusinessDetails, val: number, qty: number, index: number) {
-    if (Number(qty) === 0 && Number(val) > 0) {
-      business.QtyErrorList[index] = 'Qty can not be empty';
-    } else {
+    if ((!qty) && (!val)) {
       business.QtyErrorList[index] = undefined;
+      business.ErrorList[index] = undefined;
+    } else {
+      if ((!qty) && Number(val) > 0) {
+        business.QtyErrorList[index] = 'Qty can not be empty';
+        business.ErrorList[index] = 'Qty can not be empty';
+      } else if (Number(val) > 0 && Number(qty) > 0) {
+        business.QtyErrorList[index] = undefined;
+        business.ErrorList[index] = undefined;
+      }
     }
+
   }
   //#endregion
 
@@ -155,8 +172,10 @@ export class BusinessDetailsComponent implements OnInit {
       let hasError = false;
       let valError = false;
       let QtyError = false;
+
       for (let count = 0; count < busProd.BusinessDetails.length; ++count) {
         const data = busProd.BusinessDetails[count];
+
         if (data.CurrentYearProposedDPGrnValue !== null) {
           this.ValidateField(data, data.CurrentYearProposedDPGrnValue.toString(), 0);
         }
@@ -182,6 +201,12 @@ export class BusinessDetailsComponent implements OnInit {
           this.ValidateField(data, data.NextYearProposedJWGrnQty.toString(), 7);
         }
 
+        valError = (data.ValueErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+        QtyError = (data.QtyErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+
+        hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+        if (valError || QtyError || hasError) { continue; }
+
         this.ValidateValues(data, data.CurrentYearProposedDPGrnValue, data.CurrentYearProposedDPGrnQty, 0);
         this.ValidateQty(data, data.CurrentYearProposedDPGrnValue, data.CurrentYearProposedDPGrnQty, 1);
 
@@ -198,14 +223,14 @@ export class BusinessDetailsComponent implements OnInit {
         QtyError = (data.QtyErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
 
         hasError = (data.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
-        if (valError) { break; }
-        if (QtyError) { break; }
-        if (hasError) { break; }
+        if (valError || QtyError || hasError) { continue; }
       }
 
-      if (valError) { return; }
-      if (QtyError) { return; }
-      if (hasError) { return; }
+      const errCount = busProd.BusinessDetails.filter(function (element) {
+        return (element.ErrorList.findIndex(x => x !== undefined && x.length > 0) > -1);
+      }).length > 0;
+
+      if (errCount) { return; }
 
 
       this._vendorBusiService.SaveVendorBusinessInfo(busProd).subscribe((result) => {

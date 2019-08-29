@@ -1,0 +1,42 @@
+<div class="container" style="margin-left: 0px;">
+  <h5>Producer Details - <i><b>{{vendorName}}</b></i></h5>
+  <br>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="personal">Personal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="department">Department Mapping</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="technical">Technical</a>
+    </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="techlinereport">TechLine Report </a>
+    </li> -->
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="staff">Staff</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="production">Production</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="business">Business</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="document">Documents</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="address">Address</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" routerLinkActive="active" routerLink="bank">Bank Details</a>
+    </li>
+  </ul>
+</div>
+<div class="tab-content">
+  <div class="tab-pane active">
+    <router-outlet></router-outlet>
+  </div>
+</div>
