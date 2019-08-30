@@ -17,6 +17,7 @@ export class UserActivityLogTabsComponent implements OnInit {
   tabName = '';
   LogsData: any;
   LogsHeader: any;
+  BusinessHeader: any;
   inputParams = '';
   inputParamsForExcel = '';
 
@@ -89,23 +90,46 @@ export class UserActivityLogTabsComponent implements OnInit {
   }
 
   BuildTheadHTML() {
-    let html = '<tr>';
+    let html = '';
 
-    const obj = this.LogsHeader[0];
+    if (this.tabName !== 'business') {
+      html = '<tr>';
 
-    for (const value of Object.values(obj)) {
-      if (value) {
-        html += '<th>' + value + '</th>';
-      } else {
-        html += '<th></th>';
+      const obj = this.LogsHeader[0];
+
+      for (const value of Object.values(obj)) {
+        if (value) {
+          html += '<th>' + value + '</th>';
+        } else {
+          html += '<th></th>';
+        }
       }
-    }
 
-    html += '</tr>';
+      html += '</tr>';
+    } else {
+      html += '<tr>';
+      for (const value of Object.values(this.BusinessHeader[0])) {
+        if (value) {
+          html += value;
+        } else {
+          html += '<th></th>';
+        }
+      }
+      html += '</tr><tr>';
+      for (const value of Object.values(this.LogsHeader[0])) {
+        if (value) {
+          html += value;
+        } else {
+          html += '<th></th>';
+        }
+      }
+      html += '</tr>';
+    }
 
     this.theadHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
 
     this.theadHTML = this._sanitizer.bypassSecurityTrustHtml(html);
+
   }
 
   BuildTbodyHtml() {
@@ -157,8 +181,14 @@ export class UserActivityLogTabsComponent implements OnInit {
 
         if (result.data.Table[0].ResultCode === 0) {
 
-          this.LogsHeader = result.data.Table1;
-          this.LogsData = result.data.Table2;
+          if (this.tabName !== 'business') {
+            this.LogsHeader = result.data.Table1;
+            this.LogsData = result.data.Table2;
+          } else {
+            this.BusinessHeader = result.data.Table1;
+            this.LogsHeader = result.data.Table2;
+            this.LogsData = result.data.Table3;
+          }
 
           this.BuildTheadHTML();
           this.BuildTbodyHtml();

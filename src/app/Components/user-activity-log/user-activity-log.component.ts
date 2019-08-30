@@ -9,15 +9,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class UserActivityLogComponent implements OnInit {
 
-  //#region Declaration of Form variables
-
-  activityFiltersForm: FormGroup;
-
+  //#region Declaration of variables
+  vendorName = '';
   //#endregion
 
   constructor() { }
 
   ngOnInit() {
+    this.vendorName = localStorage.getItem('VendorName');
   }
 
 
