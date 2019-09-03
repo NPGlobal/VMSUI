@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
-  providers: [DatePipe],
   selector: 'app-user-activity-log-tabs',
   templateUrl: './user-activity-log-tabs.component.html',
   styleUrls: ['./user-activity-log-tabs.component.css']
@@ -126,7 +125,7 @@ export class UserActivityLogTabsComponent implements OnInit {
       html += '</tr>';
     }
 
-    this.theadHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
+    // this.theadHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
 
     this.theadHTML = this._sanitizer.bypassSecurityTrustHtml(html);
 
@@ -157,7 +156,7 @@ export class UserActivityLogTabsComponent implements OnInit {
         '</tr>';
     }
 
-    this.tbodyHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
+    // this.tbodyHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
 
     this.tbodyHTML = this._sanitizer.bypassSecurityTrustHtml(html);
 
@@ -240,7 +239,7 @@ export class UserActivityLogTabsComponent implements OnInit {
 
   ExportToExcel() {
 
-    const fileName = this.tabName + '_Logs_' + Date.now().toString();
+    const fileName = this.tabName + '_Logs_';
 
     console.log(this.inputParamsForExcel);
 
@@ -264,7 +263,7 @@ export class UserActivityLogTabsComponent implements OnInit {
   }
 
   DownloadFile(fileName: string) {
-    this._activityLogService.DownloadFile(fileName).subscribe((result) => {
+    this._activityLogService.DownloadFile(fileName, this.vendorCode).subscribe((result) => {
 
       const newBlob = new Blob([result], { type: result.type });
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -282,4 +281,11 @@ export class UserActivityLogTabsComponent implements OnInit {
       window.URL.revokeObjectURL(url);
     });
   }
+
+  CallParent(event: any) {
+    const fileName = event.target.attributes['data-filename'].value;
+    this.DownloadFile(fileName);
+  }
+
+
 }

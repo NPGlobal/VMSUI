@@ -47,7 +47,7 @@
 
 </div>
 
-<div class="col-sm-12 col-md-12 col-as-12 ovx" style="margin-top:10px;">
+<div (click)="CallParent($event)" class="col-sm-12 col-md-12 col-as-12 ovx" style="margin-top:10px;">
   <table id="logContainer" class="table table-striped table-bordered table-hover">
     <thead [innerHTML]="theadHTML"></thead>
     <tbody [innerHTML]="tbodyHTML"></tbody>

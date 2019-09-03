@@ -24,7 +24,7 @@ import { BankDetailsComponent } from './Components/bank-details/bank-details.com
 import { LoginComponent } from './Components/login/login.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { LoginModule } from './LoginModule/login.module';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BusinessDetailsComponent } from './Components/business-details/business-details.component';
 import { DepartmentMappingComponent } from './Components/department-mapping/department-mapping.component';
@@ -37,7 +37,7 @@ import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { UserActivityLogComponent } from './Components/user-activity-log/user-activity-log.component';
 import { UserActivityLogTabsComponent } from './Components/user-activity-log-tabs/user-activity-log-tabs.component';
-import { BusinessDetailsLogsComponent } from './Components/business-details-logs/business-details-logs.component';
+import { ProductionDetailsLogsComponent } from './Components/production-details-logs/production-details-logs.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +64,7 @@ import { BusinessDetailsLogsComponent } from './Components/business-details-logs
     TechLineReportComponent,
     UserActivityLogComponent,
     UserActivityLogTabsComponent,
-    BusinessDetailsLogsComponent
+    ProductionDetailsLogsComponent
   ],
   imports: [
     BrowserModule,
@@ -90,7 +90,8 @@ import { BusinessDetailsLogsComponent } from './Components/business-details-logs
       useClass: HttpErrorInterceptor,
       multi: true
     },
-    Vendor
+    Vendor,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

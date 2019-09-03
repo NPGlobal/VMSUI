@@ -23,8 +23,8 @@ export class UserActivityLogService {
       { params: { 'inputParams': inputParams, 'fileName': fileName }, responseType: 'blob' as 'json' });
   }
 
-  DownloadFile(fileName: string): Observable<Blob> {
-    const url = this._origin.origin + 'api/UserActivityLog/DownloadFile/' + fileName;
-    return this._http.get<Blob>(url, { params: { fileName: fileName }, responseType: 'blob' as 'json' });
+  DownloadFile(fileName: string, vendorCode: string): Observable<Blob> {
+    const url = this._origin.origin + 'api/UserActivityLog/DownloadFile/';
+    return this._http.get<Blob>(url, { params: { fileName: fileName, vendorCode: vendorCode }, responseType: 'blob' as 'json' });
   }
 }

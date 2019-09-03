@@ -14,6 +14,7 @@ export class VendorProduction {
     SubContractingName: string;
     NatureOfSubContracting: string;
 
+    Address: string;
     Address1: string;
     Address2: string;
     Address3: string;
@@ -33,6 +34,8 @@ export class VendorProduction {
     Action: string;
     isDisable: boolean;
     CreatedBy: number;
+    ActionOn: string;
+    ActionBy: string;
 
     BusinessDetails: VendorBusinessDetails[];
 }

@@ -1,34 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { UserActivityLogService } from 'src/app/Services/user-activity-log.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { VendorService } from 'src/app/Services/vendor.service';
-import { VendorBusinessDetails } from 'src/app/Models/vendor-business-details';
+import { VendorProduction } from 'src/app/Models/VendorProduction';
 
 @Component({
-  selector: 'app-business-details-logs',
-  templateUrl: './business-details-logs.component.html',
-  styleUrls: ['./business-details-logs.component.css']
+  selector: 'app-production-details-logs',
+  templateUrl: './production-details-logs.component.html',
+  styleUrls: ['./production-details-logs.component.css']
 })
-export class BusinessDetailsLogsComponent implements OnInit {
+export class ProductionDetailsLogsComponent implements OnInit {
+
 
   vendorCode = '';
   tabName = '';
-  tableHtml = '';
-  tableHeaders = [];
-  CurrentFinancialYear: string;
-  NextFinancialYear: string;
-  isDPVendor = false;
-  isJWVendor = false;
-  businessList = [];
+  LogsData: any;
+  LogsHeader: any;
+  BusinessHeader: any;
+  inputParams = '';
+  inputParamsForExcel = '';
+  productionList: VendorProduction[];
+
+  tbodyHTML: SafeHtml;
+  theadHTML: SafeHtml;
+
+  //#region Alert Modal
+  @ViewChild('alertModalButton')
+  alertModalButton: ElementRef;
+  PopUpMessage = '';
+  alertButton: any;
+  //#endregion
 
   //#region Declaration of Form variables
 
   activityFiltersForm: FormGroup;
-  LogsData: any;
-  inputParams = '';
-  inputParamsForExcel = '';
   submitted = false;
 
   maxDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
@@ -55,9 +62,12 @@ export class BusinessDetailsLogsComponent implements OnInit {
     private _fb: FormBuilder,
     private datepipe: DatePipe,
     private _route: ActivatedRoute,
-    private _vendorService: VendorService) { }
+    private _sanitizer: DomSanitizer) { }
 
   ngOnInit() {
+
+    this.alertButton = this.alertModalButton.nativeElement as ElementRef;
+
     this.InitializeFormControls();
 
     this._route.parent.paramMap.subscribe((data) => {
@@ -74,13 +84,6 @@ export class BusinessDetailsLogsComponent implements OnInit {
     });
   }
 
-  GetVendorByCode() {
-    this._vendorService.GetVendorByCode(this.vendorCode).subscribe((result) => {
-      this.isDPVendor = result.data.Vendor[0].IsDirectVendor;
-      this.isJWVendor = result.data.Vendor[0].IsJWVendor;
-    });
-  }
-
   GetInputParams(): string {
     const fromDate = this.activityFiltersForm.get('FromDate').value;
     const toDate = this.activityFiltersForm.get('ToDate').value;
@@ -88,40 +91,72 @@ export class BusinessDetailsLogsComponent implements OnInit {
     return this.vendorCode + '~' + this.tabName + '~' + fromDate + '~' + toDate;
   }
 
-  BuildHtml() {
+  BuildTheadHTML() {
+    let html = '';
 
-    this.tableHtml = '';
+    html = '<tr>';
 
-    const dpKeyArr = ['CurrentYearProposedDPGrnQty', 'CurrentYearProposedDPGrnValue',
-      'NextYearProposedDPGrnQty', 'NextYearProposedDPGrnValue'];
+    const obj = this.LogsHeader[0];
 
-    const jwKeyArr = ['CurrentYearProposedJWGrnQty', 'CurrentYearProposedJWGrnValue',
-      'NextYearProposedJWGrnQty', 'NextYearProposedJWGrnValue'];
-
-    for (let index = 0; index < this.businessList.length; ++index) {
-      this.tableHtml += '<tr>';
-      const obj = this.businessList[index];
-
-      for (const key in obj) {
-        if (dpKeyArr.findIndex(x => x === key) > -1 && !this.isDPVendor) {
-
-        } else if (key !== '' && !this.isDPVendor) {
-
-        } else {
-
-        }
+    for (const value of Object.values(obj)) {
+      if (value) {
+        html += '<th>' + value + '</th>';
+      } else {
+        html += '<th></th>';
       }
-
-      for (const value of Object.values(obj)) {
-        this.tableHtml += value;
-      }
-
-      this.tableHtml += '</tr>';
     }
+
+    html += '</tr>';
+
+    this.theadHTML = this._sanitizer.bypassSecurityTrustHtml(html);
 
   }
 
-  GetVendorBusinessHistory() {
+  BuildTbodyHtml() {
+
+    let html = '';
+
+    if (this.productionList.length > 0) {
+      for (let index = 0; index < this.productionList.length; ++index) {
+        html += '<tr>';
+        const obj = this.productionList[index];
+
+        html += obj.SubContractingName + obj.NatureOfSubContracting + obj.ApprovedProductionCount + obj.MonthlyCapacity +
+          obj.MinimalCapacity + obj.LeanMonths + obj.LeanCapacity + obj.ActionBy + obj.ActionOn + obj.Action;
+
+        html += '<tr class="collapse" id="Collapse' + (index + 1).toString() + '">' +
+          '<td colspan="13">' +
+          '<table class="table table-hover table-sm">' +
+
+          '<thead class="table-warning">' +
+          '<tr>' +
+          '<th>Address</th>' +
+          '<th>Phone</th>' +
+          '<th>State</th>' +
+          '<th>City</th>' +
+          '<th>PIN</th>' +
+          '</tr>' +
+          '</thead>' +
+
+          '<tbody>' +
+          '<tr>' +
+          obj.Address + obj.Phone + obj.StateCode + obj.CityCode + obj.Pin +
+          '</tr>' +
+          '</tbody>' +
+          '</table>' +
+          '</td>' +
+          '</tr>';
+      }
+    } else {
+      html += '<tr>' +
+        '<td colspan="' + Object.keys(this.productionList[0]).length.toString() + '">No records found</td>' +
+        '</tr>';
+    }
+
+    this.tbodyHTML = this._sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  GetVendorHistory() {
 
     this.submitted = true;
 
@@ -136,12 +171,24 @@ export class BusinessDetailsLogsComponent implements OnInit {
       this.submitted = false;
 
       if (result.Error === '') {
-        this.businessList = result.data.Table;
 
-        this.BuildHtml();
+        if (result.data.Table[0].ResultCode === 0) {
+
+          this.LogsHeader = result.data.Table1;
+          this.productionList = result.data.Table2;
+
+          console.table(this.productionList);
+
+          this.BuildTheadHTML();
+          this.BuildTbodyHtml();
+        } else {
+          this.PopUpMessage = result.data.Table[0].ErrorMsg;
+          this.alertButton.click();
+        }
 
       } else {
-        alert('error');
+        this.PopUpMessage = 'Please contact administrator';
+        this.alertButton.click();
       }
 
     });
@@ -204,6 +251,4 @@ export class BusinessDetailsLogsComponent implements OnInit {
     });
 
   }
-
-
 }
