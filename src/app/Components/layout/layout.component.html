@@ -38,7 +38,7 @@
         </ul>
 
         <ul id="top-menu" class="pull-right">
-          <li *ngIf="IsLogVisible"><a [routerLink]="['/vendor', VendorCode, 'Logs', 'department']" href="javascript:void(0)">Logs</a></li>
+          <li *ngIf="IsLogVisible"><a [routerLink]="['/vendor', VendorCode, 'Logs', 'personal']" href="javascript:void(0)">Logs</a></li>
           <li><a href="javascript:void(0)" (click)="MoveToVendorList()">Master</a></li>
           <li><a href="javascript:void(0)" routerLink="/vendor/assessment">Assessment</a></li>
           <!-- <li *ngIf="IsLogVisible"><a href="javascript:void(0)" [routerLink]="['/vendor', '/Logs', VendorCode]">Logs</a></li> -->
