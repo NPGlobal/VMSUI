@@ -1,15 +1,9 @@
-import { Component, OnInit, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VendorTech } from 'src/app/Models/VendorTech';
 import { PagerService } from 'src/app/Services/pager.service';
 import { VendorService } from 'src/app/Services/vendor.service';
-// import { PagerService } from 'src/app/Services/pager.service';
-import { HttpClient } from '@angular/common/http';
-import { Vendor } from 'src/app/Models/vendor';
-import { load } from '@angular/core/src/render3';
-import { Action } from 'rxjs/internal/scheduler/Action';
-import { and } from '@angular/router/src/utils/collection';
 import { VendorTechDefault } from 'src/app/Models/vendorTechDefault';
 import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
 
@@ -32,6 +26,7 @@ export class TechnicalDetailsComponent implements OnInit {
   techDetailsForm: FormGroup;
   vendorTechDefault: VendorTechDefault;
   existingDefaultTech: VendorTechDefault;
+  prevVendorTechDefault: VendorTechDefault;
   vendorTech: VendorTech;
   deptList: any[];
   techSpecList: any[];
@@ -238,6 +233,7 @@ export class TechnicalDetailsComponent implements OnInit {
     }
 
     this.existingDefaultTech = JSON.parse(JSON.stringify(this.vendorTechDefault));
+    this.prevVendorTechDefault = JSON.parse(JSON.stringify(this.vendorTechDefault));
     this.DisableSaveFormButton();
     this.InitializeFormControls();
   }
@@ -327,6 +323,13 @@ export class TechnicalDetailsComponent implements OnInit {
     try {
       if (this.vendorTechDefault.VendorTechDetails !== undefined && this.vendorTechDefault.VendorTechDetails !== null
         && this.vendorTechDefault.VendorTechDetails.length > 0) {
+
+        const hasError = this.vendorTechDefault.VendorTechDetails.filter(x => x.InEditingMode).length > 0;
+        if (hasError) {
+          this.PopUpMessage = 'Please save/discard machine changes';
+          this.alertButton.click();
+          return;
+        }
 
         this.vendorTechDefault.DefaultEfficiency = this.vendorTechDefault.TechLineNo === '-' ?
           this.DefaultEfficiency : this.techDetailsForm.get('DefaultEfficiency').value;
@@ -695,21 +698,63 @@ export class TechnicalDetailsComponent implements OnInit {
   }
 
   EditMachine(vTech1: VendorTech) {
-    this.isTechDetailEditing = 1;
-    this.techDetailsForm.get('Department').patchValue(vTech1.DeptCode);
-    this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
-    this.techDetailsForm.get('Remarks').patchValue(vTech1.Remarks);
-    if (vTech1.Status === 'P') {
-      this.techDetailsForm.get('UnitCount').patchValue(vTech1.ProposedUnitCount);
-      this.techDetailsForm.get('Efficiency').patchValue(vTech1.ProposedEfficiency);
+    vTech1.InEditingMode = true;
+
+    // this.isTechDetailEditing = 1;
+    // this.techDetailsForm.get('Department').patchValue(vTech1.DeptCode);
+    // this.techDetailsForm.get('VendorTechConfigID').patchValue(vTech1.VendorTechConfigID);
+    // this.techDetailsForm.get('Remarks').patchValue(vTech1.Remarks);
+    // if (vTech1.Status === 'P') {
+    //   this.techDetailsForm.get('UnitCount').patchValue(vTech1.ProposedUnitCount);
+    //   this.techDetailsForm.get('Efficiency').patchValue(vTech1.ProposedEfficiency);
+    // } else {
+    //   this.techDetailsForm.get('UnitCount').patchValue(vTech1.UnitCount);
+    //   this.techDetailsForm.get('Efficiency').patchValue(vTech1.Efficiency);
+    // }
+    // this.LogValidationErrors();
+    // this.GetVendorTechSpec();
+    // this.vendorTech = JSON.parse(JSON.stringify(vTech1));
+    // this.EnableDisableMachine(1);
+  }
+
+  SaveMachineChanges(vTech1: VendorTech) {
+
+    const efficiency = vTech1.ProposedEfficiency ? vTech1.ProposedEfficiency : vTech1.Efficiency;
+
+    if (!efficiency) {
+      vTech1.HasEfficiencyError = true;
+      return;
+    } else if (efficiency && !this.CheckEfficiencyFormat(efficiency.toString())) {
+      vTech1.HasEfficiencyError = true;
+      return;
     } else {
-      this.techDetailsForm.get('UnitCount').patchValue(vTech1.UnitCount);
-      this.techDetailsForm.get('Efficiency').patchValue(vTech1.Efficiency);
+      vTech1.HasEfficiencyError = false;
     }
-    this.LogValidationErrors();
-    this.GetVendorTechSpec();
-    this.vendorTech = JSON.parse(JSON.stringify(vTech1));
-    this.EnableDisableMachine(1);
+
+    if (vTech1.VendorTechDetailsID) {
+      vTech1.ActionPerformed = 'Edited';
+    } else {
+      vTech1.ActionPerformed = 'New';
+    }
+
+    if (this.IsUserAdmin) {
+      vTech1.StatusName = 'Active';
+      vTech1.Status = 'A';
+    } else {
+      vTech1.StatusName = 'Pending';
+      vTech1.Status = 'P';
+    }
+
+
+    vTech1.InEditingMode = false;
+    this.prevVendorTechDefault = JSON.parse(JSON.stringify(this.vendorTechDefault));
+  }
+
+  DiscardMachineChanges(index: number) {
+    this.vendorTechDefault.VendorTechDetails[index].InEditingMode = false;
+
+    const vTech = JSON.parse(JSON.stringify(this.prevVendorTechDefault.VendorTechDetails[index]));
+    this.vendorTechDefault.VendorTechDetails[index] = vTech;
   }
 
   ResetMachine() {
@@ -800,6 +845,7 @@ export class TechnicalDetailsComponent implements OnInit {
       }
     });
   }
+
   LogEfficiencyValidation(type: string) {
     switch (type) {
       case 'Efficiency': {
@@ -827,6 +873,7 @@ export class TechnicalDetailsComponent implements OnInit {
       }
     }
   }
+
   CheckEfficiencyFormat(value: string) {
     let success = false;
     const regex = new RegExp(this.efficiencyPattern);
@@ -836,6 +883,7 @@ export class TechnicalDetailsComponent implements OnInit {
     }
     return success;
   }
+
   CheckIfLineCanAdd(): boolean {
     let success = true;
 
@@ -845,6 +893,7 @@ export class TechnicalDetailsComponent implements OnInit {
 
     return success;
   }
+
   CheckIfLineCanEdit(): boolean {
     let success = true;
 
@@ -874,9 +923,11 @@ export class TechnicalDetailsComponent implements OnInit {
 
     return success;
   }
+
   specChange(event) {
     this.SetEfficiencyAsDefault();
   }
+
   //#endregion
 
   //#region UndoFunctionality

@@ -44,6 +44,16 @@ input[type="text"], select {
     background-color: bisque;
 }
 
-@media(max-width: 767px){
-    .col-kk-6 {width: 50%;padding-right: 15px;}
-  }
+.appearance {
+    -webkit-appearance: none;
+    border: none;
+    background-color: #fff;
+    height: 25px;
+}
+
+@media(max-width: 767px) {
+    .col-kk-6 {
+        width: 50%;
+        padding-right: 15px;
+    }
+}

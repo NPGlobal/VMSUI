@@ -19,4 +19,6 @@ export class VendorTech {
     MachineType: string;
     ActionPerformed: string;
     IsApprovable: boolean;
+    InEditingMode: boolean;
+    HasEfficiencyError: boolean;
 }
