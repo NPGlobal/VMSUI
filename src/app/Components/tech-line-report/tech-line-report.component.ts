@@ -16,6 +16,7 @@ export class TechLineReportComponent implements OnInit {
   GetReport = '';
   DownloadURL: string;
   VendorCode: string;
+  ForExcel = false;
 
   constructor(private _fb: FormBuilder,
     private _route: ActivatedRoute,
@@ -53,7 +54,11 @@ export class TechLineReportComponent implements OnInit {
     if (this.GetReport === '') {
       return;
     }
-    const fileName = 'TechLineReport_' + Date.now().toString();
+
+    this.ForExcel = true;
+
+    const fileName = 'Tech Line Report';
+
     this._techlinerpt.ExportTechLineReport(this.GetReport, this.VendorCode, fileName).subscribe((result) => {
       const newBlob = new Blob([result], { type: result.type });
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {

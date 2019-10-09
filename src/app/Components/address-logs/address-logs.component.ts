@@ -1,27 +1,26 @@
-import { Component, OnInit, SecurityContext, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserActivityLogService } from 'src/app/Services/user-activity-log.service';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { VendorAddress } from 'src/app/Models/vendor-address';
 
 @Component({
-  selector: 'app-user-activity-log-tabs',
-  templateUrl: './user-activity-log-tabs.component.html',
-  styleUrls: ['./user-activity-log-tabs.component.css']
+  selector: 'app-address-logs',
+  templateUrl: './address-logs.component.html',
+  styleUrls: ['./address-logs.component.css']
 })
-export class UserActivityLogTabsComponent implements OnInit {
+export class AddressLogsComponent implements OnInit {
 
-  vendorCode = '';
   tabName = '';
-  LogsData: any;
-  LogsHeader: any;
-  BusinessHeader: any;
+  vendorCode = '';
+  LogsHeader = [];
+  LogsData: VendorAddress[];
+  theadHTML: SafeHtml;
+
   inputParams = '';
   inputParamsForExcel = '';
-
-  tbodyHTML: SafeHtml;
-  theadHTML: SafeHtml;
 
   //#region Alert Modal
   @ViewChild('alertModalButton')
@@ -91,41 +90,19 @@ export class UserActivityLogTabsComponent implements OnInit {
   BuildTheadHTML() {
     let html = '';
 
-    if (this.tabName !== 'business') {
-      html = '<tr>';
+    html = '<tr>';
 
-      const obj = this.LogsHeader[0];
+    const obj = this.LogsHeader[0];
 
-      for (const value of Object.values(obj)) {
-        if (value) {
-          html += '<th>' + value + '</th>';
-        } else {
-          html += '<th></th>';
-        }
+    for (const value of Object.values(obj)) {
+      if (value) {
+        html += '<th>' + value + '</th>';
+      } else {
+        html += '<th></th>';
       }
-
-      html += '</tr>';
-    } else {
-      html += '<tr>';
-      for (const value of Object.values(this.BusinessHeader[0])) {
-        if (value) {
-          html += value;
-        } else {
-          html += '<th></th>';
-        }
-      }
-      html += '</tr><tr>';
-      for (const value of Object.values(this.LogsHeader[0])) {
-        if (value) {
-          html += value;
-        } else {
-          html += '<th></th>';
-        }
-      }
-      html += '</tr>';
     }
 
-    // this.theadHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
+    html += '</tr>';
 
     this.theadHTML = this._sanitizer.bypassSecurityTrustHtml(html);
 
@@ -133,46 +110,55 @@ export class UserActivityLogTabsComponent implements OnInit {
 
   BuildTbodyHtml() {
 
-    let html = '';
-    let colSpan = Object.keys(this.LogsHeader[0]).length;
-    colSpan += this.tabName.toLowerCase() === 'business' ? 4 : 0;
+    // let html = '';
 
-    if (this.LogsData.length > 0) {
-      for (let index = 0; index < this.LogsData.length; ++index) {
-        html += '<tr>';
-        const obj = this.LogsData[index];
+    // if (this.LogsData.length > 0) {
+    //   for (let index = 0; index < this.LogsData.length; ++index) {
+    //     html += '<tr>';
+    //     const obj = this.LogsData[index];
 
-        for (const value of Object.values(obj)) {
-          if (value) {
-            html += value;
-          } else {
-            html += '<td></td>';
-          }
-        }
+    //     html += obj.SubContractingName + obj.NatureOfSubContracting + obj.ApprovedProductionCount + obj.MonthlyCapacity +
+    //       obj.MinimalCapacity + obj.LeanMonths + obj.LeanCapacity + obj.ActionBy + obj.ActionOn + obj.Action;
 
-        html += '</tr>';
-      }
-    } else {
-      html += '<tr>' +
-        '<td colspan="' + colSpan.toString() + '">No records found</td>' +
-        '</tr>';
-    }
+    //     html += '<tr class="collapse" id="Collapse' + (index + 1).toString() + '">' +
+    //       '<td colspan="13">' +
+    //       '<table class="table table-hover table-sm">' +
 
-    // this.tbodyHTML = this._sanitizer.sanitize(SecurityContext.HTML, html);
+    //       '<thead class="table-warning">' +
+    //       '<tr>' +
+    //       '<th>Address</th>' +
+    //       '<th>Phone</th>' +
+    //       '<th>State</th>' +
+    //       '<th>City</th>' +
+    //       '<th>PIN</th>' +
+    //       '</tr>' +
+    //       '</thead>' +
 
-    this.tbodyHTML = this._sanitizer.bypassSecurityTrustHtml(html);
+    //       '<tbody>' +
+    //       '<tr>' +
+    //       obj.Address + obj.Phone + obj.StateCode + obj.CityCode + obj.Pin +
+    //       '</tr>' +
+    //       '</tbody>' +
+    //       '</table>' +
+    //       '</td>' +
+    //       '</tr>';
+    //   }
+    // } else {
+    //   html += '<tr>' +
+    //     '<td colspan="' + Object.keys(this.productionList[0]).length.toString() + '">No records found</td>' +
+    //     '</tr>';
+    // }
 
+    // this.tbodyHTML = this._sanitizer.bypassSecurityTrustHtml(html);
   }
 
   GetVendorHistory() {
-
     this.submitted = true;
 
     if (this.activityFiltersForm.invalid) {
       this.LogValidationErrors();
       return;
     }
-
 
     this.inputParams = this.GetInputParams();
 
@@ -188,17 +174,10 @@ export class UserActivityLogTabsComponent implements OnInit {
 
         if (result.data.Table[0].ResultCode === 0) {
 
-          if (this.tabName !== 'business') {
-            this.LogsHeader = result.data.Table1;
-            this.LogsData = result.data.Table2;
-          } else {
-            this.BusinessHeader = result.data.Table1;
-            this.LogsHeader = result.data.Table2;
-            this.LogsData = result.data.Table3;
-          }
+          this.LogsHeader = result.data.Table1;
+          this.LogsData = result.data.Table2;
 
           this.BuildTheadHTML();
-          this.BuildTbodyHtml();
         } else {
           this.inputParamsForExcel = '';
           this.PopUpMessage = result.data.Table[0].ErrorMsg;
@@ -207,12 +186,8 @@ export class UserActivityLogTabsComponent implements OnInit {
 
       } else {
         this.inputParamsForExcel = '';
-        this.PopUpMessage = 'There is some error. Please contact administrator.';
+        this.PopUpMessage = 'Please contact administrator';
         this.alertButton.click();
-      }
-
-      if (!this.LogsData || this.LogsData.length === 0) {
-        this.inputParamsForExcel = '';
       }
 
     });
@@ -255,6 +230,8 @@ export class UserActivityLogTabsComponent implements OnInit {
 
     const fileName = this.tabName.toUpperCase() + ' Logs';
 
+    // console.log(this.inputParamsForExcel);
+
     this._activityLogService.ExportLogsToExcel(this.inputParamsForExcel, fileName).subscribe((result) => {
       const newBlob = new Blob([result], { type: result.type });
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -273,31 +250,5 @@ export class UserActivityLogTabsComponent implements OnInit {
     });
 
   }
-
-  DownloadFile(fileName: string) {
-    this._activityLogService.DownloadFile(fileName, this.vendorCode).subscribe((result) => {
-
-      const newBlob = new Blob([result], { type: result.type });
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(newBlob);
-        return;
-      }
-
-      const url = window.URL.createObjectURL(newBlob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      link.click();
-
-      window.URL.revokeObjectURL(url);
-    });
-  }
-
-  CallParent(event: any) {
-    const fileName = event.target.attributes['data-filename'].value;
-    this.DownloadFile(fileName);
-  }
-
 
 }

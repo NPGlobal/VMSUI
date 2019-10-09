@@ -20,6 +20,7 @@ import { TechLineReportComponent } from './Components/tech-line-report/tech-line
 import { UserActivityLogComponent } from './Components/user-activity-log/user-activity-log.component';
 import { UserActivityLogTabsComponent } from './Components/user-activity-log-tabs/user-activity-log-tabs.component';
 import { ProductionDetailsLogsComponent } from './Components/production-details-logs/production-details-logs.component';
+import { AddressLogsComponent } from './Components/address-logs/address-logs.component';
 
 const routes: Routes = [
   {
@@ -73,7 +74,7 @@ const routes: Routes = [
           { path: 'document', component: UserActivityLogTabsComponent },
           { path: 'bank', component: UserActivityLogTabsComponent },
           { path: 'department', component: UserActivityLogTabsComponent },
-          { path: 'address', component: UserActivityLogTabsComponent }
+          { path: 'address', component: AddressLogsComponent }
         ]
       }
     ]

@@ -38,6 +38,7 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { UserActivityLogComponent } from './Components/user-activity-log/user-activity-log.component';
 import { UserActivityLogTabsComponent } from './Components/user-activity-log-tabs/user-activity-log-tabs.component';
 import { ProductionDetailsLogsComponent } from './Components/production-details-logs/production-details-logs.component';
+import { AddressLogsComponent } from './Components/address-logs/address-logs.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { ProductionDetailsLogsComponent } from './Components/production-details-
     TechLineReportComponent,
     UserActivityLogComponent,
     UserActivityLogTabsComponent,
-    ProductionDetailsLogsComponent
+    ProductionDetailsLogsComponent,
+    AddressLogsComponent
   ],
   imports: [
     BrowserModule,

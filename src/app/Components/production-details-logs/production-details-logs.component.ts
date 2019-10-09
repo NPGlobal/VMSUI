@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserActivityLogService } from 'src/app/Services/user-activity-log.service';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -79,8 +79,8 @@ export class ProductionDetailsLogsComponent implements OnInit {
 
   InitializeFormControls() {
     this.activityFiltersForm = this._fb.group({
-      ToDate: [null],
-      FromDate: [null]
+      ToDate: [null, [Validators.required]],
+      FromDate: [null, [Validators.required]]
     });
   }
 
@@ -160,6 +160,11 @@ export class ProductionDetailsLogsComponent implements OnInit {
 
     this.submitted = true;
 
+    if (this.activityFiltersForm.invalid) {
+      this.LogValidationErrors();
+      return;
+    }
+
     this.inputParams = this.GetInputParams();
 
     this.inputParamsForExcel = this.inputParams + '~1';
@@ -177,18 +182,22 @@ export class ProductionDetailsLogsComponent implements OnInit {
           this.LogsHeader = result.data.Table1;
           this.productionList = result.data.Table2;
 
-          console.table(this.productionList);
-
           this.BuildTheadHTML();
           this.BuildTbodyHtml();
         } else {
+          this.inputParamsForExcel = '';
           this.PopUpMessage = result.data.Table[0].ErrorMsg;
           this.alertButton.click();
         }
 
       } else {
-        this.PopUpMessage = 'Please contact administrator';
+        this.inputParamsForExcel = '';
+        this.PopUpMessage = 'There is some error. Please contact administrator';
         this.alertButton.click();
+      }
+
+      if (!this.productionList || this.productionList.length === 0) {
+        this.inputParamsForExcel = '';
       }
 
     });

@@ -33,7 +33,7 @@
         </div>
 
         <div class="col-md-2">
-          <span>
+          <span *ngIf="inputParamsForExcel">
             <button type="button" style="margin-top: 30px;" (click)="ExportToExcel()"
               class="input-sm form-control btn btn-primary">Export To Excel</button>
           </span>

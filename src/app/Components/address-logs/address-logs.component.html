@@ -1,0 +1,138 @@
+<div class="ovx">
+
+  <form [formGroup]="activityFiltersForm" (ngSubmit)="GetVendorHistory()">
+
+    <div class="form-group col-lg-8 col-md-8">
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <label class="text">From Date
+            <i class="mandatory">*</i>
+          </label>
+          <span>
+            <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.FromDate}"
+              formControlName="FromDate" type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm" />
+          </span>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text">To Date
+            <i class="mandatory">*</i>
+          </label>
+          <span>
+            <input (blur)="LogValidationErrors()" [ngClass]="{'is-invalid': formErrors.ToDate}" formControlName="ToDate"
+              type="date" [min]="minDate" [max]="maxDate" class="form-control input-sm" />
+          </span>
+        </div>
+
+        <div class="col-md-2">
+          <span>
+            <button style="margin-top: 30px;" class="input-sm form-control btn btn-primary">Submit</button>
+          </span>
+        </div>
+
+        <div class="col-md-2">
+          <span *ngIf="inputParamsForExcel">
+            <button type="button" style="margin-top: 30px;" (click)="ExportToExcel()"
+              class="input-sm form-control btn btn-primary">Export To Excel</button>
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+<!-- Vendor Factory Address -->
+<div class="clearfix"></div>
+<div class="col-sm-12 col-md-12 col-as-12 ovx" style="margin-top:10px;">
+  <table class="table table-bordered table-striped table-hover">
+    <thead [innerHTML]="theadHTML">
+    </thead>
+    <tbody>
+      <ng-container *ngIf="LogsData">
+        <ng-container *ngFor="let address of LogsData;index as i;">
+          <div class="panel-group"></div>
+          <tr>
+            <td>{{address.Address1}}</td>
+            <td>{{address.Address2}}</td>
+            <td>{{address.Address3}}</td>
+            <td>{{address.CityCode + '(' + address.PIN + ')'}}</td>
+            <td>{{address.StateName + ', ' + address.CountryName}}</td>
+            <td>{{(address.AddressTypeCode === 'F' ? 'Factory' : 'Sister Concern')}}
+            </td>
+            <td>{{address.ActionBy}}</td>
+            <td>{{address.ActionOn}}</td>
+            <td>
+              <a class="ml-2" title="View Contacts" href="javascript:void(0)" [attr.data-target]="'#Collapse' + (i + 1)"
+                data-toggle="collapse">
+                <i class="fa fa-address-book"></i>
+              </a>
+            </td>
+          </tr>
+          <tr class="collapse" id="{{'Collapse' + (i + 1)}}">
+            <td colspan="9">
+              <table class="table table-warning table-sm">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Fax</th>
+                    <th>Email</th>
+                    <th>Website</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Primary</td>
+                    <td>{{address.PrimaryContactName}}</td>
+                    <td>{{address.PrimaryContactPhone}}</td>
+                    <td>{{address.PrimaryContactFax}}</td>
+                    <td>{{address.PrimaryContactEmail}}</td>
+                    <td>{{address.PrimaryContactWebsite}}</td>
+                  </tr>
+                  <tr>
+                    <td>Secondary</td>
+                    <td>{{address.SecondaryContactName}}</td>
+                    <td>{{address.SecondaryContactPhone}}</td>
+                    <td>{{address.SecondaryContactFax}}</td>
+                    <td>{{address.SecondaryContactEmail}}</td>
+                    <td>{{address.SecondaryContactWebsite}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+
+        </ng-container>
+      </ng-container>
+      <tr *ngIf="!LogsData && theadHTML">
+        <td colspan="9">
+          No Record Found
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Hidden button to open alert modal -->
+<button #alertModalButton type="button" data-target="#AlertModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
+
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div style="width:500px;" class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{PopUpMessage}}</h5>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
