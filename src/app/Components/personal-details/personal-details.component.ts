@@ -355,7 +355,7 @@ export class PersonalDetailsComponent implements OnInit {
     //   this.LogValidationErrors(this.personalDetailsForm);
     // });
 
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.personalDetailsForm.disable();
       this.isDeactVendor = true;
     }

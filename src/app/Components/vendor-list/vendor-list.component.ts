@@ -114,7 +114,7 @@ export class VendorListComponent implements OnInit {
   //#endregion
 
   GetVendorStatus(vendor: Vendor) {
-    status = vendor.Status.toUpperCase() !== 'A' ? 'D' : vendor.Status.toUpperCase();
+    status = vendor.Status.toUpperCase();
     localStorage.setItem('VendorStatus', status);
 
     localStorage.setItem('VendorName', vendor.VendorName);

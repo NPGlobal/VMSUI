@@ -156,7 +156,7 @@ export class AddressFormComponent implements OnInit {
     this.GetCountryList();
     this.GetStateList();
     this.Editvendor(this.VendorCode);
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.isDeactVendor = true;
     }
   }

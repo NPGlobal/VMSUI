@@ -22,11 +22,11 @@
         <td style="width:12%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByEfficiency"
             (keyup)="SearchTechDetailsList()" placeholder="Search By Efficiency" /></td>
         <td style="width:12%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByUnitCount"
-            (keyup)="SearchTechDetailsList()" placeholder="Search By Unit Count" /></td>
+            (keyup)="SearchTechDetailsList()" placeholder="Search By Machine Count" /></td>
         <td style="width:12%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByProposedEfficiency"
             (keyup)="SearchTechDetailsList()" placeholder="Search By Efficiency" /></td>
         <td style="width:12%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByProposedUnitCount"
-            (keyup)="SearchTechDetailsList()" placeholder="Search By Unit Count" /></td>
+            (keyup)="SearchTechDetailsList()" placeholder="Search By Machine Count" /></td>
         <!-- <td style="width:17%"><input type="text" class="form-control input-sm" [(ngModel)]="searchByCreatedOn" (keyup)="SearchVendorList()" /></td> -->
         <td colspan="2"></td>
       </tr>
@@ -42,9 +42,9 @@
       </tr>
       <tr>
         <th scope="col">Efficiency</th>
-        <th scope="col">Unit Count</th>
+        <th scope="col">Machine Count</th>
         <th scope="col">Efficiency</th>
-        <th scope="col">Unit Count</th>
+        <th scope="col">Machine Count</th>
       </tr>
     </thead>
     <tbody>
@@ -275,7 +275,7 @@
               </div>
 
               <div class="col-lg-2 col-md-2 col-kk-6">
-                <label class="text">Unit Count<span class="error-label">*</span></label>
+                <label class="text">Machine Count<span class="error-label">*</span></label>
                 <select formControlName="UnitCount" class="form-control input-sm" (blur)="LogValidationErrors()"
                   [ngClass]="{ 'is-invalid': formErrors.UnitCount }">
                   <option [ngValue]="null">Select</option>
@@ -315,7 +315,7 @@
                 <th>Machine Type</th>
                 <th>Machine Name</th>
                 <th>Efficiency</th>
-                <th>Unit Count</th>
+                <th>Machine Count</th>
                 <th>Status</th>
                 <th>Remarks</th>
                 <th>Action</th>

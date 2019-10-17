@@ -168,7 +168,7 @@ export class StaffDetailsComponent implements OnInit {
       ]],
       Remarks: [this.vendorStaffDetail.Remarks, Validators.pattern(this.AddressAndRemarksPattern)]
     });
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.isDeactVendor = true;
     }
   }

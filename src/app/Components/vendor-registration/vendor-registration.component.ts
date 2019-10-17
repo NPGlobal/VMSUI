@@ -36,6 +36,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   DPTypeList: MasterDataDetails[];
   dptypeArray: any[] = [];
   AlphanumericPattern = '^[a-zA-Z0-9]*$';
+  VendorCode: string;
   //#endregion
 
   //#region Modal Popup and Alert
@@ -46,6 +47,10 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
+
+  @ViewChild('vendorRgtMsgModalButton')
+  vendorRgtMsgModalButton: ElementRef;
+  vendRegistrationMsgModalButton: any;
   //#endregion
 
   //#region Input from Vendor List Component
@@ -125,6 +130,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     this.vendDPType_MDDCode = [];
     this.PopUpMessage = '';
     this.alertButton = this.alertModalButton.nativeElement as HTMLElement;
+    this.vendRegistrationMsgModalButton = this.vendorRgtMsgModalButton.nativeElement as HTMLElement;
 
     this.GetMasterDataDetails('VendDPType', '-1');
 
@@ -415,11 +421,14 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
     vendor.VendDPType_MDDCode = this.makeVendorDPTypeString();
 
+    this.VendorCode = vendor.VendorCode;
+
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
       statusObj = result;
       if (statusObj.data.Table[0].ResultCode === 0) {
         el.click();
-        this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
+        this.vendRegistrationMsgModalButton.click();
+        // this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
       } else if (statusObj.data.Table[0].ResultCode === 2) {
         this.CodeExists = true;
         this.formErrors.CodeExist = this._validationMess.CodeExist;
@@ -430,12 +439,4 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     });
   }
   //#endregion
-
-
-
-
-
-
-
-
 }

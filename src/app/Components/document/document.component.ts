@@ -9,6 +9,7 @@ import { VendorDocumentService } from 'src/app/Services/vendor-document.service'
 import { VendorDocument } from 'src/app/Models/vendor-document';
 import { HttpRequest } from '@angular/common/http';
 import { ValidationMessagesService } from 'src/app/Services/validation-messages.service';
+import { element } from '@angular/core/src/render3';
 declare var $: any;
 
 @Component({
@@ -22,6 +23,8 @@ export class DocumentComponent implements OnInit {
   vendorcode: string;
   actionHeaderList: any[];
   docHeaderList: any[];
+  totalActionHeaderList: any[];
+  totalDocHeaderList: any[];
   docDetailsForm: FormGroup;
   vendorDocument: VendorDocument;
   vendDocList: VendorDocument[];
@@ -30,6 +33,9 @@ export class DocumentComponent implements OnInit {
   inEditedMode: boolean;
   isRemarksShown: boolean;
   isDeactVendor = false;
+  isVendorStatusPending = false;
+  IsUserAdmin: boolean;
+  inputXml = '';
 
   // pattern
   AddressAndRemarksPattern = /^[+,?-@()\.\-#'&%\/\w\s]*$/;
@@ -55,6 +61,12 @@ export class DocumentComponent implements OnInit {
   @ViewChild('modalCloseButton')
   modalCloseButton: ElementRef;
   modalCloseBtn: HTMLElement;
+
+  @ViewChild('deleteModalOpen')
+  deleteModalOpen: ElementRef;
+  deleteModalOpenBtn: HTMLElement;
+  deleteModalTitle = '';
+  deleteModalBody = '';
 
   @ViewChild('deleteModalClose')
   deleteModalClose: ElementRef;
@@ -102,6 +114,9 @@ export class DocumentComponent implements OnInit {
     this.modalCloseBtn = this.modalCloseButton.nativeElement as HTMLElement;
     this.alertModalButton = this.alertModalOpen.nativeElement as HTMLElement;
     this.deleteModalCloseBtn = this.deleteModalClose.nativeElement as HTMLElement;
+    this.deleteModalOpenBtn = this.deleteModalOpen.nativeElement as HTMLElement;
+
+    this.IsUserAdmin = sessionStorage.getItem('isuseradmin') === 'Y' ? true : false;
 
     this.EditDocDetails(null);
 
@@ -131,7 +146,12 @@ export class DocumentComponent implements OnInit {
 
   GetActionHeader() {
     this._mddService.GetMasterDataDetails('VendAction', '-1').subscribe((result) => {
-      this.actionHeaderList = result.data.Table;
+      this.totalActionHeaderList = result.data.Table;
+      if (this.isVendorStatusPending) {
+        this.actionHeaderList = this.totalActionHeaderList.filter(ele => ele.MDDCode === 'VVDC');
+      } else {
+        this.actionHeaderList = this.totalActionHeaderList.filter(ele => ele.MDDCode !== 'VVDC');
+      }
     });
   }
 
@@ -148,6 +168,9 @@ export class DocumentComponent implements OnInit {
             if (strArray === undefined) {
               this.docDetailsForm.get('VendDoc_MDDCode').patchValue(null);
             }
+          }
+          if (this.isVendorStatusPending) {
+            this.docHeaderList = this.docHeaderList.filter(ele => ele.MDDCode !== 'OTHE');
           }
         });
     }
@@ -263,7 +286,14 @@ export class DocumentComponent implements OnInit {
     fSize = Number(file.size);
 
     const splitFileName = file.name.split('.');
-    const extension = ['XLS', 'XLSX', 'PDF', 'DOC', 'DOCX'];
+    let extension = [];
+
+    if (this.isVendorStatusPending) {
+      extension = ['PDF', 'JPG'];
+    } else {
+      extension = ['XLS', 'XLSX', 'PDF', 'DOC', 'DOCX'];
+    }
+
     if (extension.indexOf(splitFileName[splitFileName.length - 1].toUpperCase()) !== -1) {
     } else {
       this.PopUpMessage = 'Only ' + extension.join(', ').toLocaleLowerCase() + ' formats are allowed.';
@@ -299,7 +329,10 @@ export class DocumentComponent implements OnInit {
       FileName: [null, [Validators.required]],
       Remarks: [this.vendorDocument.Remarks]
     });
-    if (localStorage.getItem('VendorStatus') === 'D') {
+
+    this.isVendorStatusPending = localStorage.getItem('VendorStatus') === 'P';
+
+    if (localStorage.getItem('VendorStatus') !== 'A' && localStorage.getItem('VendorStatus') !== 'P') {
       this.isDeactVendor = true;
     }
   }
@@ -377,5 +410,63 @@ export class DocumentComponent implements OnInit {
       window.URL.revokeObjectURL(url);
     });
   }
+  //#endregion
+
+  //#region Approve and Reject Functionality
+
+  OpenDocumentAppRejModal(doc: VendorDocument, status: string) {
+    this.deleteModalTitle = 'Ready to ' + status + '?';
+    this.deleteModalBody = 'Are you sure you want to ' + status + '?';
+
+    this.deleteModalOpenBtn.click();
+
+    this.inputXml = '<Data>' +
+      '<ApproveDocument ' +
+      'UserId="' + sessionStorage.getItem('userid') + '" ' +
+      'VendorShortCode="' + doc.VendorCode + '" ' +
+      'VendorActionHeaderID="' + doc.VendorActionHeaderID + '" ' +
+      'IsApprove ="' + (status === 'Approve' ? 1 : 0) + '" ' +
+      'PageIndex="' + this.currentPage + '" ' +
+      'Limit="' + 20 + '" ' +
+      'SearchText="' + this.searchText + '">' +
+      '</ApproveDocument>' +
+      '</Data>';
+  }
+
+  ApproveRejectDocument() {
+    this.deleteModalCloseBtn.click();
+
+    this._vendorDocService.ApproveRejectDocument({ content: this.inputXml }).subscribe((result) => {
+      if (result.Error === '') {
+        if (result.data.Table[0].ResultCode === 0) {
+          if (Object.keys(result.data).length > 1) {
+
+            this.vendDocList = result.data.Table1;
+            this.totalItems = result.data.Table2[0].TotalVendors;
+            this.GetVendorDocumentsList();
+
+            this.PopUpMessage = result.data.Table[0].Message;
+
+            if (this.isVendorStatusPending && result.data.Table3 !== undefined) {
+              window.location.reload();
+            }
+
+            this.alertModalButton.click();
+
+          } else {
+            this.pagedItems = [];
+          }
+
+        } else {
+          this.PopUpMessage = result.data.Table[0].Message;
+          this.alertModalButton.click();
+        }
+      } else {
+        this.PopUpMessage = 'There is some technical error. Please contact administrator.';
+        this.alertModalButton.click();
+      }
+    });
+  }
+
   //#endregion
 }

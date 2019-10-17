@@ -210,7 +210,7 @@ export class ProductionDetailsComponent implements OnInit {
     // this.ProductionDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.ProductionDetailsForm);
     // });
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.isDeactVendor = true;
     }
   }

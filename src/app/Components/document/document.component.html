@@ -36,13 +36,54 @@
         <td>{{doc.VendDoc}}</td>
         <td>{{doc.FileName.substring(doc.FileName.lastIndexOf('\\') + 1)}}</td>
         <td>
-          <a title="Edit" href="javascript:void(0)" (click)="EditDocDetails(doc)" data-target="#myModal"
-            data-backdrop="static" data-keyboard="false" data-toggle="modal">
-            <i class="fa fa-edit" *ngIf="isDeactVendor === false"></i>
-          </a>
-          <a title="Download" class="ml-2" href="javascript:void(0)" (click)="DownloadDocument(doc)">
-            <i class="fa fa-download"></i>
-          </a>
+
+          <div *ngIf="isVendorStatusPending">
+
+            <div *ngIf="IsUserAdmin">
+              <a *ngIf="doc.Status === 'P'" title="Approve" href="javascript:void(0)" class="ml-2"
+                data-backdrop="static" data-keyboard="false" data-toggle="modal"
+                (click)="OpenDocumentAppRejModal(doc, 'Approve')">
+                <i class="fa fa-thumbs-up"></i>
+              </a>
+
+              <a *ngIf="doc.Status === 'P'" title="Reject" href="javascript:void(0)" class="ml-2" data-backdrop="static"
+                data-keyboard="false" data-toggle="modal" (click)="OpenDocumentAppRejModal(doc, 'Reject')">
+                <i class="fa fa-thumbs-down"></i>
+              </a>
+
+              <a title="Download" class="ml-2" href="javascript:void(0)" (click)="DownloadDocument(doc)">
+                <i class="fa fa-download"></i>
+              </a>
+            </div>
+
+            <div *ngIf="!IsUserAdmin">
+              <a *ngIf="(doc.VendAction_MDDCode === 'VVDC' && doc.Status === 'P') || doc.VendAction_MDDCode !== 'VVDC'"
+                title="Edit" href="javascript:void(0)" (click)="EditDocDetails(doc)" data-target="#myModal"
+                data-backdrop="static" data-keyboard="false" data-toggle="modal">
+                <i class="fa fa-edit" *ngIf="isDeactVendor === false"></i>
+              </a>
+
+              <a title="Download" class="ml-2" href="javascript:void(0)" (click)="DownloadDocument(doc)">
+                <i class="fa fa-download"></i>
+              </a>
+            </div>
+
+          </div>
+
+          <div *ngIf="!isVendorStatusPending">
+
+            <a *ngIf="doc.VendAction_MDDCode !== 'VVDC'" title="Edit" href="javascript:void(0)"
+              (click)="EditDocDetails(doc)" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+              data-toggle="modal">
+              <i class="fa fa-edit" *ngIf="isDeactVendor === false"></i>
+            </a>
+
+            <a title="Download" class="ml-2" href="javascript:void(0)" (click)="DownloadDocument(doc)">
+              <i class="fa fa-download"></i>
+            </a>
+
+          </div>
+
           <!-- <a title="Delete" class="ml-2" href="javascript:void(0)" (click)="DeleteDocDetails(doc)"
             data-target="#deleteModal" data-backdrop="static" data-keyboard="false" data-toggle="modal">
             <i class="fa fa-remove"></i>
@@ -182,6 +223,10 @@
   </div>
 </div>
 
+<!-- Hidden button to open alert modal -->
+<button #deleteModalOpen type="button" data-target="#deleteModal" data-backdrop="static" data-keyboard="false"
+  data-toggle="modal" style="display:none;">
+</button>
 
 <!-- Delete Modal-->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -190,18 +235,17 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
-          Ready to Delete?
+          {{deleteModalTitle}}
         </h5>
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body">
-        This record no longer will be available in the system.
-        Are you sure?
+        {{deleteModalBody}}
       </div>
       <div class="modal-footer page-footer">
-        <button class="btn btn-primary" (click)="DeleteDocDetails()">Yes</button>
+        <button class="btn btn-primary" (click)="ApproveRejectDocument()">Yes</button>
         <button #deleteModalClose class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
       </div>
     </div>

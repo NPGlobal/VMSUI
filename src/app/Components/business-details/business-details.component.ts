@@ -73,7 +73,7 @@ export class BusinessDetailsComponent implements OnInit {
       this.GetVendorBusiness(this.currentPage);
     });
     // this.GetDivisions();
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.isDeactVendor = true;
     }
   }

@@ -24,12 +24,16 @@ export class VendorDocumentService {
   SaveVendorDocuments(formData: FormData): Observable<any> {
     const apiUrl = this._origin.origin + 'api/VendorDoc/UploadFile';
 
-    return this._http.post(apiUrl, formData
-    );
+    return this._http.post(apiUrl, formData);
   }
   DownloadDocument(fileName: string): Observable<Blob> {
     const apiUrl = this._origin.origin + 'api/VendorDoc/DownloadFile';
 
     return this._http.get<Blob>(apiUrl, { params: { 'filename': fileName }, responseType: 'blob' as 'json' });
+  }
+
+  ApproveRejectDocument(data: { content: string }): Observable<any> {
+    const apiUrl = this._origin.origin + 'api/VendorDoc/ApproveRejectDocument/';
+    return this._http.post<any>(apiUrl, data);
   }
 }

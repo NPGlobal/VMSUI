@@ -150,7 +150,7 @@ export class BankDetailsComponent implements OnInit {
     // this.BankDetailsForm.valueChanges.subscribe((data) => {
     //   this.logValidationErrors(this.BankDetailsForm);
     // });
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.BankDetailsForm.disable();
       this.isDeactVendor = true;
     }

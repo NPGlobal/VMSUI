@@ -166,7 +166,7 @@ export class TechnicalDetailsComponent implements OnInit {
     // this.techDetailsForm.valueChanges.subscribe((data) => {
     //   this.LogValidationErrors(this.techDetailsForm);
     // });
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.isDeactVendor = true;
     }
   }

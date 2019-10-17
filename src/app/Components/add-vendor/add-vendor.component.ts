@@ -34,6 +34,7 @@ export class AddVendorComponent implements OnInit {
     this._vendorService.GetVendorByCode(this.vendorCode).subscribe((result) => {
       if (result.error === '') {
         localStorage.setItem('VendorName', result.data.Vendor[0].VendorName);
+        localStorage.setItem('VendorStatus', result.data.Vendor[0].Status);
       }
 
       this.vendorName = localStorage.getItem('VendorName');

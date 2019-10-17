@@ -82,7 +82,7 @@ export class DepartmentMappingNewComponent implements OnInit {
       Department: [''],
       SelectedList: ['']
     });
-    if (localStorage.getItem('VendorStatus') === 'D') {
+    if (localStorage.getItem('VendorStatus') !== 'A') {
       this.DepartmentMappingForm.disable();
       this.isDeactVendor = true;
     }
