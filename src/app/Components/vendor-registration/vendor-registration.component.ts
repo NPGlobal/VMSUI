@@ -427,6 +427,11 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       statusObj = result;
       if (statusObj.data.Table[0].ResultCode === 0) {
         el.click();
+
+// Added By Ashutosh
+        localStorage.setItem('VendorName', vendor.VendorName);
+        localStorage.setItem('VendorStatus', 'P');
+
         this.vendRegistrationMsgModalButton.click();
         // this._router.navigate(['vendor/' + vendor.VendorCode + '/personal']);
       } else if (statusObj.data.Table[0].ResultCode === 2) {

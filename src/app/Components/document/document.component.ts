@@ -118,6 +118,13 @@ export class DocumentComponent implements OnInit {
 
     this.IsUserAdmin = sessionStorage.getItem('isuseradmin') === 'Y' ? true : false;
 
+    this.isVendorStatusPending = localStorage.getItem('VendorStatus') === 'P';
+
+    // if (localStorage.getItem('VendorStatus') !== 'A' && localStorage.getItem('VendorStatus') !== 'P') {
+      if (localStorage.getItem('VendorStatus') === 'D' || localStorage.getItem('VendorStatus') === 'B') {
+      this.isDeactVendor = true;
+    }
+
     this.EditDocDetails(null);
 
     this._route.parent.paramMap.subscribe((data) => {
@@ -330,11 +337,7 @@ export class DocumentComponent implements OnInit {
       Remarks: [this.vendorDocument.Remarks]
     });
 
-    this.isVendorStatusPending = localStorage.getItem('VendorStatus') === 'P';
-
-    if (localStorage.getItem('VendorStatus') !== 'A' && localStorage.getItem('VendorStatus') !== 'P') {
-      this.isDeactVendor = true;
-    }
+    
   }
 
   Dismiss() {

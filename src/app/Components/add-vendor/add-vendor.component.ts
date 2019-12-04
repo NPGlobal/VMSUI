@@ -26,7 +26,7 @@ export class AddVendorComponent implements OnInit {
     this._router.paramMap.subscribe((data) => {
       this.vendorCode = data.get('code');
     });
-
+    
     this.GetVendorByCode();
   }
 
