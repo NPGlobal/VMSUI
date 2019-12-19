@@ -25,6 +25,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
   AllPHList: OrgUnit[];
   PHList: OrgUnit[];
   StoreList: OrgUnit[];
+  ReferencePHList: OrgUnit[] = [];
   SelectedPHStoreList: OrgUnit[] = [];
   CodeExists: boolean;
   borderStyle: string;
@@ -84,6 +85,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     },
     'MasterVendorId': {
       'required': ''
+    },
+    'ReferencePH': {
+      'required': ''
     }
   };
   // ValidationMessages = {
@@ -115,10 +119,27 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     'VendorType': '',
     'PANNo': '',
     'MasterVendorId': '',
-    'CodeExist': ''
+    'CodeExist': '',
+    'ReferencePH': ''
   };
   //#endregion
 
+  //#region angular2 drowdown settings
+  referencePHDropdownSettings = {
+    singleSelection: true,
+    text: 'Select',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    searchPlaceholderText: 'Search',
+    enableSearchFilter: true,
+    badgeShowLimit: 1,
+    // groupBy: 'ParentMDDName',
+    // searchBy: ['id', 'itemName'],
+    lazyLoading: false,
+    labelKey: 'OrgUnitName',
+    primaryKey: 'OrgUnitCode'
+  };
+  //#endregion
   constructor(private _fb: FormBuilder,
     private _vendorService: VendorService,
     private _router: Router,
@@ -178,7 +199,8 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       Ref_VendorCode: '-1',
       IsJWVendor: [false],
       IsDirectVendor: [false],
-      DPTypeList: new FormArray([])
+      DPTypeList: new FormArray([]),
+      ReferencePH: ['', [Validators.required]]
     });
   }
 
@@ -253,6 +275,16 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     } else {
       this.DPTypeList.filter(x => x.Checked = false);
     }
+
+    // bind reference ph dropdown
+    this.RegistrationForm.get('ReferencePH').setValue(null);
+    if (this.RegistrationForm.get('IsDirectVendor').value && !this.RegistrationForm.get('IsJWVendor').value) {
+      this.ReferencePHList = this.PHList;
+    } else if (this.RegistrationForm.get('IsJWVendor').value) {
+      this.ReferencePHList = this.SelectedPHStoreList;
+    } else {
+      this.ReferencePHList = [];
+    }
   }
   //#endregion
 
@@ -285,6 +317,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
     this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
 
+    this.ReferencePHList = this.SelectedPHStoreList;
+    this.RegistrationForm.get('ReferencePH').setValue(null);
+
     this.RegistrationForm.get('PHList').patchValue([]);
     this.RegistrationForm.get('StoreList').patchValue([]);
     this.RegistrationForm.get('SelectedPHStoreList').patchValue([]);
@@ -309,6 +344,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
     this.DeleteFromArray(values, 'SelectedPH');
 
     this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+
+    this.ReferencePHList = this.SelectedPHStoreList;
+    this.RegistrationForm.get('ReferencePH').setValue(null);
 
     this.RegistrationForm.get('PHList').patchValue([]);
     this.RegistrationForm.get('StoreList').patchValue([]);
@@ -421,6 +459,9 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
 
     vendor.VendDPType_MDDCode = this.makeVendorDPTypeString();
 
+    const referencePH = this.RegistrationForm.get('ReferencePH').value as OrgUnit[];
+    vendor.ReferencePHCodeCSV = referencePH.map(x => x.OrgUnitCode).join();
+
     this.VendorCode = vendor.VendorCode;
 
     this._vendorService.SaveVendorPrimaryInfo(vendor).subscribe(result => {
@@ -428,7 +469,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       if (statusObj.data.Table[0].ResultCode === 0) {
         el.click();
 
-// Added By Ashutosh
+        // Added By Ashutosh
         localStorage.setItem('VendorName', vendor.VendorName);
         localStorage.setItem('VendorStatus', 'P');
 

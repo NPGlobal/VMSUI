@@ -104,10 +104,19 @@
             </div>
           </div>
 
-          <div *ngIf="RegistrationForm.controls.IsJWVendor.value" class="row">
-            <div class="col-md-4"></div>
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="MasterVendorId">Reference PH<i class="mandatory">*</i></label>
+                <angular2-multiselect [data]="ReferencePHList" [ngClass]="{'is-invalid': formErrors.ReferencePH}"
+                  [settings]="referencePHDropdownSettings" formControlName="ReferencePH">
+                </angular2-multiselect>
+              </div>
+            </div>
+
             <div class="col-md-8">
-              <div class="row">
+              <div class="row" *ngIf="RegistrationForm.controls.IsJWVendor.value">
 
                 <div class="col-md-5">
                   <div class="form-group">
@@ -201,8 +210,8 @@
   </div>
 </div>
 
-<button #vendorRgtMsgModalButton type="button" data-target="#VendorRegistrationMsgModal" data-backdrop="static" data-keyboard="false"
-  data-toggle="modal" style="display:none;">
+<button #vendorRgtMsgModalButton type="button" data-target="#VendorRegistrationMsgModal" data-backdrop="static"
+  data-keyboard="false" data-toggle="modal" style="display:none;">
 </button>
 
 <div class="modal fade" id="VendorRegistrationMsgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -210,11 +219,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="font-size: 15px;">This producer will have to upload verification documents (GST Certificate, PAN, Address Proof) to work with FabIndia.</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="font-size: 15px;">This producer will have to upload
+          verification documents (GST Certificate, PAN, Address Proof) to work with FabIndia.</h5>
       </div>
 
       <div class="modal-body" style="text-align: center;height:auto;">
-        <button [routerLink]="['/vendor', VendorCode, 'document']" class="btn btn-primary" type="button" data-dismiss="modal">OK</button>
+        <button [routerLink]="['/vendor', VendorCode, 'document']" class="btn btn-primary" type="button"
+          data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>

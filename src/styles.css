@@ -343,7 +343,7 @@ a.glyphicon-expand span {
   border: 1px solid #dc3545 !important;
 }
 
-.invalid-dept .cuppa-dropdown {
+.invalid-dept .cuppa-dropdown, .is-invalid .cuppa-dropdown {
   border: 1px solid #dc3545 !important;
 }
 
@@ -504,3 +504,26 @@ input, button, select, optgroup, textarea {
 .different{background-color:red !important;color:#fff;}
 .different a{color:#fff !important;}
 #logContainer a{text-decoration:underline;}
+
+.dropdown-list ul li, .dropdown-list ul.item2 li {
+  padding: 0px 10px !important;
+}
+
+div > ul.lazyContainer, div > ul.item2 {
+  max-height: 200px !important;
+}
+
+.pure-checkbox input[type=checkbox]+label:before, 
+.multiselect-item-checkbox input[type=checkbox] + div:before {
+    width: 8px !important;
+    height: 8px !important;
+    margin-top: -6px !important;
+}
+
+.pure-checkbox input[type=checkbox]+label:after,
+.multiselect-item-checkbox input[type=checkbox] + div:after {
+    left: 1px !important;
+    width: 8px !important;
+    height: 4px !important;
+    margin-top: -4px !important;
+}
