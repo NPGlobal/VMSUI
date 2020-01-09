@@ -49,6 +49,7 @@ export class PersonalDetailsComponent implements OnInit {
   vendorExpe_MDDCode: string[] = [];
   vendDPType_MDDCode: string[] = [];
   isDeactVendor = false;
+  ReferencePHList: OrgUnit[] = [];
   //#endregion
 
   //#region Patterns
@@ -185,6 +186,9 @@ export class PersonalDetailsComponent implements OnInit {
     },
     'PersonTopRanker2': {
       'pattern': this._validationMess.NamePattern
+    },
+    'ReferencePH': {
+      'required': ''
     }
   };
 
@@ -217,7 +221,25 @@ export class PersonalDetailsComponent implements OnInit {
     'OtherCustomer4': '',
     'OtherCustomer5': '',
     'PersonTopRanker1': '',
-    'PersonTopRanker2': ''
+    'PersonTopRanker2': '',
+    'ReferencePH': ''
+  };
+  //#endregion
+
+  //#region DropDownSettings
+  referencePHDropdownSettings = {
+    singleSelection: true,
+    text: 'Select',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    searchPlaceholderText: 'Search',
+    enableSearchFilter: true,
+    badgeShowLimit: 1,
+    // groupBy: 'ParentMDDName',
+    // searchBy: ['id', 'itemName'],
+    lazyLoading: false,
+    labelKey: 'OrgUnitName',
+    primaryKey: 'OrgUnitCode'
   };
   //#endregion
 
@@ -282,7 +304,8 @@ export class PersonalDetailsComponent implements OnInit {
         IsDirectVendor: [this.vendor.IsDirectVendor],
         NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
         IsInsured: [this.vendor.isInsured],
-        DPTypeList: new FormArray([])
+        DPTypeList: new FormArray([]),
+        ReferencePH: [this.vendor.ReferencePHCodeCSV, [Validators.required]]
       }),
       RegisteredOfficeAddress: this._fb.group({
         IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
@@ -479,6 +502,7 @@ export class PersonalDetailsComponent implements OnInit {
     this.SelectedPHStoreList = [];
     if (this.vendor && this.vendor.SelectedPHListCSV) {
       const selectedOrgCodeArr = this.vendor.SelectedPHListCSV.split(',');
+
       for (let i = 0; i < this.AllPHList.length; ++i) {
         if (selectedOrgCodeArr.includes(this.AllPHList[i].OrgUnitCode)) {
           this.SavedPHStoreList.push(this.AllPHList[i]);
@@ -491,6 +515,19 @@ export class PersonalDetailsComponent implements OnInit {
         }
       }
     }
+
+    // bind reference ph dropdown
+    if (this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value &&
+      !this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.PHList;
+    } else if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.SavedPHStoreList.concat(this.SelectedPHStoreList);
+    } else {
+      this.ReferencePHList = [];
+    }
+    let refPHCodeArr: OrgUnit[] = [];
+    refPHCodeArr = this.ReferencePHList.filter(x => this.vendor.ReferencePHCodeCSV.split(',').findIndex(yx => yx === x.OrgUnitCode) > -1);
+    this.personalDetailsForm.get('PersonalDetails.ReferencePH').patchValue(refPHCodeArr);
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
@@ -574,9 +611,33 @@ export class PersonalDetailsComponent implements OnInit {
   }
 
   SetPHListValidation($event) {
-    if (!this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value) {
+    if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+    } else {
+      this.PHList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'P');
+      this.StoreList = this.AllPHList.filter(x => x.OrgUnitTypeCode === 'S');
+      this.SelectedPHStoreList = [];
+      this.HasPHSelected = true;
+    }
+
+    if (this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value) {
+      this.HasPHSelected = (this.SelectedPHStoreList && this.SelectedPHStoreList.length > 0) ? true : false;
+    } else {
       this.DPTypeList.filter(x => x.Checked = false);
     }
+
+    // bind reference ph dropdown
+    if (this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value &&
+      !this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.PHList;
+    } else if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.SavedPHStoreList.concat(this.SelectedPHStoreList);
+    } else {
+      this.ReferencePHList = [];
+    }
+    let refPHCodeArr: OrgUnit[] = [];
+    refPHCodeArr = this.ReferencePHList.filter(x => this.vendor.ReferencePHCodeCSV.split(',').findIndex(yx => yx === x.OrgUnitCode) > -1);
+    this.personalDetailsForm.get('PersonalDetails.ReferencePH').patchValue(refPHCodeArr);
 
     this.personalDetailsForm.get('PersonalDetails.StoreList').patchValue('');
     this.personalDetailsForm.get('PersonalDetails.PHList').patchValue('');
@@ -807,6 +868,19 @@ export class PersonalDetailsComponent implements OnInit {
       this.DeleteFromArray(storeValues, 'Store');
     }
 
+    // bind reference ph dropdown
+    if (this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value &&
+      !this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.PHList;
+    } else if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.SavedPHStoreList.concat(this.SelectedPHStoreList);
+    } else {
+      this.ReferencePHList = [];
+    }
+    let refPHCodeArr: OrgUnit[] = [];
+    refPHCodeArr = this.ReferencePHList.filter(x => this.vendor.ReferencePHCodeCSV.split(',').findIndex(yx => yx === x.OrgUnitCode) > -1);
+    this.personalDetailsForm.get('PersonalDetails.ReferencePH').patchValue(refPHCodeArr);
+
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
 
@@ -832,6 +906,19 @@ export class PersonalDetailsComponent implements OnInit {
     }
 
     this.DeleteFromArray(values, 'SelectedPHStoreList');
+
+    // bind reference ph dropdown
+    if (this.personalDetailsForm.get('PersonalDetails.IsDirectVendor').value &&
+      !this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.PHList;
+    } else if (this.personalDetailsForm.get('PersonalDetails.IsJWVendor').value) {
+      this.ReferencePHList = this.SavedPHStoreList.concat(this.SelectedPHStoreList);
+    } else {
+      this.ReferencePHList = [];
+    }
+    let refPHCodeArr: OrgUnit[] = [];
+    refPHCodeArr = this.ReferencePHList.filter(x => this.vendor.ReferencePHCodeCSV.split(',').findIndex(yx => yx === x.OrgUnitCode) > -1);
+    this.personalDetailsForm.get('PersonalDetails.ReferencePH').patchValue(refPHCodeArr);
 
     this.HasPHSelected = (this.SavedPHStoreList.length > 0) ||
       (this.SelectedPHStoreList.length > 0);
@@ -1031,6 +1118,9 @@ export class PersonalDetailsComponent implements OnInit {
       this.SelectedPHStoreList.map(function (element) {
         return element.OrgUnitCode;
       }).join() : '';
+
+    const referencePH = this.personalDetailsForm.get('PersonalDetails.ReferencePH').value as OrgUnit[];
+    vendor.ReferencePHCodeCSV = referencePH.map(x => x.OrgUnitCode).join();
 
     vendor.isGSTRegistered = this.personalDetailsForm.get('RegisteredOfficeAddress.IsGSTRegistered').value;
     vendor.GSTIN = this.personalDetailsForm.get('RegisteredOfficeAddress.GSTIN').value === null

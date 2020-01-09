@@ -67,36 +67,31 @@ export class VendorAssessmentNewComponent implements OnInit {
   deptDropdownSettings = {
     singleSelection: false,
     text: 'Select',
+    idField: 'MDDCode',
+    textField: 'MDDName',
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
-    searchPlaceholderText: 'Search',
+    // searchPlaceholderText: 'Search',
     // enableSearchFilter: true,
+    itemsShowLimit: 1,
     badgeShowLimit: 1,
     groupBy: 'ParentMDDName',
-    // searchBy: ['id', 'itemName'],
+    // searchBy: ['MDDName'],
     lazyLoading: false
   };
 
-  // deptDropdownSettings = {
-  //   singleSelection: false,
-  //   idField: 'MDDCode',
-  //   textField: 'MDDName',
-  //   selectAllText: 'Select All',
-  //   unSelectAllText: 'UnSelect All',
-  //   itemsShowLimit: 1,
-  //   allowSearchFilter: true,
-  //   noDataAvailablePlaceholderText: 'No records'
-  // };
-
   quarterDropdownSettings = {
     singleSelection: false,
+    text: 'Select',
     idField: 'QuarterValue',
     textField: 'QuarterText',
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
     itemsShowLimit: 1,
+    badgeShowLimit: 1,
     // allowSearchFilter: true,
-    noDataAvailablePlaceholderText: 'No records'
+    noDataAvailablePlaceholderText: 'No records',
+    lazyLoading: false
   };
   //#endregion
 

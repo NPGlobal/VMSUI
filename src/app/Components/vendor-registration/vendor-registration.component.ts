@@ -168,7 +168,6 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       this.MasterVendorList = lst;
     });
 
-
     this.InitializeFormControls();
 
     this.HasPHSelected = true;
@@ -200,7 +199,7 @@ export class VendorRegistrationComponent implements OnInit, OnChanges {
       IsJWVendor: [false],
       IsDirectVendor: [false],
       DPTypeList: new FormArray([]),
-      ReferencePH: ['', [Validators.required]]
+      ReferencePH: [null, [Validators.required]]
     });
   }
 

@@ -109,6 +109,17 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <div class="col-md-12 form-group row">
+                                <div class="col-md-6">
+                                    <div for="Ref_VendorCode">Reference PH<i class="mandatory">*</i></div>
+                                    <angular2-multiselect [data]="ReferencePHList"
+                                        [ngClass]="{'is-invalid': formErrors.ReferencePH}"
+                                        [settings]="referencePHDropdownSettings" formControlName="ReferencePH">
+                                    </angular2-multiselect>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="col-md-4">
