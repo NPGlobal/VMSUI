@@ -305,7 +305,7 @@ export class PersonalDetailsComponent implements OnInit {
         NameofInsuranceCompany: [this.vendor.NameofInsuranceCompany],
         IsInsured: [this.vendor.isInsured],
         DPTypeList: new FormArray([]),
-        ReferencePH: [this.vendor.ReferencePHCodeCSV, [Validators.required]]
+        ReferencePH: ['', [Validators.required]]
       }),
       RegisteredOfficeAddress: this._fb.group({
         IsGSTRegistered: [this.vendor.isGSTRegistered, [Validators.required]],
@@ -586,8 +586,12 @@ export class PersonalDetailsComponent implements OnInit {
       if (this.ValidationMessages[key] &&
         this.ValidationMessages[key].required !== undefined &&
         this.ValidationMessages[key].required !== null &&
-        abstractControl.value !== null) {
-        abstractControl.patchValue(abstractControl.value.trim());
+        (abstractControl.value !== null && abstractControl.value.length > 0)) {
+        if (key === 'ReferencePH') {
+          abstractControl.patchValue(abstractControl.value);
+        } else {
+          abstractControl.patchValue(abstractControl.value.trim());
+        }
       }
     });
 

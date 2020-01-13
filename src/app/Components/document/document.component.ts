@@ -121,7 +121,7 @@ export class DocumentComponent implements OnInit {
     this.isVendorStatusPending = localStorage.getItem('VendorStatus') === 'P';
 
     // if (localStorage.getItem('VendorStatus') !== 'A' && localStorage.getItem('VendorStatus') !== 'P') {
-      if (localStorage.getItem('VendorStatus') === 'D' || localStorage.getItem('VendorStatus') === 'B') {
+    if (localStorage.getItem('VendorStatus') === 'D' || localStorage.getItem('VendorStatus') === 'B') {
       this.isDeactVendor = true;
     }
 
@@ -266,6 +266,11 @@ export class DocumentComponent implements OnInit {
             this.modalCloseBtn.click();
             this.PopUpMessage = result.data.Msg[0].Message;
             this.alertModalButton.click();
+
+            if (this.isVendorStatusPending && result.data.Table3 !== undefined) {
+              window.location.reload();
+            }
+
           } else {
             this.PopUpMessage = result.data.Msg[0].Message;
             this.alertModalButton.click();
@@ -337,7 +342,7 @@ export class DocumentComponent implements OnInit {
       Remarks: [this.vendorDocument.Remarks]
     });
 
-    
+
   }
 
   Dismiss() {
